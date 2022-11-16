@@ -19,7 +19,6 @@ import com.hero.recipespace.listener.OnRatingUploadListener
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.post.PostActivity
-import java.util.ArrayList
 
 class RecipeListFragment : Fragment(), View.OnClickListener, OnRecyclerItemClickListener<RecipeData>,
     OnRatingUploadListener {
@@ -118,10 +117,10 @@ class RecipeListFragment : Fragment(), View.OnClickListener, OnRecyclerItemClick
     override fun onItemClick(position: Int, view: View, data: RecipeData) {
         when(view.id) {
             R.id.mcv_rating_container -> {
-                val ratingDialog = RatingDialog(requireActivity())
-                ratingDialog.setOnRatingUploadListener(this)
-                ratingDialog.setRecipeData(data)
-                ratingDialog.show()
+                val ratingDialogFragment = RatingDialogFragment(requireActivity())
+                ratingDialogFragment.setOnRatingUploadListener(this)
+                ratingDialogFragment.setRecipeData(data)
+                ratingDialogFragment.show()
             }
             else -> {
                 val intent = Intent(requireActivity(), RecipeDetailActivity::class.java)

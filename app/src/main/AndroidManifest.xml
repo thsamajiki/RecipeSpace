@@ -19,37 +19,40 @@
         android:theme="@style/Theme.RecipeSpace"
         tools:targetApi="31">
         <activity
-            android:name=".PostActivity"
+            android:name=".view.post.PostActivity"
             android:exported="false" />
         <activity
-            android:name=".EditRecipeActivity"
+            android:name=".view.main.recipe.EditRecipeActivity"
             android:exported="false" />
         <activity
-            android:name=".RatingDialog"
+            android:name=".view.main.recipe.RatingDialogFragment"
             android:exported="false" />
         <activity
-            android:name=".DetailActivity"
+            android:name=".view.main.recipe.RecipeDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ChatActivity"
+            android:name=".view.main.chat.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".PhotoActivity"
+            android:name=".view.photoview.PhotoActivity"
             android:exported="false" />
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".view.main.account.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".view.main.account.setting.SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".view.login.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.login.LoginActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
