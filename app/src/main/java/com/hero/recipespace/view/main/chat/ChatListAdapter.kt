@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
 import com.hero.recipespace.data.ChatData
+import com.hero.recipespace.data.RecipeData
 import com.hero.recipespace.databinding.ItemChatListBinding
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.view.BaseAdapter
 import java.util.*
 
 class ChatListAdapter(
+    private val onClick: (ChatData) -> Unit
 ) : BaseAdapter<ChatListAdapter.ChatListViewHolder, ChatData>() {
 
     private val chatDataList = mutableListOf<ChatData>()
@@ -20,11 +22,11 @@ class ChatListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
         val binding = ItemChatListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return ChatListViewHolder(binding, getOnRecyclerItemClickListener()!!)
+        return ChatListViewHolder(binding, onClick)
     }
 
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
-        val chatData: ChatData = chatDataList!![position]
+        val chatData: ChatData = chatDataList[position]
         val otherUserNickname = getOtherUserNickname(chatData.getUserNicknames(), myUserKey)
         val otherUserProfile = getOtherUserProfile(chatData.getUserProfiles(), myUserKey)
         holder.tvUserNickname.text = otherUserNickname
@@ -73,22 +75,23 @@ class ChatListAdapter(
 
     class ChatListViewHolder(
         private val binding: ItemChatListBinding,
-        private val itemClickListener: OnRecyclerItemClickListener<ChatData>
+        private val onClick: (ChatData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun setChat(chatData: ChatData) {
+        fun bind(chatData: ChatData) {
 //            binding.ivUserProfile = itemView.findViewById(R.id.iv_user_profile)
-            binding.ivUserProfile = chatData.
-            binding.tvUserName = itemView.findViewById(R.id.tv_user_name)
-            binding.tvChatDate = itemView.findViewById(R.id.tv_chat_date)
-            binding.tvChatContent = itemView.findViewById(R.id.tv_chat)
-            itemView.setOnClickListener {
-                itemClickListener.onItemClick(absoluteAdapterPosition, it, chatData)
+//            binding.ivUserProfile = chatData.
+//            binding.tvUserName = itemView.findViewById(R.id.tv_user_name)
+//            binding.tvChatDate = itemView.findViewById(R.id.tv_chat_date)
+//            binding.tvChatContent = itemView.findViewById(R.id.tv_chat)
+
+            binding.root.setOnClickListener {
+                onClick(chatData)
             }
+
+            binding.chat = chatData
+            binding.executePendingBindings()
         }
-
-
-
 
         init {
 
