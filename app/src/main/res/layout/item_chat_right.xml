@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="chat_right"
-            type="com.hero.recipespace.data.MessageData" />
+            name="chatRight"
+            type="com.hero.recipespace.data.ChatData" />
     </data>
 
     <RelativeLayout

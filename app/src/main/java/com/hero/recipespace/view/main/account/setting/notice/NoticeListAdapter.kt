@@ -1,24 +1,15 @@
 package com.hero.recipespace.view.main.account.setting.notice
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
-import com.google.android.material.card.MaterialCardView
-import com.hero.recipespace.R
 import com.hero.recipespace.data.NoticeData
-import com.hero.recipespace.data.RecipeData
-import com.hero.recipespace.databinding.ActivityNoticeListBinding
 import com.hero.recipespace.databinding.ItemNoticeListBinding
-import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.view.BaseAdapter
-import kotlinx.coroutines.NonDisposableHandle.parent
 
 class NoticeListAdapter(
+    private val onClick: (NoticeData) -> Unit
 ): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeData>(), View.OnClickListener {
 
     private val noticeDataList = mutableListOf<NoticeData>()
@@ -26,7 +17,7 @@ class NoticeListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val binding = ItemNoticeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return NoticeViewHolder(binding, getOnRecyclerItemClickListener()!!)
+        return NoticeViewHolder(binding, onClick)
     }
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
@@ -49,7 +40,7 @@ class NoticeListAdapter(
 
     class NoticeViewHolder(
         private val binding: ItemNoticeListBinding,
-        private val itemClickListener: OnRecyclerItemClickListener<NoticeData>
+        private val onClick: (NoticeData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setNotice(noticeData: NoticeData) {
@@ -57,8 +48,8 @@ class NoticeListAdapter(
             binding.tvContentNoticeItem.text = noticeData.noticeDesc
             binding.tvDateNoticeItem.text = noticeData.noticeDate
 
-            itemView.setOnClickListener {
-                itemClickListener.onItemClick(absoluteAdapterPosition, it, noticeData)
+            binding.root.setOnClickListener {
+                onClick(noticeData)
 
                 if (binding.llContentNoticeItem.visibility == View.GONE) {
                     rotateView(binding.mcvNoticeItem)
@@ -68,6 +59,9 @@ class NoticeListAdapter(
                     binding.llContentNoticeItem.visibility = View.GONE
                 }
             }
+
+            binding.notice = noticeData
+            binding.executePendingBindings()
         }
 
         private fun rotateView(view: View) {
@@ -77,6 +71,5 @@ class NoticeListAdapter(
             }
             view.animate().rotation(angle.toFloat()).setDuration(200).start()
         }
-
     }
 }
