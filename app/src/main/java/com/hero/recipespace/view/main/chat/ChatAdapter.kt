@@ -30,13 +30,12 @@ class ChatAdapter(
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view: View
         return if (viewType == RIGHT_TYPE) {
-            view = inflater.inflate(R.layout.item_chat_right, parent, false)
-            RightChatViewHolder(view)
+            val binding = ItemChatRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RightChatViewHolder(binding)
         } else {
-            view = inflater.inflate(R.layout.item_chat_left, parent, false)
-            LeftChatViewHolder(view)
+            val binding = ItemChatLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            LeftChatViewHolder(binding)
         }
     }
 
