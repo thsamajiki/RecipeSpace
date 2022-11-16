@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
-import com.hero.recipespace.R
 import com.hero.recipespace.data.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostBinding
@@ -136,16 +135,16 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
-            val nickname: String = MyInfoUtil.getInstance().getUserName(this)
-            val profileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
+            val userName: String = MyInfoUtil.getInstance().getUserName(this)
+            val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
             val recipeData = RecipeData()
-            recipeData.setPhotoUrl(downloadUrl)
-            recipeData.setContent(editContent!!.text.toString())
-            recipeData.setPostDate(Timestamp.now())
-            recipeData.setRate(0)
-            recipeData.setUserNickname(nickname)
-            recipeData.setProfileUrl(profileUrl)
-            recipeData.setUserKey(MyInfoUtil.getInstance().getKey())
+            recipeData.photoUrl = downloadUrl
+            recipeData.desc = editContent!!.text.toString()
+            recipeData.postDate = Timestamp.now()
+            recipeData.rate = 0
+            recipeData.userName = userName
+            recipeData.profileImageUrl = profileImageUrl
+            recipeData.userKey = MyInfoUtil.getInstance().getKey()
             FirebaseData.getInstance().uploadRecipeData(recipeData, this)
         }
     }
@@ -158,7 +157,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
         LoadingProgress.dismissProgressDialog()
         if (isSuccess) {
             val intent = Intent()
-            intent.putExtra(EXTRA_RECIPE_DATA, response.getData())
+            intent.putExtra(EXTRA_RECIPE_DATA, response?.getData())
             setResult(RESULT_OK, intent)
             finish()
         } else {

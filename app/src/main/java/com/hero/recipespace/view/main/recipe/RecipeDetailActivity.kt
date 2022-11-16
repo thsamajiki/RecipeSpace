@@ -45,7 +45,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             val myUserKey: String = MyInfoUtil.getInstance().getKey()
             if (getRecipeData()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
-                return
             }
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipeData()?.userKey)

@@ -23,7 +23,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
-        get() =_binding!!
+        get() = _binding!!
     private val recipeData: RecipeData? = null
 
     private var onRatingUploadListener: OnRatingUploadListener? = null

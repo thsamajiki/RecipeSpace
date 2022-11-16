@@ -5,11 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
@@ -18,11 +15,9 @@ import com.hero.recipespace.view.login.LoginActivity
 
 class AccountFragment: Fragment(), View.OnClickListener {
 
-    private lateinit var binding: FragmentAccountBinding
-    private var ivProfile: ImageView? = null
-    private var tvUserNickname: TextView? = null
-    private var btnProfileEdit: MaterialButton? = null
-    private  var btnLogout: MaterialButton? = null
+    private var _binding: FragmentAccountBinding? = null
+    private val binding: FragmentAccountBinding
+        get() = _binding!!
     private val PROFILE_EDIT_REQ = 1010
 
     companion object {
@@ -33,20 +28,20 @@ class AccountFragment: Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = FragmentAccountBinding.inflate(layoutInflater)
-        return binding.root
+        _binding = FragmentAccountBinding.inflate(inflater, container, false)
 
-        setupListeners()
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUserData()
+
+        setupListeners()
     }
 
     private fun setupListeners() {
-
         binding.btnProfileEdit.setOnClickListener {
             intentProfileEdit()
         }
@@ -62,8 +57,8 @@ class AccountFragment: Fragment(), View.OnClickListener {
         } else {
             Glide.with(requireActivity()).load(profileUrl).into(binding.ivUserProfile)
         }
-        val userNickname: String = MyInfoUtil.getInstance().getUserName(requireActivity())
-        tvUserNickname!!.text = userNickname
+        val userName: String = MyInfoUtil.getInstance().getUserName(requireActivity())
+        binding.tvUserName.text = userName
     }
 
     override fun onClick(v: View) {

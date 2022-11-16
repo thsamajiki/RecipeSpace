@@ -15,19 +15,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.hero.recipespace.R
 import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.database.FirebaseData
+import com.hero.recipespace.databinding.ActivityEditRecipeBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
+import com.hero.recipespace.storage.FirebaseStorageApi
+import com.hero.recipespace.util.LoadingProgress
+import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
 
 class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     OnFileUploadListener, OnCompleteListener<RecipeData> {
 
-    private var btnBack: ImageView? =
-        null, private  var ivRecipePhoto:android.widget.ImageView? = null
+    private lateinit var binding: ActivityEditRecipeBinding
+    private var btnBack: ImageView? = null
+    private  var ivRecipePhoto:android.widget.ImageView? = null
     private var editContent: EditText? = null
     private var btnComplete: TextView? = null
     private var photoPath: String? = null
@@ -36,7 +43,9 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_recipe)
+        binding = ActivityEditRecipeBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         initView()
         addTextWatcher()
     }
@@ -68,8 +77,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     private fun intentGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickIntent.type = "image/*"
-        startActivityForResult(pickIntent,
-            com.seoultech.recipeschoolproject.view.main.recipe.RecipeEditActivity.PHOTO_REQ_CODE)
+        startActivityForResult(pickIntent, PHOTO_REQ_CODE)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -82,8 +90,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         ) {
             true
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission),
-                com.seoultech.recipeschoolproject.view.main.recipe.RecipeEditActivity.PERMISSION_REQ_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), PERMISSION_REQ_CODE)
             false
         }
     }
@@ -94,17 +101,17 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             intentGallery()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == com.seoultech.recipeschoolproject.view.main.recipe.RecipeEditActivity.PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
+        if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
             photoPath = RealPathUtil.getRealPath(this, data.data)
-            Glide.with(this).load(photoPath).into(ivRecipePhoto)
-            if (editContent!!.text.toString().length > 0) {
+            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+            if (editContent!!.text.toString().isNotEmpty()) {
                 btnComplete!!.isEnabled = true
             }
         }
@@ -115,11 +122,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        if (s.length > 0 && !TextUtils.isEmpty(photoPath)) {
-            btnComplete!!.isEnabled = true
-        } else {
-            btnComplete!!.isEnabled = false
-        }
+        btnComplete!!.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun uploadImage() {
@@ -132,16 +135,16 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
-            val nickname: String = MyInfoUtil.getInstance().getNickname(this)
-            val profileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
+            val userName: String = MyInfoUtil.getInstance().getNickname(this)
+            val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
             val recipeData = RecipeData()
-            recipeData.setPhotoUrl(downloadUrl)
-            recipeData.setContent(editContent!!.text.toString())
-            recipeData.setPostDate(Timestamp.now())
-            recipeData.setRate(0)
-            recipeData.setUserNickname(nickname)
-            recipeData.setProfileUrl(profileUrl)
-            recipeData.setUserKey(MyInfoUtil.getInstance().getKey())
+            recipeData.photoUrl = downloadUrl
+            recipeData.desc = editContent!!.text.toString()
+            recipeData.postDate = Timestamp.now()
+            recipeData.rate = 0
+            recipeData.userName = userName
+            recipeData.profileImageUrl = profileImageUrl
+            recipeData.userKey = MyInfoUtil.getInstance().getKey()
             FirebaseData.getInstance().uploadRecipeData(recipeData, this)
         }
     }
