@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "475909851773",
-    "project_id": "recipespace-2c0bc",
-    "storage_bucket": "recipespace-2c0bc.appspot.com"
+    "project_number": "804484406243",
+    "project_id": "recipespace-f2efa",
+    "storage_bucket": "recipespace-f2efa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:475909851773:android:873bee0503b410a037ff14",
+        "mobilesdk_app_id": "1:804484406243:android:3871d7d98ba0d485da9ed6",
         "android_client_info": {
           "package_name": "com.hero.recipespace"
         }
       },
       "oauth_client": [
         {
-          "client_id": "475909851773-5jtpj5r4t1vgb3gnifb6iqtbgbc1ir06.apps.googleusercontent.com",
+          "client_id": "804484406243-7nahbdlmsbea85jtv54l3g9dakbjcika.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBI1jzLg2LUsZlt0PFFDEwf2meHqn_rZ3M"
+          "current_key": "AIzaSyC2q1GMq_RXW4yWkVoFVRR4dmIiOuw3AH8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "475909851773-5jtpj5r4t1vgb3gnifb6iqtbgbc1ir06.apps.googleusercontent.com",
+              "client_id": "804484406243-7nahbdlmsbea85jtv54l3g9dakbjcika.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
