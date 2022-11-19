@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +30,7 @@ class RecipeListFragment : Fragment(), View.OnClickListener, OnRecyclerItemClick
     private val binding get() = _binding!!
 
     private lateinit var recipeListAdapter: RecipeListAdapter
+    private lateinit var postResultLauncher: ActivityResultLauncher<Intent>
 
     companion object {
         fun newInstance() = RecipeListFragment()
@@ -50,7 +53,17 @@ class RecipeListFragment : Fragment(), View.OnClickListener, OnRecyclerItemClick
         downloadRecipeData()
 
         binding.btnPost.setOnClickListener {
-
+            val intent = Intent(requireActivity(), PostActivity::class.java)
+            postResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val recipeData: RecipeData = data.getParcelableExtra(RecipeListFragment.EXTRA_RECIPE_DATA)
+                    if (recipeData != null) {
+                        recipeDataList.add(0, recipeData)
+                        recipeListAdapter.notifyItemInserted(0)
+                        binding.rvRecipe.smoothScrollToPosition(0)
+                    }
+                }
+            }
         }
     }
 

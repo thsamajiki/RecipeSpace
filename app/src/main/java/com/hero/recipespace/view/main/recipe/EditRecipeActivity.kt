@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.main.recipe
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -13,6 +14,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
@@ -24,6 +27,7 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
+import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
@@ -33,45 +37,43 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     OnFileUploadListener, OnCompleteListener<RecipeData> {
 
     private lateinit var binding: ActivityEditRecipeBinding
-    private var btnBack: ImageView? = null
-    private  var ivRecipePhoto:android.widget.ImageView? = null
-    private var editContent: EditText? = null
-    private var btnComplete: TextView? = null
+
     private var photoPath: String? = null
-    private val PERMISSION_REQ_CODE = 1010
-    private val PHOTO_REQ_CODE = 2020
+    private lateinit var editPhotoResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditRecipeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        initView()
         addTextWatcher()
-    }
 
-    private fun initView() {
-        btnBack = findViewById(R.id.iv_back)
-        ivRecipePhoto = findViewById<ImageView>(R.id.iv_recipe_photo)
-        editContent = findViewById(R.id.edit_content)
-        btnComplete = findViewById(R.id.btn_complete)
-        btnBack.setOnClickListener(this)
-        btnComplete.setOnClickListener(this)
-        ivRecipePhoto.setOnClickListener(this)
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+        binding.btnComplete.setOnClickListener {
+            uploadImage()
+        }
+        binding.ivRecipePhoto.setOnClickListener {
+            intentGallery()
+        }
+
+        editPhotoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                photoPath = RealPathUtil.getRealPath(this, data.data)
+                Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+                if (binding.editContent.text.toString().isNotEmpty()) {
+                    binding.btnComplete.isEnabled = true
+                }
+            }
+        }
     }
 
     private fun addTextWatcher() {
-        editContent!!.addTextChangedListener(this)
+        binding.editContent.addTextChangedListener(this)
     }
 
     override fun onClick(v: View) {
-        when (v.id) {
-            R.id.iv_recipe_photo -> if (checkStoragePermission()) {
-                intentGallery()
-            }
-            R.id.iv_back -> finish()
-            R.id.btn_complete -> uploadImage()
-        }
     }
 
     private fun intentGallery() {
@@ -122,7 +124,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        btnComplete!!.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
+        binding.btnComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun uploadImage() {
@@ -153,11 +155,11 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         LoadingProgress.setProgress(percent.toInt())
     }
 
-    override fun onComplete(isSuccess: Boolean, response: Response<RecipeData?>) {
+    override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
         LoadingProgress.dismissProgressDialog()
         if (isSuccess) {
             val intent = Intent()
-            intent.putExtra(EXTRA_RECIPE_DATA, response.getData())
+            intent.putExtra(EXTRA_RECIPE_DATA, response?.getData())
             setResult(RESULT_OK, intent)
             finish()
         } else {
