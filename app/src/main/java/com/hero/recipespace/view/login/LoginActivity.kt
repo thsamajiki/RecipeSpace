@@ -7,10 +7,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import com.hero.recipespace.MainActivity
-import com.hero.recipespace.R
 import com.hero.recipespace.authentication.FirebaseAuthentication
 import com.hero.recipespace.databinding.ActivityLoginBinding
 import com.hero.recipespace.listener.OnCompleteListener
@@ -19,10 +16,7 @@ import com.hero.recipespace.listener.Response
 class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListener<Void> {
 
     private lateinit var binding: ActivityLoginBinding
-    private var btnLogin: MaterialButton? = null
-    private var btnSignUp:MaterialButton? = null
-    private var editEmail: TextInputEditText? = null
-    private var editPwd:TextInputEditText? = null
+
     private val firebaseAuthentication: FirebaseAuthentication = FirebaseAuthentication.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -9,7 +9,7 @@ data class NoticeData(
     val noticeTitle: String? = null,
     val noticeDesc: String? = null,
     val noticeDate: String? = null,
-    val noticeList: ArrayList<String>? = null
+    val noticeList: List<String>? = null
 ) : Parcelable {
 
 }

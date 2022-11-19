@@ -24,7 +24,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     private var recyclerChat: RecyclerView? = null
     private var btnBack: ImageView? = null
     private var chatAdapter: ChatAdapter? = null
-    private val messageDataArrayList = ArrayList<MessageData>()
+    private val messageDataList = List<MessageData>()
     private var chatData: ChatData? = null
     private var editMessage: EditText? = null
     val EXTRA_OTHER_USER_KEY = "otherUserKey"
@@ -62,20 +62,16 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun initMessageRegistration() {
-        messageRegistration = FirebaseData.getInstance().getMessageList(chatData.getKey(), this)
+        messageRegistration = FirebaseData.getInstance().getMessageList(chatData.key, this)
     }
 
     private fun initView() {
-        cvSend = findViewById(R.id.cv_send)
-        recyclerChat = findViewById(R.id.recycler_chat)
-        btnBack = findViewById(R.id.btn_back)
-        editMessage = findViewById(R.id.edit_message)
         btnBack.setOnClickListener(this)
         cvSend.setOnClickListener(this)
     }
 
     private fun initAdapter() {
-        chatAdapter = ChatAdapter(this, messageDataArrayList, chatData)
+        chatAdapter = ChatAdapter(this, messageDataList, chatData)
         chatAdapter.setOnRecyclerItemClickListener(this)
         recyclerChat!!.adapter = chatAdapter
     }
@@ -138,9 +134,9 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun onMessage(isSuccess: Boolean, messageData: MessageData?) {
         if (isSuccess && messageData != null) {
-            messageDataArrayList.add(messageData)
-            chatAdapter.notifyItemInserted(messageDataArrayList.size - 1)
-            recyclerChat!!.smoothScrollToPosition(messageDataArrayList.size - 1)
+            messageDataList.add(messageData)
+            chatAdapter.notifyItemInserted(messageDataList.size - 1)
+            recyclerChat!!.smoothScrollToPosition(messageDataList.size - 1)
         }
     }
 }
