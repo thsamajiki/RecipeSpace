@@ -82,7 +82,7 @@
             android:layout_height="match_parent"
             android:maxLines="1"
             android:inputType="text"
-            android:id="@+id/edit_user_nickname" />
+            android:id="@+id/edit_user_name" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

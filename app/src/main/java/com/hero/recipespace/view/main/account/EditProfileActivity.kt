@@ -9,15 +9,11 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import com.hero.recipespace.R
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
@@ -34,14 +30,9 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     OnFileUploadListener, TextWatcher {
 
     private lateinit var binding: ActivityEditProfileBinding
-    private var ivBack: ImageView? = null
-    private var tvComplete: TextView? = null
-    private var editUserNickname: TextInputEditText? = null
-    private var ivProfile: CircleImageView? = null
-    private var fabProfileEdit: FloatingActionButton? = null
     private var photoPath: String? = null
     private var profileUrl: String? = null
-    private var userNickname: String? = null
+    private var userName: String? = null
     private val PERMISSION_REQ_CODE = 1010
     private val PHOTO_REQ_CODE = 2020
 
@@ -68,7 +59,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
             }
         }
 
-        binding.editUserNickname.addTextChangedListener(this)
+        binding.editUserName.addTextChangedListener(this)
     }
 
     private fun setUserData() {
@@ -78,8 +69,8 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             Glide.with(this).load(profileUrl).into(ivProfile!!)
         }
-        userNickname = MyInfoUtil.getInstance().getUserName(this)
-        editUserNickname!!.setText(userNickname)
+        userName = MyInfoUtil.getInstance().getUserName(this)
+        editUserNickname!!.setText(userName)
     }
 
     override fun onClick(v: View) {
@@ -134,9 +125,9 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
             photoPath = RealPathUtil.getRealPath(this, data.data)
-            Glide.with(this).load(photoPath).into(ivProfile!!)
-            if (editUserNickname!!.text.toString().length > 0) {
-                tvComplete!!.isEnabled = true
+            Glide.with(this).load(photoPath).into(binding.ivUserProfile)
+            if (binding.editUserName.text.toString().isNotEmpty()) {
+                binding.tvComplete.isEnabled = true
             }
         }
     }
@@ -148,23 +139,23 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
-    private fun updateUserData(newProfileUrl: String?) {
-        val editData = HashMap<String, Any?>()
-        if (!TextUtils.isEmpty(newProfileUrl)) {
-            editData[MyInfoUtil.EXTRA_PROFILE_IMAGE_URL] = newProfileUrl
+    private fun updateUserData(newProfileImageUrl: String?) {
+        val editData = HashMap<String, Any>()
+        if (!TextUtils.isEmpty(newProfileImageUrl)) {
+            editData[MyInfoUtil.EXTRA_PROFILE_IMAGE_URL] = newProfileImageUrl
         }
-        val newUserNickname = editUserNickname!!.text.toString()
-        editData[MyInfoUtil.EXTRA_NICKNAME] = newUserNickname
+        val newUserName = binding.editUserName.text.toString()
+        editData[MyInfoUtil.EXTRA_NICKNAME] = newUserName
         val userKey: String = MyInfoUtil.getInstance().getKey()
         FirebaseData.getInstance()
-            .updateUserData(userKey, editData, object : OnCompleteListener<Void?> {
-                override fun onComplete(isSuccess: Boolean, response: Response<Void?>?) {
+            .updateUserData(userKey, editData, object : OnCompleteListener<Void> {
+                override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                     if (isSuccess) {
                         MyInfoUtil.getInstance()
-                            .putUserName(this@ProfileEditActivity, newUserNickname)
-                        if (!TextUtils.isEmpty(newProfileUrl)) {
+                            .putUserName(this@EditProfileActivity, newUserName)
+                        if (!TextUtils.isEmpty(newProfileImageUrl)) {
                             MyInfoUtil.getInstance()
-                                .putProfileImageUrl(this@ProfileEditActivity, newProfileUrl)
+                                .putProfileImageUrl(this@EditProfileActivity, newProfileImageUrl)
                         }
                         setResult(RESULT_OK)
                         finish()
@@ -196,13 +187,9 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
 
     override fun afterTextChanged(s: Editable) {
         if (s.isEmpty()) {
-            tvComplete!!.isEnabled = false
+            binding.tvComplete.isEnabled = false
         } else {
-            if (s.toString().equals(userNickname)) {
-                binding.tvComplete.isEnabled = false
-            } else {
-                binding.tvComplete.isEnabled = true
-            }
+            binding.tvComplete.isEnabled = s.toString() != userName
         }
     }
 }

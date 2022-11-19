@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,6 +21,9 @@ class AccountFragment: Fragment(), View.OnClickListener {
     private val binding: FragmentAccountBinding
         get() = _binding!!
     private val PROFILE_EDIT_REQ = 1010
+
+    private lateinit var editProfileResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var photoResultLauncher: ActivityResultLauncher<Intent>
 
     companion object {
         fun newInstance() = AccountFragment()
@@ -39,6 +44,18 @@ class AccountFragment: Fragment(), View.OnClickListener {
         setUserData()
 
         setupListeners()
+
+        editProfileResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                setUserData()
+            }
+        }
+
+        photoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -51,11 +68,11 @@ class AccountFragment: Fragment(), View.OnClickListener {
     }
 
     private fun setUserData() {
-        val profileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(requireActivity())
-        if (TextUtils.isEmpty(profileUrl)) {
+        val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(requireActivity())
+        if (TextUtils.isEmpty(profileImageUrl)) {
             Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
         } else {
-            Glide.with(requireActivity()).load(profileUrl).into(binding.ivUserProfile)
+            Glide.with(requireActivity()).load(profileImageUrl).into(binding.ivUserProfile)
         }
         val userName: String = MyInfoUtil.getInstance().getUserName(requireActivity())
         binding.tvUserName.text = userName
@@ -86,13 +103,6 @@ class AccountFragment: Fragment(), View.OnClickListener {
         val intent = Intent(requireActivity(), LoginActivity::class.java)
         startActivity(intent)
         requireActivity().finishAffinity()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PROFILE_EDIT_REQ && resultCode == Activity.RESULT_OK) {
-            setUserData()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
