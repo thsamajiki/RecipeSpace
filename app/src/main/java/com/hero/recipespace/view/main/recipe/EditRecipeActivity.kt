@@ -51,7 +51,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     }
 
     private fun initView() {
-        btnBack = findViewById(R.id.btn_back)
+        btnBack = findViewById(R.id.iv_back)
         ivRecipePhoto = findViewById<ImageView>(R.id.iv_recipe_photo)
         editContent = findViewById(R.id.edit_content)
         btnComplete = findViewById(R.id.btn_complete)
@@ -69,7 +69,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
             R.id.iv_recipe_photo -> if (checkStoragePermission()) {
                 intentGallery()
             }
-            R.id.btn_back -> finish()
+            R.id.iv_back -> finish()
             R.id.btn_complete -> uploadImage()
         }
     }
