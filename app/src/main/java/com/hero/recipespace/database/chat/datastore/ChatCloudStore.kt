@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.chat
+package com.hero.recipespace.database.chat.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.ChatData

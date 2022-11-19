@@ -45,10 +45,10 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
 
         binding.tvCancel.setOnClickListener {
-
+            finish()
         }
         binding.tvConfirm.setOnClickListener {
-
+            uploadRating()
         }
 
         return binding.root

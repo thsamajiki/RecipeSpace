@@ -1,5 +1,11 @@
 package com.hero.recipespace.database
 
-abstract class CloudStore<T> : DataStore<T> {
+import android.content.Context
+import com.google.firebase.firestore.FirebaseFirestore
+
+abstract class CloudStore<T>(
+    private val context: Context,
+    private val fireStore: FirebaseFirestore
+) : DataStore<T> {
 
 }
