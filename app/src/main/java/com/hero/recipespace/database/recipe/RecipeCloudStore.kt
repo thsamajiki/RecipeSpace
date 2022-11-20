@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.recipe
 
 import android.content.Context
-import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

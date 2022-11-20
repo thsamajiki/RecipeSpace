@@ -7,8 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
-import com.hero.recipespace.data.ChatData
-import com.hero.recipespace.data.MessageData
+import com.hero.recipespace.data.chat.ChatData
+import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.listener.OnMessageListener

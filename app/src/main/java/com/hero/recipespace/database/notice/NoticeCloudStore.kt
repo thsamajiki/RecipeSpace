@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.notice
 
 import android.content.Context
-import com.hero.recipespace.data.NoticeData
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

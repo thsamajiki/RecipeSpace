@@ -1,4 +1,4 @@
-package com.hero.recipespace.data
+package com.hero.recipespace.data.user
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

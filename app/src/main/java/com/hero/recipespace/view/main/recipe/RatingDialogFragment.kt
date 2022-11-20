@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil.setContentView
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.Timestamp
 import com.hero.recipespace.R
-import com.hero.recipespace.data.RateData
-import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.data.rate.RateData
+import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
 import com.hero.recipespace.listener.OnCompleteListener

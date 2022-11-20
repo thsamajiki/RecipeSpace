@@ -1,8 +1,9 @@
-package com.hero.recipespace.data
+package com.hero.recipespace.data.chat
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
+import com.hero.recipespace.data.message.MessageData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

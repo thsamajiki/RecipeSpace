@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.message
 
 import android.content.Context
-import com.hero.recipespace.data.MessageData
+import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

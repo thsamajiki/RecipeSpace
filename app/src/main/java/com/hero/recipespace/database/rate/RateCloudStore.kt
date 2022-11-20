@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.rate
 
 import android.content.Context
-import com.hero.recipespace.data.RateData
+import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

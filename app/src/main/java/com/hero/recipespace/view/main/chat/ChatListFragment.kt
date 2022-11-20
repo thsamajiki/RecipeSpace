@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
-import com.hero.recipespace.data.ChatData
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentChatListBinding
 import com.hero.recipespace.listener.OnChatListChangeListener

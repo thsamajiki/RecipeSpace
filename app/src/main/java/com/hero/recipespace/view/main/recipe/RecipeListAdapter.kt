@@ -3,7 +3,7 @@ package com.hero.recipespace.view.main.recipe
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.databinding.ItemRecipeListBinding
 import com.hero.recipespace.view.BaseAdapter
 

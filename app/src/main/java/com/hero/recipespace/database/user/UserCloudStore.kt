@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.user
 
 import android.content.Context
-import com.hero.recipespace.data.UserData
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
-import com.hero.recipespace.data.UserData
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type

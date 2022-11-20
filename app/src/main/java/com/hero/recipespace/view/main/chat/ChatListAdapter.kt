@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
-import com.hero.recipespace.data.ChatData
-import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.databinding.ItemChatListBinding
-import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.view.BaseAdapter
 import java.util.*
 

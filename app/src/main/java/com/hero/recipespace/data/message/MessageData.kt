@@ -1,4 +1,4 @@
-package com.hero.recipespace.data
+package com.hero.recipespace.data.message
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp

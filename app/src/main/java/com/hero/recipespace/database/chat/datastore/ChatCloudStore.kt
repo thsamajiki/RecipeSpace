@@ -1,7 +1,7 @@
 package com.hero.recipespace.database.chat.datastore
 
 import android.content.Context
-import com.hero.recipespace.data.ChatData
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 

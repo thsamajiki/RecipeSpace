@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.authentication.FirebaseAuthentication
-import com.hero.recipespace.data.UserData
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivitySignUpBinding
 import com.hero.recipespace.listener.OnCompleteListener

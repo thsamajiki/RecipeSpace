@@ -4,23 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
 import com.hero.recipespace.R
-import com.hero.recipespace.data.RecipeData
+import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.databinding.ActivityDetailBinding
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.login.SignUpActivity
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.photoview.PhotoActivity
-import de.hdodenhof.circleimageview.CircleImageView
 
 class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 

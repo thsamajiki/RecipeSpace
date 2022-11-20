@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.data.NoticeData
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.databinding.ItemNoticeListBinding
 import com.hero.recipespace.view.BaseAdapter
 

@@ -6,6 +6,12 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.*
 import com.hero.recipespace.data.*
+import com.hero.recipespace.data.chat.ChatData
+import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.data.notice.NoticeData
+import com.hero.recipespace.data.rate.RateData
+import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.listener.*
 import com.hero.recipespace.util.MyInfoUtil
 

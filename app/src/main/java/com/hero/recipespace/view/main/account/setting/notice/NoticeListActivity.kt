@@ -5,8 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.R
-import com.hero.recipespace.data.NoticeData
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityNoticeListBinding
 import com.hero.recipespace.listener.OnCompleteListener

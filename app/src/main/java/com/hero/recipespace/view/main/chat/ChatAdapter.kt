@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.hero.recipespace.R
-import com.hero.recipespace.data.ChatData
-import com.hero.recipespace.data.MessageData
+import com.hero.recipespace.data.chat.ChatData
+import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.databinding.ItemChatLeftBinding
 import com.hero.recipespace.databinding.ItemChatRightBinding
 import com.hero.recipespace.view.BaseAdapter
