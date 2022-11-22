@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.user
+package com.hero.recipespace.database.user.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.user.UserData

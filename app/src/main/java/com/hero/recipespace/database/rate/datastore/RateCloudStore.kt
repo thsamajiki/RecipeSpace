@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.rate
+package com.hero.recipespace.database.rate.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.rate.RateData

@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.message
+package com.hero.recipespace.database.message.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.message.MessageData

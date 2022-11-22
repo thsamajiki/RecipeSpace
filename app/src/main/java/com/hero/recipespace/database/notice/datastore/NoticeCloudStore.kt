@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.notice
+package com.hero.recipespace.database.notice.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.notice.NoticeData

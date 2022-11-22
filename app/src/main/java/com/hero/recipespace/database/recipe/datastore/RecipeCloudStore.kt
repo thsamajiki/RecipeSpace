@@ -1,4 +1,4 @@
-package com.hero.recipespace.database.recipe
+package com.hero.recipespace.database.recipe.datastore
 
 import android.content.Context
 import com.hero.recipespace.data.recipe.RecipeData

@@ -10,14 +10,17 @@ interface ChatDao {
     fun getAllChats() : LiveData<List<ChatData>>
 
     @Query("SELECT * FROM chat_db WHERE id = :key limit 1")
-    suspend fun getMusicFileFromKey(key: String?): ChatData?
+    suspend fun getChatFromKey(key: String?): ChatData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMusic(chatData: ChatData)
+    fun insertChat(chatData: ChatData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(chatDataList: List<ChatData>)
 
+    @Update
+    fun updateChat(chatData: ChatData)
+
     @Delete
-    fun deleteMusic(chatData: ChatData)
+    fun deleteChat(chatData: ChatData)
 }
