@@ -8,7 +8,7 @@ import com.hero.recipespace.data.recipe.RecipeData
 @Dao
 interface RecipeDao {
     @Query("SELECT * FROM recipe_db ORDER BY key ASC")
-    fun getAllRecipes() : LiveData<List<RecipeData>>
+    fun getAllRecipes() : LiveData<List<RecipeData>> //
 
     @Query("SELECT * FROM recipe_db WHERE key = :key limit 1")
     suspend fun getRecipeFromKey(key: String?): RecipeData?
