@@ -44,7 +44,7 @@ class FirebaseAuthentication {
     fun login(context: Context, email: String, pwd: String?) {
         val response: Response<Void> = Response()
         response.setType(Type.AUTH)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email!!, pwd!!)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pwd!!)
             .addOnSuccessListener {
                 MyInfoUtil.getInstance().putEmail(context, email)
                 MyInfoUtil.getInstance().putPwd(context, pwd)

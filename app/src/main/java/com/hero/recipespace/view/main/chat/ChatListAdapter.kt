@@ -25,16 +25,16 @@ class ChatListAdapter(
 
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
         val chatData: ChatData = chatDataList[position]
-        val otherUserNickname = getOtherUserNickname(chatData.getUserNicknames(), myUserKey)
+        val otherUserNickname = getOtherUserNickname(chatData.userNames, myUserKey)
         val otherUserProfile = getOtherUserProfile(chatData.getUserProfiles(), myUserKey)
-        holder.tvUserNickname.text = otherUserNickname
+        holder.binding.tvUserName.text = otherUserNickname
         Collections.sort(chatDataList)
         if (TextUtils.isEmpty(otherUserProfile)) {
-            requestManager.load(R.drawable.ic_default_user_profile).into(holder.ivProfile)
+            requestManager.load(R.drawable.ic_default_user_profile).into(holder.binding.ivUserProfile)
         } else {
-            requestManager!!.load(otherUserProfile).into(holder.ivProfile)
+            requestManager.load(otherUserProfile).into(holder.binding.ivUserProfile)
         }
-        holder.tvChat.setText(chatData.getLastMessage().getMessage())
+        holder.binding.tvChatContent.setText(chatData.getLastMessage().getMessage())
     }
 
     private fun getOtherUserNickname(
@@ -72,7 +72,7 @@ class ChatListAdapter(
     }
 
     class ChatListViewHolder(
-        private val binding: ItemChatListBinding,
+        val binding: ItemChatListBinding,
         private val onClick: (ChatData) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 

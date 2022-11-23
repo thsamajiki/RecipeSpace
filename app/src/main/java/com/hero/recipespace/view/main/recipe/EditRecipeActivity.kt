@@ -109,8 +109,8 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
             photoPath = RealPathUtil.getRealPath(this, data.data)
             Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-            if (editContent!!.text.toString().isNotEmpty()) {
-                btnComplete!!.isEnabled = true
+            if (binding.editContent.text.toString().isNotEmpty()) {
+                binding.btnComplete.isEnabled = true
             }
         }
     }
@@ -137,7 +137,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
             val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
             val recipeData = RecipeData()
             recipeData.photoUrl = downloadUrl
-            recipeData.desc = editContent!!.text.toString()
+            recipeData.desc = binding.editContent.text.toString()
             recipeData.postDate = Timestamp.now()
             recipeData.rate = 0
             recipeData.userName = userName

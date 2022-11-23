@@ -65,12 +65,12 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     private fun setUserData() {
         profileUrl = MyInfoUtil.getInstance().getProfileImageUrl(this)
         if (TextUtils.isEmpty(profileUrl)) {
-            Glide.with(this).load(R.drawable.ic_user).into(ivProfile!!)
+            Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
         } else {
-            Glide.with(this).load(profileUrl).into(ivProfile!!)
+            Glide.with(this).load(profileUrl).into(binding.ivUserProfile)
         }
         userName = MyInfoUtil.getInstance().getUserName(this)
-        editUserNickname!!.setText(userName)
+        binding.editUserName.setText(userName)
     }
 
     override fun onClick(v: View) {
@@ -139,7 +139,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
-    private fun updateUserData(newProfileImageUrl: String?) {
+    private fun updateUserData(newProfileImageUrl: String) {
         val editData = HashMap<String, Any>()
         if (!TextUtils.isEmpty(newProfileImageUrl)) {
             editData[MyInfoUtil.EXTRA_PROFILE_IMAGE_URL] = newProfileImageUrl

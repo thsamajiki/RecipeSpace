@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
@@ -30,14 +31,10 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     OnFileUploadListener, OnCompleteListener<RecipeData> {
 
     private lateinit var binding: ActivityPostBinding
-    private var btnBack: ImageView? = null
-    private  var ivRecipePhoto: ImageView? = null
-    private var editContent: EditText? = null
-    private var btnComplete: TextView? = null
-    private var btnPhoto: LinearLayout? = null
     private var photoPath: String? = null
     private val PERMISSION_REQ_CODE = 1010
     private val PHOTO_REQ_CODE = 2020
+    private lateinit var photoResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,7 +107,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
         if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
             photoPath = RealPathUtil.getRealPath(this, data.data)
             Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-            btnPhoto!!.visibility = View.GONE
+            binding.btnPhoto.visibility = View.GONE
             if (binding.editContent.text.toString().isNotEmpty()) {
                 binding.btnComplete.isEnabled = true
             }
@@ -122,7 +119,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.btnComplete.isEnabled = s.length > 0 && !TextUtils.isEmpty(photoPath)
+        binding.btnComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun uploadImage() {
@@ -139,7 +136,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
             val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
             val recipeData = RecipeData()
             recipeData.photoUrl = downloadUrl
-            recipeData.desc = editContent!!.text.toString()
+            recipeData.desc = binding.editContent.text.toString()
             recipeData.postDate = Timestamp.now()
             recipeData.rate = 0
             recipeData.userName = userName
