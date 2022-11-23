@@ -8,9 +8,9 @@ interface RateRepository {
 
     fun getRateList(onCompleteListener: OnCompleteListener<List<RateData>>)
 
-    fun addRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>)
+    fun addRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>)
 
-    fun modifyRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>)
+    fun modifyRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>)
 
-    fun deleteRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>)
+    fun deleteRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>)
 }

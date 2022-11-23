@@ -1,16 +1,16 @@
 package com.hero.recipespace.domain.recipe.repository
 
-import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.listener.OnCompleteListener
 
 interface RecipeRepository {
-    fun getRecipe(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    fun getRecipe(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeEntity>)
 
-    fun getRecipeList(onCompleteListener: OnCompleteListener<List<RecipeData>>)
+    fun getRecipeList(onCompleteListener: OnCompleteListener<List<RecipeEntity>>)
 
-    fun addRecipe(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    fun addRecipe(recipeEntity: RecipeEntity, onCompleteListener: OnCompleteListener<RecipeEntity>)
 
-    fun modifyRecipe(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    fun modifyRecipe(recipeEntity: RecipeEntity, onCompleteListener: OnCompleteListener<RecipeEntity>)
 
-    fun deleteRecipe(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    fun deleteRecipe(recipeEntity: RecipeEntity, onCompleteListener: OnCompleteListener<RecipeEntity>)
 }

@@ -13,15 +13,15 @@ class RateRepositoryImpl : RateRepository {
         TODO("Not yet implemented")
     }
 
-    override fun addRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override fun addRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 
-    override fun modifyRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override fun modifyRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override fun deleteRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 }

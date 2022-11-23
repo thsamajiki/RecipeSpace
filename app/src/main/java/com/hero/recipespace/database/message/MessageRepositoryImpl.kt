@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.message
 
+import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
 import com.hero.recipespace.listener.OnCompleteListener
@@ -20,23 +21,24 @@ class MessageRepositoryImpl : MessageRepository {
     }
 
     override fun addMessage(
-        messageKey: String,
+        messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
         TODO("Not yet implemented")
     }
 
     override fun modifyMessage(
-        messageKey: String,
+        messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
         TODO("Not yet implemented")
     }
 
     override fun deleteMessage(
-        messageKey: String,
+        messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
         TODO("Not yet implemented")
     }
+
 }
