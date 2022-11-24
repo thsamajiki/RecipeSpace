@@ -6,7 +6,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 interface RecipeLocalDataSource {
     fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
 
-    fun getDataList(recipeKey: String, onCompleteListener: OnCompleteListener<List<RecipeData>>)
+    fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>)
 
     fun clear()
 

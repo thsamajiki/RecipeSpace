@@ -3,14 +3,14 @@ package com.hero.recipespace.data.recipe.local
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
 
-class RecipeLocalDataSourceImpl : RecipeLocalDataSource {
+class RecipeLocalDataSourceImpl(
+    private val recipeLocal
+) : RecipeLocalDataSource {
     override fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) {
         TODO("Not yet implemented")
     }
 
-    override fun getDataList(
-        recipeKey: String,
-        onCompleteListener: OnCompleteListener<List<RecipeData>>
+    override fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>
     ) {
         TODO("Not yet implemented")
     }

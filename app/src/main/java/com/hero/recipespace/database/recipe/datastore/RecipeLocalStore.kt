@@ -1,31 +1,30 @@
 package com.hero.recipespace.database.recipe.datastore
 
 import android.content.Context
-import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.CloudStore
+import com.hero.recipespace.database.LocalStore
+import com.hero.recipespace.database.recipe.dao.RecipeDao
 import com.hero.recipespace.listener.OnCompleteListener
 
-class RecipeCloudStore(
+class RecipeLocalStore(
     private val context: Context,
-    private val recipeLocalStore: RecipeLocalStore,
-    private val recipeCacheStore: RecipeCacheStore
-) : CloudStore<RecipeData>(context, FirebaseFirestore.getInstance()) {
+    private val recipeDao: RecipeDao
+) : LocalStore<RecipeData>(context) {
 
     companion object {
-        private lateinit var instance : RecipeCloudStore
+        private lateinit var instance : RecipeLocalStore
 
-        fun getInstance(context: Context) : RecipeCloudStore {
+        fun getInstance(context: Context) : RecipeLocalStore {
             return instance ?: synchronized(this) {
-                instance ?: RecipeCloudStore(context, recipeLocalStore, recipeCacheStore).also {
+                instance ?: RecipeLocalStore(context).also {
                     instance = it
                 }
             }
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<RecipeData>) {
-        TODO("Not yet implemented")
+    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<RecipeData>, ) {
+        if (params.leng)
     }
 
     override fun getDataList(
