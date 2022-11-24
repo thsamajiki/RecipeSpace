@@ -8,7 +8,7 @@ abstract class LocalStore<T>(context: Context) : DataStore<T> {
 
     private val dataList: List<T> = ArrayList()
 
-    fun getDataList(param: OnCompleteListener<List<RecipeData>>): List<T> {
+    fun getDataList(param: OnCompleteListener<List<T>>): List<T> {
         return dataList
     }
 
