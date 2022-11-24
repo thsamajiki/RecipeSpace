@@ -6,7 +6,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 interface ChatRemoteDataSource {
     fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>)
 
-    fun getDataList(chatKey: String, onCompleteListener: OnCompleteListener<List<ChatData>>)
+    fun getDataList(userKey: String, onCompleteListener: OnCompleteListener<List<ChatData>>)
 
     fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>)
 

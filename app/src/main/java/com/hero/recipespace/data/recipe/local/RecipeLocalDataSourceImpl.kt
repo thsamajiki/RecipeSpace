@@ -1,10 +1,13 @@
 package com.hero.recipespace.data.recipe.local
 
 import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.database.recipe.datastore.RecipeCacheStore
+import com.hero.recipespace.database.recipe.datastore.RecipeLocalStore
 import com.hero.recipespace.listener.OnCompleteListener
 
 class RecipeLocalDataSourceImpl(
-    private val recipeLocal
+    private val recipeLocalStore: RecipeLocalStore,
+    private val recipeCacheStore: RecipeCacheStore
 ) : RecipeLocalDataSource {
     override fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) {
         TODO("Not yet implemented")

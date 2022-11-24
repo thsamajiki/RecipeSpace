@@ -7,8 +7,7 @@ import com.hero.recipespace.database.recipe.dao.RecipeDao
 import com.hero.recipespace.listener.OnCompleteListener
 
 class RecipeLocalStore(
-    private val context: Context,
-    private val recipeDao: RecipeDao
+    private val context: Context
 ) : LocalStore<RecipeData>(context) {
 
     companion object {
@@ -23,12 +22,14 @@ class RecipeLocalStore(
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<RecipeData>, ) {
-        if (params.leng)
+    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
+        if (params.length) {
+
+        }
     }
 
     override fun getDataList(
-        vararg params: Any?,
+        vararg params: Any,
         onCompleteListener: OnCompleteListener<List<RecipeData>>,
     ) {
         TODO("Not yet implemented")
