@@ -1,12 +1,14 @@
 package com.hero.recipespace.database
 
 import android.content.Context
+import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.listener.OnCompleteListener
 
 abstract class LocalStore<T>(context: Context) : DataStore<T> {
 
     private val dataList: List<T> = ArrayList()
 
-    fun getDataList(): List<T> {
+    fun getDataList(param: OnCompleteListener<List<RecipeData>>): List<T> {
         return dataList
     }
 

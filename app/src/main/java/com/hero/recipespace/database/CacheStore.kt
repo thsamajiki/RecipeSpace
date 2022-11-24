@@ -1,9 +1,12 @@
 package com.hero.recipespace.database
 
+import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.listener.OnCompleteListener
+
 abstract class CacheStore<T> : DataStore<T> {
     private var dataList: MutableList<T> = ArrayList<T>()
 
-    fun getDataList(): List<T> {
+    fun getDataList(param: OnCompleteListener<List<RecipeData>>): List<T> {
         return dataList
     }
 
