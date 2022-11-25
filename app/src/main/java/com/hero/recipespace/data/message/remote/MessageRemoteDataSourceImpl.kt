@@ -1,38 +1,42 @@
 package com.hero.recipespace.data.message.remote
 
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.database.message.datastore.MessageCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 
-class MessageRemoteDataSourceImpl : MessageRemoteDataSource {
+class MessageRemoteDataSourceImpl(
+    private val messageCloudStore: MessageCloudStore
+) : MessageRemoteDataSource {
+
     override fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>) {
-        TODO("Not yet implemented")
+        messageCloudStore.getData(messageKey, onCompleteListener)
     }
 
     override fun getDataList(
-        messageKey: String,
-        onCompleteListener: OnCompleteListener<List<MessageData>>,
+        userKey: String,
+        onCompleteListener: OnCompleteListener<List<MessageData>>
     ) {
-        TODO("Not yet implemented")
+        messageCloudStore.getDataList(userKey, onCompleteListener)
     }
 
     override fun add(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageData>,
     ) {
-        TODO("Not yet implemented")
+        messageCloudStore.add(messageData, onCompleteListener)
     }
 
     override fun update(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageData>,
     ) {
-        TODO("Not yet implemented")
+        messageCloudStore.update(messageData, onCompleteListener)
     }
 
     override fun remove(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageData>,
     ) {
-        TODO("Not yet implemented")
+        messageCloudStore.remove(messageData, onCompleteListener)
     }
 }

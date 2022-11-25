@@ -6,7 +6,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 interface MessageLocalDataSource {
     fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>)
 
-    fun getDataList(messageKey: String, onCompleteListener: OnCompleteListener<List<MessageData>>)
+    fun getDataList(userKey: String, onCompleteListener: OnCompleteListener<List<MessageData>>)
 
     fun clear()
 

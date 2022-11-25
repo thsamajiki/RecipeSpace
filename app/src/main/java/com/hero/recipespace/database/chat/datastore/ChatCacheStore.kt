@@ -24,8 +24,7 @@ class ChatCacheStore: CacheStore<ChatData>() {
     override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
         val chatKey: String = params[0].toString()
 
-        for (chatData in getDataList(object :
-            OnCompleteListener<List<RecipeData>> {
+        for (chatData in getDataList(object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
@@ -49,48 +48,11 @@ class ChatCacheStore: CacheStore<ChatData>() {
         }
     }
 
-    override fun getDataList(
-        vararg params: Any,
-        onCompleteListener: OnCompleteListener<List<ChatData>>,
-    ) {
-        if (getDataList(object :
-            OnCompleteListener<List<RecipeData>> {
-                override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
-                    if (isSuccess) {
-                        onCompleteListener.onComplete(true, response)
-                    } else {
-                        recipeLocalStore.getDataList(object :
-                            OnCompleteListener<List<RecipeData>> {
-                            override fun onComplete(
-                                isSuccess: Boolean,
-                                response: Response<List<RecipeData>>
-                            ) {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    }
-                }
-            }).isEmpty()) {
+    override fun getDataList(vararg params: Any, onCompleteListener: OnCompleteListener<List<ChatData>>) {
+        if (getDataList().isEmpty()) {
             onCompleteListener.onComplete(true, null)
         } else {
-            onCompleteListener.onComplete(false, getDataList(object :
-                OnCompleteListener<List<RecipeData>> {
-                override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
-                    if (isSuccess) {
-                        onCompleteListener.onComplete(true, response)
-                    } else {
-                        recipeLocalStore.getDataList(object :
-                            OnCompleteListener<List<RecipeData>> {
-                            override fun onComplete(
-                                isSuccess: Boolean,
-                                response: Response<List<RecipeData>>
-                            ) {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    }
-                }
-            }))
+            onCompleteListener.onComplete(false, getDataList())
         }
     }
 

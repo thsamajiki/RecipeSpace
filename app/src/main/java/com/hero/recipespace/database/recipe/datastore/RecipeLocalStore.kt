@@ -3,7 +3,6 @@ package com.hero.recipespace.database.recipe.datastore
 import android.content.Context
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.LocalStore
-import com.hero.recipespace.database.recipe.dao.RecipeDao
 import com.hero.recipespace.listener.OnCompleteListener
 
 class RecipeLocalStore(
@@ -23,8 +22,9 @@ class RecipeLocalStore(
     }
 
     override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
-        if (params.length) {
-
+        if (params.isEmpty()) {
+            onCompleteListener.onComplete(false, null)
+            return
         }
     }
 

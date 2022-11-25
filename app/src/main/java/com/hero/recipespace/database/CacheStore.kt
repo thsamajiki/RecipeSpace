@@ -6,7 +6,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 abstract class CacheStore<T> : DataStore<T> {
     private var dataList: MutableList<T> = ArrayList<T>()
 
-    fun getDataList(param: OnCompleteListener<List<T>>): List<T> {
+    fun getDataList(): List<T> {
         return dataList
     }
 

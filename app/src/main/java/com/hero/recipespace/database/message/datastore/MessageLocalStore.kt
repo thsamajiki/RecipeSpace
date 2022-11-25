@@ -1,33 +1,35 @@
 package com.hero.recipespace.database.message.datastore
 
 import android.content.Context
-import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.database.CloudStore
+import com.hero.recipespace.database.LocalStore
 import com.hero.recipespace.listener.OnCompleteListener
 
-class MessageCloudStore(
+class MessageLocalStore(
     private val context: Context
-) : CloudStore<MessageData>(context, FirebaseFirestore.getInstance()) {
+) : LocalStore<MessageData>(context) {
 
     companion object {
-        private lateinit var instance : MessageCloudStore
+        private lateinit var instance : MessageLocalStore
 
-        fun getInstance(context: Context) : MessageCloudStore {
+        fun getInstance(context: Context) : MessageLocalStore {
             return instance ?: synchronized(this) {
-                instance ?: MessageCloudStore(context).also {
+                instance ?: MessageLocalStore(context).also {
                     instance = it
                 }
             }
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<MessageData>) {
-        TODO("Not yet implemented")
+    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<MessageData>) {
+        if (params.isEmpty()) {
+            onCompleteListener.onComplete(false, null)
+            return
+        }
     }
 
     override fun getDataList(
-        vararg params: Any?,
+        vararg params: Any,
         onCompleteListener: OnCompleteListener<List<MessageData>>,
     ) {
         TODO("Not yet implemented")

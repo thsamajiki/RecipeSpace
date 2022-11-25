@@ -7,9 +7,7 @@ import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 
 class ChatCloudStore(
-    private val context: Context,
-    private val chatLocalStore: ChatLocalStore,
-    private val chatCacheStore: ChatCacheStore
+    private val context: Context
 ) : CloudStore<ChatData>(context, FirebaseFirestore.getInstance()) {
 
     companion object {
@@ -17,7 +15,7 @@ class ChatCloudStore(
 
         fun getInstance(context: Context) : ChatCloudStore {
             return instance ?: synchronized(this) {
-                instance ?: ChatCloudStore(context, chatLocalStore, chatCacheStore).also {
+                instance ?: ChatCloudStore(context).also {
                     instance = it
                 }
             }
