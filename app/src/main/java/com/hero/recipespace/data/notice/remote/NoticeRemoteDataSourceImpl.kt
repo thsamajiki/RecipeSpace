@@ -1,35 +1,37 @@
 package com.hero.recipespace.data.notice.remote
 
 import com.hero.recipespace.data.notice.NoticeData
+import com.hero.recipespace.database.notice.datastore.NoticeCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 
-class NoticeRemoteDataSourceImpl : NoticeRemoteDataSource {
+class NoticeRemoteDataSourceImpl(
+    private val noticeCloudStore: NoticeCloudStore
+) : NoticeRemoteDataSource {
     override fun getData(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeData>) {
-        TODO("Not yet implemented")
+        noticeCloudStore.getData(noticeKey, onCompleteListener)
     }
 
     override fun getDataList(
-        noticeKey: String,
-        onCompleteListener: OnCompleteListener<List<NoticeData>>,
+        onCompleteListener: OnCompleteListener<List<NoticeData>>
     ) {
-        TODO("Not yet implemented")
+        noticeCloudStore.getDataList(onCompleteListener)
     }
 
     override fun add(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
-        TODO("Not yet implemented")
+        noticeCloudStore.add(noticeData, onCompleteListener)
     }
 
     override fun update(
         noticeData: NoticeData,
         onCompleteListener: OnCompleteListener<NoticeData>,
     ) {
-        TODO("Not yet implemented")
+        noticeCloudStore.update(noticeData, onCompleteListener)
     }
 
     override fun remove(
         noticeData: NoticeData,
         onCompleteListener: OnCompleteListener<NoticeData>,
     ) {
-        TODO("Not yet implemented")
+        noticeCloudStore.remove(noticeData, onCompleteListener)
     }
 }

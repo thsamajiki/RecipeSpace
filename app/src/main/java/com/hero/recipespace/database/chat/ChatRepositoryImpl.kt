@@ -13,6 +13,7 @@ class ChatRepositoryImpl(
     private val chatRemoteDataSource: ChatRemoteDataSource,
     private val chatLocalDataSource: ChatLocalDataSource
 ) : ChatRepository {
+
     override fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) {
         chatLocalDataSource.getData(chatKey, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {

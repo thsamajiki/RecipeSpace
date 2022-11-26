@@ -1,31 +1,33 @@
 package com.hero.recipespace.database.notice.datastore
 
 import android.content.Context
+import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 
-class NoticeCloudStore : CloudStore<NoticeData>() {
+class NoticeCloudStore(
+    private val context: Context
+) : CloudStore<NoticeData>(context, FirebaseFirestore.getInstance()) {
 
     companion object {
         private lateinit var instance : NoticeCloudStore
 
         fun getInstance(context: Context) : NoticeCloudStore {
             return instance ?: synchronized(this) {
-                instance ?: NoticeCloudStore().also {
+                instance ?: NoticeCloudStore(context).also {
                     instance = it
                 }
             }
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<NoticeData>) {
         TODO("Not yet implemented")
     }
 
     override fun getDataList(
-        vararg params: Any?,
-        onCompleteListener: OnCompleteListener<List<NoticeData>>,
+        onCompleteListener: OnCompleteListener<List<NoticeData>>
     ) {
         TODO("Not yet implemented")
     }
