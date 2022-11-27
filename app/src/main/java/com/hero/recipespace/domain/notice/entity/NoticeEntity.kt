@@ -8,8 +8,7 @@ data class NoticeEntity(
     val key: String? = null,
     val noticeTitle: String? = null,
     val noticeDesc: String? = null,
-    val noticeDate: String? = null,
-    val noticeList: List<String>? = null
+    val noticeDate: String? = null
 ) : Parcelable {
 
 }
