@@ -21,7 +21,7 @@ class MessageLocalStore(
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<MessageData>) {
         if (params.isEmpty()) {
             onCompleteListener.onComplete(false, null)
             return

@@ -6,7 +6,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 interface RateLocalDataSource {
     fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>)
 
-    fun getDataList(rateKey: String, onCompleteListener: OnCompleteListener<List<RateData>>)
+    fun getDataList(onCompleteListener: OnCompleteListener<List<RateData>>)
 
     fun clear()
 

@@ -22,7 +22,7 @@ class ChatCloudStore(
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
         TODO("Not yet implemented")
     }
 

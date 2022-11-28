@@ -14,7 +14,7 @@ class ChatRepositoryImpl(
     private val chatLocalDataSource: ChatLocalDataSource
 ) : ChatRepository {
 
-    override fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) {
+    override suspend fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) {
         chatLocalDataSource.getData(chatKey, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -60,7 +60,7 @@ class ChatRepositoryImpl(
         })
     }
 
-    override fun addChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>) {
+    override suspend fun addChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>) {
         chatRemoteDataSource.add(chatData, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -80,7 +80,7 @@ class ChatRepositoryImpl(
         })
     }
 
-    override fun modifyChat(
+    override suspend fun modifyChat(
         chatEntity: ChatEntity,
         onCompleteListener: OnCompleteListener<ChatEntity>,
     ) {
@@ -103,7 +103,7 @@ class ChatRepositoryImpl(
         })
     }
 
-    override fun deleteChat(
+    override suspend fun deleteChat(
         chatEntity: ChatEntity,
         onCompleteListener: OnCompleteListener<ChatEntity>,
     ) {

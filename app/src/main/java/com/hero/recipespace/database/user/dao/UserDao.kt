@@ -2,15 +2,14 @@ package com.hero.recipespace.database.user.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user_db ORDER BY key ASC")
+    @Query("SELECT * FROM user_db ORDER BY userKey ASC")
     fun getAllUsers() : LiveData<List<UserData>>
 
-    @Query("SELECT * FROM user_db WHERE key = :userKey limit 1")
+    @Query("SELECT * FROM user_db WHERE userKey = :key limit 1")
     suspend fun getUserFromKey(key: String?): UserData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

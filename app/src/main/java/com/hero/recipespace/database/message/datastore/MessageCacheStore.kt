@@ -20,7 +20,7 @@ class MessageCacheStore: CacheStore<MessageData>() {
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<MessageData>) {
         val chatKey: String = params[0].toString()
 
         for (messageData in getDataList(object : OnCompleteListener<MessageData> {

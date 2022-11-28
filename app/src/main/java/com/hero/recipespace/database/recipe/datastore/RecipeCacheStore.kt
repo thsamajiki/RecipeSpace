@@ -20,7 +20,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
         val recipeKey: String = params[0].toString()
 
         for (recipeData in getDataList(object :

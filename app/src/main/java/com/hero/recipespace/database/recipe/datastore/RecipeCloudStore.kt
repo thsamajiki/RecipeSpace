@@ -24,7 +24,7 @@ class RecipeCloudStore(
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
         TODO("Not yet implemented")
     }
 

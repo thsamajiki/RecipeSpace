@@ -1,29 +1,29 @@
 package com.hero.recipespace.data.rate.remote
 
 import com.hero.recipespace.data.rate.RateData
+import com.hero.recipespace.database.rate.datastore.RateCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 
-class RateRemoteDataSourceImpl : RateRemoteDataSource {
+class RateRemoteDataSourceImpl(
+    private val rateCloudStore: RateCloudStore
+) : RateRemoteDataSource {
     override fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateCloudStore.getData(rateKey, onCompleteListener)
     }
 
-    override fun getDataList(
-        rateKey: String,
-        onCompleteListener: OnCompleteListener<List<RateData>>,
-    ) {
-        TODO("Not yet implemented")
+    override fun getDataList(onCompleteListener: OnCompleteListener<List<RateData>>) {
+        rateCloudStore.getDataList(onCompleteListener)
     }
 
     override fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateCloudStore.add(rateData, onCompleteListener)
     }
 
     override fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateCloudStore.update(rateData, onCompleteListener)
     }
 
     override fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateCloudStore.remove(rateData, onCompleteListener)
     }
 }

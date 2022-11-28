@@ -1,10 +1,12 @@
 package com.hero.recipespace.data.recipe
 
 import android.os.Parcelable
+import androidx.room.Entity
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "recipe_db")
 data class RecipeData(
     val key: String? = null,
     val profileImageUrl: String? = null,

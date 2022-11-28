@@ -11,7 +11,7 @@ class ChatLocalDataSourceImpl(
     private val chatCacheStore: ChatCacheStore
 ) : ChatLocalDataSource {
 
-    override fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) {
         chatCacheStore.getData(chatKey, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -58,7 +58,7 @@ class ChatLocalDataSourceImpl(
         chatCacheStore.clear()
     }
 
-    override fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatLocalStore.add(chatData, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -78,7 +78,7 @@ class ChatLocalDataSourceImpl(
         })
     }
 
-    override fun update(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun update(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatLocalStore.update(chatData, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -98,7 +98,7 @@ class ChatLocalDataSourceImpl(
         })
     }
 
-    override fun remove(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun remove(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatLocalStore.remove(chatData, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {

@@ -22,7 +22,7 @@ class NoticeCloudStore(
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<NoticeData>) {
         TODO("Not yet implemented")
     }
 

@@ -1,10 +1,12 @@
 package com.hero.recipespace.data.rate
 
 import android.os.Parcelable
+import androidx.room.Entity
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Entity(tableName = "rate_db")
 data class RateData(
     val key: String? = null,
     val userKey: String? = null,

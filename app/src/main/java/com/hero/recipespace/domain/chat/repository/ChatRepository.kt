@@ -4,13 +4,13 @@ import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.listener.OnCompleteListener
 
 interface ChatRepository {
-    fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>)
 
     fun getChatList(userKey: String, onCompleteListener: OnCompleteListener<List<ChatEntity>>)
 
-    fun addChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun addChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
 
-    fun modifyChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun modifyChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
 
-    fun deleteChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun deleteChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
 }

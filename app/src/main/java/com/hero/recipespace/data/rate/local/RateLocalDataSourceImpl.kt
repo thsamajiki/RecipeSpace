@@ -1,33 +1,122 @@
 package com.hero.recipespace.data.rate.local
 
 import com.hero.recipespace.data.rate.RateData
+import com.hero.recipespace.database.rate.datastore.RateCacheStore
+import com.hero.recipespace.database.rate.datastore.RateLocalStore
 import com.hero.recipespace.listener.OnCompleteListener
+import com.hero.recipespace.listener.Response
 
-class RateLocalDataSourceImpl : RateLocalDataSource {
+class RateLocalDataSourceImpl(
+    private val rateLocalStore: RateLocalStore,
+    private val rateCacheStore: RateCacheStore
+) : RateLocalDataSource {
+
     override fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateCacheStore.getData(rateKey, object : OnCompleteListener<RateData> {
+            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                if (isSuccess) {
+                    onCompleteListener.onComplete(true, response)
+                } else {
+                    rateLocalStore.getData(rateKey, object : OnCompleteListener<RateData> {
+                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                            if (isSuccess) {
+                                onCompleteListener.onComplete(true, response)
+                            } else {
+                                onCompleteListener.onComplete(false, null)
+                            }
+                        }
+                    })
+                }
+            }
+        })
     }
 
     override fun getDataList(
-        rateKey: String,
-        onCompleteListener: OnCompleteListener<List<RateData>>,
+        onCompleteListener: OnCompleteListener<List<RateData>>
     ) {
-        TODO("Not yet implemented")
+        rateCacheStore.getDataList(object : OnCompleteListener<List<RateData>> {
+            override fun onComplete(isSuccess: Boolean, response: Response<List<RateData>>?) {
+                if (isSuccess) {
+                    onCompleteListener.onComplete(true, response)
+                } else {
+                    rateLocalStore.getDataList(object : OnCompleteListener<List<RateData>> {
+                        override fun onComplete(
+                            isSuccess: Boolean,
+                            response: Response<List<RateData>>?
+                        ) {
+                            if (isSuccess) {
+                                onCompleteListener.onComplete(true, response)
+                            } else {
+                                onCompleteListener.onComplete(false, null)
+                            }
+                        }
+                    })
+                }
+            }
+        })
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+        rateCacheStore.clear()
     }
 
     override fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateLocalStore.add(rateData, object : OnCompleteListener<RateData> {
+            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                if (isSuccess) {
+                    rateCacheStore.add(rateData, object : OnCompleteListener<RateData> {
+                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                            if (isSuccess) {
+                                onCompleteListener.onComplete(true, response)
+                            } else {
+                                onCompleteListener.onComplete(false, null)
+                            }
+                        }
+                    })
+                } else {
+                    onCompleteListener.onComplete(false, null)
+                }
+            }
+        })
     }
 
     override fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateLocalStore.update(rateData, object : OnCompleteListener<RateData> {
+            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                if (isSuccess) {
+                    rateCacheStore.update(rateData, object : OnCompleteListener<RateData> {
+                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                            if (isSuccess) {
+                                onCompleteListener.onComplete(true, response)
+                            } else {
+                                onCompleteListener.onComplete(false, null)
+                            }
+                        }
+                    })
+                } else {
+                    onCompleteListener.onComplete(false, null)
+                }
+            }
+        })
     }
 
     override fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateLocalStore.remove(rateData, object : OnCompleteListener<RateData> {
+            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                if (isSuccess) {
+                    rateCacheStore.remove(rateData, object : OnCompleteListener<RateData> {
+                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
+                            if (isSuccess) {
+                                onCompleteListener.onComplete(true, response)
+                            } else {
+                                onCompleteListener.onComplete(false, null)
+                            }
+                        }
+                    })
+                } else {
+                    onCompleteListener.onComplete(false, null)
+                }
+            }
+        })
     }
 }

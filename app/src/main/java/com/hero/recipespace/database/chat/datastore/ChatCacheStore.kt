@@ -21,10 +21,10 @@ class ChatCacheStore: CacheStore<ChatData>() {
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
         val chatKey: String = params[0].toString()
 
-        for (chatData in getDataList(object : OnCompleteListener<List<RecipeData>> {
+        for (chatData in object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
@@ -40,7 +40,7 @@ class ChatCacheStore: CacheStore<ChatData>() {
                     })
                 }
             }
-        })) {
+        }) {
             if (chatData.key == chatKey) {
                 onCompleteListener.onComplete(true, chatData)
                 return

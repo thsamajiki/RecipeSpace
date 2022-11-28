@@ -21,7 +21,7 @@ class RecipeLocalStore(
         }
     }
 
-    override fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
         if (params.isEmpty()) {
             onCompleteListener.onComplete(false, null)
             return
