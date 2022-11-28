@@ -2,7 +2,6 @@ package com.hero.recipespace.database.rate.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.rate.RateData
 
 @Dao
@@ -14,7 +13,7 @@ interface RateDao {
     suspend fun getRateFromKey(key: String?): RateData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRate(messageData: MessageData)
+    fun insertRate(rateData: RateData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(rateDataList: List<RateData>)

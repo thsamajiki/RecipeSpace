@@ -7,7 +7,7 @@ import com.hero.recipespace.data.message.MessageData
 @Dao
 interface MessageDao {
     @Query("SELECT * FROM message_db ORDER BY userKey ASC")
-    fun getAllChats() : LiveData<List<MessageData>>
+    fun getAllMessages() : LiveData<List<MessageData>>
 
     @Query("SELECT * FROM message_db WHERE userKey = :key limit 1")
     suspend fun getMessageFromKey(key: String?): MessageData?
@@ -19,7 +19,7 @@ interface MessageDao {
     suspend fun insertAll(messageDataList: List<MessageData>)
 
     @Update
-    fun updateChat(messageData: MessageData)
+    fun updateMessage(messageData: MessageData)
 
     @Delete
     fun deleteMessage(messageData: MessageData)

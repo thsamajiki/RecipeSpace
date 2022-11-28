@@ -5,11 +5,11 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFailedListener
 
 interface UserRepository {
-    fun getUser(userKey: String, onCompleteListener: OnCompleteListener<UserEntity>)
+    suspend fun getUser(userKey: String, onCompleteListener: OnCompleteListener<UserEntity>)
 
     fun getAccountProfile(): UserEntity
 
-    fun addUser(
+    suspend fun addUser(
         userName: String,
         email: String,
         pwd: String,
@@ -17,9 +17,9 @@ interface UserRepository {
         onFailedListener: OnFailedListener
     )
 
-    fun updateUser(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>)
+    suspend fun updateUser(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>)
 
-    fun deleteUser(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>)
+    suspend fun deleteUser(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>)
 
     fun signOut()
 }

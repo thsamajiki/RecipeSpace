@@ -4,15 +4,15 @@ import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
 
 interface RecipeLocalDataSource {
-    fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
 
     fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>)
 
     fun clear()
 
-    fun add(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
+    suspend fun add(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
 
-    fun update(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
+    suspend fun update(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
 
-    fun remove(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
+    suspend fun remove(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>)
 }

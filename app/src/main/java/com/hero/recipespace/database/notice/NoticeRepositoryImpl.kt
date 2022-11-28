@@ -10,7 +10,7 @@ import com.hero.recipespace.listener.Response
 class NoticeRepositoryImpl(
     private val noticeRemoteDataSource: NoticeRemoteDataSource
 ) : NoticeRepository {
-    override fun getNotice(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeEntity>) {
+    override suspend fun getNotice(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeEntity>) {
         noticeRemoteDataSource.getData(noticeKey, object : OnCompleteListener<NoticeData> {
             override fun onComplete(isSuccess: Boolean, response: Response<NoticeData>?) {
                 if (isSuccess) {

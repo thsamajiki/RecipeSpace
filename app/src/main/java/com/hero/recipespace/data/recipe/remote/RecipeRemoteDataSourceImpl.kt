@@ -7,7 +7,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 class RecipeRemoteDataSourceImpl(
     private val recipeCloudStore: RecipeCloudStore
 ) : RecipeRemoteDataSource {
-    override fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeCloudStore.getData(recipeKey, onCompleteListener)
     }
 
@@ -16,18 +16,18 @@ class RecipeRemoteDataSourceImpl(
         recipeCloudStore.getDataList(onCompleteListener)
     }
 
-    override fun add(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun add(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeCloudStore.add(recipeData, onCompleteListener)
     }
 
-    override fun update(
+    override suspend fun update(
         recipeData: RecipeData,
         onCompleteListener: OnCompleteListener<RecipeData>,
     ) {
         recipeCloudStore.update(recipeData, onCompleteListener)
     }
 
-    override fun remove(
+    override suspend fun remove(
         recipeData: RecipeData,
         onCompleteListener: OnCompleteListener<RecipeData>,
     ) {

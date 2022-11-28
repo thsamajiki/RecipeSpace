@@ -7,7 +7,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 class NoticeRemoteDataSourceImpl(
     private val noticeCloudStore: NoticeCloudStore
 ) : NoticeRemoteDataSource {
-    override fun getData(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun getData(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeData>) {
         noticeCloudStore.getData(noticeKey, onCompleteListener)
     }
 
@@ -17,20 +17,20 @@ class NoticeRemoteDataSourceImpl(
         noticeCloudStore.getDataList(onCompleteListener)
     }
 
-    override fun add(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun add(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
         noticeCloudStore.add(noticeData, onCompleteListener)
     }
 
-    override fun update(
+    override suspend fun update(
         noticeData: NoticeData,
-        onCompleteListener: OnCompleteListener<NoticeData>,
+        onCompleteListener: OnCompleteListener<NoticeData>
     ) {
         noticeCloudStore.update(noticeData, onCompleteListener)
     }
 
-    override fun remove(
+    override suspend fun remove(
         noticeData: NoticeData,
-        onCompleteListener: OnCompleteListener<NoticeData>,
+        onCompleteListener: OnCompleteListener<NoticeData>
     ) {
         noticeCloudStore.remove(noticeData, onCompleteListener)
     }

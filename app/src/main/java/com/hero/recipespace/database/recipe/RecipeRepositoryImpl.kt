@@ -14,7 +14,7 @@ class RecipeRepositoryImpl(
     private val recipeLocalDataSource: RecipeLocalDataSource,
 ) : RecipeRepository {
 
-    override fun getRecipe(
+    override suspend fun getRecipe(
         recipeKey: String,
         onCompleteListener: OnCompleteListener<RecipeEntity>
     ) {
@@ -57,7 +57,7 @@ class RecipeRepositoryImpl(
         })
     }
 
-    override fun addRecipe(
+    override suspend fun addRecipe(
         recipeEntity: RecipeEntity,
         onCompleteListener: OnCompleteListener<RecipeEntity>,
     ) {
@@ -82,7 +82,7 @@ class RecipeRepositoryImpl(
         })
     }
 
-    override fun modifyRecipe(
+    override suspend fun modifyRecipe(
         recipeEntity: RecipeEntity,
         onCompleteListener: OnCompleteListener<RecipeEntity>,
     ) {
@@ -105,7 +105,7 @@ class RecipeRepositoryImpl(
         })
     }
 
-    override fun deleteRecipe(
+    override suspend fun deleteRecipe(
         recipeEntity: RecipeEntity,
         onCompleteListener: OnCompleteListener<RecipeEntity>,
     ) {

@@ -7,7 +7,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 class ChatRemoteDataSourceImpl(
     private val chatCloudStore: ChatCloudStore
 ) : ChatRemoteDataSource {
-    override fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) {
         chatCloudStore.getData(chatKey, onCompleteListener)
     }
 
@@ -18,15 +18,15 @@ class ChatRemoteDataSourceImpl(
         chatCloudStore.getDataList(userKey, onCompleteListener)
     }
 
-    override fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatCloudStore.add(chatData, onCompleteListener)
     }
 
-    override fun update(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun update(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatCloudStore.update(chatData, onCompleteListener)
     }
 
-    override fun remove(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun remove(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatCloudStore.remove(chatData, onCompleteListener)
     }
 }

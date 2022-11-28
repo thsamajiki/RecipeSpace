@@ -11,7 +11,7 @@ class RateLocalDataSourceImpl(
     private val rateCacheStore: RateCacheStore
 ) : RateLocalDataSource {
 
-    override fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
         rateCacheStore.getData(rateKey, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -60,7 +60,7 @@ class RateLocalDataSourceImpl(
         rateCacheStore.clear()
     }
 
-    override fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateLocalStore.add(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -80,7 +80,7 @@ class RateLocalDataSourceImpl(
         })
     }
 
-    override fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateLocalStore.update(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -100,7 +100,7 @@ class RateLocalDataSourceImpl(
         })
     }
 
-    override fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateLocalStore.remove(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {

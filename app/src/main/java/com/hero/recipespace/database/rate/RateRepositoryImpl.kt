@@ -12,7 +12,7 @@ class RateRepositoryImpl(
     private val rateRemoteDataSource: RateRemoteDataSource
 ) : RateRepository {
 
-    override fun getRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun getRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
         rateLocalDataSource.getData(rateKey, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -55,7 +55,7 @@ class RateRepositoryImpl(
         })
     }
 
-    override fun addRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun addRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateRemoteDataSource.add(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -75,7 +75,7 @@ class RateRepositoryImpl(
         })
     }
 
-    override fun modifyRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun modifyRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateRemoteDataSource.update(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -95,7 +95,7 @@ class RateRepositoryImpl(
         })
     }
 
-    override fun deleteRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun deleteRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateRemoteDataSource.remove(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {

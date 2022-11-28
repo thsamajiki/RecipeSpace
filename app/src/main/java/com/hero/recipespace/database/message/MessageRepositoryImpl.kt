@@ -13,7 +13,7 @@ class MessageRepositoryImpl(
     private val messageRemoteDataSource: MessageRemoteDataSource
 ) : MessageRepository {
 
-    override fun getMessage(
+    override suspend fun getMessage(
         messageKey: String,
         onCompleteListener: OnCompleteListener<MessageEntity>
     ) {
@@ -65,7 +65,7 @@ class MessageRepositoryImpl(
         })
     }
 
-    override fun addMessage(
+    override suspend fun addMessage(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
@@ -91,7 +91,7 @@ class MessageRepositoryImpl(
         })
     }
 
-    override fun modifyMessage(
+    override suspend fun modifyMessage(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
@@ -117,7 +117,7 @@ class MessageRepositoryImpl(
         })
     }
 
-    override fun deleteMessage(
+    override suspend fun deleteMessage(
         messageData: MessageData,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {

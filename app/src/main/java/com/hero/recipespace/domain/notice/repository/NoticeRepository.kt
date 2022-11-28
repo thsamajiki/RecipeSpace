@@ -4,7 +4,7 @@ import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.listener.OnCompleteListener
 
 interface NoticeRepository {
-    fun getNotice(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeEntity>)
+    suspend fun getNotice(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeEntity>)
 
     fun getNoticeList(onCompleteListener: OnCompleteListener<List<NoticeEntity>>)
 }

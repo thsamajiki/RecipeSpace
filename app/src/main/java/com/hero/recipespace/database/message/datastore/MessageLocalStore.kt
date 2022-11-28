@@ -1,20 +1,23 @@
 package com.hero.recipespace.database.message.datastore
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.LocalStore
+import com.hero.recipespace.database.message.dao.MessageDao
 import com.hero.recipespace.listener.OnCompleteListener
 
 class MessageLocalStore(
-    private val context: Context
+    private val context: Context,
+    private val messageDao: MessageDao
 ) : LocalStore<MessageData>(context) {
 
     companion object {
         private lateinit var instance : MessageLocalStore
 
-        fun getInstance(context: Context) : MessageLocalStore {
+        fun getInstance(context: Context, messageDao: MessageDao) : MessageLocalStore {
             return instance ?: synchronized(this) {
-                instance ?: MessageLocalStore(context).also {
+                instance ?: MessageLocalStore(context, messageDao).also {
                     instance = it
                 }
             }
@@ -26,24 +29,40 @@ class MessageLocalStore(
             onCompleteListener.onComplete(false, null)
             return
         }
+
+        val messageKey: String = params[0].toString()
+        val messageData: MessageData = messageDao.getMessageFromKey(messageKey)!!
     }
 
     override fun getDataList(
         vararg params: Any,
         onCompleteListener: OnCompleteListener<List<MessageData>>,
     ) {
-        TODO("Not yet implemented")
+        if (params.isEmpty()) {
+            onCompleteListener.onComplete(false, null)
+            return
+        }
+
+        val messageDataList: LiveData<List<MessageData>> = messageDao.getAllMessages()
+
+        onCompleteListener.onComplete(true, messageDataList)
     }
 
     override fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
-        TODO("Not yet implemented")
+        messageDao.insertMessage(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 
     override fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
-        TODO("Not yet implemented")
+        messageDao.updateMessage(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 
     override fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
-        TODO("Not yet implemented")
+        messageDao.deleteMessage(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 }

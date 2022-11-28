@@ -1,20 +1,24 @@
 package com.hero.recipespace.database.rate.datastore
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.LocalStore
+import com.hero.recipespace.database.rate.dao.RateDao
 import com.hero.recipespace.listener.OnCompleteListener
 
 class RateLocalStore(
-    private val context: Context
+    private val context: Context,
+    private val rateDao: RateDao
 ) : LocalStore<RateData>(context) {
 
     companion object {
         private lateinit var instance : RateLocalStore
 
-        fun getInstance(context: Context) : RateLocalStore {
+        fun getInstance(context: Context, rateDao: RateDao) : RateLocalStore {
             return instance ?: synchronized(this) {
-                instance ?: RateLocalStore(context).also {
+                instance ?: RateLocalStore(context, rateDao).also {
                     instance = it
                 }
             }
@@ -22,25 +26,43 @@ class RateLocalStore(
     }
 
     override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        if (params.isEmpty()) {
+            onCompleteListener.onComplete(false, null)
+            return
+        }
+        val rateKey: String = params[0].toString()
+        val rateData: RateData = rateDao.getRateFromKey(rateKey)!!
     }
 
     override fun getDataList(
         vararg params: Any,
         onCompleteListener: OnCompleteListener<List<RateData>>,
     ) {
-        TODO("Not yet implemented")
+        if (params.isEmpty()) {
+            onCompleteListener.onComplete(false, null)
+            return
+        }
+
+        val rateDataList: LiveData<List<RateData>> = rateDao.getAllRates()
+
+        onCompleteListener.onComplete(true, rateDataList)
     }
 
     override fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateDao.insertRate(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 
     override fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateDao.updateRate(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 
     override fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        TODO("Not yet implemented")
+        rateDao.deleteRate(data)
+
+        onCompleteListener.onComplete(true, data)
     }
 }
