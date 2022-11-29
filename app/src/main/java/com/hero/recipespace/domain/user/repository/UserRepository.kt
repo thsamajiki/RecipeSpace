@@ -21,5 +21,5 @@ interface UserRepository {
 
     suspend fun deleteUser(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>)
 
-    fun signOut()
+    suspend fun signOut()
 }

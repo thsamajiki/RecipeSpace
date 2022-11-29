@@ -87,10 +87,10 @@ class AccountFragment: Fragment(), View.OnClickListener {
     }
 
     private fun showLogoutDialog() {
-        val logout_message = "로그아웃하시겠습니까?"
+        val logoutMessage = "로그아웃하시겠습니까?"
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle("로그아웃")
-            .setMessage(logout_message)
+            .setMessage(logoutMessage)
             .setPositiveButton("예"
             ) { dialog, which -> signOut() }
             .setNegativeButton("아니오", null)

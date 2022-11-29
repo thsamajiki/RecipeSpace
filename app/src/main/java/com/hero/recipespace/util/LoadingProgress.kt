@@ -11,7 +11,7 @@ import com.hero.recipespace.R
 
 class LoadingProgress {
     private var mDialog: Dialog? = null
-    var mProgressBar: ProgressBar? = null
+    private var mProgressBar: ProgressBar? = null
 
     fun showDialog(context: Context?, touch: Boolean?) {
         mDialog = Dialog(context!!, R.style.LoadingDialog)

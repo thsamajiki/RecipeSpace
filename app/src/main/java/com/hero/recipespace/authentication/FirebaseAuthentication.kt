@@ -53,7 +53,7 @@ class FirebaseAuthentication {
             .addOnFailureListener { onCompleteListener?.onComplete(false, response) }
     }
 
-    fun getUserInfo(context: Context) {
+    private fun getUserInfo(context: Context) {
         val response: Response<Void> = Response()
         response.setType(Type.AUTH)
         val myKey: String = MyInfoUtil.getInstance().getKey()

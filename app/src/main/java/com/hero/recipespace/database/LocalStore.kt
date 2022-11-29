@@ -1,12 +1,11 @@
 package com.hero.recipespace.database
 
 import android.content.Context
-import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
 
 abstract class LocalStore<T>(context: Context) : DataStore<T> {
 
-    private val dataList: List<T> = ArrayList()
+    private val dataList: MutableList<T> = mutableListOf()
 
     fun getDataList(param: OnCompleteListener<List<T>>): List<T> {
         return dataList
@@ -16,14 +15,14 @@ abstract class LocalStore<T>(context: Context) : DataStore<T> {
         if (dataList == null) {
             return
         }
-        for (element in dataList) {
+        for (element: T in dataList) {
             val index = this.dataList.indexOf(element)
             if (index == -1) {
                 // create
                 this.dataList.add(element)
             } else {
                 // update
-                this.dataList.set(index, element)
+                this.dataList[index] = element
             }
         }
     }

@@ -15,4 +15,6 @@ interface UserLocalDataSource {
     suspend fun update(userData: UserData, onCompleteListener: OnCompleteListener<UserData>)
 
     suspend fun remove(userData: UserData, onCompleteListener: OnCompleteListener<UserData>)
+
+    suspend fun signOut()
 }

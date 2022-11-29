@@ -48,19 +48,19 @@ class UserRepositoryImpl(
 
     override suspend fun updateUser(
         userEntity: UserEntity,
-        onCompleteListener: OnCompleteListener<UserEntity>,
+        onCompleteListener: OnCompleteListener<UserEntity>
     ) {
         TODO("Not yet implemented")
     }
 
     override suspend fun deleteUser(
         userEntity: UserEntity,
-        onCompleteListener: OnCompleteListener<UserEntity>,
+        onCompleteListener: OnCompleteListener<UserEntity>
     ) {
         TODO("Not yet implemented")
     }
 
-    override fun signOut() {
-        TODO("Not yet implemented")
+    override suspend fun signOut() {
+        userRemoteDataSource.signOut()
     }
 }

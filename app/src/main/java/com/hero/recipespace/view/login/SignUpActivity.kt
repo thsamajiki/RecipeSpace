@@ -57,8 +57,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        firebaseAuthentication.setOnCompleteListener(object : OnCompleteListener<Void?> {
-            override fun onComplete(isSuccess: Boolean, response: Response<Void?>?) {
+        firebaseAuthentication.setOnCompleteListener(object : OnCompleteListener<Void> {
+            override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                 if (!isSuccess) {
                     Toast.makeText(this@SignUpActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     return
@@ -77,12 +77,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun uploadUserData() {
         val userName: String = binding.editUsername.text.toString()
-        val firebaseUser: FirebaseUser = firebaseAuthentication.getCurrentUser()
+        val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
         val userData = UserData()
         userData.userName = userName
-        userData.userKey = firebaseUser.uid
-        firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void?> {
-            override fun onComplete(isSuccess: Boolean, response: Response<Void?>?) {
+        userData.userKey = firebaseUser?.uid
+        firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void> {
+            override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                 if (!isSuccess) {
                     Toast.makeText(this@SignUpActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     return

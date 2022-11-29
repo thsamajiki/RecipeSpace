@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "user_db")
 data class UserData(
     val userKey: String? = null,
-    var userName: String? = null,
+    val userName: String? = null,
     val profileImageUrl: String? = null
 ) : Parcelable {
 

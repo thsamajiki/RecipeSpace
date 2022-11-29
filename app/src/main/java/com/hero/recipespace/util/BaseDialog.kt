@@ -7,8 +7,9 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.ViewGroup
 import android.view.Window
+import androidx.fragment.app.DialogFragment
 
-class BaseDialog : Dialog() {
+class BaseDialog : Dialog {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

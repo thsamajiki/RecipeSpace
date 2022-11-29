@@ -1,13 +1,15 @@
 package com.hero.recipespace.data.user.remote
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.datastore.UserCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 
 class UserRemoteDataSourceImpl(
-    private val userCloudStore: UserCloudStore
-) : UserRemoteDataSource{
+    private val userCloudStore: UserCloudStore,
+) : UserRemoteDataSource {
 
     override suspend fun getData(
         userKey: String,
@@ -24,8 +26,37 @@ class UserRemoteDataSourceImpl(
         })
     }
 
+    override fun getFirebaseAuthProfile(): UserData {
+        val firebaseUser: FirebaseUser? = getCurrentUser()
+
+        val profileImageUrl: String? = if (firebaseUser!!.photoUrl != null) {
+            firebaseUser.photoUrl.toString()
+        } else {
+            null
+        }
+
+        val userEntity = UserData(
+            firebaseUser.displayName,
+            firebaseUser.email,
+            profileImageUrl
+        )
+        userEntity.userKey = firebaseUser.uid
+        userEntity.userName = firebaseUser.displayName
+        if (firebaseUser.photoUrl != null) {
+            userEntity.profileImageUrl = firebaseUser.photoUrl.toString()
+        } else {
+            userEntity.profileImageUrl = null
+        }
+
+        return userEntity
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return FirebaseAuth.getInstance().currentUser
+    }
+
     override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<UserData>>
+        onCompleteListener: OnCompleteListener<List<UserData>>,
     ) {
         userCloudStore.getDataList(object : OnCompleteListener<List<UserData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
@@ -80,5 +111,7 @@ class UserRemoteDataSourceImpl(
         })
     }
 
-
+    override suspend fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+    }
 }

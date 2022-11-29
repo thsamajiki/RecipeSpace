@@ -15,7 +15,6 @@ class RealPathUtil {
         return RealPathUtil.getRealPathFromURI_API19(context, uri)
     }
 
-    @SuppressLint("NewApi")
     fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {
 
         // check here to KITKAT or new version
@@ -70,7 +69,7 @@ class RealPathUtil {
     }
 
 
-    fun getDataColumn(
+    private fun getDataColumn(
         context: Context, uri: Uri?,
         selection: String?, selectionArgs: Array<String>?,
     ): String? {
@@ -95,7 +94,7 @@ class RealPathUtil {
      * The Uri to check.
      * @return Whether the Uri authority is ExternalStorageProvider.
      */
-    fun isExternalStorageDocument(uri: Uri): Boolean {
+    private fun isExternalStorageDocument(uri: Uri): Boolean {
         return "com.android.externalstorage.documents" == uri
             .authority
     }
@@ -105,7 +104,7 @@ class RealPathUtil {
      * The Uri to check.
      * @return Whether the Uri authority is DownloadsProvider.
      */
-    fun isDownloadsDocument(uri: Uri): Boolean {
+    private fun isDownloadsDocument(uri: Uri): Boolean {
         return "com.android.providers.downloads.documents" == uri
             .authority
     }
@@ -115,7 +114,7 @@ class RealPathUtil {
      * The Uri to check.
      * @return Whether the Uri authority is MediaProvider.
      */
-    fun isMediaDocument(uri: Uri): Boolean {
+    private fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri
             .authority
     }
@@ -125,7 +124,7 @@ class RealPathUtil {
      * The Uri to check.
      * @return Whether the Uri authority is Google Photos.
      */
-    fun isGooglePhotosUri(uri: Uri): Boolean {
+    private fun isGooglePhotosUri(uri: Uri): Boolean {
         return "com.google.android.apps.photos.content" == uri
             .authority
     }
