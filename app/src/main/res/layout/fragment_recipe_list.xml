@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
 
         <variable
-            name="recipeList"
-            type="com.hero.recipespace.view.main.recipe.RecipeListFragment" />
+            name="viewModel"
+            type="com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel" />
     </data>
 
     <RelativeLayout

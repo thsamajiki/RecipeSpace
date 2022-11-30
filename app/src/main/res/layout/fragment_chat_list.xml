@@ -7,8 +7,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="recipeList"
-            type="com.hero.recipespace.view.main.chat.ChatListFragment" />
+            name="viewModel"
+            type="com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel" />
     </data>
 
     <FrameLayout
