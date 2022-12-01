@@ -8,6 +8,7 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import kotlinx.coroutines.coroutineScope
 
 class RecipeRepositoryImpl(
     private val recipeRemoteDataSource: RecipeRemoteDataSource,
@@ -18,23 +19,25 @@ class RecipeRepositoryImpl(
         recipeKey: String,
         onCompleteListener: OnCompleteListener<RecipeEntity>
     ) {
-        recipeLocalDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                if (isSuccess) {
+        coroutineScope {
+            recipeLocalDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
+                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
+                    if (isSuccess) {
 
-                } else {
-                    recipeRemoteDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                            if (isSuccess) {
+                    } else {
+                        recipeRemoteDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
+                            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
+                                if (isSuccess) {
 
-                            } else {
-                                Toast.makeText(this, "레시피를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(coroutineContext, "레시피를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
-                    })
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     override fun getRecipeList(onCompleteListener: OnCompleteListener<List<RecipeEntity>>) {

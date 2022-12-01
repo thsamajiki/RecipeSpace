@@ -21,8 +21,12 @@ import com.hero.recipespace.listener.OnRatingUploadListener
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.post.PostActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class RecipeListFragment : Fragment(), View.OnClickListener, OnRecyclerItemClickListener<RecipeData>,
+@AndroidEntryPoint
+class RecipeListFragment : Fragment(),
+    View.OnClickListener,
+    OnRecyclerItemClickListener<RecipeData>,
     OnRatingUploadListener {
 
     private val recipeDataList = listOf<RecipeData>()

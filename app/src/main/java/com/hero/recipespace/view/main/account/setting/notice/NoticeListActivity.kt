@@ -11,8 +11,11 @@ import com.hero.recipespace.databinding.ActivityNoticeListBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.listener.Response
+import dagger.hilt.android.AndroidEntryPoint
 
-class NoticeListActivity : AppCompatActivity(), View.OnClickListener,
+@AndroidEntryPoint
+class NoticeListActivity : AppCompatActivity(),
+    View.OnClickListener,
     OnRecyclerItemClickListener<NoticeData> {
 
     private lateinit var binding: ActivityNoticeListBinding
@@ -60,12 +63,14 @@ class NoticeListActivity : AppCompatActivity(), View.OnClickListener,
             .getNoticeList(object : OnCompleteListener<List<NoticeData>> {
                 override fun onComplete(
                     isSuccess: Boolean,
-                    response: Response<List<NoticeData>>,
+                    response: Response<List<NoticeData>>?
                 ) {
-                    if (isSuccess && response.isNotEmpty()) {
-                        noticeDataList.clear()
-                        noticeDataList.addAll(response.getData())
-                        noticeListAdapter.notifyDataSetChanged()
+                    if (response != null) {
+                        if (isSuccess && response.isNotEmpty()) {
+                            noticeDataList.clear()
+                            noticeDataList.addAll(response.getData())
+                            noticeListAdapter.notifyDataSetChanged()
+                        }
                     }
                 }
             })

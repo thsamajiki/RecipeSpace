@@ -25,9 +25,9 @@ class ChatListAdapter(
 
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
         val chatData: ChatData = chatDataList[position]
-        val otherUserNickname = getOtherUserNickname(chatData.userNames, myUserKey)
+        val otherUserName = getOtherUserName(chatData.userNames, myUserKey)
         val otherUserProfile = getOtherUserProfile(chatData.getUserProfiles(), myUserKey)
-        holder.binding.tvUserName.text = otherUserNickname
+        holder.binding.tvUserName.text = otherUserName
         Collections.sort(chatDataList)
         if (TextUtils.isEmpty(otherUserProfile)) {
             requestManager.load(R.drawable.ic_default_user_profile).into(holder.binding.ivUserProfile)
@@ -37,13 +37,13 @@ class ChatListAdapter(
         holder.binding.tvChatContent.setText(chatData.getLastMessage().getMessage())
     }
 
-    private fun getOtherUserNickname(
-        userNicknames: HashMap<String, String>,
+    private fun getOtherUserName(
+        userNames: HashMap<String, String>,
         myUserKey: String?,
     ): String? {
-        for (userKey in userNicknames.keys) {
+        for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
-                return userNicknames[userKey]
+                return userNames[userKey]
             }
         }
         return null

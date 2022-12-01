@@ -8,8 +8,8 @@ import com.bumptech.glide.RequestManager
 import com.hero.recipespace.R
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.databinding.ItemChatLeftBinding
-import com.hero.recipespace.databinding.ItemChatRightBinding
+import com.hero.recipespace.databinding.ItemMessageLeftBinding
+import com.hero.recipespace.databinding.ItemMessageRightBinding
 import com.hero.recipespace.view.BaseAdapter
 
 class ChatAdapter(
@@ -25,42 +25,42 @@ class ChatAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == RIGHT_TYPE) {
-            val binding = ItemChatRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            RightChatViewHolder(binding)
+            val binding = ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RightMessageViewHolder(binding)
         } else {
-            val binding = ItemChatLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            LeftChatViewHolder(binding)
+            val binding = ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            LeftMessageViewHolder(binding)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val messageData: MessageData = messageDataList?.get(position)
-        if (holder is LeftChatViewHolder) {
+        val messageData: MessageData? = messageDataList?.get(position)
+        if (holder is LeftMessageViewHolder) {
             val otherUserProfile = getOtherUserProfile(chatData.userProfiles, myUserKey)
-            val otherUserNickname = getOtherUserNickname(chatData.userNames, myUserKey)
+            val otherUserName = getOtherUserName(chatData.userNames, myUserKey)
             if (TextUtils.isEmpty(otherUserProfile)) {
-                requestManager?.load(R.drawable.ic_default_user_profile).into(holder.ivProfile)
+                requestManager?.load(R.drawable.ic_default_user_profile)?.into(holder.ivProfile)
             } else {
                 requestManager!!.load(otherUserProfile).into(holder.ivProfile)
             }
-            holder.tvChat.setText(messageData.getMessage())
+            holder.tvChat.t(messageData.getMessage())
             holder.tvDate.setText(TimeUtils.getInstance()
                 .convertTimeFormat(messageData.getTimestamp().toDate(), "MM.dd"))
-            holder.tvUserNickname.text = otherUserNickname
+            holder.tvUserName.text = otherUserName
         } else {
-            (holder as RightChatViewHolder).tvChat.setText(messageData.getMessage())
+            (holder as RightMessageViewHolder).tvChat.setText(messageData.getMessage())
             holder.tvDate.setText(TimeUtils.getInstance()
                 .convertTimeFormat(messageData.getTimestamp().toDate(), "MM.dd"))
         }
     }
 
-    private fun getOtherUserNickname(
-        userNicknames: HashMap<String, String>,
+    private fun getOtherUserName(
+        userNames: HashMap<String, String>,
         myUserKey: String?,
     ): String? {
-        for (userKey in userNicknames.keys) {
+        for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
-                return userNicknames[userKey]
+                return userNames[userKey]
             }
         }
         return null
@@ -89,8 +89,8 @@ class ChatAdapter(
         } else LEFT_TYPE
     }
 
-    class RightChatViewHolder(
-        private val binding: ItemChatRightBinding
+    class RightMessageViewHolder(
+        private val binding: ItemMessageRightBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(chatData: ChatData) {
@@ -102,8 +102,8 @@ class ChatAdapter(
         }
     }
 
-    class LeftChatViewHolder(
-        private val binding: ItemChatLeftBinding
+    class LeftMessageViewHolder(
+        private val binding: ItemMessageLeftBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(chatData: ChatData) {

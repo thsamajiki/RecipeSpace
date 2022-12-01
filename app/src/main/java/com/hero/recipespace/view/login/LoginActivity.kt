@@ -12,7 +12,9 @@ import com.hero.recipespace.authentication.FirebaseAuthentication
 import com.hero.recipespace.databinding.ActivityLoginBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListener<Void> {
 
     private lateinit var binding: ActivityLoginBinding

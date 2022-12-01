@@ -145,7 +145,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
             editData[MyInfoUtil.EXTRA_PROFILE_IMAGE_URL] = newProfileImageUrl
         }
         val newUserName = binding.editUserName.text.toString()
-        editData[MyInfoUtil.EXTRA_NICKNAME] = newUserName
+        editData[MyInfoUtil.EXTRA_USERNAME] = newUserName
         val userKey: String = MyInfoUtil.getInstance().getKey()
         FirebaseData.getInstance()
             .updateUserData(userKey, editData, object : OnCompleteListener<Void> {

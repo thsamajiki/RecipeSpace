@@ -3,16 +3,15 @@ package com.hero.recipespace.view.main.account.setting
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
-import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivitySettingBinding
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingBinding

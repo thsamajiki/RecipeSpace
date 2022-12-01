@@ -1,4 +1,17 @@
 package com.hero.recipespace.view.main.account.setting.viewmodel
 
-class SettingViewModel {
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+
+@HiltViewModel
+class SettingViewModel(
+    application: Application
+): AndroidViewModel(application) {
+
+
+
+    override fun onCleared() {
+        super.onCleared()
+    }
 }

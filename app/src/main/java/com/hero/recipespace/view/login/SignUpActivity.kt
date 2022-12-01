@@ -15,7 +15,9 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivitySignUpBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivitySignUpBinding
@@ -43,7 +45,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     private fun signUp() {
         val email = binding.editEmail.text.toString()
         val pwd: String = binding.editPwd.text.toString()
-        val nickname: String = binding.editUsername.text.toString()
+        val userName: String = binding.editUsername.text.toString()
         if (!checkEmailValid(email)) {
             Toast.makeText(this, "이메일 양식을 확인해주세요", Toast.LENGTH_SHORT).show()
             return
@@ -52,7 +54,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             return
         }
-        if (TextUtils.isEmpty(nickname)) {
+        if (TextUtils.isEmpty(userName)) {
             Toast.makeText(this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
             return
         }

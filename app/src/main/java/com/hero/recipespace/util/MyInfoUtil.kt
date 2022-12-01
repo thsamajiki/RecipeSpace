@@ -7,14 +7,14 @@ import com.hero.recipespace.authentication.FirebaseAuthentication
 class MyInfoUtil {   // 나의 정보에 관한 것을 단말기에 저장하거나 단말기로 불러오는 클래스
     // 나의 정보에 관한 것을 단말기에 저장하거나 단말기로 불러오는 클래스
 
-    val EXTRA_EMAIL = "email"
-    val EXTRA_PWD = "pwd"
-    val EXTRA_NICKNAME = "nickname"
-    val EXTRA_PROFILE_IMAGE_URL = "profileImageUrl"
-    val EXTRA_RECIPE_IMAGE = "recipeImageUrl"
-    val EXTRA_RECIPE_CONTENT = "recipeContent"
-
     companion object {
+        val EXTRA_EMAIL = "email"
+        val EXTRA_PWD = "pwd"
+        val EXTRA_USERNAME = "userName"
+        val EXTRA_PROFILE_IMAGE_URL = "profileImageUrl"
+        val EXTRA_RECIPE_IMAGE = "recipeImageUrl"
+        val EXTRA_RECIPE_CONTENT = "recipeContent"
+
         private var instance: MyInfoUtil? = null
 
         fun getInstance(): MyInfoUtil {
@@ -32,7 +32,7 @@ class MyInfoUtil {   // 나의 정보에 관한 것을 단말기에 저장하거
     }
 
     fun getUserName(context: Context): String? {
-        return SharedPreference.getInstance().getValue(context, EXTRA_NICKNAME, "")
+        return SharedPreference.getInstance().getValue(context, EXTRA_USERNAME, "")
     }
 
     fun getEmail(context: Context): String? {
@@ -55,8 +55,8 @@ class MyInfoUtil {   // 나의 정보에 관한 것을 단말기에 저장하거
         return SharedPreference.getInstance().getValue(context, EXTRA_RECIPE_CONTENT, "")
     }
 
-    fun putUserName(context: Context, nickname: String) {
-        SharedPreference.getInstance().put(context, EXTRA_NICKNAME, nickname)
+    fun putUserName(context: Context, userName: String) {
+        SharedPreference.getInstance().put(context, EXTRA_USERNAME, userName)
     }
 
     fun putEmail(context: Context, email: String) {

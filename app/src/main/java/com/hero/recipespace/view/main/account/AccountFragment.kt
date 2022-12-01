@@ -14,8 +14,11 @@ import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.view.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class AccountFragment: Fragment(), View.OnClickListener {
+@AndroidEntryPoint
+class AccountFragment: Fragment(),
+    View.OnClickListener {
 
     private var _binding: FragmentAccountBinding? = null
     private val binding: FragmentAccountBinding

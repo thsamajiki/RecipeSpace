@@ -11,8 +11,11 @@ import android.provider.DocumentsContract
 import android.provider.MediaStore
 
 class RealPathUtil {
-    fun getRealPath(context: Context?, uri: Uri?): String? {
-        return RealPathUtil.getRealPathFromURI_API19(context, uri)
+
+    companion object {
+        fun getRealPath(context: Context?, uri: Uri?): String? {
+            return RealPathUtil.getRealPathFromURI_API19(context, uri)
+        }
     }
 
     fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {

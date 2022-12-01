@@ -20,7 +20,8 @@ import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.util.MyInfoUtil
 import java.util.*
 
-class ChatListFragment: Fragment(), OnChatListChangeListener,
+class ChatListFragment: Fragment(),
+    OnChatListChangeListener,
     OnRecyclerItemClickListener<ChatData> {
 
     private var chatListRegistration: ListenerRegistration? = null

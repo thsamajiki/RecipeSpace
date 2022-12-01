@@ -28,7 +28,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
             android:layout_toRightOf="@id/iv_user_profile"
-            tools:text="UserNickname"
+            tools:text="UserName"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
             android:id="@+id/tv_user_name" />

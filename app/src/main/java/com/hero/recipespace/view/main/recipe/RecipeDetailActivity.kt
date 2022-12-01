@@ -10,20 +10,22 @@ import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.hero.recipespace.R
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.databinding.ActivityDetailBinding
+import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.login.SignUpActivity
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.photoview.PhotoActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var binding: ActivityDetailBinding
+    private lateinit var binding: ActivityRecipeDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailBinding.inflate(layoutInflater)
+        binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupListeners()
@@ -51,8 +53,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivOptionMenu.setOnClickListener {
-            myUserKey = MyInfoUtil.getInstance().getKey()
-            if (getRecipeData().getUserKey().equals(myUserKey)) {
+            val myUserKey = MyInfoUtil.getInstance().getKey()
+            if (getRecipeData()?.userKey.equals(myUserKey)) {
                 binding.ivOptionMenu.visibility = View.VISIBLE
                 binding.ivOptionMenu.isClickable = true
                 showRecipeDetailOptionMenu()
@@ -70,7 +72,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         if (!TextUtils.isEmpty(recipeData?.photoUrl)) {
             requestManager.load(recipeData?.photoUrl)
-                .into(binding.ivRecipe)
+                .into(binding.)
         }
 
         if (!TextUtils.isEmpty(recipeData?.profileImageUrl)) {

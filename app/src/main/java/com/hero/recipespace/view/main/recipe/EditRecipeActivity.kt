@@ -28,7 +28,9 @@ import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     OnFileUploadListener, OnCompleteListener<RecipeData> {
 
@@ -133,7 +135,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = MyInfoUtil.getInstance().getNickname(this)
+            val userName: String = MyInfoUtil.getInstance().getUserName(this)
             val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
             val recipeData = RecipeData()
             recipeData.photoUrl = downloadUrl

@@ -26,7 +26,9 @@ import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     OnFileUploadListener, OnCompleteListener<RecipeData> {
 

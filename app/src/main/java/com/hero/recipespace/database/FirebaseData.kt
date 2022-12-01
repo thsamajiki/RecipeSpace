@@ -198,7 +198,7 @@ class FirebaseData {
         firestore.runTransaction(Transaction.Function<Any> { transaction ->
             val myUserKey: String = MyInfoUtil.getInstance().getKey()
             val myProfileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(context)
-            val myUserNickname: String = MyInfoUtil.getInstance().getUserName(context)
+            val myUserName: String = MyInfoUtil.getInstance().getUserName(context)
             val userRef = firestore.collection("User").document(
                 otherUserKey!!)
             val userData: UserData = transaction[userRef].toObject(UserData::class.java)
@@ -206,24 +206,24 @@ class FirebaseData {
             transaction[userRef] = userData
             val userProfiles = HashMap<String, String>()
             userProfiles[myUserKey] = myProfileUrl
-            userProfiles[userData.getUserKey()] = userData.getProfileUrl()
-            val userNicknames = HashMap<String, String>()
-            userNicknames[myUserKey] = myUserNickname
-            userNicknames[userData.getUserKey()] = userData.getNickname()
+            userProfiles[userData.userKey] = userData.profileImageUrl
+            val userNames = HashMap<String, String>()
+            userNames[myUserKey] = myUserName
+            userNames[userData.getUserKey()] = userData.userName
             val userList = HashMap<String, Boolean>()
             userList[myUserKey] = true
-            userList[userData.getUserKey()] = true
+            userList[userData.userKey] = true
             val lastMessage = MessageData()
             lastMessage.setMessage(message)
             lastMessage.setUserKey(myUserKey)
             lastMessage.setTimestamp(Timestamp.now())
             val chatRef = firestore.collection("Chat").document()
             val chatData = ChatData()
-            chatData.setUserProfiles(userProfiles)
-            chatData.setUserNicknames(userNicknames)
-            chatData.setUserList(userList)
-            chatData.setLastMessage(lastMessage)
-            chatData.setKey(chatRef.id)
+            chatData.userProfiles = userProfiles
+            chatData.userNames = userNames
+            chatData.userList = userList
+            chatData.lastMessage = lastMessage
+            chatData.key = chatRef.id
             transaction[chatRef] = chatData
             val messageRef = chatRef.collection("Messages").document()
             transaction[messageRef] = lastMessage
@@ -263,7 +263,7 @@ class FirebaseData {
     fun sendMessage(message: String, chatData: ChatData) {
         val messageData = MessageData()
         val myUserKey: String = MyInfoUtil.getInstance().getKey()
-        messageData.setUserKey(myUserKey)
+        messageData.userKey = myUserKey
         messageData.setMessage(message)
         messageData.setTimestamp(Timestamp.now())
         val firestore = FirebaseFirestore.getInstance()

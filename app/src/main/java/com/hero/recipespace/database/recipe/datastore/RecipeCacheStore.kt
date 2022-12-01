@@ -23,8 +23,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
     override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
         val recipeKey: String = params[0].toString()
 
-        for (recipeData in getDataList(object :
-            OnCompleteListener<List<RecipeData>> {
+        for (recipeData in getDataList(object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
@@ -72,8 +71,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
             }).isEmpty()) {
             onCompleteListener.onComplete(true, null)
         } else {
-            onCompleteListener.onComplete(false, getDataList(object :
-                OnCompleteListener<List<RecipeData>> {
+            onCompleteListener.onComplete(false, object : OnCompleteListener<List<RecipeData>> {
                 override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                     if (isSuccess) {
                         onCompleteListener.onComplete(true, response)
@@ -89,14 +87,13 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
                         })
                     }
                 }
-            }))
+            })
         }
     }
 
     override fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
-        getDataList(object :
-            OnCompleteListener<List<RecipeData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
+        object : OnCompleteListener<List<RecipeData>> {
+            override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
                 } else {
@@ -111,7 +108,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
                     })
                 }
             }
-        }).add(data)
+        }.add(data)
 
         if (onCompleteListener != null) {
             onCompleteListener.onComplete(true, data)
@@ -119,9 +116,8 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
     }
 
     override fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
-        val originIndex = getDataList(object :
-            OnCompleteListener<List<RecipeData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
+        val originIndex = object : OnCompleteListener<List<RecipeData>> {
+            override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
                 } else {
@@ -136,12 +132,11 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
                     })
                 }
             }
-        }).indexOf(data)
+        }.indexOf(data)
         if (originIndex == -1) {
             throw IndexOutOfBoundsException("기존 데이터가 없습니다.")
         } else {
-            getDataList(object :
-                OnCompleteListener<List<RecipeData>> {
+            object : OnCompleteListener<List<RecipeData>> {
                 override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                     if (isSuccess) {
                         onCompleteListener.onComplete(true, response)
@@ -157,7 +152,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
                         })
                     }
                 }
-            }).set(originIndex, data)
+            }.set(originIndex, data)
         }
 
         if (onCompleteListener != null) {
@@ -187,8 +182,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
         if (originIndex == -1) {
             throw IndexOutOfBoundsException("기존 데이터가 없습니다.")
         } else {
-            getDataList(object :
-                OnCompleteListener<List<RecipeData>> {
+            getDataList(object : OnCompleteListener<List<RecipeData>> {
                 override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
                     if (isSuccess) {
                         onCompleteListener.onComplete(true, response)
