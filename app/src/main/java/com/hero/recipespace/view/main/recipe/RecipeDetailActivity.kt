@@ -125,7 +125,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 //        }
     }
 
-    private fun intentPhoto(photoUrl: String) {
+    private fun intentPhoto(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
     }

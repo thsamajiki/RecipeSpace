@@ -66,7 +66,7 @@ dependencies {
 
     implementation 'com.google.android.play:core:1.10.3'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-    implementation 'com.github.esafirm.android-image-picker:imagepicker:2.3.1'
+    implementation 'com.github.esafirm:android-image-picker:3.0.0-alpha2'
 
     def nav_version = "2.5.3"
 
