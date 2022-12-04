@@ -69,8 +69,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
         binding.editContent.addTextChangedListener(this)
     }
 
-    override fun onClick(view: View) {
-    }
+
 
     private fun intentGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -162,5 +161,8 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
         } else {
             Toast.makeText(this, "업로드에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onClick(view: View) {
     }
 }

@@ -73,9 +73,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         binding.editUserName.setText(userName)
     }
 
-    override fun onClick(v: View) {
 
-    }
 
     private fun isNewProfile(): Boolean {
         return if (TextUtils.isEmpty(profileUrl)) {
@@ -191,5 +189,8 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         } else {
             binding.tvComplete.isEnabled = s.toString() != userName
         }
+    }
+
+    override fun onClick(v: View) {
     }
 }

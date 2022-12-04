@@ -57,6 +57,17 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph" />
 
+<!--        <androidx.fragment.app.FragmentContainerView-->
+<!--            android:id="@+id/nav_host_fragment_container"-->
+<!--            android:name="androidx.navigation.fragment.NavHostFragment"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            app:defaultNavHost="true"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tool_bar"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/bottom_nav"-->
+<!--            app:navGraph="@navigation/nav_graph" />-->
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"

@@ -13,7 +13,7 @@ data class RateData(
     val userName: String? = null,
     val profileImageUrl: String? = null,
     val rate: Float = 0f,
-    val date: Timestamp? = null
+    var date: Timestamp? = null
 ) : Parcelable {
 
 }

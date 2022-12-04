@@ -22,7 +22,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
-    private val recipeData: RecipeData? = null
+    private var recipeData: RecipeData? = null
 
     private var onRatingUploadListener: OnRatingUploadListener? = null
 
@@ -34,6 +34,10 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         this.recipeData = recipeData
     }
 
+    companion object {
+        const val TAG = "RatingDialog"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,7 +47,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
 
         binding.tvCancel.setOnClickListener {
-            finish()
+            dismiss()
         }
         binding.tvConfirm.setOnClickListener {
             uploadRating()
@@ -52,12 +56,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         return binding.root
     }
 
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.tv_cancel -> finish()
-            R.id.tv_confirm -> uploadRating()
-        }
-    }
+
 
     private fun uploadRating() {
         val rating = binding.ratingBar.rating
@@ -94,5 +93,8 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         rateData.rate = rate
 
         return rateData
+    }
+
+    override fun onClick(view: View) {
     }
 }

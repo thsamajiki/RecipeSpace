@@ -26,7 +26,7 @@ class ChatListFragment: Fragment(),
 
     private var chatListRegistration: ListenerRegistration? = null
     private var userKey: String? = null
-    private val chatDataList = listOf<ChatData>()
+    private val chatDataList = mutableListOf<ChatData>()
 
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!

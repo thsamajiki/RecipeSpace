@@ -91,12 +91,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-        }
-//        finish()
-    }
-
     private fun showRecipeDetailOptionMenu() {
         val popupMenu = PopupMenu(this, binding.ivOptionMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_recipe_detail_actionbar_option, popupMenu.menu)
@@ -125,5 +119,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         val intent = Intent(this, PhotoActivity::class.java)
         intent.putExtra(EXTRA_PHOTO_URL, photoUrl)
         startActivity(intent)
+    }
+
+    override fun onClick(v: View) {
     }
 }

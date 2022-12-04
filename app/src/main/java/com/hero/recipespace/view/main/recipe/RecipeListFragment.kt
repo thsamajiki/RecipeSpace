@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.main.recipe
 
 import android.app.Activity
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnRatingUploadListener
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.listener.Response
+import com.hero.recipespace.view.main.recipe.RatingDialogFragment.Companion.TAG
 import com.hero.recipespace.view.post.PostActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +31,7 @@ class RecipeListFragment : Fragment(),
     OnRecyclerItemClickListener<RecipeData>,
     OnRatingUploadListener {
 
-    private val recipeDataList = listOf<RecipeData>()
+    private val recipeDataList = mutableListOf<RecipeData>()
     private var _binding: FragmentRecipeListBinding? = null
     private val binding get() = _binding!!
 
@@ -134,10 +136,10 @@ class RecipeListFragment : Fragment(),
     override fun onItemClick(position: Int, view: View, data: RecipeData) {
         when(view.id) {
             R.id.mcv_rating_container -> {
-                val ratingDialogFragment = RatingDialogFragment(requireActivity())
+                val ratingDialogFragment = RatingDialogFragment()
                 ratingDialogFragment.setOnRatingUploadListener(this)
                 ratingDialogFragment.setRecipeData(data)
-                ratingDialogFragment.show()
+                ratingDialogFragment.show(childFragmentManager, TAG)
             }
             else -> {
                 val intent = Intent(requireActivity(), RecipeDetailActivity::class.java)

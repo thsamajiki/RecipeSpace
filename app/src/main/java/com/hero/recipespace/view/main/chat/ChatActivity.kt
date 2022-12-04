@@ -20,7 +20,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     private lateinit var binding: ActivityChatBinding
 
     private var chatAdapter: ChatAdapter? = null
-    private val messageDataList = List<MessageData>()
+    private val messageDataList = mutableListOf<MessageData>()
     private var chatData: ChatData? = null
 
     val EXTRA_OTHER_USER_KEY = "otherUserKey"
@@ -42,11 +42,15 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
         }
 
         binding.ivBack.setOnClickListener {
-
+            finish()
         }
 
         binding.mcvSend.setOnClickListener {
-
+            if (chatData == null) {
+                createChatRoom()
+            } else {
+                sendMessage()
+            }
         }
     }
 
@@ -68,7 +72,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun initMessageRegistration() {
-        messageRegistration = FirebaseData.getInstance().getMessageList(chatData.key, this)
+        messageRegistration = FirebaseData.getInstance().getMessageList(chatData?.key, this)
     }
 
 
@@ -90,16 +94,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
         TODO("Not yet implemented")
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.iv_back -> finish()
-            R.id.mcv_send -> if (chatData == null) {
-                createChatRoom()
-            } else {
-                sendMessage()
-            }
-        }
-    }
+
 
     private fun sendMessage() {
         val message = binding.editMessage.text.toString()
@@ -140,5 +135,8 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
             chatAdapter.notifyItemInserted(messageDataList.size - 1)
             binding.recyclerChat.smoothScrollToPosition(messageDataList.size - 1)
         }
+    }
+
+    override fun onClick(v: View) {
     }
 }
