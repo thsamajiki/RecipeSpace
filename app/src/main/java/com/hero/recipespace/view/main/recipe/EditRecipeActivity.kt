@@ -132,7 +132,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
-    override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
             val userName: String = MyInfoUtil.getInstance().getUserName(this)

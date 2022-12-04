@@ -166,7 +166,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
             })
     }
 
-    override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         LoadingProgress.dismissProgressDialog()
         if (isSuccess) {
             updateUserData(downloadUrl)

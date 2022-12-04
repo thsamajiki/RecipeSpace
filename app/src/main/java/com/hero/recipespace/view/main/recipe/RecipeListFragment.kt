@@ -62,7 +62,7 @@ class RecipeListFragment : Fragment(),
             val intent = Intent(requireActivity(), PostActivity::class.java)
             postResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
-                    val recipeData: RecipeData = data.getParcelableExtra(RecipeListFragment.EXTRA_RECIPE_DATA)
+                    val recipeData: RecipeData = data.getParcelableExtra(EXTRA_RECIPE_DATA)
                     if (recipeData != null) {
                         recipeDataList.add(0, recipeData)
                         recipeListAdapter.notifyItemInserted(0)
@@ -143,7 +143,8 @@ class RecipeListFragment : Fragment(),
             }
             else -> {
                 val intent = Intent(requireActivity(), RecipeDetailActivity::class.java)
-                intent.putExtra(RecipeListFragment.EXTRA_RECIPE_DATA, data)
+                val recipeKey = data.key
+                intent.putExtra(recipeKey, data)
                 startActivity(intent)
             }
         }
@@ -151,7 +152,9 @@ class RecipeListFragment : Fragment(),
 
     override fun onRatingUpload(recipeData: RecipeData?) {
         val index = recipeDataList.indexOf(recipeData)
-        recipeDataList[index] = recipeData
+        if (recipeData != null) {
+            recipeDataList[index] = recipeData
+        }
         recipeListAdapter.notifyItemChanged(index)
     }
 }

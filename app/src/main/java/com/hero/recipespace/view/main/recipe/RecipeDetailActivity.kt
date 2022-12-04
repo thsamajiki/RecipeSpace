@@ -5,9 +5,12 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.R
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
@@ -15,6 +18,8 @@ import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.login.SignUpActivity
 import com.hero.recipespace.view.main.chat.ChatActivity
+import com.hero.recipespace.view.main.chat.ChatActivity.Companion.EXTRA_OTHER_USER_KEY
+import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,11 +27,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityRecipeDetailBinding
+    private val viewModel by viewModels<RecipeDetailViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
+
         setContentView(binding.root)
+        setData()
 
         setupListeners()
     }
@@ -36,10 +45,11 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         }
         binding.ivUserProfile.setOnClickListener {
-            intentPhoto(getRecipeData()?.profileImageUrl)
+            intentPhoto(viewModel.recipeData.photoUrl)
         }
         binding.btnQuestion.setOnClickListener {
-            val myUserKey: String = MyInfoUtil.getInstance().getKey()
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            val myUserKey: String = firebaseUser.uid
             if (getRecipeData()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
@@ -104,7 +114,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentModifyRecipe() {
-        val intent = Intent(this, SignUpActivity::class.java)
+        val intent = Intent(this, EditRecipeActivity::class.java)
         startActivity(intent)
     }
 
@@ -115,9 +125,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 //        }
     }
 
-    private fun intentPhoto(photoUrl: String?) {
-        val intent = Intent(this, PhotoActivity::class.java)
-        intent.putExtra(EXTRA_PHOTO_URL, photoUrl)
+    private fun intentPhoto(photoUrl: String) {
+        val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
     }
 

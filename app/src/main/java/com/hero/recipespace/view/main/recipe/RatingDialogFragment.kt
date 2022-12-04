@@ -42,9 +42,8 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDialogRatingBinding.inflate(inflater, container, false)
-
 
         binding.tvCancel.setOnClickListener {
             dismiss()
@@ -55,8 +54,6 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
         return binding.root
     }
-
-
 
     private fun uploadRating() {
         val rating = binding.ratingBar.rating

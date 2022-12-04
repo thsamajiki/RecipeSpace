@@ -1,6 +1,6 @@
 package com.hero.recipespace.listener
 
 interface OnFileUploadListener {
-    fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?)
-    fun onFileUploadProgress(percent: Float)
+    suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?)
+    suspend fun onFileUploadProgress(percent: Float)
 }

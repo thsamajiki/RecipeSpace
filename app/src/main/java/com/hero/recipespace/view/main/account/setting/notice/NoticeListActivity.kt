@@ -19,7 +19,7 @@ class NoticeListActivity : AppCompatActivity(),
     OnRecyclerItemClickListener<NoticeData> {
 
     private lateinit var binding: ActivityNoticeListBinding
-    private val noticeDataList = listOf<NoticeData>()
+    private val noticeDataList = mutableListOf<NoticeData>()
     private lateinit var noticeListAdapter: NoticeListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +35,7 @@ class NoticeListActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         noticeListAdapter = NoticeListAdapter()
+
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
@@ -86,6 +87,5 @@ class NoticeListActivity : AppCompatActivity(),
     }
 
     override fun onItemClick(position: Int, view: View, data: NoticeData) {
-
     }
 }

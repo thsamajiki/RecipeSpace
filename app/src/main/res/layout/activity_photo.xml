@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,18 +7,29 @@
     android:layout_height="match_parent"
     tools:context=".view.photoview.PhotoActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/photo_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:contentInsetStart="0dp" >
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/ic_arrow"
+            android:padding="14dp"
+            android:id="@+id/iv_back" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/photo_view" />
-
-    <ImageView
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:src="@drawable/ic_arrow"
-        android:padding="14dp"
-        android:id="@+id/iv_back" />
+        app:layout_constraintTop_toBottomOf="@id/photo_toolbar"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

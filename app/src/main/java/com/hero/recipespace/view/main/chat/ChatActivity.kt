@@ -1,5 +1,7 @@
 package com.hero.recipespace.view.main.chat
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -13,6 +15,7 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.listener.OnMessageListener
 import com.hero.recipespace.listener.OnRecyclerItemClickListener
+import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel.Companion.RECIPE_KEY
 
 class ChatActivity : AppCompatActivity(), View.OnClickListener,
     OnRecyclerItemClickListener<MessageData>, OnMessageListener {
@@ -23,8 +26,17 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     private val messageDataList = mutableListOf<MessageData>()
     private var chatData: ChatData? = null
 
-    val EXTRA_OTHER_USER_KEY = "otherUserKey"
-    val EXTRA_CHAT_DATA = "chatData"
+    companion object {
+        const val EXTRA_OTHER_USER_KEY = "otherUserKey"
+        const val EXTRA_CHAT_DATA = "chatData"
+
+        const val RECIPE_USER_KEY = "userKey"
+
+        fun getIntent(context: Context, userKey: String): Intent =
+            Intent(context, ChatActivity::class.java)
+                .putExtra(RECIPE_USER_KEY, userKey)
+    }
+
     private var messageRegistration: ListenerRegistration? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +90,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun initAdapter() {
         chatAdapter = ChatAdapter(this, messageDataList, chatData)
-        chatAdapter.setOnRecyclerItemClickListener(this)
+        chatAdapter!!.setOnRecyclerItemClickListener(this)
         binding.recyclerChat.adapter = chatAdapter
     }
 
@@ -132,7 +144,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     override fun onMessage(isSuccess: Boolean, messageData: MessageData?) {
         if (isSuccess && messageData != null) {
             messageDataList.add(messageData)
-            chatAdapter.notifyItemInserted(messageDataList.size - 1)
+            chatAdapter?.notifyItemInserted(messageDataList.size - 1)
             binding.recyclerChat.smoothScrollToPosition(messageDataList.size - 1)
         }
     }

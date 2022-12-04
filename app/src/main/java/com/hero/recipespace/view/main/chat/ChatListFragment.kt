@@ -88,7 +88,8 @@ class ChatListFragment: Fragment(),
 
     override fun onItemClick(position: Int, view: View, data: ChatData) {
         val intent = Intent(requireActivity(), ChatActivity::class.java)
-        intent.putExtra(EXTRA_CHAT_DATA, data)
+        val chatKey = data.key
+        intent.putExtra(chatKey, data)
         startActivity(intent)
     }
 }

@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.main.chat
 
+import android.content.Context
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,15 +14,15 @@ import com.hero.recipespace.databinding.ItemMessageRightBinding
 import com.hero.recipespace.view.BaseAdapter
 
 class ChatAdapter(
+    private val context: Context,
+    private val messageDataList: List<MessageData>,
+    private val chatData: ChatData?
 ) : BaseAdapter<RecyclerView.ViewHolder, MessageData>() {
 
-    private var messageDataList: List<MessageData>? = null
     private var requestManager: RequestManager? = null
     private val LEFT_TYPE = 0
     private val RIGHT_TYPE = 1
     private var myUserKey: String? = null
-    private var chatData: ChatData? = null
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == RIGHT_TYPE) {

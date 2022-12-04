@@ -9,7 +9,6 @@ import com.hero.recipespace.databinding.ItemNoticeListBinding
 import com.hero.recipespace.view.BaseAdapter
 
 class NoticeListAdapter(
-    private val onClick: (NoticeData) -> Unit
 ): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeData>(), View.OnClickListener {
 
     private val noticeDataList = mutableListOf<NoticeData>()
@@ -17,7 +16,7 @@ class NoticeListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val binding = ItemNoticeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return NoticeViewHolder(binding, onClick)
+        return NoticeViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {

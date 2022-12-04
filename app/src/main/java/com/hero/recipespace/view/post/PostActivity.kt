@@ -13,7 +13,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
+
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.hero.recipespace.data.recipe.RecipeData
@@ -29,8 +29,11 @@ import com.hero.recipespace.util.RealPathUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
-    OnFileUploadListener, OnCompleteListener<RecipeData> {
+class PostActivity : AppCompatActivity(),
+    View.OnClickListener,
+    TextWatcher,
+    OnFileUploadListener,
+    OnCompleteListener<RecipeData> {
 
     private lateinit var binding: ActivityPostBinding
     private var photoPath: String? = null
@@ -80,10 +83,8 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     private fun checkStoragePermission(): Boolean {
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
         val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        return if (ActivityCompat.checkSelfPermission(this, readPermission)
-            == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, writePermission)
-            == PackageManager.PERMISSION_GRANTED
+        return if (ActivityCompat.checkSelfPermission(this, readPermission) == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, writePermission) == PackageManager.PERMISSION_GRANTED
         ) {
             true
         } else {
@@ -95,7 +96,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -130,7 +131,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
-    override fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
             val userName: String = MyInfoUtil.getInstance().getUserName(this)
@@ -147,7 +148,7 @@ class PostActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
         }
     }
 
-    override fun onFileUploadProgress(percent: Float) {
+    override suspend fun onFileUploadProgress(percent: Float) {
         LoadingProgress.setProgress(percent.toInt())
     }
 

@@ -23,14 +23,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_user_profile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:id="@+id/iv_user_profile" />
+                app:imageUrl="@{recipe.profileImageUrl}"
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -38,11 +40,11 @@
                 android:id="@+id/tv_user_name"
                 android:textSize="@dimen/body_text_size"
                 android:textColor="@color/black"
-                tools:text="정호섭"
+                android:text="@{recipe.userName}"
                 app:layout_constraintStart_toEndOf="@id/iv_user_profile"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -52,9 +54,9 @@
                 android:textColor="@color/dark_gray"
                 app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
                 app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
-                tools:text="10일 전" />
+                app:timestamp="@{recipe.postDate}" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
@@ -77,14 +79,14 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_recipe"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="20dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toBottomOf="@id/tv_post_date"
-                tools:src="@drawable/sample_feed_image" />
+                app:imageUrl="@{recipe.photoUrl}" />
 
 
             <TextView
@@ -95,7 +97,7 @@
                 android:layout_margin="20dp"
                 android:textSize="@dimen/body_text_size"
                 android:textColor="@color/dark_gray"
-                tools:text="@string/dummy_text"
+                android:text="@{recipe.desc}"
                 android:maxLines="3"
                 android:ellipsize="end"
                 android:id="@+id/tv_recipe_desc" />
@@ -103,4 +105,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 </layout>

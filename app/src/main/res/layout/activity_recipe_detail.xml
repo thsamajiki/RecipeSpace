@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
+
         <variable
-            name="viewModel"
-            type="com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel" />
+            name="recipe"
+            type="com.hero.recipespace.data.recipe.RecipeData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,21 +27,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_back"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_arrow"
                     android:padding="14dp" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:id="@+id/iv_option_menu"
                     android:src="@drawable/ic_option_menu"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:paddingTop="7dp"
                     android:paddingBottom="7dp"
+                    android:paddingStart="7dp"
                     android:paddingEnd="7dp"
                     android:layout_marginEnd="7dp"
                     android:layout_marginTop="10dp"
@@ -58,7 +61,7 @@
             tools:listitem="@layout/item_recipe_image_list"
             android:orientation="horizontal" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="35dp"
             android:layout_height="35dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +69,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:id="@+id/iv_user_profile"
-            tools:src="@drawable/ic_user" />
+            app:imageUrl="@{recipe.profileImageUrl}"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -74,7 +78,7 @@
             android:id="@+id/tv_user_name"
             android:textSize="@dimen/body_text_size"
             android:textColor="@color/black"
-            tools:text="정호섭"
+            android:text="@{recipe.userName}"
             app:layout_constraintStart_toEndOf="@id/iv_user_profile"
             app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
             android:layout_marginTop="20dp"
@@ -88,9 +92,9 @@
             android:textColor="@color/dark_gray"
             app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
             app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="2dp"
-            tools:text="10일 전" />
+            app:timestamp="@{recipe.postDate}" />
 
         <RatingBar
             android:layout_width="wrap_content"
@@ -112,7 +116,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
             android:id="@+id/btn_question"
-            android:text="문의하기"
+            android:text="@string/contact_recipe"
             android:textColor="@color/colorPrimary"
             app:strokeColor="@color/colorPrimary"
             app:rippleColor="@color/colorPrimary30"
@@ -130,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/body_text_size"
                 android:textColor="@color/dark_gray"
-                tools:text="@string/dummy_text"
+                android:text="@{recipe.desc}"
                 android:id="@+id/tv_recipe_desc" />
 
         </ScrollView>

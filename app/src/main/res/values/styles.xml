@@ -11,6 +11,7 @@
         <item name="android:ambientShadowAlpha">0.03</item>
         <item name="android:spotShadowAlpha">0.05</item>
     </style>
+
     <style name="LoadingDialog" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -24,5 +25,13 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <!--  ImageView Style  -->
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+        <item name="cornerSize">10%</item>
+    </style>
 
 </resources>

@@ -14,6 +14,7 @@ import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.view.login.LoginActivity
+import com.hero.recipespace.view.photoview.PhotoActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,7 +57,8 @@ class AccountFragment: Fragment(),
 
         photoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-
+                val intent = Intent(requireActivity(), PhotoActivity::class.java)
+                val recipeKey =
             }
         }
     }
@@ -79,9 +81,6 @@ class AccountFragment: Fragment(),
         }
         val userName: String = MyInfoUtil.getInstance().getUserName(requireActivity())
         binding.tvUserName.text = userName
-    }
-
-    override fun onClick(v: View) {
     }
 
     private fun intentProfileEdit() {
@@ -108,8 +107,6 @@ class AccountFragment: Fragment(),
         requireActivity().finishAffinity()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_account_actionbar_option, menu)
+    override fun onClick(v: View) {
     }
 }
