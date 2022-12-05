@@ -1,6 +1,7 @@
 package com.hero.recipespace.database.recipe
 
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
@@ -17,8 +18,7 @@ class RecipeRepositoryImpl(
 
     override suspend fun getRecipe(
         recipeKey: String,
-        onCompleteListener: OnCompleteListener<RecipeEntity>
-    ) {
+        onCompleteListener: OnCompleteListener<RecipeEntity>) : LiveData<RecipeEntity> {
         coroutineScope {
             recipeLocalDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
                 override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {

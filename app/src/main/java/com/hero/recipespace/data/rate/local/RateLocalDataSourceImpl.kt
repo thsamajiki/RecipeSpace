@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.rate.local
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.rate.datastore.RateCacheStore
 import com.hero.recipespace.database.rate.datastore.RateLocalStore
@@ -11,7 +12,7 @@ class RateLocalDataSourceImpl(
     private val rateCacheStore: RateCacheStore
 ) : RateLocalDataSource {
 
-    override suspend fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>): LiveData<RateData> {
         rateCacheStore.getData(rateKey, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -33,7 +34,7 @@ class RateLocalDataSourceImpl(
 
     override fun getDataList(
         onCompleteListener: OnCompleteListener<List<RateData>>
-    ) {
+    ): LiveData<List<RateData>> {
         rateCacheStore.getDataList(object : OnCompleteListener<List<RateData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RateData>>?) {
                 if (isSuccess) {

@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.user.local
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.datastore.UserLocalStore
 import com.hero.recipespace.listener.OnCompleteListener
@@ -11,7 +12,7 @@ class UserLocalDataSourceImpl(
     override suspend fun getData(
         userKey: String,
         onCompleteListener: OnCompleteListener<UserData>
-    ) {
+    ): LiveData<UserData> {
         userLocalStore.getData(userKey, object : OnCompleteListener<UserData> {
             override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
                 if (isSuccess) {
@@ -25,7 +26,7 @@ class UserLocalDataSourceImpl(
 
     override fun getDataList(
         onCompleteListener: OnCompleteListener<List<UserData>>
-    ) {
+    ): LiveData<List<UserData>> {
         userLocalStore.getDataList(object : OnCompleteListener<List<UserData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
                 if (isSuccess) {

@@ -9,6 +9,8 @@ interface UserRepository {
 
     fun getAccountProfile(): UserEntity
 
+    fun getUserList(onCompleteListener: OnCompleteListener<List<UserEntity>>)
+
     suspend fun addUser(
         userName: String,
         email: String,

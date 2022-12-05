@@ -1,8 +1,10 @@
 package com.hero.recipespace.data.message.local
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.message.datastore.MessageCacheStore
 import com.hero.recipespace.database.message.datastore.MessageLocalStore
+import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 
@@ -11,7 +13,7 @@ class MessageLocalDataSourceImpl(
     private val messageCacheStore: MessageCacheStore
 ) : MessageLocalDataSource {
 
-    override fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>) : LiveData<MessageData> {
         messageCacheStore.getData(messageKey, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
                 if (isSuccess) {
@@ -35,7 +37,7 @@ class MessageLocalDataSourceImpl(
     override fun getDataList(
         userKey: String,
         onCompleteListener: OnCompleteListener<List<MessageData>>,
-    ) {
+    ): LiveData<List<MessageData>> {
         messageCacheStore.getDataList(object : OnCompleteListener<List<MessageData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<MessageData>>?) {
                 if (isSuccess) {
@@ -60,9 +62,9 @@ class MessageLocalDataSourceImpl(
         messageCacheStore.clear()
     }
 
-    override fun add(
+    override suspend fun add(
         messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>,
+        onCompleteListener: OnCompleteListener<MessageData>
     ) {
         messageLocalStore.add(messageData, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
@@ -86,9 +88,9 @@ class MessageLocalDataSourceImpl(
         })
     }
 
-    override fun update(
+    override suspend fun update(
         messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>,
+        onCompleteListener: OnCompleteListener<MessageData>
     ) {
         messageLocalStore.update(messageData, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
@@ -112,9 +114,9 @@ class MessageLocalDataSourceImpl(
         })
     }
 
-    override fun remove(
+    override suspend fun remove(
         messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>,
+        onCompleteListener: OnCompleteListener<MessageData>
     ) {
         messageLocalStore.remove(messageData, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {

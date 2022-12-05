@@ -13,3 +13,14 @@ fun RateData.toEntity(): RateEntity {
         date = date
     )
 }
+
+fun RateEntity.toData(rateEntity: RateEntity): RateData {
+    return RateData(
+        key = rateEntity.key,
+        userKey = rateEntity.userKey,
+        userName = rateEntity.userName,
+        profileImageUrl = rateEntity.profileImageUrl,
+        rate = rateEntity.rate,
+        date = rateEntity.date
+    )
+}

@@ -12,3 +12,13 @@ fun ChatData.toEntity(): ChatEntity {
         userList = userList
     )
 }
+
+fun ChatEntity.toData(chatEntity: ChatEntity): ChatData {
+    return ChatData(
+        key = chatEntity.key,
+        lastMessage = chatEntity.lastMessage,
+        userProfiles = chatEntity.userProfiles,
+        userNames = chatEntity.userNames,
+        userList = chatEntity.userList
+    )
+}

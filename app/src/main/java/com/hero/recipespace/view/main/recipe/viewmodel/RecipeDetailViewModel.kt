@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.domain.recipe.repository.RecipeRepository
+import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class RecipeDetailViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
-    private val recipeRepository: RecipeRepository
+    private val getRecipeUseCase: GetRecipeUseCase
 ) : AndroidViewModel(application), OnCompleteListener<RecipeData> {
 
     companion object {

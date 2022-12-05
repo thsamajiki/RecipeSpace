@@ -1,6 +1,7 @@
 package com.hero.recipespace.database.notice.datastore
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.CloudStore
@@ -28,7 +29,7 @@ class NoticeCloudStore(
 
     override fun getDataList(
         onCompleteListener: OnCompleteListener<List<NoticeData>>
-    ) {
+    ): LiveData<List<NoticeData>> {
         TODO("Not yet implemented")
     }
 

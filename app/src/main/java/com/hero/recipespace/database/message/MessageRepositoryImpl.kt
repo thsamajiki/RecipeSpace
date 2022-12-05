@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.message
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
@@ -16,7 +17,7 @@ class MessageRepositoryImpl(
     override suspend fun getMessage(
         messageKey: String,
         onCompleteListener: OnCompleteListener<MessageEntity>
-    ) {
+    ) : LiveData<MessageEntity> {
         messageLocalDataSource.getData(messageKey, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
                 if (isSuccess) {
@@ -41,8 +42,8 @@ class MessageRepositoryImpl(
 
     override fun getMessageList(
         userKey: String,
-        onCompleteListener: OnCompleteListener<List<MessageEntity>>,
-    ) {
+        onCompleteListener: OnCompleteListener<List<MessageEntity>>
+    ) : LiveData<List<MessageEntity>> {
         messageLocalDataSource.getDataList(userKey, object : OnCompleteListener<List<MessageData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<MessageData>>?) {
                 if (isSuccess) {
@@ -66,8 +67,8 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun addMessage(
-        messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageEntity>,
+        messageEntity: MessageEntity,
+        onCompleteListener: OnCompleteListener<MessageEntity>
     ) {
         messageRemoteDataSource.add(messageData, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
@@ -92,8 +93,8 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun modifyMessage(
-        messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageEntity>,
+        messageEntity: MessageEntity,
+        onCompleteListener: OnCompleteListener<MessageEntity>
     ) {
         messageRemoteDataSource.update(messageData, object : OnCompleteListener<MessageData> {
             override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
@@ -118,7 +119,7 @@ class MessageRepositoryImpl(
     }
 
     override suspend fun deleteMessage(
-        messageData: MessageData,
+        messageEntity: MessageEntity,
         onCompleteListener: OnCompleteListener<MessageEntity>,
     ) {
         messageRemoteDataSource.remove(messageData, object : OnCompleteListener<MessageData> {

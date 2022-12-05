@@ -10,3 +10,11 @@ fun UserData.toEntity(): UserEntity {
         profileImageUrl = profileImageUrl
     )
 }
+
+fun UserEntity.toData(userEntity: UserEntity): UserData {
+    return UserData(
+        userKey = userEntity.userKey,
+        userName = userEntity.userName,
+        profileImageUrl = userEntity.profileImageUrl
+    )
+}

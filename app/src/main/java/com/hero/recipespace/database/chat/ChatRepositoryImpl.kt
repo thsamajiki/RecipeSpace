@@ -1,6 +1,7 @@
 package com.hero.recipespace.database.chat
 
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.local.ChatLocalDataSource
 import com.hero.recipespace.data.chat.remote.ChatRemoteDataSource
@@ -14,7 +15,7 @@ class ChatRepositoryImpl(
     private val chatLocalDataSource: ChatLocalDataSource
 ) : ChatRepository {
 
-    override suspend fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) {
+    override suspend fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) : LiveData<ChatEntity> {
         chatLocalDataSource.getData(chatKey, object : OnCompleteListener<ChatData> {
             override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
                 if (isSuccess) {
@@ -37,7 +38,7 @@ class ChatRepositoryImpl(
     override fun getChatList(
         userKey: String,
         onCompleteListener: OnCompleteListener<List<ChatEntity>>,
-    ) {
+    ) : LiveData<List<ChatEntity>> {
         chatLocalDataSource.getDataList(userKey, object : OnCompleteListener<List<ChatData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<ChatData>>?) {
                 if (isSuccess) {

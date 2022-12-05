@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.chat.remote
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.database.chat.datastore.ChatCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
@@ -7,15 +8,15 @@ import com.hero.recipespace.listener.OnCompleteListener
 class ChatRemoteDataSourceImpl(
     private val chatCloudStore: ChatCloudStore
 ) : ChatRemoteDataSource {
-    override suspend fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) {
-        chatCloudStore.getData(chatKey, onCompleteListener)
+    override suspend fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) : LiveData<ChatData> {
+        return chatCloudStore.getData(chatKey, onCompleteListener)
     }
 
     override fun getDataList(
         userKey: String,
         onCompleteListener: OnCompleteListener<List<ChatData>>
-    ) {
-        chatCloudStore.getDataList(userKey, onCompleteListener)
+    ) : LiveData<List<ChatData>> {
+        return chatCloudStore.getDataList(userKey, onCompleteListener)
     }
 
     override suspend fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {

@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.user.remote
 
+import androidx.lifecycle.LiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.user.UserData
@@ -8,14 +9,14 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 
 class UserRemoteDataSourceImpl(
-    private val userCloudStore: UserCloudStore,
+    private val userCloudStore: UserCloudStore
 ) : UserRemoteDataSource {
 
     override suspend fun getData(
         userKey: String,
-        onCompleteListener: OnCompleteListener<UserData>,
-    ) {
-        userCloudStore.getData(userKey, object : OnCompleteListener<UserData> {
+        onCompleteListener: OnCompleteListener<UserData>
+    ): LiveData<UserData> {
+        return userCloudStore.getData(userKey, object : OnCompleteListener<UserData> {
             override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)
@@ -40,25 +41,20 @@ class UserRemoteDataSourceImpl(
             firebaseUser.email,
             profileImageUrl
         )
-        userEntity.userKey = firebaseUser.uid
-        userEntity.userName = firebaseUser.displayName
-        if (firebaseUser.photoUrl != null) {
-            userEntity.profileImageUrl = firebaseUser.photoUrl.toString()
-        } else {
-            userEntity.profileImageUrl = null
-        }
+
+        userEntity.copy(firebaseUser.uid, firebaseUser.displayName, firebaseUser.photoUrl.toString())
 
         return userEntity
     }
 
-    fun getCurrentUser(): FirebaseUser? {
+    private fun getCurrentUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
 
     override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<UserData>>,
-    ) {
-        userCloudStore.getDataList(object : OnCompleteListener<List<UserData>> {
+        onCompleteListener: OnCompleteListener<List<UserData>>
+    ): LiveData<List<UserData>> {
+        return userCloudStore.getDataList(object : OnCompleteListener<List<UserData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
                 if (isSuccess) {
                     onCompleteListener.onComplete(true, response)

@@ -4,6 +4,7 @@ import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.local.UserLocalDataSource
 import com.hero.recipespace.data.user.remote.UserRemoteDataSource
 import com.hero.recipespace.domain.user.entity.UserEntity
+import com.hero.recipespace.domain.user.mapper.toEntity
 import com.hero.recipespace.domain.user.repository.UserRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFailedListener
@@ -31,7 +32,23 @@ class UserRepositoryImpl(
     }
 
     override fun getAccountProfile(): UserEntity {
-        TODO("Not yet implemented")
+        return userRemoteDataSource.getFirebaseAuthProfile().toEntity()
+    }
+
+    override fun getUserList(onCompleteListener: OnCompleteListener<List<UserEntity>>) {
+        userLocalDataSource.getDataList(object : OnCompleteListener<List<UserData>> {
+            override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
+                if (isSuccess) {
+                    onCompleteListener.onComplete(true, response)
+                } else {
+                    userRemoteDataSource.getDataList(object : OnCompleteListener<List<UserData>> {
+                        override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
+                            TODO("Not yet implemented")
+                        }
+                    })
+                }
+            }
+        })
     }
 
     override suspend fun addUser(
@@ -39,7 +56,7 @@ class UserRepositoryImpl(
         email: String,
         pwd: String,
         onCompleteListener: OnCompleteListener<UserEntity>,
-        onFailedListener: OnFailedListener,
+        onFailedListener: OnFailedListener
     ) {
         var userData: UserData
         userData.userName = userName

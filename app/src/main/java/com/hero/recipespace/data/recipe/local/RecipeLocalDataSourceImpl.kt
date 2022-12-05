@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.recipe.local
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.recipe.datastore.RecipeCacheStore
 import com.hero.recipespace.database.recipe.datastore.RecipeLocalStore
@@ -11,7 +12,7 @@ class RecipeLocalDataSourceImpl(
     private val recipeCacheStore: RecipeCacheStore
 ) : RecipeLocalDataSource {
 
-    override fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) : LiveData<RecipeData> {
         recipeCacheStore.getData(recipeKey, object : OnCompleteListener<RecipeData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
                 if (isSuccess) {
@@ -34,8 +35,7 @@ class RecipeLocalDataSourceImpl(
         })
     }
 
-    override fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>
-    ) {
+    override fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>) : LiveData<List<RecipeData>> {
         recipeCacheStore.getDataList(object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
                 if (isSuccess) {

@@ -9,3 +9,10 @@ fun MessageData.toEntity(): MessageEntity {
         timestamp = timestamp
     )
 }
+
+fun MessageEntity.toData(messageEntity: MessageEntity): MessageData {
+    return MessageData(
+        userKey = messageEntity.userKey,
+        timestamp = messageEntity.timestamp
+    )
+}

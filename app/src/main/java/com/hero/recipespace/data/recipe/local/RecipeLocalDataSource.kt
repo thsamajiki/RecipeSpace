@@ -1,12 +1,13 @@
 package com.hero.recipespace.data.recipe.local
 
+import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
 
 interface RecipeLocalDataSource {
-    suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>)
+    suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) : LiveData<RecipeData>
 
-    fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>)
+    fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>) : LiveData<List<RecipeData>>
 
     fun clear()
 

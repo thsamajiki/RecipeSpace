@@ -16,3 +16,17 @@ fun RecipeData.toEntity(): RecipeEntity {
         totalRatingCount = totalRatingCount
     )
 }
+
+fun RecipeEntity.toData(recipeEntity: RecipeEntity): RecipeData {
+    return RecipeData(
+        key = recipeEntity.key,
+        profileImageUrl = recipeEntity.profileImageUrl,
+        userName = recipeEntity.userName,
+        userKey = recipeEntity.userKey,
+        desc = recipeEntity.desc,
+        photoUrl = recipeEntity.photoUrl,
+        postDate = recipeEntity.postDate,
+        rate = recipeEntity.rate,
+        totalRatingCount = recipeEntity.totalRatingCount
+    )
+}

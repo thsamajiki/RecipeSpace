@@ -31,7 +31,7 @@ class ChatLocalDataSourceImpl(
         })
     }
 
-    override fun getDataList(onCompleteListener: OnCompleteListener<List<ChatData>>) {
+    override fun getDataList(userKey: String, onCompleteListener: OnCompleteListener<List<ChatData>>) {
         chatCacheStore.getDataList(object : OnCompleteListener<List<ChatData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<ChatData>>?) {
                 if (isSuccess) {
