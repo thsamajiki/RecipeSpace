@@ -37,15 +37,15 @@ class MessageCacheStore: CacheStore<MessageData>() {
         TODO("Not yet implemented")
     }
 
-    override fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         TODO("Not yet implemented")
     }
 
-    override fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         TODO("Not yet implemented")
     }
 
-    override fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         TODO("Not yet implemented")
     }
 }

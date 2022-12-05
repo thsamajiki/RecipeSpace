@@ -48,19 +48,19 @@ class RateLocalStore(
         onCompleteListener.onComplete(true, rateDataList)
     }
 
-    override fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.insertRate(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.updateRate(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.deleteRate(data)
 
         onCompleteListener.onComplete(true, data)

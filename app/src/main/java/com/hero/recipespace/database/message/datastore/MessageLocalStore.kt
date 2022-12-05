@@ -48,19 +48,19 @@ class MessageLocalStore(
         onCompleteListener.onComplete(true, messageDataList)
     }
 
-    override fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.insertMessage(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.updateMessage(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    override suspend fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.deleteMessage(data)
 
         onCompleteListener.onComplete(true, data)

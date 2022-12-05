@@ -9,7 +9,7 @@ abstract class CloudStore<T>(
     private val context: Context,
     private val fireStore: FirebaseFirestore
 ) : DataStore<T> {
-    abstract fun getData(key: String, onCompleteListener: OnCompleteListener<T>) : LiveData<T>
+    abstract fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<T>) : LiveData<T>
 
     abstract fun getDataList(onCompleteListener: OnCompleteListener<List<T>>) : LiveData<List<T>>
 

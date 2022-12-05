@@ -91,7 +91,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
         }
     }
 
-    override fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
                 if (isSuccess) {
@@ -115,7 +115,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
         }
     }
 
-    override fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         val originIndex = object : OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
                 if (isSuccess) {
@@ -160,7 +160,7 @@ class RecipeCacheStore : CacheStore<RecipeData>() {
         }
     }
 
-    override fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         val originIndex = getDataList(object :
             OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {

@@ -47,19 +47,19 @@ class ChatLocalStore(
         onCompleteListener.onComplete(true, chatDataList)
     }
 
-    override fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.insertChat(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.updateChat(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.deleteChat(data)
 
         onCompleteListener.onComplete(true, data)

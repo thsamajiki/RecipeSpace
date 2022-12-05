@@ -30,15 +30,15 @@ class RateCacheStore: CacheStore<RateData>() {
         TODO("Not yet implemented")
     }
 
-    override fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 
-    override fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 
-    override fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         TODO("Not yet implemented")
     }
 }

@@ -132,9 +132,9 @@ class FirebaseData {
             var originSum = originTotalCount * originRate
             var newTotalCount = originTotalCount + 1
             if (rateSnapShot.exists()) {
-                val myOriginRateData: RateData = rateSnapShot.toObject(RateData::class.java)
+                val myOriginRateData: RateData ?= rateSnapShot.toObject(RateData::class.java)
                 val myOriginRate: Float = myOriginRateData.rate
-                originSum = originSum - myOriginRate
+                originSum -= myOriginRate
                 newTotalCount--
             }
             val userRate: Float = rateData.rate
@@ -167,7 +167,7 @@ class FirebaseData {
 
     fun getChatList(
         userKey: String,
-        onChatListChangeListener: OnChatListChangeListener,
+        onChatListChangeListener: OnChatListChangeListener
     ): ListenerRegistration {
         val firestore = FirebaseFirestore.getInstance()
         return firestore.collection("Chat")
@@ -190,7 +190,7 @@ class FirebaseData {
         context: Context,
         otherUserKey: String,
         message: String,
-        onCompleteListener: OnCompleteListener<ChatData>,
+        onCompleteListener: OnCompleteListener<ChatData>
     ) {
         val firestore = FirebaseFirestore.getInstance()
         val response: Response<ChatData> = Response()
@@ -200,7 +200,7 @@ class FirebaseData {
             val myProfileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(context)
             val myUserName: String = MyInfoUtil.getInstance().getUserName(context)
             val userRef = firestore.collection("User").document(
-                otherUserKey!!)
+                otherUserKey)
             val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                 ?: return@Function null
             transaction[userRef] = userData

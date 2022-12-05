@@ -33,15 +33,15 @@ class NoticeCloudStore(
         TODO("Not yet implemented")
     }
 
-    override fun add(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun add(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
         TODO("Not yet implemented")
     }
 
-    override fun update(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun update(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
         TODO("Not yet implemented")
     }
 
-    override fun remove(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    override suspend fun remove(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
         TODO("Not yet implemented")
     }
 }

@@ -49,19 +49,19 @@ class RecipeLocalStore(
         onCompleteListener.onComplete(true, recipeDataList)
     }
 
-    override fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.insertRecipe(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.updateRecipe(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    override suspend fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.deleteRecipe(data)
 
         onCompleteListener.onComplete(true, data)

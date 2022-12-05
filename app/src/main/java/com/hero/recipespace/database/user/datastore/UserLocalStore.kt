@@ -51,19 +51,19 @@ class UserLocalStore(
         onCompleteListener.onComplete(true, userDataList)
     }
 
-    override fun add(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    override suspend fun add(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.insertUser(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun update(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    override suspend fun update(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.updateUser(data)
 
         onCompleteListener.onComplete(true, data)
     }
 
-    override fun remove(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    override suspend fun remove(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.deleteUser(data)
 
         onCompleteListener.onComplete(true, data)

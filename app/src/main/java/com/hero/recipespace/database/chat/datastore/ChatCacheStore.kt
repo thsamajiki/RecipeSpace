@@ -56,7 +56,7 @@ class ChatCacheStore: CacheStore<ChatData>() {
         }
     }
 
-    override fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         getDataList(object :
             OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
@@ -81,7 +81,7 @@ class ChatCacheStore: CacheStore<ChatData>() {
         }
     }
 
-    override fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         val originIndex = getDataList(object :
             OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
@@ -128,7 +128,7 @@ class ChatCacheStore: CacheStore<ChatData>() {
         }
     }
 
-    override fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    override suspend fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         val originIndex = getDataList(object :
             OnCompleteListener<List<RecipeData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>) {
