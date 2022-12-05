@@ -3,6 +3,7 @@ package com.hero.recipespace.database.rate
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.local.RateLocalDataSource
 import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
+import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
@@ -12,7 +13,10 @@ class RateRepositoryImpl(
     private val rateRemoteDataSource: RateRemoteDataSource
 ) : RateRepository {
 
-    override suspend fun getRate(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun getRate(
+        rateKey: String,
+        onCompleteListener: OnCompleteListener<RateEntity>
+    ) {
         rateLocalDataSource.getData(rateKey, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {
@@ -32,7 +36,7 @@ class RateRepositoryImpl(
         })
     }
 
-    override fun getRateList(onCompleteListener: OnCompleteListener<List<RateData>>) {
+    override fun getRateList(onCompleteListener: OnCompleteListener<List<RateEntity>>) {
         rateLocalDataSource.getDataList(object : OnCompleteListener<List<RateData>> {
             override fun onComplete(isSuccess: Boolean, response: Response<List<RateData>>?) {
                 if (isSuccess) {
@@ -55,7 +59,10 @@ class RateRepositoryImpl(
         })
     }
 
-    override suspend fun addRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    override suspend fun addRate(
+        rateEntity: RateEntity,
+        onCompleteListener: OnCompleteListener<RateEntity>
+    ) {
         rateRemoteDataSource.add(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
                 if (isSuccess) {

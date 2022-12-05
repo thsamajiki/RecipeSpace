@@ -13,64 +13,63 @@ import android.provider.MediaStore
 class RealPathUtil {
 
     companion object {
-        fun getRealPath(context: Context?, uri: Uri?): String? {
+        fun getRealPath(context: Context, uri: Uri): String? {
             return RealPathUtil.getRealPathFromURI_API19(context, uri)
         }
-    }
 
-    fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {
+        private fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {
 
-        // check here to KITKAT or new version
-        val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+            // check here to KITKAT or new version
+            val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
 
-        // DocumentProvider
-        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // DocumentProvider
+            if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
 
-            // ExternalStorageProvider
-            if (isExternalStorageDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":").toTypedArray()
-                val type = split[0]
-                if ("primary".equals(type, ignoreCase = true)) {
-                    return (Environment.getExternalStorageDirectory().toString() + "/"
-                            + split[1])
+                // ExternalStorageProvider
+                if (isExternalStorageDocument(uri)) {
+                    val docId = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":").toTypedArray()
+                    val type = split[0]
+                    if ("primary".equals(type, ignoreCase = true)) {
+                        return (Environment.getExternalStorageDirectory().toString() + "/"
+                                + split[1])
+                    }
+                } else if (isDownloadsDocument(uri)) {
+                    val id = DocumentsContract.getDocumentId(uri)
+                    val contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"),
+                        java.lang.Long.valueOf(id))
+                    return getDataColumn(context, contentUri, null, null)
+                } else if (isMediaDocument(uri)) {
+                    val docId = DocumentsContract.getDocumentId(uri)
+                    val split = docId.split(":").toTypedArray()
+                    val type = split[0]
+                    var contentUri: Uri? = null
+                    if ("image" == type) {
+                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    } else if ("video" == type) {
+                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    } else if ("audio" == type) {
+                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    }
+                    val selection = "_id=?"
+                    val selectionArgs = arrayOf(split[1])
+                    return getDataColumn(context, contentUri, selection,
+                        selectionArgs)
                 }
-            } else if (isDownloadsDocument(uri)) {
-                val id = DocumentsContract.getDocumentId(uri)
-                val contentUri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"),
-                    java.lang.Long.valueOf(id))
-                return getDataColumn(context, contentUri, null, null)
-            } else if (isMediaDocument(uri)) {
-                val docId = DocumentsContract.getDocumentId(uri)
-                val split = docId.split(":").toTypedArray()
-                val type = split[0]
-                var contentUri: Uri? = null
-                if ("image" == type) {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                } else if ("video" == type) {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-                } else if ("audio" == type) {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                }
-                val selection = "_id=?"
-                val selectionArgs = arrayOf(split[1])
-                return getDataColumn(context, contentUri, selection,
-                    selectionArgs)
+            } else if ("content".equals(uri.scheme, ignoreCase = true)) {
+
+                // Return the remote address
+                return if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(context,
+                    uri,
+                    null,
+                    null)
+            } else if ("file".equals(uri.scheme, ignoreCase = true)) {
+                return uri.path
             }
-        } else if ("content".equals(uri.scheme, ignoreCase = true)) {
-
-            // Return the remote address
-            return if (isGooglePhotosUri(uri)) uri.lastPathSegment else getDataColumn(context,
-                uri,
-                null,
-                null)
-        } else if ("file".equals(uri.scheme, ignoreCase = true)) {
-            return uri.path
+            return null
         }
-        return null
     }
-
 
     private fun getDataColumn(
         context: Context, uri: Uri?,
