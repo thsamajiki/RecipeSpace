@@ -32,6 +32,10 @@ class RateLocalStore(
         }
         val rateKey: String = params[0].toString()
         val rateData: RateData = rateDao.getRateFromKey(rateKey)!!
+
+        kotlin.run {
+            onCompleteListener.onComplete(true, rateData)
+        }
     }
 
     override fun getDataList(
@@ -45,24 +49,32 @@ class RateLocalStore(
 
         val rateDataList: LiveData<List<RateData>> = rateDao.getAllRates()
 
-        onCompleteListener.onComplete(true, rateDataList)
+        kotlin.run {
+            onCompleteListener.onComplete(true, rateDataList)
+        }
     }
 
     override suspend fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.insertRate(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.updateRate(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
         rateDao.deleteRate(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 }

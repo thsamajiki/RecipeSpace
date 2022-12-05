@@ -31,6 +31,10 @@ class ChatLocalStore(
         }
         val chatKey: String = params[0].toString()
         val chatData: ChatData = chatDao.getChatFromKey(chatKey)!!
+
+        kotlin.run {
+            onCompleteListener.onComplete(true, chatData)
+        }
     }
 
     override fun getDataList(
@@ -44,24 +48,32 @@ class ChatLocalStore(
 
         val chatDataList: LiveData<List<ChatData>> = chatDao.getAllChats()
 
-        onCompleteListener.onComplete(true, chatDataList)
+        kotlin.run {
+            onCompleteListener.onComplete(true, chatDataList)
+        }
     }
 
     override suspend fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.insertChat(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.updateChat(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
         chatDao.deleteChat(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 }

@@ -32,6 +32,10 @@ class MessageLocalStore(
 
         val messageKey: String = params[0].toString()
         val messageData: MessageData = messageDao.getMessageFromKey(messageKey)!!
+
+        kotlin.run {
+            onCompleteListener.onComplete(true, messageData)
+        }
     }
 
     override fun getDataList(
@@ -45,24 +49,32 @@ class MessageLocalStore(
 
         val messageDataList: LiveData<List<MessageData>> = messageDao.getAllMessages()
 
-        onCompleteListener.onComplete(true, messageDataList)
+        kotlin.run {
+            onCompleteListener.onComplete(true, messageDataList)
+        }
     }
 
     override suspend fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.insertMessage(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.updateMessage(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
         messageDao.deleteMessage(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 }

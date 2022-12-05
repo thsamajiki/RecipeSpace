@@ -33,11 +33,15 @@ class RecipeLocalStore(
 
         val recipeKey: String = params[0].toString()
         val recipeData: RecipeData = recipeDao.getRecipeFromKey(recipeKey)!!
+
+        kotlin.run {
+            onCompleteListener.onComplete(true, recipeData)
+        }
     }
 
     override fun getDataList(
         vararg params: Any,
-        onCompleteListener: OnCompleteListener<List<RecipeData>>,
+        onCompleteListener: OnCompleteListener<List<RecipeData>>
     ) {
         if (params.isEmpty()) {
             onCompleteListener.onComplete(false, null)
@@ -46,24 +50,32 @@ class RecipeLocalStore(
 
         val recipeDataList: LiveData<List<RecipeData>> = recipeDao.getAllRecipes()
 
-        onCompleteListener.onComplete(true, recipeDataList)
+        kotlin.run {
+            onCompleteListener.onComplete(true, recipeDataList)
+        }
     }
 
     override suspend fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.insertRecipe(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.updateRecipe(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
         recipeDao.deleteRecipe(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 }

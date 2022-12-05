@@ -35,6 +35,10 @@ class UserLocalStore(
         }
         val userKey: String = params[0].toString()
         val userData: UserData = userDao.getUserFromKey(userKey)!!
+
+        kotlin.run {
+            onCompleteListener.onComplete(true, userData)
+        }
     }
 
     override fun getDataList(
@@ -48,24 +52,32 @@ class UserLocalStore(
 
         val userDataList: LiveData<List<UserData>> = userDao.getAllUsers()
 
-        onCompleteListener.onComplete(true, userDataList)
+        kotlin.run {
+            onCompleteListener.onComplete(true, userDataList)
+        }
     }
 
     override suspend fun add(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.insertUser(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun update(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.updateUser(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 
     override suspend fun remove(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
         userDao.deleteUser(data)
 
-        onCompleteListener.onComplete(true, data)
+        kotlin.run {
+            onCompleteListener.onComplete(true, data)
+        }
     }
 }
