@@ -5,9 +5,10 @@ import com.hero.recipespace.domain.user.repository.UserRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import javax.inject.Inject
 
-class GetUserListUseCase @Inject constructor(
+class UpdateUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    fun invoke(onCompleteListener: OnCompleteListener<List<UserEntity>>) =
-        userRepository.getUserList(onCompleteListener)
+    suspend fun invoke(userEntity: UserEntity, onCompleteListener: OnCompleteListener<UserEntity>) {
+        userRepository.updateUser(userEntity, onCompleteListener)
+    }
 }

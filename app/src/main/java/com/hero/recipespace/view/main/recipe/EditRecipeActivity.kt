@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
@@ -135,8 +136,8 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = MyInfoUtil.getInstance().getUserName(this)
-            val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
+            val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
             val recipeData = RecipeData()
             recipeData.photoUrl = downloadUrl
             recipeData.desc = binding.editContent.text.toString()

@@ -10,17 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.R
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
-import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.TimeUtils
-import com.hero.recipespace.view.login.SignUpActivity
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.chat.ChatActivity.Companion.EXTRA_OTHER_USER_KEY
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
+import com.hero.recipespace.view.post.PostActivity.Companion.EXTRA_RECIPE_ENTITY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -49,7 +47,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
         binding.btnQuestion.setOnClickListener {
             val firebaseUser = FirebaseAuth.getInstance().currentUser
-            val myUserKey: String = firebaseUser.uid
+            val myUserKey: String = firebaseUser?.uid.toString()
             if (getRecipeData()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
@@ -63,7 +61,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivOptionMenu.setOnClickListener {
-            val myUserKey = MyInfoUtil.getInstance().getKey()
+            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
             if (getRecipeData()?.userKey.equals(myUserKey)) {
                 binding.ivOptionMenu.visibility = View.VISIBLE
                 binding.ivOptionMenu.isClickable = true
@@ -73,7 +71,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getRecipeData(): RecipeData? {
-        return intent.getParcelableExtra(EXTRA_RECIPE_DATA)
+        return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
     }
 
     private fun setData() {

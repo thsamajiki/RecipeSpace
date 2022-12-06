@@ -10,6 +10,7 @@ import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,6 +35,10 @@ class RecipeDetailViewModel @Inject constructor(
     val recipeData: RecipeData = savedStateHandle.get<RecipeData>(RECIPE_KEY)!!
 
     val chatData: ChatData = savedStateHandle.get<ChatData>(RECIPE_USER_KEY)!!
+
+    fun getRecipeData(): Flow<RecipeData> {
+
+    }
 
     override fun onCleared() {
         super.onCleared()

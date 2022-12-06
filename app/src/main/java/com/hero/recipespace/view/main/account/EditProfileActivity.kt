@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
@@ -24,7 +25,6 @@ import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
-import de.hdodenhof.circleimageview.CircleImageView
 
 class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     OnFileUploadListener, TextWatcher {
@@ -63,13 +63,13 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun setUserData() {
-        profileUrl = MyInfoUtil.getInstance().getProfileImageUrl(this)
+        profileUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
         if (TextUtils.isEmpty(profileUrl)) {
             Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
         } else {
             Glide.with(this).load(profileUrl).into(binding.ivUserProfile)
         }
-        userName = MyInfoUtil.getInstance().getUserName(this)
+        userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         binding.editUserName.setText(userName)
     }
 
@@ -144,7 +144,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
         val newUserName = binding.editUserName.text.toString()
         editData[MyInfoUtil.EXTRA_USERNAME] = newUserName
-        val userKey: String = MyInfoUtil.getInstance().getKey()
+        val userKey: String ?= FirebaseAuth.getInstance().uid
         FirebaseData.getInstance()
             .updateUserData(userKey, editData, object : OnCompleteListener<Void> {
                 override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {

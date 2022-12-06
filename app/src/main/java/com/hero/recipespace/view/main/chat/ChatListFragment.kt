@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
@@ -48,7 +49,7 @@ class ChatListFragment: Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userKey = MyInfoUtil.getInstance().getKey()
+        userKey = FirebaseAuth.getInstance().currentUser?.uid
         chatListRegistration = FirebaseData.getInstance().getChatList(userKey, this)
         initRecyclerView(binding.rvChatList)
     }

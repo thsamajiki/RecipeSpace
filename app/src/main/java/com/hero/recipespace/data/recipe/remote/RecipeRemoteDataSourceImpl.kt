@@ -1,36 +1,34 @@
 package com.hero.recipespace.data.recipe.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.recipe.datastore.RecipeCloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 class RecipeRemoteDataSourceImpl(
     private val recipeCloudStore: RecipeCloudStore
 ) : RecipeRemoteDataSource {
-    override suspend fun getData(recipeKey: String, onCompleteListener: OnCompleteListener<RecipeData>) : LiveData<RecipeData> {
-        return recipeCloudStore.getData(recipeKey, onCompleteListener)
+    override fun getData(recipeKey: String) : Flow<RecipeData> {
+        return recipeCloudStore.getData(recipeKey)
     }
 
-    override fun getDataList(onCompleteListener: OnCompleteListener<List<RecipeData>>) : LiveData<List<RecipeData>> {
-        return recipeCloudStore.getDataList(onCompleteListener)
+    override fun getDataList() : Flow<List<RecipeData>> {
+
+        return recipeCloudStore.getDataList()
     }
 
-    override suspend fun add(recipeData: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
-        recipeCloudStore.add(recipeData, onCompleteListener)
+    override suspend fun add(recipeData: RecipeData) {
+        recipeCloudStore.add(recipeData)
     }
 
     override suspend fun update(
-        recipeData: RecipeData,
-        onCompleteListener: OnCompleteListener<RecipeData>,
+        recipeData: RecipeData
     ) {
-        recipeCloudStore.update(recipeData, onCompleteListener)
+        recipeCloudStore.update(recipeData)
     }
 
     override suspend fun remove(
-        recipeData: RecipeData,
-        onCompleteListener: OnCompleteListener<RecipeData>,
+        recipeData: RecipeData
     ) {
-        recipeCloudStore.remove(recipeData, onCompleteListener)
+        recipeCloudStore.remove(recipeData)
     }
 }

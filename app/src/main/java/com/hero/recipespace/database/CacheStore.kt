@@ -4,7 +4,7 @@ import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
 
 abstract class CacheStore<T> : DataStore<T> {
-    private var dataList: MutableList<T> = ArrayList<T>()
+    private var dataList: MutableList<T> = mutableListOf()
 
     fun getDataList(): List<T> {
         return dataList

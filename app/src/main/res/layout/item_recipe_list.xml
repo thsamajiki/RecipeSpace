@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="recipe"
-            type="com.hero.recipespace.data.recipe.RecipeData" />
+            type="com.hero.recipespace.domain.recipe.entity.RecipeEntity" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/mcv_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
         app:cardElevation="7dp"
         app:cardUseCompatPadding="true"
-        app:rippleColor="@color/colorPrimary30"
-        android:id="@+id/mcv_container">
+        app:rippleColor="@color/colorPrimary30">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,55 +28,55 @@
                 android:id="@+id/iv_user_profile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 app:imageUrl="@{recipe.profileImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
             <TextView
+                android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_user_name"
-                android:textSize="@dimen/body_text_size"
-                android:textColor="@color/black"
-                android:text="@{recipe.userName}"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp" />
+                android:text="@{recipe.userName}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/body_text_size"
+                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/tv_post_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_post_date"
-                android:textSize="@dimen/body_text_size"
-                android:textColor="@color/dark_gray"
-                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/body_text_size"
+                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
                 app:timestamp="@{recipe.postDate}" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcv_rating_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                app:contentPadding="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:rippleColor="@color/colorPrimary30"
-                app:contentPadding="20dp"
-                app:cardElevation="0dp"
-                android:id="@+id/mcv_rating_container">
+                app:rippleColor="@color/colorPrimary30">
 
                 <RatingBar
+                    android:id="@+id/rating_bar"
+                    style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:rating="3"
                     android:numStars="5"
                     android:progressTint="@color/colorPrimary"
-                    android:id="@+id/rating_bar"
-                    style="?android:attr/ratingBarStyleSmall" />
+                    app:rating="@{recipe.rate}" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -85,22 +86,22 @@
                 android:layout_height="250dp"
                 android:layout_marginTop="20dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@id/tv_post_date"
-                app:imageUrl="@{recipe.photoUrl}" />
+                app:imageUrl="@{recipe.photoUrl}"
+                app:layout_constraintTop_toBottomOf="@id/tv_post_date" />
 
 
             <TextView
+                android:id="@+id/tv_recipe_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_margin="20dp"
-                android:textSize="@dimen/body_text_size"
-                android:textColor="@color/dark_gray"
-                android:text="@{recipe.desc}"
-                android:maxLines="3"
                 android:ellipsize="end"
-                android:id="@+id/tv_recipe_desc" />
+                android:maxLines="3"
+                android:text="@{recipe.desc}"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/body_text_size"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_recipe" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

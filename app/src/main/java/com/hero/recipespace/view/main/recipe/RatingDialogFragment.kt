@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
@@ -78,9 +79,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     }
 
     private fun makeRateData(rate: Float): RateData {
-        val userKey: String = MyInfoUtil.getInstance().getKey()
-        val userName: String = MyInfoUtil.getInstance().getUserName(getContext())
-        val profileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(getContext())
+        val userKey: String = FirebaseAuth.getInstance().currentUser.uid
+        val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
+        val profileUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
         val rateData = RateData()
         rateData.date = Timestamp.now()
         rateData.profileImageUrl = profileUrl

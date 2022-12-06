@@ -5,5 +5,5 @@ import androidx.databinding.BindingAdapter
 
 @BindingAdapter("rating")
 fun RatingBar.setRatingScore(rating: Float) {
-
+    this.rating = rating
 }

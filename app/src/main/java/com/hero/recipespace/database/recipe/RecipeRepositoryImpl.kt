@@ -1,116 +1,57 @@
 package com.hero.recipespace.database.recipe
 
 import android.widget.Toast
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class RecipeRepositoryImpl(
     private val recipeRemoteDataSource: RecipeRemoteDataSource,
-    private val recipeLocalDataSource: RecipeLocalDataSource,
+    private val recipeLocalDataSource: RecipeLocalDataSource
 ) : RecipeRepository {
 
-    override suspend fun getRecipe(
-        recipeKey: String,
-        onCompleteListener: OnCompleteListener<RecipeEntity>) : LiveData<RecipeEntity> {
-        coroutineScope {
-            recipeLocalDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
-                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                    if (isSuccess) {
+    override fun getRecipe(recipeKey: String) : Flow<RecipeEntity> {
 
-                    } else {
-                        recipeRemoteDataSource.getData(recipeKey, object : OnCompleteListener<RecipeData> {
-                            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                                if (isSuccess) {
-
-                                } else {
-                                    Toast.makeText(coroutineContext, "레시피를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        })
-                    }
-                }
-            })
-        }
-    }
-
-    override fun getRecipeList(onCompleteListener: OnCompleteListener<List<RecipeEntity>>) {
-        recipeLocalDataSource.getDataList(object : OnCompleteListener<List<RecipeData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
-                if (isSuccess) {
-
-                } else {
-                    recipeRemoteDataSource.getDataList(object : OnCompleteListener<List<RecipeData>> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
-                            if (isSuccess) {
-
-                            } else {
-                                Toast.makeText(this, "레시피를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
+        return recipeRemoteDataSource.getData(recipeKey)
+            .map {
+                it.map {
+                    it.toEntity()
                 }
             }
-        })
+    }
+
+    override fun getRecipeList(): Flow<List<RecipeEntity>> {
+        return recipeRemoteDataSource.getDataList()
+            .map {
+                it.map {
+                    it.toEntity()
+                }
+            }
     }
 
     override suspend fun addRecipe(
-        recipeEntity: RecipeEntity,
-        onCompleteListener: OnCompleteListener<RecipeEntity>,
+        recipeEntity: RecipeEntity
     ) {
 //        val recipeData: RecipeData
 
-        recipeRemoteDataSource.add(recipeData, object : OnCompleteListener<RecipeData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                if (isSuccess) {
-                    recipeLocalDataSource.add(recipeData, object : OnCompleteListener<RecipeData> {
-                        override fun onComplete(
-                            isSuccess: Boolean,
-                            response: Response<RecipeData>?
-                        ) {
-                            TODO("Not yet implemented")
-                        }
-                    })
-                } else {
-                    Toast.makeText(this, "레시피를 생성하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        })
+        recipeRemoteDataSource.add(recipeEntity.)
     }
 
     override suspend fun modifyRecipe(
-        recipeEntity: RecipeEntity,
-        onCompleteListener: OnCompleteListener<RecipeEntity>,
+        recipeEntity: RecipeEntity
     ) {
-        recipeRemoteDataSource.update(recipeData, object : OnCompleteListener<RecipeData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                if (isSuccess) {
-                    recipeLocalDataSource.update(recipeData, object : OnCompleteListener<RecipeData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                            if (isSuccess) {
 
-                            } else {
-                                Toast.makeText(this, "레시피를 변경하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-                } else {
-                    Toast.makeText(this, "레시피를 변경하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
     }
 
     override suspend fun deleteRecipe(
-        recipeEntity: RecipeEntity,
-        onCompleteListener: OnCompleteListener<RecipeEntity>,
+        recipeEntity: RecipeEntity
     ) {
         recipeRemoteDataSource.remove(recipeData, object : OnCompleteListener<RecipeData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {

@@ -4,15 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
-import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.view.login.LoginActivity
 import com.hero.recipespace.view.photoview.PhotoActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +60,7 @@ class AccountFragment: Fragment(),
         photoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 val intent = Intent(requireActivity(), PhotoActivity::class.java)
-                val recipeKey =
+                val userKey = FirebaseAuth.getInstance().currentUser?.uid
             }
         }
     }
@@ -73,13 +75,13 @@ class AccountFragment: Fragment(),
     }
 
     private fun setUserData() {
-        val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(requireActivity())
+        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
         if (TextUtils.isEmpty(profileImageUrl)) {
             Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
         } else {
             Glide.with(requireActivity()).load(profileImageUrl).into(binding.ivUserProfile)
         }
-        val userName: String = MyInfoUtil.getInstance().getUserName(requireActivity())
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         binding.tvUserName.text = userName
     }
 
@@ -101,12 +103,12 @@ class AccountFragment: Fragment(),
     }
 
     private fun signOut() {
-        MyInfoUtil.getInstance().signOut(requireActivity())
+        FirebaseAuth.getInstance().signOut()
         val intent = Intent(requireActivity(), LoginActivity::class.java)
         startActivity(intent)
         requireActivity().finishAffinity()
     }
 
-    override fun onClick(v: View) {
+    override fun onClick(view: View) {
     }
 }

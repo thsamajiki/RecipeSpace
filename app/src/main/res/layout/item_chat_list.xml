@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="chat"
             type="com.hero.recipespace.data.chat.ChatData" />
@@ -13,24 +14,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_user_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/ic_user" />
 
         <TextView
+            android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_user_profile"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/iv_user_profile"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
-            tools:text="UserName"
-            android:layout_marginStart="10dp"
-            android:id="@+id/tv_user_name" />
+            tools:text="UserName" />
 
         <TextView
             android:id="@+id/tv_chat_content"
@@ -41,7 +43,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_toRightOf="@id/iv_user_profile"
+            android:layout_toEndOf="@id/iv_user_profile"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/dark_gray"

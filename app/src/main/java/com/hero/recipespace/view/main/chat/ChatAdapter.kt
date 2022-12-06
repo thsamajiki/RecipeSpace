@@ -80,11 +80,11 @@ class ChatAdapter(
     }
 
     override fun getItemCount(): Int {
-        return messageDataList!!.size
+        return messageDataList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        val messageData: MessageData = messageDataList!![position]
+        val messageData: MessageData = messageDataList[position]
         return if (myUserKey == messageData.userKey) {
             RIGHT_TYPE
         } else LEFT_TYPE
@@ -94,11 +94,8 @@ class ChatAdapter(
         private val binding: ItemMessageRightBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chatData: ChatData) {
-//            binding.tvChatDate
-//            binding.tvChatContent
-
-            binding.chatRight = chatData
+        fun bind(messageData: MessageData) {
+            binding.messageRight = messageData
             binding.executePendingBindings()
         }
     }
@@ -107,13 +104,8 @@ class ChatAdapter(
         private val binding: ItemMessageLeftBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chatData: ChatData) {
-//            binding.ivUserProfile
-//            binding.tvChatDate
-//            binding.tvChatContent
-//            binding.tvUserName
-
-            binding.chatLeft = chatData
+        fun bind(messageData: MessageData) {
+            binding.messageLeft = messageData
             binding.executePendingBindings()
         }
     }

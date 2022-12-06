@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(),
 
         binding.bottomNav.setupWithNavController(navController)
 
-//        binding.bottomNav.setOnItemSelectedListener(this)
+        binding.bottomNav.setOnItemSelectedListener(this)
     }
 
 

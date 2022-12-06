@@ -7,40 +7,52 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.CloudStore
+import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.listener.OnCompleteListener
+import com.hero.recipespace.listener.Response
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 
-class RecipeCloudStore(
-    private val context: Context,
-    private val recipeLocalStore: RecipeLocalStore,
-    private val recipeCacheStore: RecipeCacheStore
-) : CloudStore<RecipeData>(context, FirebaseFirestore.getInstance()) {
+class RecipeCloudStore() {
 
     companion object {
-        private lateinit var instance : RecipeCloudStore
+        private var instance : RecipeCloudStore? = null
 
         fun getInstance(context: Context) : RecipeCloudStore {
-            return instance ?: synchronized(this) {
-                instance ?: RecipeCloudStore(context, recipeLocalStore, recipeCacheStore).also {
+            return synchronized(this) {
+                instance ?: RecipeCloudStore().also {
                     instance = it
                 }
             }
         }
     }
 
-    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<RecipeData>) {
-        TODO("Not yet implemented")
+    fun getData(recipeKey: String) : Flow<RecipeData> {
+        return callbackFlow {
+
+        }
     }
 
-    override fun getDataList(
-        vararg params: Any,
-        onCompleteListener: OnCompleteListener<List<RecipeData>>,
-    ) {
-        TODO("Not yet implemented")
+    fun getDataList(): Flow<List<RecipeData>> {
+
+        return callbackFlow {
+            FirebaseData.getInstance()
+                .downloadRecipeData(object : OnCompleteListener<List<RecipeData>> {
+                    override fun onComplete(isSuccess: Boolean, response: Response<List<RecipeData>>?) {
+                        if (isSuccess && response?.isNotEmpty() == true) {
+                            val recipeList = response.getData()
+                                .orEmpty()
+
+                            trySendBlocking(recipeList)
+                        }
+                    }
+                })
+        }
     }
 
-    override suspend fun add(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    fun add(data: RecipeData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RecipeData> {
             override fun apply(transaction: Transaction): RecipeData {
@@ -65,7 +77,7 @@ class RecipeCloudStore(
         })
     }
 
-    override suspend fun update(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    fun update(data: RecipeData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RecipeData> {
             override fun apply(transaction: Transaction): RecipeData {
@@ -90,7 +102,7 @@ class RecipeCloudStore(
         })
     }
 
-    override suspend fun remove(data: RecipeData, onCompleteListener: OnCompleteListener<RecipeData>) {
+    fun remove(data: RecipeData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RecipeData> {
             override fun apply(transaction: Transaction): RecipeData {

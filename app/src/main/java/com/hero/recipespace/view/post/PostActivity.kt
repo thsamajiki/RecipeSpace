@@ -16,15 +16,16 @@ import androidx.core.app.ActivityCompat
 
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostBinding
+import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
-import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,9 +38,14 @@ class PostActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityPostBinding
     private var photoPath: String? = null
-    private val PERMISSION_REQ_CODE = 1010
-    private val PHOTO_REQ_CODE = 2020
+
     private lateinit var photoResultLauncher: ActivityResultLauncher<Intent>
+
+    companion object {
+        const val EXTRA_RECIPE_ENTITY = "recipeData"
+        const val PERMISSION_REQ_CODE = 1010
+        const val PHOTO_REQ_CODE = 2020
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,8 +140,8 @@ class PostActivity : AppCompatActivity(),
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = MyInfoUtil.getInstance().getUserName(this)
-            val profileImageUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(this)
+            val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
+            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
             val recipeData = RecipeData()
             recipeData.photoUrl = downloadUrl
             recipeData.desc = binding.editContent.text.toString()
@@ -143,7 +149,7 @@ class PostActivity : AppCompatActivity(),
             recipeData.rate = 0
             recipeData.userName = userName
             recipeData.profileImageUrl = profileImageUrl
-            recipeData.userKey = MyInfoUtil.getInstance().getKey()
+            recipeData.userKey = FirebaseAuth.getInstance().currentUser?.uid
             FirebaseData.getInstance().uploadRecipeData(recipeData, this)
         }
     }
@@ -156,7 +162,7 @@ class PostActivity : AppCompatActivity(),
         LoadingProgress.dismissProgressDialog()
         if (isSuccess) {
             val intent = Intent()
-            intent.putExtra(EXTRA_RECIPE_DATA, response?.getData())
+            intent.putExtra(EXTRA_RECIPE_ENTITY, response?.getData()?.toEntity())
             setResult(RESULT_OK, intent)
             finish()
         } else {
