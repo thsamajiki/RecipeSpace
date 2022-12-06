@@ -23,7 +23,7 @@
             android:layout_height="?attr/actionBarSize"
             app:contentInsetStart="0dp">
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -32,33 +32,40 @@
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
-                    android:src="@drawable/ic_arrow" />
+                    android:src="@drawable/ic_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="레시피 올리기"
+                    android:text="@string/title_post_recipe"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/title_text_size" />
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/btn_complete"
+                    android:id="@+id/tv_complete"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
                     android:enabled="false"
-                    android:gravity="center"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:text="완료"
+                    android:text="@string/tv_finish"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/title_text_size" />
-            </RelativeLayout>
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="250dp">
 
@@ -72,8 +79,11 @@
                 android:id="@+id/btn_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="70dp"
@@ -87,12 +97,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
-                    android:text="여기를 눌러 사진을 추가해주세요"
+                    android:text="@string/touch_here_and_add_pictures"
                     android:textColor="@color/dark_gray" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:layout_width="match_parent"
@@ -111,6 +121,6 @@
             android:text=""
             android:textSize="@dimen/body_text_size" />
 
-
     </LinearLayout>
+
 </layout>

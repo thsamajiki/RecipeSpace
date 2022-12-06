@@ -2,6 +2,7 @@ package com.hero.recipespace.view.post
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.main.recipe.RecipeDetailActivity
 import com.hero.recipespace.view.post.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,8 +40,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PostActivity : AppCompatActivity(),
     View.OnClickListener,
     TextWatcher,
-    OnFileUploadListener,
-    OnCompleteListener<RecipeEntity> {
+    OnFileUploadListener {
 
     private lateinit var binding: ActivityPostBinding
     private var photoPath: String? = null
@@ -62,6 +63,12 @@ class PostActivity : AppCompatActivity(),
         const val EXTRA_RECIPE_ENTITY = "recipe"
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
+
+        private const val RECIPE_KEY = "recipeKey"
+
+        fun getIntent(context: Context, recipeKey: String) =
+            Intent(context, PostActivity::class.java)
+                .putExtra(RECIPE_KEY, recipeKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,8 +158,8 @@ class PostActivity : AppCompatActivity(),
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
-            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
+            val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
             val recipe = RecipeEntity()
             recipe.photoUrl = downloadUrl
             recipe.desc = binding.editContent.text.toString()

@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.main.recipe
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -27,14 +28,21 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityRecipeDetailBinding
     private val viewModel by viewModels<RecipeDetailViewModel>()
 
+    companion object {
+        private const val RECIPE_KEY = "recipeKey"
+
+        fun getIntent(context: Context, recipeKey: String) =
+            Intent(context, RecipeDetailActivity::class.java)
+                .putExtra(RECIPE_KEY, recipeKey)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
-
         setContentView(binding.root)
-        setData()
+        bindRecipeUI()
 
         setupViewModel()
         setupListeners()
@@ -64,7 +72,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
-        binding.ivRecipe.setOnClickListener {
+        binding.rvRecipeImages.setOnClickListener {
             intentPhoto(getRecipe()?.photoUrl)
         }
 
@@ -82,13 +90,13 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
     }
 
-    private fun setData() {
+    private fun bindRecipeUI() {
         val recipe: RecipeEntity? = getRecipe()
         val requestManager = Glide.with(this)
 
         if (!TextUtils.isEmpty(recipe?.photoUrl)) {
             requestManager.load(recipe?.photoUrl)
-                .into(binding.)
+                .into(binding.rvRecipeImages)
         }
 
         if (!TextUtils.isEmpty(recipe?.profileImageUrl)) {
@@ -120,7 +128,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentModifyRecipe() {
-        val intent = Intent(this, EditRecipeActivity::class.java)
+        val intent = EditRecipeActivity.getIntent(this, viewModel.recipeData.key!!)
         startActivity(intent)
     }
 

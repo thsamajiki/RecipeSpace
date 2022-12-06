@@ -15,10 +15,9 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
         private const val EXTRA_PHOTO_URL = "photoUrl"
 
-        fun getIntent(context: Context, photoUrl: String?) {
+        fun getIntent(context: Context, photoUrl: String?) =
             Intent(context, PhotoActivity::class.java)
                 .putExtra(EXTRA_PHOTO_URL, photoUrl)
-        }
     }
 
 

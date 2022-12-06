@@ -110,7 +110,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         return intent.getParcelableExtra(ChatActivity.EXTRA_CHAT_DATA)
     }
 
-    private fun getOtherUserKey(): String? {
+    private fun getOtherUserKey(): String {
         return intent.getStringExtra(ChatActivity.EXTRA_OTHER_USER_KEY)
     }
 

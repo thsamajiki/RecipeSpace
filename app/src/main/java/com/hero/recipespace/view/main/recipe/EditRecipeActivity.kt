@@ -2,6 +2,7 @@ package com.hero.recipespace.view.main.recipe
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -42,6 +43,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     private val viewModel by viewModels<EditRecipeViewModel>()
 
     private var photoPath: String? = null
+
     private val editPhotoResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
@@ -51,6 +53,14 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                 binding.btnComplete.isEnabled = true
             }
         }
+    }
+
+    companion object {
+        private const val RECIPE_KEY = "recipeKey"
+
+        fun getIntent(context: Context, recipeKey: String) =
+            Intent(context, EditRecipeActivity::class.java)
+                .putExtra(RECIPE_KEY, recipeKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

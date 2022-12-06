@@ -14,12 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
-import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.main.recipe.RatingDialogFragment.Companion.TAG
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel
 import com.hero.recipespace.view.post.PostActivity
@@ -34,6 +30,7 @@ class RecipeListFragment : Fragment() {
     private val viewModel by viewModels<RecipeListViewModel>()
 
     private lateinit var recipeListAdapter: RecipeListAdapter
+
     private val postResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
@@ -71,7 +68,7 @@ class RecipeListFragment : Fragment() {
     private fun setupView() {
         initRecyclerView(binding.rvRecipe)
         binding.btnPost.setOnClickListener {
-            showPost()
+            intentPostActivity()
         }
     }
 
@@ -81,11 +78,6 @@ class RecipeListFragment : Fragment() {
                 recipeListAdapter.setRecipeList(recipeList)
             }
         }
-    }
-
-    private fun showPost() {
-        val intent = Intent(requireActivity(), PostActivity::class.java)
-        postResultLauncher.launch(intent)
     }
 
     override fun onDestroyView() {
@@ -107,10 +99,8 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun showRecipeDetail(recipe: RecipeEntity) {
-        val intent = Intent(requireActivity(), RecipeDetailActivity::class.java)
-        val recipeKey = recipe.key
         // TODO: 2022-12-06 key를 이렇게 넣으면 RecipeDetailActivity에서 데이터를 못가져감. 변경 필요.
-        intent.putExtra(recipeKey, recipe)
+        val intent = RecipeDetailActivity.getIntent(requireActivity(), viewModel.recipeKey)
         startActivity(intent)
     }
 
@@ -120,6 +110,12 @@ class RecipeListFragment : Fragment() {
         ratingDialogFragment.setOnRatingUploadListener(this)
         ratingDialogFragment.setRecipeData(recipe)
         ratingDialogFragment.show(childFragmentManager, TAG)
+    }
+
+    private fun intentPostActivity() {
+        val intent = PostActivity.getIntent(requireActivity(), viewModel.recipeKey)
+        startActivity(intent)
+//        postResultLauncher.launch(intent)
     }
 
 //    override fun onRatingUpload(recipeData: RecipeData?) {
