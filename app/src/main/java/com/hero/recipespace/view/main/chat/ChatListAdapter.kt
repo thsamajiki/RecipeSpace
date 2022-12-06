@@ -1,20 +1,17 @@
 package com.hero.recipespace.view.main.chat
 
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.R
-import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.databinding.ItemChatListBinding
+import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.view.BaseAdapter
-import java.util.*
 
 class ChatListAdapter(
-    private val onClick: (ChatData) -> Unit
-) : BaseAdapter<ChatListAdapter.ChatListViewHolder, ChatData>() {
+    private val onClick: (ChatEntity) -> Unit
+) : BaseAdapter<ChatListAdapter.ChatListViewHolder, ChatEntity>() {
 
-    private val chatDataList = mutableListOf<ChatData>()
+    private val chatDataList = mutableListOf<ChatEntity>()
     private var myUserKey: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
@@ -24,17 +21,8 @@ class ChatListAdapter(
     }
 
     override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
-        val chatData: ChatData = chatDataList[position]
-        val otherUserName = getOtherUserName(chatData.userNames, myUserKey)
-        val otherUserProfile = getOtherUserProfile(chatData.getUserProfiles(), myUserKey)
-        holder.binding.tvUserName.text = otherUserName
-        Collections.sort(chatDataList)
-        if (TextUtils.isEmpty(otherUserProfile)) {
-            requestManager.load(R.drawable.ic_default_user_profile).into(holder.binding.ivUserProfile)
-        } else {
-            requestManager.load(otherUserProfile).into(holder.binding.ivUserProfile)
-        }
-        holder.binding.tvChatContent.setText(chatData.getLastMessage().getMessage())
+        val chatData = chatDataList[position]
+        holder.bind(chatData)
     }
 
     private fun getOtherUserName(
@@ -61,9 +49,9 @@ class ChatListAdapter(
         return null
     }
 
-    fun setChatList(chatData: List<ChatData>) {
+    fun setChatList(chat: List<ChatEntity>) {
         chatDataList.clear()
-        chatDataList.addAll(chatData)
+        chatDataList.addAll(chat)
         notifyDataSetChanged()
     }
 
@@ -73,10 +61,10 @@ class ChatListAdapter(
 
     class ChatListViewHolder(
         val binding: ItemChatListBinding,
-        private val onClick: (ChatData) -> Unit
+        private val onClick: (ChatEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(chatData: ChatData) {
+        fun bind(chat: ChatEntity) {
 //            binding.ivUserProfile = itemView.findViewById(R.id.iv_user_profile)
 //            binding.ivUserProfile = chatData.
 //            binding.tvUserName = itemView.findViewById(R.id.tv_user_name)
@@ -84,15 +72,11 @@ class ChatListAdapter(
 //            binding.tvChatContent = itemView.findViewById(R.id.tv_chat)
 
             binding.root.setOnClickListener {
-                onClick(chatData)
+                onClick(chat)
             }
 
-            binding.chat = chatData
+            binding.chat = chat
             binding.executePendingBindings()
-        }
-
-        init {
-
         }
     }
 }

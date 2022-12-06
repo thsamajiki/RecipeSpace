@@ -4,64 +4,38 @@ import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.local.RateLocalDataSource
 import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
 import com.hero.recipespace.domain.rate.entity.RateEntity
+import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class RateRepositoryImpl(
     private val rateLocalDataSource: RateLocalDataSource,
     private val rateRemoteDataSource: RateRemoteDataSource
 ) : RateRepository {
 
-    override suspend fun getRate(
-        rateKey: String,
-        onCompleteListener: OnCompleteListener<RateEntity>
-    ) {
-        rateLocalDataSource.getData(rateKey, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    rateRemoteDataSource.getData(rateKey, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                }
+    override fun getRate(
+        rateKey: String
+    ) : Flow<RateEntity> {
+        return rateLocalDataSource.getData(rateKey)
+            .map {
+                it.toEntity()
             }
-        })
     }
 
-    override fun getRateList(onCompleteListener: OnCompleteListener<List<RateEntity>>) {
-        rateLocalDataSource.getDataList(object : OnCompleteListener<List<RateData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<RateData>>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    rateRemoteDataSource.getDataList(object : OnCompleteListener<List<RateData>> {
-                        override fun onComplete(
-                            isSuccess: Boolean,
-                            response: Response<List<RateData>>?
-                        ) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
+    override fun getRateList(): Flow<List<RateEntity>> {
+        return rateLocalDataSource.getDataList()
+            .map { it ->
+                it.map {
+                    it.toEntity()
                 }
             }
-        })
     }
 
     override suspend fun addRate(
-        rateEntity: RateEntity,
-        onCompleteListener: OnCompleteListener<RateEntity>
+        rateEntity: RateEntity
     ) {
         rateRemoteDataSource.add(rateData, object : OnCompleteListener<RateData> {
             override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
@@ -82,43 +56,11 @@ class RateRepositoryImpl(
         })
     }
 
-    override suspend fun modifyRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateRemoteDataSource.update(rateData, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    rateLocalDataSource.update(rateData, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, response)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    override suspend fun modifyRate(rateEntity: RateEntity) {
+
     }
 
-    override suspend fun deleteRate(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateRemoteDataSource.remove(rateData, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    rateLocalDataSource.remove(rateData, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, response)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    override suspend fun deleteRate(rateEntity: RateEntity) {
+
     }
 }

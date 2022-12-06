@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
@@ -29,16 +30,28 @@ import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.main.recipe.viewmodel.EditRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
-    OnFileUploadListener, OnCompleteListener<RecipeData> {
+    OnFileUploadListener {
 
     private lateinit var binding: ActivityEditRecipeBinding
 
+    private val viewModel by viewModels<EditRecipeViewModel>()
+
     private var photoPath: String? = null
-    private lateinit var editPhotoResultLauncher: ActivityResultLauncher<Intent>
+    private val editPhotoResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            photoPath = RealPathUtil.getRealPath(this, data.data)
+            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+            if (binding.editContent.text.toString().isNotEmpty()) {
+                binding.btnComplete.isEnabled = true
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +60,17 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         setContentView(view)
         addTextWatcher()
 
+        setupViewModel()
+        setupListeners()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
+    }
+
+    private fun setupListeners() {
         binding.ivBack.setOnClickListener {
             finish()
         }
@@ -56,23 +80,10 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding.ivRecipePhoto.setOnClickListener {
             intentGallery()
         }
-
-        editPhotoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                photoPath = RealPathUtil.getRealPath(this, data.data)
-                Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-                if (binding.editContent.text.toString().isNotEmpty()) {
-                    binding.btnComplete.isEnabled = true
-                }
-            }
-        }
     }
 
     private fun addTextWatcher() {
         binding.editContent.addTextChangedListener(this)
-    }
-
-    override fun onClick(v: View) {
     }
 
     private fun intentGallery() {
@@ -104,17 +115,6 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             intentGallery()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
-            photoPath = RealPathUtil.getRealPath(this, data.data)
-            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-            if (binding.editContent.text.toString().isNotEmpty()) {
-                binding.btnComplete.isEnabled = true
-            }
         }
     }
 
@@ -164,5 +164,8 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         } else {
             Toast.makeText(this, "레시피 수정에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onClick(view: View) {
     }
 }

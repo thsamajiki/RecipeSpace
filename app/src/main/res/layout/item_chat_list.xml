@@ -7,7 +7,7 @@
 
         <variable
             name="chat"
-            type="com.hero.recipespace.data.chat.ChatData" />
+            type="com.hero.recipespace.domain.chat.entity.ChatEntity" />
     </data>
 
     <RelativeLayout

@@ -11,8 +11,8 @@ import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
-import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.chat.ChatActivity.Companion.EXTRA_OTHER_USER_KEY
@@ -32,10 +32,18 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
+
         setContentView(binding.root)
         setData()
 
+        setupViewModel()
         setupListeners()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
     }
 
     private fun setupListeners() {
@@ -48,21 +56,21 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         binding.btnQuestion.setOnClickListener {
             val firebaseUser = FirebaseAuth.getInstance().currentUser
             val myUserKey: String = firebaseUser?.uid.toString()
-            if (getRecipeData()?.userKey.equals(myUserKey)) {
+            if (getRecipe()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
             val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipeData()?.userKey)
+            intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipe()?.userKey)
             startActivity(intent)
         }
 
         binding.ivRecipe.setOnClickListener {
-            intentPhoto(getRecipeData()?.photoUrl)
+            intentPhoto(getRecipe()?.photoUrl)
         }
 
         binding.ivOptionMenu.setOnClickListener {
             val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
-            if (getRecipeData()?.userKey.equals(myUserKey)) {
+            if (getRecipe()?.userKey.equals(myUserKey)) {
                 binding.ivOptionMenu.visibility = View.VISIBLE
                 binding.ivOptionMenu.isClickable = true
                 showRecipeDetailOptionMenu()
@@ -70,32 +78,32 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun getRecipeData(): RecipeData? {
+    private fun getRecipe(): RecipeEntity? {
         return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
     }
 
     private fun setData() {
-        val recipeData: RecipeData? = getRecipeData()
+        val recipe: RecipeEntity? = getRecipe()
         val requestManager = Glide.with(this)
 
-        if (!TextUtils.isEmpty(recipeData?.photoUrl)) {
-            requestManager.load(recipeData?.photoUrl)
+        if (!TextUtils.isEmpty(recipe?.photoUrl)) {
+            requestManager.load(recipe?.photoUrl)
                 .into(binding.)
         }
 
-        if (!TextUtils.isEmpty(recipeData?.profileImageUrl)) {
-            requestManager.load(recipeData?.profileImageUrl)
+        if (!TextUtils.isEmpty(recipe?.profileImageUrl)) {
+            requestManager.load(recipe?.profileImageUrl)
                 .into(binding.ivUserProfile)
         } else {
             requestManager.load(R.drawable.ic_default_user_profile)
                 .into(binding.ivUserProfile)
         }
 
-        if (recipeData != null) {
-            binding.tvUserName.text = recipeData.userName
-            binding.tvRecipeDesc.text = recipeData.desc
-            binding.tvPostDate.text = TimeUtils.getInstance().convertTimeFormat(recipeData.postDate?.toDate(), "yy.MM.dd")
-            binding.ratingBar.rating = recipeData.rate
+        if (recipe != null) {
+            binding.tvUserName.text = recipe.userName
+            binding.tvRecipeDesc.text = recipe.desc
+            binding.tvPostDate.text = TimeUtils.getInstance().convertTimeFormat(recipe.postDate?.toDate(), "yy.MM.dd")
+            binding.ratingBar.rating = recipe.rate
         }
     }
 
@@ -128,6 +136,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-    override fun onClick(v: View) {
+    override fun onClick(view: View) {
     }
 }

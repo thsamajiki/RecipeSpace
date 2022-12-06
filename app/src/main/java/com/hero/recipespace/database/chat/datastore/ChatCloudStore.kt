@@ -1,45 +1,44 @@
 package com.hero.recipespace.database.chat.datastore
 
-import android.content.Context
-import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.database.CloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import java.lang.Exception
 
-class ChatCloudStore(
-    private val context: Context
-) : CloudStore<ChatData>(context, FirebaseFirestore.getInstance()) {
+class ChatCloudStore() {
 
     companion object {
-        private lateinit var instance : ChatCloudStore
+        private var instance : ChatCloudStore? = null
 
-        fun getInstance(context: Context) : ChatCloudStore {
-            return instance ?: synchronized(this) {
-                instance ?: ChatCloudStore(context).also {
+        fun getInstance() : ChatCloudStore {
+            return synchronized(this) {
+                instance ?: ChatCloudStore().also {
                     instance = it
                 }
             }
         }
     }
 
-    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<ChatData>) {
-        TODO("Not yet implemented")
+    fun getData(chatKey: String) : Flow<ChatData> {
+        return callbackFlow {
+
+        }
     }
 
-    override fun getDataList(
-        key: String,
-        onCompleteListener: OnCompleteListener<List<ChatData>>
-    ): LiveData<List<ChatData>> {
-        TODO("Not yet implemented")
+    fun getDataList(
+        key: String
+    ): Flow<List<ChatData>> {
+        return callbackFlow {
+
+        }
     }
 
-    override suspend fun add(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    fun add(data: ChatData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<ChatData> {
             override fun apply(transaction: Transaction): ChatData {
@@ -54,16 +53,16 @@ class ChatCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<ChatData> {
             override fun onSuccess(chatData: ChatData?) {
-                onCompleteListener.onComplete(true, chatData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun update(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    fun update(data: ChatData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<ChatData> {
             override fun apply(transaction: Transaction): ChatData? {
@@ -78,16 +77,16 @@ class ChatCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<ChatData> {
             override fun onSuccess(chatData: ChatData?) {
-                onCompleteListener.onComplete(true, chatData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun remove(data: ChatData, onCompleteListener: OnCompleteListener<ChatData>) {
+    fun remove(data: ChatData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<ChatData> {
             override fun apply(transaction: Transaction): ChatData? {
@@ -102,11 +101,11 @@ class ChatCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<ChatData> {
             override fun onSuccess(chatData: ChatData?) {
-                onCompleteListener.onComplete(true, chatData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }

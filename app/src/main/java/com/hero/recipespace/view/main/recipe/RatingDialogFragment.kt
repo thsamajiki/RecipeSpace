@@ -6,24 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.R
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnRatingUploadListener
 import com.hero.recipespace.listener.Response
-import com.hero.recipespace.util.MyInfoUtil
+import com.hero.recipespace.view.main.recipe.viewmodel.RatingViewModel
 
 class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
-    private var recipeData: RecipeData? = null
+    private var recipe: RecipeEntity? = null
+
+    private val viewModel by viewModels<RatingViewModel>()
 
     private var onRatingUploadListener: OnRatingUploadListener? = null
 
@@ -31,8 +34,8 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         this.onRatingUploadListener = onRatingUploadListener
     }
 
-    fun setRecipeData(recipeData: RecipeData) {
-        this.recipeData = recipeData
+    fun setRecipeData(recipe: RecipeEntity) {
+        this.recipe = recipe
     }
 
     companion object {
@@ -46,14 +49,25 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     ): View {
         _binding = FragmentDialogRatingBinding.inflate(inflater, container, false)
 
+        setupViewModel()
+        setupListeners()
+
+        return binding.root
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
+    }
+
+    private fun setupListeners() {
         binding.tvCancel.setOnClickListener {
             dismiss()
         }
         binding.tvConfirm.setOnClickListener {
             uploadRating()
         }
-
-        return binding.root
     }
 
     private fun uploadRating() {
@@ -64,7 +78,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         }
         val rateData: RateData = makeRateData(rating)
         FirebaseData.getInstance()
-            .uploadRating(recipeData, rateData, object : OnCompleteListener<RecipeData> {
+            .uploadRating(recipe, rateData, object : OnCompleteListener<RecipeData> {
                 override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
                     if (isSuccess) {
                         Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()

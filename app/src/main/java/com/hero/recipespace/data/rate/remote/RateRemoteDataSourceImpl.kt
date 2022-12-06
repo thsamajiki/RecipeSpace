@@ -1,30 +1,29 @@
 package com.hero.recipespace.data.rate.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.rate.datastore.RateCloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 class RateRemoteDataSourceImpl(
     private val rateCloudStore: RateCloudStore
 ) : RateRemoteDataSource {
-    override suspend fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>) : LiveData<RateData> {
-        return rateCloudStore.getData(rateKey, onCompleteListener)
+    override fun getData(rateKey: String) : Flow<RateData> {
+        return rateCloudStore.getData(rateKey)
     }
 
-    override fun getDataList(onCompleteListener: OnCompleteListener<List<RateData>>) : LiveData<List<RateData>> {
-        return rateCloudStore.getDataList(onCompleteListener)
+    override fun getDataList() : Flow<List<RateData>> {
+        return rateCloudStore.getDataList()
     }
 
-    override suspend fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateCloudStore.add(rateData, onCompleteListener)
+    override suspend fun add(rateData: RateData) {
+        rateCloudStore.add(rateData)
     }
 
-    override suspend fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateCloudStore.update(rateData, onCompleteListener)
+    override suspend fun update(rateData: RateData) {
+        rateCloudStore.update(rateData)
     }
 
-    override suspend fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateCloudStore.remove(rateData, onCompleteListener)
+    override suspend fun remove(rateData: RateData) {
+        rateCloudStore.remove(rateData)
     }
 }

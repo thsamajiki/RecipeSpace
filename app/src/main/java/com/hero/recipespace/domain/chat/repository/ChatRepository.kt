@@ -1,17 +1,16 @@
 package com.hero.recipespace.domain.chat.repository
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.domain.chat.entity.ChatEntity
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun getChat(chatKey: String, onCompleteListener: OnCompleteListener<ChatEntity>) : LiveData<ChatEntity>
+    fun getChat(chatKey: String) : Flow<ChatEntity>
 
-    fun getChatList(userKey: String, onCompleteListener: OnCompleteListener<List<ChatEntity>>) : LiveData<List<ChatEntity>>
+    fun getChatList(userKey: String) : Flow<List<ChatEntity>>
 
-    suspend fun addChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun addChat(chatEntity: ChatEntity)
 
-    suspend fun modifyChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun modifyChat(chatEntity: ChatEntity)
 
-    suspend fun deleteChat(chatEntity: ChatEntity, onCompleteListener: OnCompleteListener<ChatEntity>)
+    suspend fun deleteChat(chatEntity: ChatEntity)
 }

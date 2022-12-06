@@ -52,7 +52,7 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    fun onClick(v: View) {
+    fun onClick(view: View) {
     }
 
     private fun intentNoticeList() {

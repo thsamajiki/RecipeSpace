@@ -6,25 +6,27 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ListenerRegistration
-import com.hero.recipespace.R
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityChatBinding
+import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.listener.OnMessageListener
-import com.hero.recipespace.listener.OnRecyclerItemClickListener
-import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel.Companion.RECIPE_KEY
+import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
 
-class ChatActivity : AppCompatActivity(), View.OnClickListener,
-    OnRecyclerItemClickListener<MessageData>, OnMessageListener {
+class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListener {
 
     private lateinit var binding: ActivityChatBinding
 
-    private var chatAdapter: ChatAdapter? = null
-    private val messageDataList = mutableListOf<MessageData>()
-    private var chatData: ChatData? = null
+    private lateinit var chatAdapter: ChatAdapter
+    private val messageList = mutableListOf<MessageEntity>()
+    private var chat: ChatEntity? = null
+
+    private val viewModel by viewModels<ChatViewModel>()
 
     companion object {
         const val EXTRA_OTHER_USER_KEY = "otherUserKey"
@@ -45,24 +47,34 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
         val view = binding.root
         setContentView(view)
 
-        chatData = getChatData()
-        if (chatData != null) {
+        binding.viewModel = viewModel
+
+        chat = getChatData()
+        if (chat != null) {
             initAdapter()
             initMessageRegistration()
         } else {
             checkExistChatData()
         }
 
+        setupViewModel()
+
         binding.ivBack.setOnClickListener {
             finish()
         }
 
         binding.mcvSend.setOnClickListener {
-            if (chatData == null) {
+            if (chat == null) {
                 createChatRoom()
             } else {
                 sendMessage()
             }
+        }
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
         }
     }
 
@@ -75,7 +87,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
             object : OnCompleteListener<ChatData?>() {
                 fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
                     if (isSuccess && response.isNotEmpty()) {
-                        chatData = response.getData()
+                        chat = response.getData()
                         initAdapter()
                         initMessageRegistration()
                     }
@@ -84,29 +96,23 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun initMessageRegistration() {
-        messageRegistration = FirebaseData.getInstance().getMessageList(chatData?.key, this)
+        messageRegistration = FirebaseData.getInstance().getMessageList(chat?.key, this)
     }
 
 
     private fun initAdapter() {
-        chatAdapter = ChatAdapter(this, messageDataList, chatData)
-        chatAdapter!!.setOnRecyclerItemClickListener(this)
+        chatAdapter = ChatAdapter(this, messageList, chat)
+        chatAdapter.setOnRecyclerItemClickListener(this)
         binding.recyclerChat.adapter = chatAdapter
     }
 
-    private fun getChatData(): ChatData? {
+    private fun getChatData(): ChatEntity? {
         return intent.getParcelableExtra(ChatActivity.EXTRA_CHAT_DATA)
     }
 
     private fun getOtherUserKey(): String? {
         return intent.getStringExtra(ChatActivity.EXTRA_OTHER_USER_KEY)
     }
-
-    override fun onItemClick(position: Int, view: View, data: MessageData) {
-        TODO("Not yet implemented")
-    }
-
-
 
     private fun sendMessage() {
         val message = binding.editMessage.text.toString()
@@ -116,7 +122,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
         }
         binding.editMessage.setText("")
         val firebaseData: FirebaseData = FirebaseData.getInstance()
-        firebaseData.sendMessage(message, chatData)
+        firebaseData.sendMessage(message, chat)
     }
 
     private fun createChatRoom() {
@@ -133,7 +139,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
             object : OnCompleteListener<ChatData?>() {
                 fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
                     if (isSuccess && response.isNotEmpty()) {
-                        chatData = response.getData()
+                        chat = response.getData()
                         initAdapter()
                         initMessageRegistration()
                     }
@@ -141,14 +147,14 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener,
             })
     }
 
-    override fun onMessage(isSuccess: Boolean, messageData: MessageData?) {
-        if (isSuccess && messageData != null) {
-            messageDataList.add(messageData)
-            chatAdapter?.notifyItemInserted(messageDataList.size - 1)
-            binding.recyclerChat.smoothScrollToPosition(messageDataList.size - 1)
+    override fun onMessage(isSuccess: Boolean, message: MessageData?) {
+        if (isSuccess && message != null) {
+            messageList.add(message)
+            chatAdapter.notifyItemInserted(messageList.size - 1)
+            binding.recyclerChat.smoothScrollToPosition(messageList.size - 1)
         }
     }
 
-    override fun onClick(v: View) {
+    override fun onClick(view: View) {
     }
 }

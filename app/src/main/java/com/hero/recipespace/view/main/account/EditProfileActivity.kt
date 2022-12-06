@@ -33,14 +33,18 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     private var photoPath: String? = null
     private var profileUrl: String? = null
     private var userName: String? = null
-    private val PERMISSION_REQ_CODE = 1010
-    private val PHOTO_REQ_CODE = 2020
+
+    companion object {
+        const val PERMISSION_REQ_CODE = 1010
+        const val PHOTO_REQ_CODE = 2020
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setUserData()
         setupListeners()
     }
 
@@ -72,8 +76,6 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         binding.editUserName.setText(userName)
     }
-
-
 
     private fun isNewProfile(): Boolean {
         return if (TextUtils.isEmpty(profileUrl)) {
@@ -191,6 +193,6 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
-    override fun onClick(v: View) {
+    override fun onClick(view: View) {
     }
 }

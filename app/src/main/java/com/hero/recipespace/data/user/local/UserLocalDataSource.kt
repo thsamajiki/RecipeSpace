@@ -1,21 +1,20 @@
 package com.hero.recipespace.data.user.local
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface UserLocalDataSource {
-    suspend fun getData(userKey: String, onCompleteListener: OnCompleteListener<UserData>) : LiveData<UserData>
+    fun getData(userKey: String) : Flow<UserData>
 
-    fun getDataList(onCompleteListener: OnCompleteListener<List<UserData>>) : LiveData<List<UserData>>
+    fun getDataList() : Flow<List<UserData>>
 
     fun clear()
 
-    suspend fun add(userData: UserData, onCompleteListener: OnCompleteListener<UserData>)
+    suspend fun add(userData: UserData)
 
-    suspend fun update(userData: UserData, onCompleteListener: OnCompleteListener<UserData>)
+    suspend fun update(userData: UserData)
 
-    suspend fun remove(userData: UserData, onCompleteListener: OnCompleteListener<UserData>)
+    suspend fun remove(userData: UserData)
 
     suspend fun signOut()
 }

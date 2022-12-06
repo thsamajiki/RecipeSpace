@@ -1,17 +1,16 @@
 package com.hero.recipespace.data.message.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface MessageRemoteDataSource {
-    suspend fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>) : LiveData<MessageData>
+    fun getData(messageKey: String) : Flow<MessageData>
 
-    fun getDataList(userKey: String, onCompleteListener: OnCompleteListener<List<MessageData>>) : LiveData<List<MessageData>>
+    fun getDataList(userKey: String) : Flow<List<MessageData>>
 
-    suspend fun add(messageData: MessageData, onCompleteListener: OnCompleteListener<MessageData>)
+    suspend fun add(messageData: MessageData)
 
-    suspend fun update(messageData: MessageData, onCompleteListener: OnCompleteListener<MessageData>)
+    suspend fun update(messageData: MessageData)
 
-    suspend fun remove(messageData: MessageData, onCompleteListener: OnCompleteListener<MessageData>)
+    suspend fun remove(messageData: MessageData)
 }

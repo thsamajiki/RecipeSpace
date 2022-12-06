@@ -2,24 +2,28 @@ package com.hero.recipespace.view.main.account.setting.notice
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityNoticeListBinding
+import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.OnRecyclerItemClickListener
 import com.hero.recipespace.listener.Response
+import com.hero.recipespace.view.main.account.setting.notice.viewmodel.NoticeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NoticeListActivity : AppCompatActivity(),
-    View.OnClickListener,
-    OnRecyclerItemClickListener<NoticeData> {
+    View.OnClickListener {
 
     private lateinit var binding: ActivityNoticeListBinding
-    private val noticeDataList = mutableListOf<NoticeData>()
+    private val noticeList = mutableListOf<NoticeEntity>()
+
+    private val viewModel by viewModels<NoticeListViewModel>()
+
     private lateinit var noticeListAdapter: NoticeListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,10 +31,24 @@ class NoticeListActivity : AppCompatActivity(),
         binding = ActivityNoticeListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         initRecyclerView(binding.rvNoticeList)
         downloadNoticeData()
         //        getNoticeListFromDatabase();
+        setupView()
+        setupViewModel()
         setupListeners()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+//            noticeList.observe()
+        }
+    }
+
+    private fun setupView() {
+        initRecyclerView(binding.rvNoticeList)
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
@@ -43,7 +61,11 @@ class NoticeListActivity : AppCompatActivity(),
         }
     }
 
-
+    private fun setupListeners() {
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+    }
 
     //    private void getNoticeListFromDatabase() {
     //        NoticeRepository noticeRepository = new NoticeRepository(this);
@@ -68,8 +90,8 @@ class NoticeListActivity : AppCompatActivity(),
                 ) {
                     if (response != null) {
                         if (isSuccess && response.isNotEmpty()) {
-                            noticeDataList.clear()
-                            noticeDataList.addAll(response.getData())
+                            noticeList.clear()
+                            noticeList.addAll(response.getData())
                             noticeListAdapter.notifyDataSetChanged()
                         }
                     }
@@ -77,15 +99,6 @@ class NoticeListActivity : AppCompatActivity(),
             })
     }
 
-    private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
-            finish()
-        }
-    }
-
-    override fun onClick(v: View) {
-    }
-
-    override fun onItemClick(position: Int, view: View, data: NoticeData) {
+    override fun onClick(view: View) {
     }
 }

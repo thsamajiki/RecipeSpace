@@ -2,7 +2,10 @@ package com.hero.recipespace.view.main.chat.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.usecase.AddMessageUseCase
@@ -17,11 +20,11 @@ class ChatViewModel @Inject constructor(
     private val addMessageUseCase: AddMessageUseCase
 ) : AndroidViewModel(application) {
 
-    init {
-        viewModelScope.launch {  }
-    }
+    val message: LiveData<ChatEntity> = getChatUseCase().asLiveData()
 
-    suspend fun getChat() {
+    val messageList: LiveData<List<MessageEntity>> = getChatUseCase().asLiveData()
+
+    fun getChat() {
         getChatUseCase.invoke()
     }
 

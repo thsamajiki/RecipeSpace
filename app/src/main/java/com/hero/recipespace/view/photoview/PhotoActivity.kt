@@ -44,6 +44,6 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
         Glide.with(this).load(getPhotoUrl()).into(binding.photoView)
     }
 
-    override fun onClick(v: View?) {
+    override fun onClick(view: View?) {
     }
 }

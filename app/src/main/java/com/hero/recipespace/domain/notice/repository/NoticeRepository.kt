@@ -1,10 +1,10 @@
 package com.hero.recipespace.domain.notice.repository
 
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface NoticeRepository {
-    suspend fun getNotice(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeEntity>)
+    fun getNotice(noticeKey: String) : Flow<NoticeEntity>
 
-    fun getNoticeList(onCompleteListener: OnCompleteListener<List<NoticeEntity>>)
+    fun getNoticeList() : Flow<List<NoticeEntity>>
 }

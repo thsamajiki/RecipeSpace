@@ -30,9 +30,9 @@ class RecipeListAdapter(
         return recipeList.size
     }
 
-    fun setRecipeList(recipeData: List<RecipeEntity>) {
+    fun setRecipeList(recipe: List<RecipeEntity>) {
         recipeList.clear()
-        recipeList.addAll(recipeData)
+        recipeList.addAll(recipe)
         notifyDataSetChanged()
     }
 

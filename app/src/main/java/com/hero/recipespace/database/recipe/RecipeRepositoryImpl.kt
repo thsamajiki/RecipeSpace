@@ -5,6 +5,7 @@ import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import com.hero.recipespace.listener.OnCompleteListener
@@ -21,9 +22,7 @@ class RecipeRepositoryImpl(
 
         return recipeRemoteDataSource.getData(recipeKey)
             .map {
-                it.map {
                     it.toEntity()
-                }
             }
     }
 
@@ -41,7 +40,7 @@ class RecipeRepositoryImpl(
     ) {
 //        val recipeData: RecipeData
 
-        recipeRemoteDataSource.add(recipeEntity.)
+        recipeRemoteDataSource.add(recipeEntity.toData(recipeEntity))
     }
 
     override suspend fun modifyRecipe(

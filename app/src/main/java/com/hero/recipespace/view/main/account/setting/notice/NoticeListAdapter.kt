@@ -4,51 +4,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.databinding.ItemNoticeListBinding
+import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.view.BaseAdapter
 
 class NoticeListAdapter(
-): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeData>(), View.OnClickListener {
+    private val onClick: (NoticeEntity) -> Unit
+): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeEntity>(), View.OnClickListener {
 
-    private val noticeDataList = mutableListOf<NoticeData>()
+    private val noticeList = mutableListOf<NoticeEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val binding = ItemNoticeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return NoticeViewHolder(binding)
+        return NoticeViewHolder(binding, onClick)
     }
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
-        val noticeData: NoticeData = noticeDataList[position]
+        val notice: NoticeEntity = noticeList[position]
 
-        holder.setNotice(noticeData)
+        holder.setNotice(notice)
     }
 
-    fun setNoticeList(noticeData: List<NoticeData>) {
-        noticeDataList.clear()
-        noticeDataList.addAll(noticeData)
+    fun setNoticeList(noticeData: List<NoticeEntity>) {
+        noticeList.clear()
+        noticeList.addAll(noticeData)
         notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
-        return noticeDataList.size
+        return noticeList.size
     }
 
     override fun onClick(view: View?) {}
 
     class NoticeViewHolder(
         private val binding: ItemNoticeListBinding,
-        private val onClick: (NoticeData) -> Unit
+        private val onClick: (NoticeEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun setNotice(noticeData: NoticeData) {
-            binding.tvTitleNoticeItem.text = noticeData.noticeTitle
-            binding.tvContentNoticeItem.text = noticeData.noticeDesc
-            binding.tvDateNoticeItem.text = noticeData.noticeDate
-
+        fun setNotice(notice: NoticeEntity) {
             binding.root.setOnClickListener {
-                onClick(noticeData)
+                onClick(notice)
 
                 if (binding.llContentNoticeItem.visibility == View.GONE) {
                     rotateView(binding.mcvNoticeItem)
@@ -59,7 +56,7 @@ class NoticeListAdapter(
                 }
             }
 
-            binding.notice = noticeData
+            binding.notice = notice
             binding.executePendingBindings()
         }
 

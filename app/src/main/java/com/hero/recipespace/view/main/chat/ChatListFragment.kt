@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -16,21 +17,21 @@ import com.hero.recipespace.R
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentChatListBinding
-import com.hero.recipespace.listener.OnChatListChangeListener
-import com.hero.recipespace.listener.OnRecyclerItemClickListener
-import com.hero.recipespace.util.MyInfoUtil
+import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel
 import java.util.*
 
-class ChatListFragment: Fragment(),
-    OnChatListChangeListener,
-    OnRecyclerItemClickListener<ChatData> {
+class ChatListFragment: Fragment() {
 
     private var chatListRegistration: ListenerRegistration? = null
-    private var userKey: String? = null
-    private val chatDataList = mutableListOf<ChatData>()
 
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
+
+    private var userKey: String? = null
+
+    private val viewModel by viewModels<ChatListViewModel>()
+
     private lateinit var chatListAdapter: ChatListAdapter
 
     companion object {
@@ -43,6 +44,7 @@ class ChatListFragment: Fragment(),
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_list, container, false)
         binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         return binding.root
     }
@@ -51,17 +53,40 @@ class ChatListFragment: Fragment(),
         super.onViewCreated(view, savedInstanceState)
         userKey = FirebaseAuth.getInstance().currentUser?.uid
         chatListRegistration = FirebaseData.getInstance().getChatList(userKey, this)
+
+        setupView()
+        setupViewModel()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+            chatList.observe(viewLifecycleOwner) { chatList ->
+                chatListAdapter.setChatList(chatList)
+            }
+        }
+    }
+
+    private fun setupView() {
         initRecyclerView(binding.rvChatList)
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        chatListAdapter = ChatListAdapter()
+        chatListAdapter = ChatListAdapter(
+            onClick = ::showChatRoom
+        )
 
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             adapter = chatListAdapter
         }
+    }
+
+    private fun showChatRoom(chat: ChatEntity) {
+        val intent = Intent(requireActivity(), ChatActivity::class.java)
+        val chatKey = chat.key
+        intent.putExtra(chatKey, chat)
+        startActivity(intent)
     }
 
     override fun onChatListChange(changeType: DocumentChange.Type?, chatData: ChatData) {
@@ -85,12 +110,5 @@ class ChatListFragment: Fragment(),
         if (chatListRegistration != null) {
             chatListRegistration!!.remove()
         }
-    }
-
-    override fun onItemClick(position: Int, view: View, data: ChatData) {
-        val intent = Intent(requireActivity(), ChatActivity::class.java)
-        val chatKey = data.key
-        intent.putExtra(chatKey, data)
-        startActivity(intent)
     }
 }

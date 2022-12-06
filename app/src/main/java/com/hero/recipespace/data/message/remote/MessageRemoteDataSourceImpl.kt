@@ -1,43 +1,38 @@
 package com.hero.recipespace.data.message.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.message.datastore.MessageCloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 class MessageRemoteDataSourceImpl(
     private val messageCloudStore: MessageCloudStore
 ) : MessageRemoteDataSource {
 
-    override suspend fun getData(messageKey: String, onCompleteListener: OnCompleteListener<MessageData>): LiveData<MessageData> {
-        return messageCloudStore.getData(messageKey, onCompleteListener)
+    override fun getData(messageKey: String): Flow<MessageData> {
+        return messageCloudStore.getData(messageKey)
     }
 
     override fun getDataList(
-        userKey: String,
-        onCompleteListener: OnCompleteListener<List<MessageData>>
-    ): LiveData<List<MessageData>> {
-        return messageCloudStore.getDataList(userKey, onCompleteListener)
+        userKey: String
+    ): Flow<List<MessageData>> {
+        return messageCloudStore.getDataList()
     }
 
     override suspend fun add(
-        messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>
+        messageData: MessageData
     ) {
-        messageCloudStore.add(messageData, onCompleteListener)
+        messageCloudStore.add(messageData)
     }
 
     override suspend fun update(
-        messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>
+        messageData: MessageData
     ) {
-        messageCloudStore.update(messageData, onCompleteListener)
+        messageCloudStore.update(messageData)
     }
 
     override suspend fun remove(
-        messageData: MessageData,
-        onCompleteListener: OnCompleteListener<MessageData>
+        messageData: MessageData
     ) {
-        messageCloudStore.remove(messageData, onCompleteListener)
+        messageCloudStore.remove(messageData)
     }
 }

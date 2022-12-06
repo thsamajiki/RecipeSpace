@@ -1,38 +1,33 @@
 package com.hero.recipespace.data.notice.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.notice.datastore.NoticeCloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 class NoticeRemoteDataSourceImpl(
     private val noticeCloudStore: NoticeCloudStore
 ) : NoticeRemoteDataSource {
-    override suspend fun getData(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeData>): LiveData<NoticeData> {
-        return noticeCloudStore.getData(noticeKey, onCompleteListener)
+    override fun getData(noticeKey: String): Flow<NoticeData> {
+        return noticeCloudStore.getData(noticeKey)
     }
 
-    override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<NoticeData>>
-    ): LiveData<List<NoticeData>> {
-        return noticeCloudStore.getDataList(onCompleteListener)
+    override fun getDataList(): Flow<List<NoticeData>> {
+        return noticeCloudStore.getDataList()
     }
 
-    override suspend fun add(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
-        noticeCloudStore.add(noticeData, onCompleteListener)
+    override suspend fun add(noticeData: NoticeData) {
+        noticeCloudStore.add(noticeData)
     }
 
     override suspend fun update(
-        noticeData: NoticeData,
-        onCompleteListener: OnCompleteListener<NoticeData>
+        noticeData: NoticeData
     ) {
-        noticeCloudStore.update(noticeData, onCompleteListener)
+        noticeCloudStore.update(noticeData)
     }
 
     override suspend fun remove(
-        noticeData: NoticeData,
-        onCompleteListener: OnCompleteListener<NoticeData>
+        noticeData: NoticeData
     ) {
-        noticeCloudStore.remove(noticeData, onCompleteListener)
+        noticeCloudStore.remove(noticeData)
     }
 }

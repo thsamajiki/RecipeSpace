@@ -7,27 +7,19 @@ import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.datastore.UserCloudStore
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import kotlinx.coroutines.flow.Flow
 
 class UserRemoteDataSourceImpl(
     private val userCloudStore: UserCloudStore
 ) : UserRemoteDataSource {
 
-    override suspend fun getData(
-        userKey: String,
-        onCompleteListener: OnCompleteListener<UserData>
-    ): LiveData<UserData> {
-        return userCloudStore.getData(userKey, object : OnCompleteListener<UserData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    override fun getData(
+        userKey: String
+    ): Flow<UserData> {
+        return userCloudStore.getData(userKey)
     }
 
-    override fun getFirebaseAuthProfile(): UserData {
+    override fun getFirebaseAuthProfile(): Flow<UserData> {
         val firebaseUser: FirebaseUser? = getCurrentUser()
 
         val profileImageUrl: String? = if (firebaseUser!!.photoUrl != null) {
@@ -52,59 +44,24 @@ class UserRemoteDataSourceImpl(
     }
 
     override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<UserData>>
-    ): LiveData<List<UserData>> {
-        return userCloudStore.getDataList(object : OnCompleteListener<List<UserData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<UserData>>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    ): Flow<List<UserData>> {
+        return userCloudStore.getDataList()
     }
 
-    override suspend fun add(userData: UserData, onCompleteListener: OnCompleteListener<UserData>) {
-        userCloudStore.add(userData, object : OnCompleteListener<UserData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    override suspend fun add(userData: UserData) {
+        userCloudStore.add(userData)
     }
 
     override suspend fun update(
-        userData: UserData,
-        onCompleteListener: OnCompleteListener<UserData>,
+        userData: UserData
     ) {
-        userCloudStore.update(userData, object : OnCompleteListener<UserData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+        userCloudStore.update(userData)
     }
 
     override suspend fun remove(
-        userData: UserData,
-        onCompleteListener: OnCompleteListener<UserData>,
+        userData: UserData
     ) {
-        userCloudStore.remove(userData, object : OnCompleteListener<UserData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<UserData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+        userCloudStore.remove(userData)
     }
 
     override suspend fun signOut() {

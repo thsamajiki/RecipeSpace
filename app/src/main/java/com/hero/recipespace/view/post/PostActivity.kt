@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.post
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
@@ -20,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostBinding
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
@@ -27,6 +31,7 @@ import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.post.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,15 +39,27 @@ class PostActivity : AppCompatActivity(),
     View.OnClickListener,
     TextWatcher,
     OnFileUploadListener,
-    OnCompleteListener<RecipeData> {
+    OnCompleteListener<RecipeEntity> {
 
     private lateinit var binding: ActivityPostBinding
     private var photoPath: String? = null
 
-    private lateinit var photoResultLauncher: ActivityResultLauncher<Intent>
+    private val viewModel by viewModels<PostViewModel>()
+
+    private val photoResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                photoPath = RealPathUtil.getRealPath(this, data.data)
+                Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+                binding.btnPhoto.visibility = View.GONE
+                if (binding.editContent.text.toString().isNotEmpty()) {
+                    binding.btnComplete.isEnabled = true
+                }
+            }
+        }
 
     companion object {
-        const val EXTRA_RECIPE_ENTITY = "recipeData"
+        const val EXTRA_RECIPE_ENTITY = "recipe"
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
     }
@@ -51,8 +68,16 @@ class PostActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         binding = ActivityPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupViewModel()
         setupListeners()
         addTextWatcher()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
     }
 
     private fun setupListeners() {
@@ -77,8 +102,6 @@ class PostActivity : AppCompatActivity(),
     private fun addTextWatcher() {
         binding.editContent.addTextChangedListener(this)
     }
-
-
 
     private fun intentGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -110,18 +133,6 @@ class PostActivity : AppCompatActivity(),
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
-            photoPath = RealPathUtil.getRealPath(this, data.data)
-            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-            binding.btnPhoto.visibility = View.GONE
-            if (binding.editContent.text.toString().isNotEmpty()) {
-                binding.btnComplete.isEnabled = true
-            }
-        }
-    }
-
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -142,15 +153,15 @@ class PostActivity : AppCompatActivity(),
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
             val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
             val profileImageUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
-            val recipeData = RecipeData()
-            recipeData.photoUrl = downloadUrl
-            recipeData.desc = binding.editContent.text.toString()
-            recipeData.postDate = Timestamp.now()
-            recipeData.rate = 0
-            recipeData.userName = userName
-            recipeData.profileImageUrl = profileImageUrl
-            recipeData.userKey = FirebaseAuth.getInstance().currentUser?.uid
-            FirebaseData.getInstance().uploadRecipeData(recipeData, this)
+            val recipe = RecipeEntity()
+            recipe.photoUrl = downloadUrl
+            recipe.desc = binding.editContent.text.toString()
+            recipe.postDate = Timestamp.now()
+            recipe.rate = 0
+            recipe.userName = userName
+            recipe.profileImageUrl = profileImageUrl
+            recipe.userKey = FirebaseAuth.getInstance().currentUser?.uid
+            FirebaseData.getInstance().uploadRecipeData(recipe, this)
         }
     }
 

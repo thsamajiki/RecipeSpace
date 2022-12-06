@@ -1,17 +1,16 @@
 package com.hero.recipespace.data.notice.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.notice.NoticeData
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface NoticeRemoteDataSource {
-    suspend fun getData(noticeKey: String, onCompleteListener: OnCompleteListener<NoticeData>) : LiveData<NoticeData>
+    fun getData(noticeKey: String) : Flow<NoticeData>
 
-    fun getDataList(onCompleteListener: OnCompleteListener<List<NoticeData>>) : LiveData<List<NoticeData>>
+    fun getDataList() : Flow<List<NoticeData>>
 
-    suspend fun add(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>)
+    suspend fun add(noticeData: NoticeData)
 
-    suspend fun update(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>)
+    suspend fun update(noticeData: NoticeData)
 
-    suspend fun remove(noticeData: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>)
+    suspend fun remove(noticeData: NoticeData)
 }

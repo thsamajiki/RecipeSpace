@@ -1,47 +1,39 @@
 package com.hero.recipespace.database.notice.datastore
 
-import android.content.Context
-import androidx.lifecycle.LiveData
-import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.notice.NoticeData
-import com.hero.recipespace.database.CloudStore
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
-class NoticeCloudStore(
-    private val context: Context
-) : CloudStore<NoticeData>(context, FirebaseFirestore.getInstance()) {
+class NoticeCloudStore() {
 
     companion object {
         private lateinit var instance : NoticeCloudStore
 
-        fun getInstance(context: Context) : NoticeCloudStore {
-            return instance ?: synchronized(this) {
-                instance ?: NoticeCloudStore(context).also {
+        fun getInstance() : NoticeCloudStore {
+            return synchronized(this) {
+                instance ?: NoticeCloudStore().also {
                     instance = it
                 }
             }
         }
     }
 
-    override suspend fun getData(vararg params: Any, onCompleteListener: OnCompleteListener<NoticeData>) {
+    fun getData(noticeKey: String) : Flow<NoticeData> {
         TODO("Not yet implemented")
     }
 
-    override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<NoticeData>>
-    ): LiveData<List<NoticeData>> {
+    fun getDataList(): Flow<List<NoticeData>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    fun add(data: NoticeData) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun update(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    fun update(data: NoticeData) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun remove(data: NoticeData, onCompleteListener: OnCompleteListener<NoticeData>) {
+    fun remove(data: NoticeData) {
         TODO("Not yet implemented")
     }
 }

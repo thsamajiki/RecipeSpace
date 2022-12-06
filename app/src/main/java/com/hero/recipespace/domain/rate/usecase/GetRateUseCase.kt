@@ -2,12 +2,12 @@ package com.hero.recipespace.domain.rate.usecase
 
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetRateUseCase @Inject constructor(
     private val rateRepository: RateRepository
 ) {
-    suspend fun invoke(rateKey: String, onCompleteListener: OnCompleteListener<RateEntity>) =
-        rateRepository.getRate(rateKey, onCompleteListener)
+    operator fun invoke(rateKey: String): Flow<RateEntity> =
+        rateRepository.getRate(rateKey)
 }

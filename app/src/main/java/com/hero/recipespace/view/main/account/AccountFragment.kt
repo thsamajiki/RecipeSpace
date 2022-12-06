@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
 import com.hero.recipespace.view.login.LoginActivity
+import com.hero.recipespace.view.main.account.viewmodel.AccountViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,13 +28,25 @@ class AccountFragment: Fragment(),
     private var _binding: FragmentAccountBinding? = null
     private val binding: FragmentAccountBinding
         get() = _binding!!
-    private val PROFILE_EDIT_REQ = 1010
 
-    private lateinit var editProfileResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var photoResultLauncher: ActivityResultLauncher<Intent>
+    private val viewModel by viewModels<AccountViewModel>()
+
+    private val editProfileResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setUserData()
+        }
+    }
+    private val photoResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val intent = Intent(requireActivity(), PhotoActivity::class.java)
+            val userKey = FirebaseAuth.getInstance().currentUser?.uid
+        }
+    }
 
     companion object {
         fun newInstance() = AccountFragment()
+
+        const val PROFILE_EDIT_REQ = 1010
     }
 
     override fun onCreateView(
@@ -48,20 +62,13 @@ class AccountFragment: Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         setUserData()
-
+        setupViewModel()
         setupListeners()
+    }
 
-        editProfileResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                setUserData()
-            }
-        }
+    private fun setupViewModel() {
+        with(viewModel) {
 
-        photoResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val intent = Intent(requireActivity(), PhotoActivity::class.java)
-                val userKey = FirebaseAuth.getInstance().currentUser?.uid
-            }
         }
     }
 

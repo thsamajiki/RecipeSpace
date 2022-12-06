@@ -1,23 +1,21 @@
 package com.hero.recipespace.view.main.chat
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.hero.recipespace.R
-import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.databinding.ItemMessageLeftBinding
 import com.hero.recipespace.databinding.ItemMessageRightBinding
+import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.view.BaseAdapter
 
 class ChatAdapter(
     private val context: Context,
-    private val messageDataList: List<MessageData>,
-    private val chatData: ChatData?
-) : BaseAdapter<RecyclerView.ViewHolder, MessageData>() {
+    private val messageList: List<MessageEntity>,
+    private val chat: ChatEntity?
+) : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
 
     private var requestManager: RequestManager? = null
     private val LEFT_TYPE = 0
@@ -35,29 +33,17 @@ class ChatAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val messageData: MessageData? = messageDataList?.get(position)
+        val message: MessageEntity = messageList[position]
         if (holder is LeftMessageViewHolder) {
-            val otherUserProfile = getOtherUserProfile(chatData.userProfiles, myUserKey)
-            val otherUserName = getOtherUserName(chatData.userNames, myUserKey)
-            if (TextUtils.isEmpty(otherUserProfile)) {
-                requestManager?.load(R.drawable.ic_default_user_profile)?.into(holder.ivProfile)
-            } else {
-                requestManager!!.load(otherUserProfile).into(holder.ivProfile)
-            }
-            holder.tvChat.t(messageData.getMessage())
-            holder.tvDate.setText(TimeUtils.getInstance()
-                .convertTimeFormat(messageData.getTimestamp().toDate(), "MM.dd"))
-            holder.tvUserName.text = otherUserName
-        } else {
-            (holder as RightMessageViewHolder).tvChat.setText(messageData.getMessage())
-            holder.tvDate.setText(TimeUtils.getInstance()
-                .convertTimeFormat(messageData.getTimestamp().toDate(), "MM.dd"))
+            holder.bind(message)
+        } else if (holder is RightMessageViewHolder) {
+            holder.bind(message)
         }
     }
 
     private fun getOtherUserName(
         userNames: HashMap<String, String>,
-        myUserKey: String?,
+        myUserKey: String?
     ): String? {
         for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
@@ -69,7 +55,7 @@ class ChatAdapter(
 
     private fun getOtherUserProfile(
         userProfiles: HashMap<String, String>,
-        myUserKey: String?,
+        myUserKey: String?
     ): String? {
         for (userKey in userProfiles.keys) {
             if (myUserKey != userKey) {
@@ -80,12 +66,12 @@ class ChatAdapter(
     }
 
     override fun getItemCount(): Int {
-        return messageDataList.size
+        return messageList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        val messageData: MessageData = messageDataList[position]
-        return if (myUserKey == messageData.userKey) {
+        val message: MessageEntity = messageList[position]
+        return if (myUserKey == message.userKey) {
             RIGHT_TYPE
         } else LEFT_TYPE
     }
@@ -94,8 +80,8 @@ class ChatAdapter(
         private val binding: ItemMessageRightBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(messageData: MessageData) {
-            binding.messageRight = messageData
+        fun bind(message: MessageEntity) {
+            binding.messageRight = message
             binding.executePendingBindings()
         }
     }
@@ -104,8 +90,8 @@ class ChatAdapter(
         private val binding: ItemMessageLeftBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(messageData: MessageData) {
-            binding.messageLeft = messageData
+        fun bind(message: MessageEntity) {
+            binding.messageLeft = message
             binding.executePendingBindings()
         }
     }

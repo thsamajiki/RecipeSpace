@@ -7,7 +7,7 @@
 
         <variable
             name="notice"
-            type="com.hero.recipespace.data.notice.NoticeData" />
+            type="com.hero.recipespace.domain.notice.entity.NoticeEntity" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

@@ -7,77 +7,42 @@ import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.LocalStore
 import com.hero.recipespace.database.user.dao.UserDao
 import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 class UserLocalStore(
-    private val context: Context,
-    private val userDao: UserDao
-) : LocalStore<UserData>(context) {
+    private val userDao: UserDao) {
 
     companion object {
         private lateinit var instance : UserLocalStore
 
-        fun getInstance(context: Context, userDao: UserDao) : UserLocalStore {
-            return instance ?: synchronized(this) {
-                instance ?: UserLocalStore(context, userDao).also {
+        fun getInstance(userDao: UserDao) : UserLocalStore {
+            return synchronized(this) {
+                instance ?: UserLocalStore(userDao).also {
                     instance = it
                 }
             }
         }
     }
 
-    override suspend fun getData(
-        vararg params: Any,
-        onCompleteListener: OnCompleteListener<UserData>
-    ) {
-        if (params.isEmpty()) {
-            onCompleteListener.onComplete(false, null)
-            return
-        }
-        val userKey: String = params[0].toString()
-        val userData: UserData = userDao.getUserFromKey(userKey)!!
+    fun getData(userKey: String) : Flow<UserData> {
 
-        kotlin.run {
-            onCompleteListener.onComplete(true, userData)
-        }
+        val userData: UserData = userDao.getUserFromKey(userKey)!!
     }
 
-    override fun getDataList(
-        vararg params: Any,
-        onCompleteListener: OnCompleteListener<List<UserData>>
-    ) {
-        if (params.isEmpty()) {
-            onCompleteListener.onComplete(false, null)
-            return
-        }
+    fun getDataList() : Flow<List<UserData>> {
 
         val userDataList: LiveData<List<UserData>> = userDao.getAllUsers()
-
-        kotlin.run {
-            onCompleteListener.onComplete(true, userDataList)
-        }
     }
 
-    override suspend fun add(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    fun add(data: UserData) {
         userDao.insertUser(data)
-
-        kotlin.run {
-            onCompleteListener.onComplete(true, data)
-        }
     }
 
-    override suspend fun update(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    fun update(data: UserData) {
         userDao.updateUser(data)
-
-        kotlin.run {
-            onCompleteListener.onComplete(true, data)
-        }
     }
 
-    override suspend fun remove(data: UserData, onCompleteListener: OnCompleteListener<UserData>) {
+    fun remove(data: UserData) {
         userDao.deleteUser(data)
-
-        kotlin.run {
-            onCompleteListener.onComplete(true, data)
-        }
     }
 }

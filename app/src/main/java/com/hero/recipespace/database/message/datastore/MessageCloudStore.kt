@@ -10,36 +10,32 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 
-class MessageCloudStore(
-    private val context: Context
-) : CloudStore<MessageData>(context, FirebaseFirestore.getInstance()) {
+class MessageCloudStore() {
 
     companion object {
         private lateinit var instance : MessageCloudStore
 
-        fun getInstance(context: Context) : MessageCloudStore {
-            return instance ?: synchronized(this) {
-                instance ?: MessageCloudStore(context).also {
+        fun getInstance() : MessageCloudStore {
+            return synchronized(this) {
+                instance ?: MessageCloudStore().also {
                     instance = it
                 }
             }
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<MessageData>) : LiveData<MessageData> {
+    fun getData(messageKey: String) : Flow<MessageData> {
+
+    }
+
+    fun getDataList() : Flow<List<MessageData>> {
         TODO("Not yet implemented")
     }
 
-    override fun getDataList(
-        vararg params: Any?,
-        onCompleteListener: OnCompleteListener<List<MessageData>>
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun add(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    fun add(data: MessageData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<MessageData> {
             override fun apply(transaction: Transaction): MessageData {
@@ -55,16 +51,16 @@ class MessageCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<MessageData> {
             override fun onSuccess(messageData: MessageData?) {
-                onCompleteListener.onComplete(true, messageData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun update(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    fun update(data: MessageData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<MessageData> {
             override fun apply(transaction: Transaction): MessageData {
@@ -80,16 +76,16 @@ class MessageCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<MessageData> {
             override fun onSuccess(messageData: MessageData?) {
-                onCompleteListener.onComplete(true, messageData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun remove(data: MessageData, onCompleteListener: OnCompleteListener<MessageData>) {
+    fun remove(data: MessageData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<MessageData> {
             override fun apply(transaction: Transaction): MessageData {
@@ -105,11 +101,11 @@ class MessageCloudStore(
             }
         }).addOnSuccessListener(object : OnSuccessListener<MessageData> {
             override fun onSuccess(messageData: MessageData?) {
-                onCompleteListener.onComplete(true, messageData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }

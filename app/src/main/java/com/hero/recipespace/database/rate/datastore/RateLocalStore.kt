@@ -2,7 +2,6 @@ package com.hero.recipespace.database.rate.datastore
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.LocalStore
 import com.hero.recipespace.database.rate.dao.RateDao

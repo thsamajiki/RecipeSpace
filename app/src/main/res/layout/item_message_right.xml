@@ -7,7 +7,7 @@
 
         <variable
             name="messageRight"
-            type="com.hero.recipespace.data.message.MessageData" />
+            type="com.hero.recipespace.domain.message.entity.MessageEntity" />
     </data>
 
     <RelativeLayout

@@ -1,17 +1,16 @@
 package com.hero.recipespace.data.chat.remote
 
-import androidx.lifecycle.LiveData
 import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 
 interface ChatRemoteDataSource {
-    suspend fun getData(chatKey: String, onCompleteListener: OnCompleteListener<ChatData>) : LiveData<ChatData>
+    fun getData(chatKey: String) : Flow<ChatData>
 
-    fun getDataList(userKey: String, onCompleteListener: OnCompleteListener<List<ChatData>>) : LiveData<List<ChatData>>
+    fun getDataList(userKey: String) : Flow<List<ChatData>>
 
-    suspend fun add(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>)
+    suspend fun add(chatData: ChatData)
 
-    suspend fun update(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>)
+    suspend fun update(chatData: ChatData)
 
-    suspend fun remove(chatData: ChatData, onCompleteListener: OnCompleteListener<ChatData>)
+    suspend fun remove(chatData: ChatData)
 }

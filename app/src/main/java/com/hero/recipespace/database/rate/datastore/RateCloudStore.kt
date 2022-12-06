@@ -9,15 +9,16 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.CloudStore
 import com.hero.recipespace.listener.OnCompleteListener
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 
-class RateCloudStore : CloudStore<RateData>() {
+class RateCloudStore() {
 
     companion object {
         private lateinit var instance: RateCloudStore
 
-        fun getInstance(context: Context) : RateCloudStore {
-            return instance ?: synchronized(this) {
+        fun getInstance() : RateCloudStore {
+            return synchronized(this) {
                 instance ?: RateCloudStore().also {
                     instance = it
                 }
@@ -25,18 +26,15 @@ class RateCloudStore : CloudStore<RateData>() {
         }
     }
 
-    override fun getData(vararg params: Any?, onCompleteListener: OnCompleteListener<RateData>) {
+    fun getData(rateKey: String) : Flow<RateData> {
         TODO("Not yet implemented")
     }
 
-    override fun getDataList(
-        vararg params: Any?,
-        onCompleteListener: OnCompleteListener<List<RateData>>
-    ) {
+    fun getDataList() : Flow<List<RateData>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    fun add(data: RateData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RateData> {
             override fun apply(transaction: Transaction): RateData {
@@ -52,16 +50,16 @@ class RateCloudStore : CloudStore<RateData>() {
             }
         }).addOnSuccessListener(object : OnSuccessListener<RateData> {
             override fun onSuccess(rateData: RateData?) {
-                onCompleteListener.onComplete(true, rateData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun update(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    fun update(data: RateData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RateData> {
             override fun apply(transaction: Transaction): RateData {
@@ -77,16 +75,16 @@ class RateCloudStore : CloudStore<RateData>() {
             }
         }).addOnSuccessListener(object : OnSuccessListener<RateData> {
             override fun onSuccess(rateData: RateData?) {
-                onCompleteListener.onComplete(true, rateData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
 
-    override suspend fun remove(data: RateData, onCompleteListener: OnCompleteListener<RateData>) {
+    fun remove(data: RateData) {
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.runTransaction(object : Transaction.Function<RateData> {
             override fun apply(transaction: Transaction): RateData {
@@ -102,11 +100,11 @@ class RateCloudStore : CloudStore<RateData>() {
             }
         }).addOnSuccessListener(object : OnSuccessListener<RateData> {
             override fun onSuccess(rateData: RateData?) {
-                onCompleteListener.onComplete(true, rateData)
+
             }
         }).addOnFailureListener(object : OnFailureListener {
             override fun onFailure(e: Exception) {
-                onCompleteListener.onComplete(false, null)
+
             }
         })
     }
