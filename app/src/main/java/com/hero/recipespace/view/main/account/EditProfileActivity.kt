@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.main.account
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,6 +11,8 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
@@ -33,6 +36,17 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     private var photoPath: String? = null
     private var profileUrl: String? = null
     private var userName: String? = null
+
+    private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                photoPath = RealPathUtil.getRealPath(this, it.data.toUri())
+                Glide.with(this).load(photoPath).into(binding.ivUserProfile)
+                if (binding.editUserName.text.toString().isNotEmpty()) {
+                    binding.tvComplete.isEnabled = true
+                }
+            }
+        }
 
     companion object {
         const val PERMISSION_REQ_CODE = 1010
@@ -90,9 +104,9 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun intentGallery() {
-        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*"
-        startActivityForResult(pickIntent, PHOTO_REQ_CODE)
+        val pickIntent = Intent(Intent.ACTION_PICK)
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        intentGalleryLauncher.launch(pickIntent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -118,17 +132,6 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             intentGallery()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PHOTO_REQ_CODE && resultCode == RESULT_OK && data != null) {
-            photoPath = RealPathUtil.getRealPath(this, data.data)
-            Glide.with(this).load(photoPath).into(binding.ivUserProfile)
-            if (binding.editUserName.text.toString().isNotEmpty()) {
-                binding.tvComplete.isEnabled = true
-            }
         }
     }
 

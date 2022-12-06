@@ -39,7 +39,7 @@ class ChatListAdapter(
 
     private fun getOtherUserProfile(
         userProfiles: HashMap<String, String>,
-        myUserKey: String?,
+        myUserKey: String?
     ): String? {
         for (userKey in userProfiles.keys) {
             if (myUserKey != userKey) {

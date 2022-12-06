@@ -17,14 +17,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
-import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
@@ -44,18 +42,19 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
 
     private var photoPath: String? = null
 
-    private val editPhotoResultLauncher: ActivityResultLauncher<Intent> =
+    private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            photoPath = RealPathUtil.getRealPath(this, data.data)
+        if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+            photoPath = RealPathUtil.getRealPath(this, it.data.toUri())
             Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
             if (binding.editContent.text.toString().isNotEmpty()) {
-                binding.btnComplete.isEnabled = true
+                binding.tvComplete.isEnabled = true
             }
         }
     }
 
     companion object {
+        private const val PERMISSION_REQ_CODE = 1010
         private const val RECIPE_KEY = "recipeKey"
 
         fun getIntent(context: Context, recipeKey: String) =
@@ -84,11 +83,13 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding.ivBack.setOnClickListener {
             finish()
         }
-        binding.btnComplete.setOnClickListener {
+        binding.tvComplete.setOnClickListener {
             uploadImage()
         }
         binding.ivRecipePhoto.setOnClickListener {
-            intentGallery()
+            if (checkStoragePermission()) {
+                intentGallery()
+            }
         }
     }
 
@@ -97,9 +98,9 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     }
 
     private fun intentGallery() {
-        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*"
-        startActivityForResult(pickIntent, PHOTO_REQ_CODE)
+        val pickIntent = Intent(Intent.ACTION_PICK)
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        intentGalleryLauncher.launch(intent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -120,7 +121,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -133,7 +134,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.btnComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
+        binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun uploadImage() {
@@ -160,7 +161,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         }
     }
 
-    override fun onFileUploadProgress(percent: Float) {
+    override suspend fun onFileUploadProgress(percent: Float) {
         LoadingProgress.setProgress(percent.toInt())
     }
 

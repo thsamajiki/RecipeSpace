@@ -19,7 +19,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun login() {
-
+        getUserUseCase.invoke()
     }
 
     override fun onCleared() {

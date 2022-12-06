@@ -54,7 +54,7 @@ class PostActivity : AppCompatActivity(),
                 Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
                 binding.btnPhoto.visibility = View.GONE
                 if (binding.editContent.text.toString().isNotEmpty()) {
-                    binding.btnComplete.isEnabled = true
+                    binding.tvComplete.isEnabled = true
                 }
             }
         }
@@ -101,7 +101,7 @@ class PostActivity : AppCompatActivity(),
                 intentGallery()
             }
         }
-       binding.btnComplete.setOnClickListener {
+       binding.tvComplete.setOnClickListener {
            uploadImage()
        }
     }
@@ -145,7 +145,7 @@ class PostActivity : AppCompatActivity(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.btnComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
+        binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun uploadImage() {

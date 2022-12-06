@@ -1,6 +1,5 @@
 package com.hero.recipespace.util
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -14,13 +13,13 @@ class RealPathUtil {
 
     companion object {
         fun getRealPath(context: Context, uri: Uri): String? {
-            return RealPathUtil.getRealPathFromURI_API19(context, uri)
+            return RealPathUtil.getRealPathFromURI(context, uri)
         }
 
-        private fun getRealPathFromURI_API19(context: Context, uri: Uri): String? {
+        private fun getRealPathFromURI(context: Context, uri: Uri): String? {
 
             // check here to KITKAT or new version
-            val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+            val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
             // DocumentProvider
             if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
@@ -69,65 +68,65 @@ class RealPathUtil {
             }
             return null
         }
-    }
 
-    private fun getDataColumn(
-        context: Context, uri: Uri?,
-        selection: String?, selectionArgs: Array<String>?,
-    ): String? {
-        var cursor: Cursor? = null
-        val column = "_data"
-        val projection = arrayOf(column)
-        try {
-            cursor = context.contentResolver.query(uri!!, projection,
-                selection, selectionArgs, null)
-            if (cursor != null && cursor.moveToFirst()) {
-                val index = cursor.getColumnIndexOrThrow(column)
-                return cursor.getString(index)
+        private fun getDataColumn(
+            context: Context, uri: Uri?,
+            selection: String?, selectionArgs: Array<String>?
+        ): String? {
+            var cursor: Cursor? = null
+            val column = "_data"
+            val projection = arrayOf(column)
+            try {
+                cursor = context.contentResolver.query(uri!!, projection,
+                    selection, selectionArgs, null)
+                if (cursor != null && cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndexOrThrow(column)
+                    return cursor.getString(index)
+                }
+            } finally {
+                cursor?.close()
             }
-        } finally {
-            cursor?.close()
+            return null
         }
-        return null
-    }
 
-    /**
-     * @param uri
-     * The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
-    private fun isExternalStorageDocument(uri: Uri): Boolean {
-        return "com.android.externalstorage.documents" == uri
-            .authority
-    }
+        /**
+         * @param uri
+         * The Uri to check.
+         * @return Whether the Uri authority is ExternalStorageProvider.
+         */
+        private fun isExternalStorageDocument(uri: Uri): Boolean {
+            return "com.android.externalstorage.documents" == uri
+                .authority
+        }
 
-    /**
-     * @param uri
-     * The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
-    private fun isDownloadsDocument(uri: Uri): Boolean {
-        return "com.android.providers.downloads.documents" == uri
-            .authority
-    }
+        /**
+         * @param uri
+         * The Uri to check.
+         * @return Whether the Uri authority is DownloadsProvider.
+         */
+        private fun isDownloadsDocument(uri: Uri): Boolean {
+            return "com.android.providers.downloads.documents" == uri
+                .authority
+        }
 
-    /**
-     * @param uri
-     * The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
-    private fun isMediaDocument(uri: Uri): Boolean {
-        return "com.android.providers.media.documents" == uri
-            .authority
-    }
+        /**
+         * @param uri
+         * The Uri to check.
+         * @return Whether the Uri authority is MediaProvider.
+         */
+        private fun isMediaDocument(uri: Uri): Boolean {
+            return "com.android.providers.media.documents" == uri
+                .authority
+        }
 
-    /**
-     * @param uri
-     * The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
-    private fun isGooglePhotosUri(uri: Uri): Boolean {
-        return "com.google.android.apps.photos.content" == uri
-            .authority
+        /**
+         * @param uri
+         * The Uri to check.
+         * @return Whether the Uri authority is Google Photos.
+         */
+        private fun isGooglePhotosUri(uri: Uri): Boolean {
+            return "com.google.android.apps.photos.content" == uri
+                .authority
+        }
     }
 }

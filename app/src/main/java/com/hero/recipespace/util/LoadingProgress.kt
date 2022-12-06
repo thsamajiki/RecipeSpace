@@ -6,6 +6,8 @@ import android.content.Context
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import com.google.android.material.progressindicator.BaseProgressIndicator
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.hero.recipespace.R
 
 class LoadingProgress {
@@ -15,10 +17,11 @@ class LoadingProgress {
     companion object {
         fun initProgressDialog(context: Context) {
             val dialog = Dialog(context, R.style.LoadingDialog)
+            val progressIndicator = LinearProgressIndicator(context, null, 0)
             val progressBar = ProgressBar(context)
-            dialog.setContentView(progressBar)
+            dialog.setContentView(progressIndicator)
             dialog.addContentView(
-                ProgressBar(context),
+                LinearProgressIndicator(context),
                 LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT)
             )
@@ -45,6 +48,4 @@ class LoadingProgress {
             animation.start()
         }
     }
-
-
 }

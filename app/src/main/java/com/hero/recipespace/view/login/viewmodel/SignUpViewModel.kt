@@ -14,10 +14,6 @@ class SignUpViewModel @Inject constructor(
     private val addUserUseCase: AddUserUseCase
 ) : AndroidViewModel(application) {
 
-    init {
-        viewModelScope.launch {  }
-    }
-
     suspend fun signUpUserAccount() {
         addUserUseCase.invoke()
     }
