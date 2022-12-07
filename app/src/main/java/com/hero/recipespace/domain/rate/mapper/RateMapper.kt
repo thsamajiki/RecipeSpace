@@ -14,7 +14,7 @@ fun RateData.toEntity(): RateEntity {
     )
 }
 
-fun RateEntity.toData(rateEntity: RateEntity): RateData {
+fun RateData.toData(rateEntity: RateEntity): RateData {
     return RateData(
         key = rateEntity.key,
         userKey = rateEntity.userKey,

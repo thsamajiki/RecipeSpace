@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.message
 
+import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
 import com.hero.recipespace.domain.message.entity.MessageEntity
@@ -49,5 +50,15 @@ class MessageRepositoryImpl(
         messageEntity: MessageEntity
     ) {
 
+    }
+
+    private fun getEntities(data: List<MessageData>): List<MessageEntity> {
+        val result = mutableListOf<MessageEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

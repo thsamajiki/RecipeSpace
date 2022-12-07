@@ -1,8 +1,11 @@
 package com.hero.recipespace.database.rate
 
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.local.RateLocalDataSource
 import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
+import com.hero.recipespace.domain.notice.entity.NoticeEntity
+import com.hero.recipespace.domain.notice.mapper.toEntity
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
@@ -62,5 +65,15 @@ class RateRepositoryImpl(
 
     override suspend fun deleteRate(rateEntity: RateEntity) {
 
+    }
+
+    private fun getEntities(data: List<RateData>): List<RateEntity> {
+        val result = mutableListOf<RateEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

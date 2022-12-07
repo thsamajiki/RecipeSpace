@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.notice
 
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.data.notice.remote.NoticeRemoteDataSource
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.domain.notice.mapper.toEntity
@@ -24,5 +25,15 @@ class NoticeRepositoryImpl(
                     it.toEntity()
                 }
             }
+    }
+
+    private fun getEntities(data: List<NoticeData>): List<NoticeEntity> {
+        val result = mutableListOf<NoticeEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

@@ -1,8 +1,11 @@
 package com.hero.recipespace.database.user
 
+import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.local.UserLocalDataSource
 import com.hero.recipespace.data.user.remote.UserRemoteDataSource
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.mapper.toEntity
 import com.hero.recipespace.domain.user.repository.UserRepository
@@ -55,5 +58,15 @@ class UserRepositoryImpl(
 
     override suspend fun signOut() {
         userRemoteDataSource.signOut()
+    }
+
+    private fun getEntities(data: List<UserData>): List<UserEntity> {
+        val result = mutableListOf<UserEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

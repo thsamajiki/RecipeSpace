@@ -17,7 +17,7 @@ fun RecipeData.toEntity(): RecipeEntity {
     )
 }
 
-fun RecipeEntity.toData(recipeEntity: RecipeEntity): RecipeData {
+fun RecipeData.toData(recipeEntity: RecipeEntity): RecipeData {
     return RecipeData(
         key = recipeEntity.key,
         profileImageUrl = recipeEntity.profileImageUrl,

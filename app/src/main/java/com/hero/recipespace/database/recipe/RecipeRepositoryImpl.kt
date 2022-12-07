@@ -1,9 +1,12 @@
 package com.hero.recipespace.database.recipe
 
 import android.widget.Toast
+import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
+import com.hero.recipespace.domain.rate.entity.RateEntity
+import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.recipe.mapper.toEntity
@@ -69,5 +72,15 @@ class RecipeRepositoryImpl(
                 }
             }
         })
+    }
+
+    private fun getEntities(data: List<RecipeData>): List<RecipeEntity> {
+        val result = mutableListOf<RecipeEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

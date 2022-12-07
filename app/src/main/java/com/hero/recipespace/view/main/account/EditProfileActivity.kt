@@ -163,9 +163,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
                         setResult(RESULT_OK)
                         finish()
                     } else {
-                        Toast.makeText(applicationContext,
-                            "유저 정보 변경에 실패했습니다. 다시 시도해 주세요",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "사용자 정보 변경에 실패했습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
                     }
                 }
             })
@@ -180,7 +178,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
-    override fun onFileUploadProgress(percent: Float) {
+    override suspend fun onFileUploadProgress(percent: Float) {
         LoadingProgress.setProgress(percent.toInt())
     }
 

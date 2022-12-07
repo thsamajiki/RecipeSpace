@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.chat
 
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.local.ChatLocalDataSource
 import com.hero.recipespace.data.chat.remote.ChatRemoteDataSource
 import com.hero.recipespace.domain.chat.entity.ChatEntity
@@ -39,12 +40,22 @@ class ChatRepositoryImpl(
     override suspend fun modifyChat(
         chatEntity: ChatEntity
     ) {
-        chatRemoteDataSource.update(chatEntity.toData(chatEntity))
+        chatRemoteDataSource.update(ChatData.toData(chatEntity))
     }
 
     override suspend fun deleteChat(
         chatEntity: ChatEntity
     ) {
 
+    }
+
+    private fun getEntities(data: List<ChatData>): List<ChatEntity> {
+        val result = mutableListOf<ChatEntity>()
+
+        for (i in data.indices) {
+            result.add(i, data[i].toEntity())
+        }
+
+        return result
     }
 }

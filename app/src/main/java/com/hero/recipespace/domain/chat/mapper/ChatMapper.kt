@@ -13,7 +13,7 @@ fun ChatData.toEntity(): ChatEntity {
     )
 }
 
-fun ChatEntity.toData(chatEntity: ChatEntity): ChatData {
+fun ChatData.toData(chatEntity: ChatEntity): ChatData {
     return ChatData(
         key = chatEntity.key,
         lastMessage = chatEntity.lastMessage,

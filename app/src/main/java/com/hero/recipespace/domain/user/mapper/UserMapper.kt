@@ -11,7 +11,7 @@ fun UserData.toEntity(): UserEntity {
     )
 }
 
-fun UserEntity.toData(userEntity: UserEntity): UserData {
+fun UserData.toData(userEntity: UserEntity): UserData {
     return UserData(
         userKey = userEntity.userKey,
         userName = userEntity.userName,
