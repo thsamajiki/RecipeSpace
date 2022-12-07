@@ -4,9 +4,9 @@ import com.hero.recipespace.domain.rate.entity.RateEntity
 import kotlinx.coroutines.flow.Flow
 
 interface RateRepository {
-    fun getRate(rateKey: String) : Flow<RateEntity>
+    suspend fun getRate(rateKey: String) : RateEntity
 
-    fun getRateList() : Flow<List<RateEntity>>
+    fun observeRateList() : Flow<List<RateEntity>>
 
     suspend fun addRate(rateEntity: RateEntity)
 

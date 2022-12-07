@@ -1,40 +1,43 @@
 package com.hero.recipespace.data.user.local
 
+import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.database.user.datastore.UserLocalStore
+import com.hero.recipespace.database.user.dao.UserDao
 import kotlinx.coroutines.flow.Flow
 
 class UserLocalDataSourceImpl(
-    private val userLocalStore: UserLocalStore
+    private val userDao: UserDao
 ) : UserLocalDataSource {
-    override fun getData(
-        userKey: String
-    ): Flow<UserData> {
-        return userLocalStore.getData(userKey)
+    override suspend fun getData(userKey: String): UserData {
+        return userDao.getUserFromKey(userKey) ?: error("not found UserData")
     }
 
     override fun getDataList(): Flow<List<UserData>> {
-        return userLocalStore.getDataList()
-    }
-
-    override fun clear() {
+        return userDao.getAllUsers().asFlow()
     }
 
     override suspend fun add(userData: UserData) {
-        userLocalStore.add(userData)
+        userDao.insertUser(userData)
+    }
+
+    override suspend fun addAll(userList: List<UserData>) {
+        userDao.insertAll(userList)
     }
 
     override suspend fun update(userData: UserData) {
-        userLocalStore.update(userData)
+        userDao.updateUser(userData)
     }
 
     override suspend fun remove(
         userData: UserData
     ) {
-        userLocalStore.remove(userData)
+        userDao.deleteUser(userData)
     }
 
     override suspend fun signOut() {
         TODO("Not yet implemented")
+    }
+
+    override fun clear() {
     }
 }

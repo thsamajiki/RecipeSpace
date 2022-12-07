@@ -21,7 +21,7 @@ class FirebaseData {
         private var firebaseData: FirebaseData? = null
 
         fun getInstance(): FirebaseData {
-            return firebaseData ?: synchronized(this) {
+            return synchronized(this) {
                 firebaseData ?: FirebaseData().also {
                     firebaseData = it
                 }

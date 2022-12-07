@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -14,8 +15,8 @@ import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.OnRatingUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.main.recipe.viewmodel.RatingViewModel
 
@@ -24,23 +25,12 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
-    private var recipe: RecipeEntity? = null
+
+    private val recipe: RecipeEntity by lazy {
+        requireArguments().getParcelable(KEY_RECIPE)!!
+    }
 
     private val viewModel by viewModels<RatingViewModel>()
-
-    private var onRatingUploadListener: OnRatingUploadListener? = null
-
-    fun setOnRatingUploadListener(onRatingUploadListener: OnRatingUploadListener?) {
-        this.onRatingUploadListener = onRatingUploadListener
-    }
-
-    fun setRecipeData(recipe: RecipeEntity) {
-        this.recipe = recipe
-    }
-
-    companion object {
-        const val TAG = "RatingDialog"
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,7 +72,15 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                 override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
                     if (isSuccess) {
                         Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                        onRatingUploadListener!!.onRatingUpload(response.getData())
+
+                        // 평가완료했을 때 평가완료된 데이터를 내려주자.
+                        val result = Bundle().apply {
+                            putParcelable(
+                                Result.KEY_RECIPE,
+                                response?.getData()?.toEntity()
+                            )
+                        }
+                        setFragmentResult(TAG, result)
                         dismiss()
                     } else {
                         Toast.makeText(context, "평가가 실패하였습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
@@ -108,5 +106,23 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
+
+    }
+
+    object Result {
+        const val KEY_RECIPE = "recipe_key"
+    }
+
+    companion object {
+        fun newInstance(recipe: RecipeEntity): RatingDialogFragment =
+            RatingDialogFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(KEY_RECIPE, recipe)
+                }
+            }
+
+        private const val KEY_RECIPE = "recipe_key"
+
+        const val TAG = "RatingDialog"
     }
 }

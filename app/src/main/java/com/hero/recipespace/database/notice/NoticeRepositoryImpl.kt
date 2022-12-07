@@ -5,20 +5,26 @@ import com.hero.recipespace.data.notice.remote.NoticeRemoteDataSource
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.domain.notice.mapper.toEntity
 import com.hero.recipespace.domain.notice.repository.NoticeRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class NoticeRepositoryImpl(
     private val noticeRemoteDataSource: NoticeRemoteDataSource
 ) : NoticeRepository {
-    override fun getNotice(noticeKey: String): Flow<NoticeEntity> {
-        return noticeRemoteDataSource.getData(noticeKey)
-            .map {
-                it.toEntity()
-            }
+    override suspend fun getNotice(noticeKey: String): NoticeEntity {
+        return noticeRemoteDataSource.getData(noticeKey).toEntity()
     }
 
-    override fun getNoticeList(): Flow<List<NoticeEntity>> {
+    override suspend fun observeNoticeList(): Flow<List<NoticeEntity>> {
+        CoroutineScope(Dispatchers.IO).launch {
+            val noticeList = noticeRemoteDataSource.getDataList()
+            cancel()
+        }
+
         return noticeRemoteDataSource.getDataList()
             .map { it ->
                 it.map {

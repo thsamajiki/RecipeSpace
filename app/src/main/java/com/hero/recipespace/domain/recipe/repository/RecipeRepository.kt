@@ -4,9 +4,9 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
-    fun getRecipe(recipeKey: String): Flow<RecipeEntity>
+    suspend fun getRecipe(recipeKey: String): RecipeEntity
 
-    fun getRecipeList(): Flow<List<RecipeEntity>>
+    fun observeRecipeList(): Flow<List<RecipeEntity>>
 
     suspend fun addRecipe(recipeEntity: RecipeEntity)
 

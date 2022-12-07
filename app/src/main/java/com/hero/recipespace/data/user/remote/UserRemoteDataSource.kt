@@ -1,14 +1,13 @@
 package com.hero.recipespace.data.user.remote
 
 import com.hero.recipespace.data.user.UserData
-import kotlinx.coroutines.flow.Flow
 
 interface UserRemoteDataSource {
-    fun getData(userKey: String) : Flow<UserData>
+    suspend fun getData(userKey: String) : UserData
 
-    fun getFirebaseAuthProfile(): UserData
+    suspend fun getFirebaseAuthProfile(): UserData
 
-    fun getDataList() : Flow<List<UserData>>
+    suspend fun getDataList() : List<UserData>
 
     suspend fun add(userData: UserData)
 

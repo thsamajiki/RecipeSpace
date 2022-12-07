@@ -1,12 +1,11 @@
 package com.hero.recipespace.data.message.remote
 
 import com.hero.recipespace.data.message.MessageData
-import kotlinx.coroutines.flow.Flow
 
 interface MessageRemoteDataSource {
-    fun getData(messageKey: String) : Flow<MessageData>
+    fun getData(messageKey: String) : MessageData
 
-    fun getDataList(userKey: String) : Flow<List<MessageData>>
+    fun getDataList(userKey: String) : List<MessageData>
 
     suspend fun add(messageData: MessageData)
 

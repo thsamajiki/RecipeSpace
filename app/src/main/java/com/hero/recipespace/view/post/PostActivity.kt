@@ -64,11 +64,8 @@ class PostActivity : AppCompatActivity(),
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
 
-        private const val RECIPE_KEY = "recipeKey"
-
-        fun getIntent(context: Context, recipeKey: String) =
+        fun getIntent(context: Context) =
             Intent(context, PostActivity::class.java)
-                .putExtra(RECIPE_KEY, recipeKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -6,18 +6,22 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.authentication.FirebaseAuthentication
 import com.hero.recipespace.databinding.ActivityLoginBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import com.hero.recipespace.view.login.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListener<Void> {
 
     private lateinit var binding: ActivityLoginBinding
+
+    private val viewModel by viewModels<LoginViewModel>()
 
     private val firebaseAuthentication: FirebaseAuthentication = FirebaseAuthentication.getInstance()
 
@@ -26,13 +30,20 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListe
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupViewModel()
         setupListeners()
         firebaseAuthentication.setOnCompleteListener(this)
     }
 
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
+    }
+
     private fun setupListeners() {
         binding.btnLogin.setOnClickListener {
-            login()
+            requestLogin()
         }
         binding.btnSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
@@ -40,10 +51,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListe
         }
     }
 
-    override fun onClick(view: View) {
-    }
 
-    private fun login() {
+
+    private fun requestLogin() {
         val email: String = binding.editEmail.text.toString()
         val pwd: String = binding.editPwd.text.toString()
         if (!checkEmailValid(email)) {
@@ -71,5 +81,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListe
         } else {
             Toast.makeText(this, "로그인에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onClick(view: View) {
     }
 }

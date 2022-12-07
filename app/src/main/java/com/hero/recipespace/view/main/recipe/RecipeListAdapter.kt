@@ -41,6 +41,12 @@ class RecipeListAdapter(
         notifyItemInserted(position)
     }
 
+    fun replaceItem(recipe: RecipeEntity) {
+        val index = recipeList.indexOf(recipe)
+        recipeList[index] = recipe
+        notifyItemChanged(index)
+    }
+
     class RecipeListViewHolder(
         private val binding: ItemRecipeListBinding,
         private val onClick: (RecipeEntity) -> Unit,

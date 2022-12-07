@@ -1,34 +1,33 @@
 package com.hero.recipespace.data.recipe.remote
 
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.recipe.datastore.RecipeCloudStore
-import kotlinx.coroutines.flow.Flow
+import com.hero.recipespace.data.recipe.api.RecipeService
+import javax.inject.Inject
 
-class RecipeRemoteDataSourceImpl(
-    private val recipeCloudStore: RecipeCloudStore
+class RecipeRemoteDataSourceImpl @Inject constructor(
+    private val recipeService: RecipeService
 ) : RecipeRemoteDataSource {
-    override fun getData(recipeKey: String) : Flow<RecipeData> {
-        return recipeCloudStore.getData(recipeKey)
+    override suspend fun getData(recipeKey: String) : RecipeData {
+        return recipeService.getRecipe(recipeKey)
     }
 
-    override fun getDataList() : Flow<List<RecipeData>> {
-
-        return recipeCloudStore.getDataList()
+    override suspend fun getDataList() : List<RecipeData> {
+        return recipeService.getRecipeList()
     }
 
     override suspend fun add(recipeData: RecipeData) {
-        recipeCloudStore.add(recipeData)
+        recipeService.add(recipeData)
     }
 
     override suspend fun update(
         recipeData: RecipeData
     ) {
-        recipeCloudStore.update(recipeData)
+        recipeService.update(recipeData)
     }
 
     override suspend fun remove(
         recipeData: RecipeData
     ) {
-        recipeCloudStore.remove(recipeData)
+        recipeService.remove(recipeData)
     }
 }

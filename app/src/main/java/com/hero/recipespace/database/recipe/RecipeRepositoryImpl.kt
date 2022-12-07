@@ -1,37 +1,43 @@
 package com.hero.recipespace.database.recipe
 
-import android.widget.Toast
-import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
-import com.hero.recipespace.domain.rate.entity.RateEntity
-import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class RecipeRepositoryImpl(
     private val recipeRemoteDataSource: RecipeRemoteDataSource,
     private val recipeLocalDataSource: RecipeLocalDataSource
 ) : RecipeRepository {
 
-    override fun getRecipe(recipeKey: String) : Flow<RecipeEntity> {
-
-        return recipeRemoteDataSource.getData(recipeKey)
-            .map {
-                    it.toEntity()
-            }
+    override suspend fun getRecipe(recipeKey: String) : RecipeEntity {
+        return recipeLocalDataSource.getData(recipeKey).toEntity()
     }
 
-    override fun getRecipeList(): Flow<List<RecipeEntity>> {
-        return recipeRemoteDataSource.getDataList()
-            .map {
+    override fun observeRecipeList(): Flow<List<RecipeEntity>> {
+        // SSOT - Single Source Of Truth
+        // 지금까지 나는 ViewModel -> get -> Repository -> if(로컬에 데이터가 있는가?) local.getData() else remote.getData
+
+        // SSOT 는
+        // ViewModel -> get -> Repository -> remote.requestData() -> Remote -> Repository -> Local에 저장
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val recipeList = recipeRemoteDataSource.getDataList()
+            recipeLocalDataSource.addAll(recipeList)
+            cancel()
+        }
+
+        return recipeLocalDataSource.observeDataList()
+            .map { it ->
                 it.map {
                     it.toEntity()
                 }
@@ -41,37 +47,31 @@ class RecipeRepositoryImpl(
     override suspend fun addRecipe(
         recipeEntity: RecipeEntity
     ) {
-//        val recipeData: RecipeData
-
-        recipeRemoteDataSource.add(recipeEntity.toData(recipeEntity))
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeRemoteDataSource.add(recipeEntity.toData())
+            recipeLocalDataSource.add(recipeEntity.toData())
+            cancel()
+        }
     }
 
     override suspend fun modifyRecipe(
         recipeEntity: RecipeEntity
     ) {
-
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeRemoteDataSource.update(recipeEntity.toData())
+            recipeLocalDataSource.update(recipeEntity.toData())
+            cancel()
+        }
     }
 
     override suspend fun deleteRecipe(
         recipeEntity: RecipeEntity
     ) {
-        recipeRemoteDataSource.remove(recipeData, object : OnCompleteListener<RecipeData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                if (isSuccess) {
-                    recipeLocalDataSource.remove(recipeData, object : OnCompleteListener<RecipeData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                            if (isSuccess) {
-
-                            } else {
-                                Toast.makeText(this, "레시피를 삭제하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    })
-                } else {
-                    Toast.makeText(this, "레시피를 삭제하는 데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-        })
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeRemoteDataSource.remove(recipeEntity.toData())
+            recipeLocalDataSource.remove(recipeEntity.toData())
+            cancel()
+        }
     }
 
     private fun getEntities(data: List<RecipeData>): List<RecipeEntity> {

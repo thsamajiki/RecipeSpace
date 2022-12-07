@@ -18,7 +18,7 @@ class FirebaseAuthentication {
         private var instance: FirebaseAuthentication? = null
 
         fun getInstance(): FirebaseAuthentication {
-            return instance ?: synchronized(this) {
+            return synchronized(this) {
                 instance ?: FirebaseAuthentication().also {
                     instance = it
                 }
@@ -56,14 +56,14 @@ class FirebaseAuthentication {
     private fun getUserInfo(context: Context) {
         val response: Response<Void> = Response()
         response.setType(Type.AUTH)
-        val myKey: String = MyInfoUtil.getInstance().getKey()
-        val firestore = FirebaseFirestore.getInstance()
-        firestore.collection("User")
+        val myKey: String = FirebaseAuth.getInstance().currentUser.uid
+        val fireStore = FirebaseFirestore.getInstance()
+        fireStore.collection("User")
             .document(myKey)
             .get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    val userData: UserData = documentSnapshot.toObject(UserData::class.java)
+                    val userData: UserData? = documentSnapshot.toObject(UserData::class.java)
                     MyInfoUtil.getInstance().putUserName(context, userData.userName)
                     MyInfoUtil.getInstance().putProfileImageUrl(context, userData.profileImageUrl)
                     onCompleteListener?.onComplete(true, response)

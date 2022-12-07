@@ -1,67 +1,45 @@
 package com.hero.recipespace.data.message.local
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.database.message.datastore.MessageCacheStore
-import com.hero.recipespace.database.message.datastore.MessageLocalStore
-import com.hero.recipespace.domain.message.entity.MessageEntity
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
+import com.hero.recipespace.database.message.dao.MessageDao
 import kotlinx.coroutines.flow.Flow
 
 class MessageLocalDataSourceImpl(
-    private val messageLocalStore: MessageLocalStore,
-    private val messageCacheStore: MessageCacheStore
+    private val messageDao: MessageDao
 ) : MessageLocalDataSource {
 
-    override fun getData(messageKey: String) : Flow<MessageData> {
-
+    override suspend fun getData(messageKey: String) : MessageData {
+        return messageDao.getMessageFromKey(messageKey) ?: error("not found MessageData")
     }
 
-    override fun getDataList(
-        userKey: String
-    ): Flow<List<MessageData>> {
-
-    }
-
-    override fun clear() {
-        messageCacheStore.clear()
+    override fun observeDataList(userKey: String): Flow<List<MessageData>> {
+        return messageDao.getAllMessages().asFlow()
     }
 
     override suspend fun add(
         messageData: MessageData
     ) {
-        messageLocalStore.add(messageData, object : OnCompleteListener<MessageData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<MessageData>?) {
-                if (isSuccess) {
-                    messageCacheStore.add(messageData, object : OnCompleteListener<MessageData> {
-                        override fun onComplete(
-                            isSuccess: Boolean,
-                            response: Response<MessageData>?
-                        ) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, response)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+        messageDao.insertMessage(messageData)
+    }
+
+    override suspend fun addAll(messageList: List<MessageData>) {
+        messageDao.insertAll(messageList)
     }
 
     override suspend fun update(
         messageData: MessageData
     ) {
-
+        messageDao.updateMessage(messageData)
     }
 
     override suspend fun remove(
         messageData: MessageData
     ) {
+        messageDao.deleteMessage(messageData)
+    }
+
+    override fun clear() {
 
     }
 }

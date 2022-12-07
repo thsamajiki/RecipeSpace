@@ -9,5 +9,5 @@ class GetChatListUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
     operator fun invoke(userKey: String) : Flow<List<ChatEntity>> =
-        chatRepository.getChatList(userKey)
+        chatRepository.observeChatList(userKey)
 }

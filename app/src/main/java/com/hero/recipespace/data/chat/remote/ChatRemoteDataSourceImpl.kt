@@ -5,17 +5,16 @@ import com.hero.recipespace.database.chat.datastore.ChatCloudStore
 import kotlinx.coroutines.flow.Flow
 
 class ChatRemoteDataSourceImpl(
-    private val chatCloudStore: ChatCloudStore
+
 ) : ChatRemoteDataSource {
-    override fun getData(chatKey: String) : Flow<ChatData> {
-        return chatCloudStore.getData(chatKey)
+    override suspend fun getData(chatKey: String): ChatData {
+        TODO("Not yet implemented")
     }
 
-    override fun getDataList(
-        userKey: String
-    ) : Flow<List<ChatData>> {
-        return chatCloudStore.getDataList(userKey)
+    override suspend fun getDataList(userKey: String): List<ChatData> {
+        TODO("Not yet implemented")
     }
+
 
     override suspend fun add(chatData: ChatData) {
         chatCloudStore.add(chatData)

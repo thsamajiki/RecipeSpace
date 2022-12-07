@@ -4,9 +4,9 @@ import com.hero.recipespace.domain.chat.entity.ChatEntity
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    fun getChat(chatKey: String) : Flow<ChatEntity>
+    suspend fun getChat(chatKey: String) : ChatEntity
 
-    fun getChatList(userKey: String) : Flow<List<ChatEntity>>
+    fun observeChatList(userKey: String) : Flow<List<ChatEntity>>
 
     suspend fun addChat(chatEntity: ChatEntity)
 

@@ -4,11 +4,11 @@ import com.hero.recipespace.domain.user.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun getUser(userKey: String): Flow<UserEntity>
+    suspend fun getUser(userKey: String): UserEntity
 
-    fun getAccountProfile(): Flow<UserEntity>
+    suspend fun getAccountProfile(): UserEntity
 
-    fun getUserList()
+    fun observeUserList(): Flow<List<UserEntity>>
 
     suspend fun addUser(
         userName: String,

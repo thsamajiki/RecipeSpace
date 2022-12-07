@@ -1,29 +1,29 @@
 package com.hero.recipespace.data.rate.remote
 
 import com.hero.recipespace.data.rate.RateData
-import com.hero.recipespace.database.rate.datastore.RateCloudStore
-import kotlinx.coroutines.flow.Flow
+import com.hero.recipespace.data.rate.service.RateService
 
 class RateRemoteDataSourceImpl(
-    private val rateCloudStore: RateCloudStore
+    private val rateService: RateService
 ) : RateRemoteDataSource {
-    override fun getData(rateKey: String) : Flow<RateData> {
-        return rateCloudStore.getData(rateKey)
+    override suspend fun getData(rateKey: String): RateData {
+        return rateService.getData(rateKey)
     }
 
-    override fun getDataList() : Flow<List<RateData>> {
-        return rateCloudStore.getDataList()
+    override suspend fun getDataList(): List<RateData> {
+        return rateService.getDataList()
     }
+
 
     override suspend fun add(rateData: RateData) {
-        rateCloudStore.add(rateData)
+        rateService.add(rateData)
     }
 
     override suspend fun update(rateData: RateData) {
-        rateCloudStore.update(rateData)
+        rateService.update(rateData)
     }
 
     override suspend fun remove(rateData: RateData) {
-        rateCloudStore.remove(rateData)
+        rateService.remove(rateData)
     }
 }

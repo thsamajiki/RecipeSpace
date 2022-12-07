@@ -1,38 +1,37 @@
 package com.hero.recipespace.data.message.remote
 
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.database.message.datastore.MessageCloudStore
-import kotlinx.coroutines.flow.Flow
+import com.hero.recipespace.data.message.service.MessageService
 
 class MessageRemoteDataSourceImpl(
-    private val messageCloudStore: MessageCloudStore
+    private val messageService: MessageService
 ) : MessageRemoteDataSource {
 
-    override fun getData(messageKey: String): Flow<MessageData> {
-        return messageCloudStore.getData(messageKey)
+    override fun getData(messageKey: String): MessageData {
+        return messageService.getData(messageKey)
     }
 
     override fun getDataList(
         userKey: String
-    ): Flow<List<MessageData>> {
-        return messageCloudStore.getDataList()
+    ): List<MessageData> {
+        return messageService.getDataList(userKey)
     }
 
     override suspend fun add(
         messageData: MessageData
     ) {
-        messageCloudStore.add(messageData)
+        messageService.add(messageData)
     }
 
     override suspend fun update(
         messageData: MessageData
     ) {
-        messageCloudStore.update(messageData)
+        messageService.update(messageData)
     }
 
     override suspend fun remove(
         messageData: MessageData
     ) {
-        messageCloudStore.remove(messageData)
+        messageService.remove(messageData)
     }
 }

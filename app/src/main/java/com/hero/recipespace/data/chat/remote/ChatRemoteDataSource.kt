@@ -1,12 +1,11 @@
 package com.hero.recipespace.data.chat.remote
 
 import com.hero.recipespace.data.chat.ChatData
-import kotlinx.coroutines.flow.Flow
 
 interface ChatRemoteDataSource {
-    fun getData(chatKey: String) : Flow<ChatData>
+    suspend fun getData(chatKey: String) : ChatData
 
-    fun getDataList(userKey: String) : Flow<List<ChatData>>
+    suspend fun getDataList(userKey: String) : List<ChatData>
 
     suspend fun add(chatData: ChatData)
 

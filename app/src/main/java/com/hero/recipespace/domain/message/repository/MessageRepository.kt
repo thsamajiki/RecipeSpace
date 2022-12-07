@@ -4,7 +4,7 @@ import com.hero.recipespace.domain.message.entity.MessageEntity
 import kotlinx.coroutines.flow.Flow
 
 interface MessageRepository {
-    fun getMessage(messageKey: String) : Flow<MessageEntity>
+    suspend fun getMessage(messageKey: String) : MessageEntity
 
     fun getMessageList(userKey: String) : Flow<List<MessageEntity>>
 

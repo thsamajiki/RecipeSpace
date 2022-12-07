@@ -4,13 +4,15 @@ import com.hero.recipespace.data.message.MessageData
 import kotlinx.coroutines.flow.Flow
 
 interface MessageLocalDataSource {
-    fun getData(messageKey: String) : Flow<MessageData>
+    suspend fun getData(messageKey: String) : MessageData
 
-    fun getDataList(userKey: String) : Flow<List<MessageData>>
+    fun observeDataList(userKey: String) : Flow<List<MessageData>>
 
     fun clear()
 
     suspend fun add(messageData: MessageData)
+
+    suspend fun addAll(messageList: List<MessageData>)
 
     suspend fun update(messageData: MessageData)
 

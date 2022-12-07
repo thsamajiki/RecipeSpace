@@ -4,13 +4,15 @@ import com.hero.recipespace.data.rate.RateData
 import kotlinx.coroutines.flow.Flow
 
 interface RateLocalDataSource {
-    fun getData(rateKey: String) : Flow<RateData>
+    suspend fun getData(rateKey: String) : RateData
 
-    fun getDataList() : Flow<List<RateData>>
+    fun observeDataList() : Flow<List<RateData>>
 
     fun clear()
 
     suspend fun add(rateData: RateData)
+
+    suspend fun addAll(rateList: List<RateData>)
 
     suspend fun update(rateData: RateData)
 

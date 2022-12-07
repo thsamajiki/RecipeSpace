@@ -9,5 +9,5 @@ class GetUserListUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     fun invoke(onCompleteListener: OnCompleteListener<List<UserEntity>>) =
-        userRepository.getUserList(onCompleteListener)
+        userRepository.observeUserList(onCompleteListener)
 }

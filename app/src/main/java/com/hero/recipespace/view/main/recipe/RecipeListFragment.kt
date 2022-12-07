@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.view.main.recipe.RatingDialogFragment.Companion.TAG
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel
 import com.hero.recipespace.view.post.PostActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,6 +62,7 @@ class RecipeListFragment : Fragment() {
 
         setupView()
         setupViewModel()
+        setupFragmentResultListener()
     }
 
     private fun setupView() {
@@ -76,6 +76,21 @@ class RecipeListFragment : Fragment() {
         with(viewModel) {
             recipeList.observe(viewLifecycleOwner) { recipeList ->
                 recipeListAdapter.setRecipeList(recipeList)
+            }
+        }
+    }
+
+    private fun setupFragmentResultListener() {
+        // FragmentResult - 데이터를 수신하기 위한 부분
+        childFragmentManager.setFragmentResultListener(
+            RatingDialogFragment.TAG,
+            viewLifecycleOwner) {
+            _: String, result: Bundle ->
+            // 데이터를 수신하자.
+            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
+
+            if (recipe != null) {
+                recipeListAdapter.replaceItem(recipe)
             }
         }
     }
@@ -99,30 +114,18 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun showRecipeDetail(recipe: RecipeEntity) {
-        // TODO: 2022-12-06 key를 이렇게 넣으면 RecipeDetailActivity에서 데이터를 못가져감. 변경 필요.
-        val intent = RecipeDetailActivity.getIntent(requireActivity(), viewModel.recipeKey)
+        val intent = RecipeDetailActivity.getIntent(requireActivity(), recipe.key.orEmpty())
         startActivity(intent)
     }
 
     private fun showRatingDialog(recipe: RecipeEntity) {
-        val ratingDialogFragment = RatingDialogFragment()
-        // TODO: 2022-12-06 setOnRatingUploadListener, setRecipeData 안티패턴 변경해보기
-        ratingDialogFragment.setOnRatingUploadListener(this)
-        ratingDialogFragment.setRecipeData(recipe)
-        ratingDialogFragment.show(childFragmentManager, TAG)
+        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe)
+
+        ratingDialogFragment.show(childFragmentManager, RatingDialogFragment.TAG)
     }
 
     private fun intentPostActivity() {
-        val intent = PostActivity.getIntent(requireActivity(), viewModel.recipeKey)
-        startActivity(intent)
-//        postResultLauncher.launch(intent)
+        val intent = PostActivity.getIntent(requireActivity())
+        postResultLauncher.launch(intent)
     }
-
-//    override fun onRatingUpload(recipeData: RecipeData?) {
-//        val index = recipeDataList.indexOf(recipeData)
-//        if (recipeData != null) {
-//            recipeDataList[index] = recipeData
-//        }
-//        recipeListAdapter.notifyItemChanged(index)
-//    }
 }

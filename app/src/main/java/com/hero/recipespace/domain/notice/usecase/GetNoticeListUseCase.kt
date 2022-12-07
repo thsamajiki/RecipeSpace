@@ -9,5 +9,5 @@ class GetNoticeListUseCase @Inject constructor(
     private val noticeRepository: NoticeRepository
 ) {
     operator fun invoke() : Flow<List<NoticeEntity>> =
-        noticeRepository.getNoticeList()
+        noticeRepository.observeNoticeList()
 }

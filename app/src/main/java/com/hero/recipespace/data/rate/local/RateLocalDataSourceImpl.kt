@@ -1,123 +1,39 @@
 package com.hero.recipespace.data.rate.local
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.rate.RateData
-import com.hero.recipespace.database.rate.datastore.RateCacheStore
-import com.hero.recipespace.database.rate.datastore.RateLocalStore
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
+import com.hero.recipespace.database.rate.dao.RateDao
+import kotlinx.coroutines.flow.Flow
 
 class RateLocalDataSourceImpl(
-    private val rateLocalStore: RateLocalStore,
-    private val rateCacheStore: RateCacheStore
+    private val rateDao: RateDao
 ) : RateLocalDataSource {
 
-    override suspend fun getData(rateKey: String, onCompleteListener: OnCompleteListener<RateData>): LiveData<RateData> {
-        rateCacheStore.getData(rateKey, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    rateLocalStore.getData(rateKey, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                }
-            }
-        })
+    override suspend fun getData(rateKey: String): RateData {
+        return rateDao.getRateFromKey(rateKey) ?: error("not found RateData")
     }
 
-    override fun getDataList(
-        onCompleteListener: OnCompleteListener<List<RateData>>
-    ): LiveData<List<RateData>> {
-        rateCacheStore.getDataList(object : OnCompleteListener<List<RateData>> {
-            override fun onComplete(isSuccess: Boolean, response: Response<List<RateData>>?) {
-                if (isSuccess) {
-                    onCompleteListener.onComplete(true, response)
-                } else {
-                    rateLocalStore.getDataList(object : OnCompleteListener<List<RateData>> {
-                        override fun onComplete(
-                            isSuccess: Boolean,
-                            response: Response<List<RateData>>?
-                        ) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                }
-            }
-        })
+    override fun observeDataList(): Flow<List<RateData>> {
+        return rateDao.getAllRates().asFlow()
+    }
+
+    override suspend fun add(rateData: RateData) {
+        rateDao.insertRate(rateData)
+    }
+
+    override suspend fun addAll(rateList: List<RateData>) {
+        rateDao.insertAll(rateList)
+    }
+
+    override suspend fun update(rateData: RateData) {
+        rateDao.updateRate(rateData)
+    }
+
+    override suspend fun remove(rateData: RateData) {
+        rateDao.deleteRate(rateData)
     }
 
     override fun clear() {
-        rateCacheStore.clear()
-    }
 
-    override suspend fun add(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateLocalStore.add(rateData, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    rateCacheStore.add(rateData, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
-    }
-
-    override suspend fun update(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateLocalStore.update(rateData, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    rateCacheStore.update(rateData, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
-    }
-
-    override suspend fun remove(rateData: RateData, onCompleteListener: OnCompleteListener<RateData>) {
-        rateLocalStore.remove(rateData, object : OnCompleteListener<RateData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                if (isSuccess) {
-                    rateCacheStore.remove(rateData, object : OnCompleteListener<RateData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<RateData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
-                                onCompleteListener.onComplete(false, null)
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
     }
 }

@@ -41,6 +41,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
 
+        val recipeKey =
         setContentView(binding.root)
         bindRecipeUI()
 
@@ -59,7 +60,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         }
         binding.ivUserProfile.setOnClickListener {
-            intentPhoto(viewModel.recipeData.photoUrl)
+            intentPhoto(viewModel.recipeKey.photoUrl)
         }
         binding.btnQuestion.setOnClickListener {
             val firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -128,7 +129,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentModifyRecipe() {
-        val intent = EditRecipeActivity.getIntent(this, viewModel.recipeData.key!!)
+        val intent = EditRecipeActivity.getIntent(this, viewModel.recipeKey.key!!)
         startActivity(intent)
     }
 

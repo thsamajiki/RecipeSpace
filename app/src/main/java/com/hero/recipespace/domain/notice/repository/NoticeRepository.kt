@@ -4,7 +4,7 @@ import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import kotlinx.coroutines.flow.Flow
 
 interface NoticeRepository {
-    fun getNotice(noticeKey: String) : Flow<NoticeEntity>
+    suspend fun getNotice(noticeKey: String) : NoticeEntity
 
-    fun getNoticeList() : Flow<List<NoticeEntity>>
+    suspend fun observeNoticeList() : Flow<List<NoticeEntity>>
 }

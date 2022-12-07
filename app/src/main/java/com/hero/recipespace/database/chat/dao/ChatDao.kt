@@ -10,7 +10,7 @@ interface ChatDao {
     fun getAllChats() : LiveData<List<ChatData>>
 
     @Query("SELECT * FROM chat_db WHERE `key` = :key limit 1")
-    fun getChatFromKey(key: String?): LiveData<ChatData>
+    fun getChatFromKey(key: String?): ChatData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertChat(chatData: ChatData)

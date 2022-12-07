@@ -1,15 +1,12 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.asLiveData
-
-import com.hero.recipespace.domain.chat.entity.ChatEntity
+import android.util.Log
+import androidx.lifecycle.*
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +21,26 @@ class RecipeDetailViewModel @Inject constructor(
         const val RECIPE_USER_KEY = "userKey"
     }
 
-    val recipeData: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_KEY)!!
+    private val _recipe = MutableLiveData<RecipeEntity>()
+    val recipe: LiveData<RecipeEntity>
+        get() = _recipe
 
-    val chatData: ChatEntity = savedStateHandle.get<ChatEntity>(RECIPE_USER_KEY)!!
+    init {
+        viewModelScope.launch {
+            getRecipeUseCase(recipeKey)
+                .onSuccess {
+                    _recipe.value = it
+                }
+                .onFailure {
+                    it.printStackTrace()
+                    Log.e("RecipeDetailViewModel", "$it ", )
+                }
+        }
+    }
 
-    val recipe: LiveData<RecipeEntity> = getRecipeUseCase(RECIPE_KEY).asLiveData()
+    val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
+
+//    val chatKey: String = savedStateHandle.get<String>(RECIPE_USER_KEY)!!
 
     override fun onCleared() {
         super.onCleared()

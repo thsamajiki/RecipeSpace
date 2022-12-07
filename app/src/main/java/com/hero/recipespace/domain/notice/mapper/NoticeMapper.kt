@@ -12,11 +12,11 @@ fun NoticeData.toEntity(): NoticeEntity {
     )
 }
 
-fun NoticeData.toData(noticeEntity: NoticeEntity): NoticeData {
+fun NoticeEntity.toData(): NoticeData {
     return NoticeData(
-        key = noticeEntity.key,
-        noticeTitle = noticeEntity.noticeTitle,
-        noticeDesc = noticeEntity.noticeDesc,
-        noticeDate = noticeEntity.noticeDate
+        key = key,
+        noticeTitle = noticeTitle,
+        noticeDesc = noticeDesc,
+        noticeDate = noticeDate
     )
 }

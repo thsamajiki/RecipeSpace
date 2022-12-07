@@ -1,31 +1,40 @@
 package com.hero.recipespace.database.user
 
-import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.local.UserLocalDataSource
 import com.hero.recipespace.data.user.remote.UserRemoteDataSource
-import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.domain.recipe.mapper.toEntity
+import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.user.entity.UserEntity
+import com.hero.recipespace.domain.user.mapper.toData
 import com.hero.recipespace.domain.user.mapper.toEntity
 import com.hero.recipespace.domain.user.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class UserRepositoryImpl(
     private val userLocalDataSource: UserLocalDataSource,
     private val userRemoteDataSource: UserRemoteDataSource
 ) : UserRepository {
 
-    override fun getUser(userKey: String): Flow<UserEntity> {
-
+    override suspend fun getUser(userKey: String): UserEntity {
+        return userLocalDataSource.getData(userKey).toEntity()
     }
 
-    override fun getAccountProfile(): UserEntity {
+    override suspend fun getAccountProfile(): UserEntity {
         return userRemoteDataSource.getFirebaseAuthProfile().toEntity()
     }
 
-    override fun getUserList(): Flow<List<UserEntity>> {
+    override fun observeUserList(): Flow<List<UserEntity>> {
+        CoroutineScope(Dispatchers.IO).launch {
+            val userList = userRemoteDataSource.getDataList()
+            userLocalDataSource.addAll(userList)
+            cancel()
+        }
+
         return userLocalDataSource.getDataList()
             .map { it ->
                 it.map {
@@ -42,18 +51,32 @@ class UserRepositoryImpl(
         var userData: UserData
         userData.userName = userName
         userRemoteDataSource.add(userName, email)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            userRemoteDataSource.add(recipeEntity.toData())
+            userLocalDataSource.add(recipeEntity.toData())
+            cancel()
+        }
     }
 
     override suspend fun updateUser(
         userEntity: UserEntity
     ) {
-        TODO("Not yet implemented")
+        CoroutineScope(Dispatchers.IO).launch {
+            userRemoteDataSource.update(userEntity.toData())
+            userLocalDataSource.update(userEntity.toData())
+            cancel()
+        }
     }
 
     override suspend fun deleteUser(
         userEntity: UserEntity
     ) {
-        TODO("Not yet implemented")
+        CoroutineScope(Dispatchers.IO).launch {
+            userRemoteDataSource.remove(userEntity.toData())
+            userLocalDataSource.remove(userEntity.toData())
+            cancel()
+        }
     }
 
     override suspend fun signOut() {

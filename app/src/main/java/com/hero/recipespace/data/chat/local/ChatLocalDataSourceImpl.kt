@@ -1,56 +1,39 @@
 package com.hero.recipespace.data.chat.local
 
+import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.database.chat.datastore.ChatCacheStore
-import com.hero.recipespace.database.chat.datastore.ChatLocalStore
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
+import com.hero.recipespace.database.chat.dao.ChatDao
+import kotlinx.coroutines.flow.Flow
 
 class ChatLocalDataSourceImpl(
-    private val chatLocalStore: ChatLocalStore,
-    private val chatCacheStore: ChatCacheStore
+    private val chatDao: ChatDao
 ) : ChatLocalDataSource {
 
-    override fun getData(chatKey: String) {
-        chatCacheStore.getData(chatKey)
-
-
-
+    override suspend fun getData(chatKey: String) : ChatData {
+       return chatDao.getChatFromKey(chatKey) ?: error("not found ChatData")
     }
 
-    override fun getDataList(userKey: String) {
-        chatCacheStore.getDataList()
+    override fun observeDataList(userKey: String) : Flow<List<ChatData>> {
+        return chatDao.getAllChats().asFlow()
     }
 
     override fun clear() {
-        chatCacheStore.clear()
+
     }
 
     override suspend fun add(chatData: ChatData) {
-        chatLocalStore.add(chatData, object : OnCompleteListener<ChatData> {
-            override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
-                if (isSuccess) {
-                    chatCacheStore.add(chatData, object : OnCompleteListener<ChatData> {
-                        override fun onComplete(isSuccess: Boolean, response: Response<ChatData>?) {
-                            if (isSuccess) {
-                                onCompleteListener.onComplete(true, response)
-                            } else {
+        chatDao.insertChat(chatData)
+    }
 
-                            }
-                        }
-                    })
-                } else {
-                    onCompleteListener.onComplete(false, null)
-                }
-            }
-        })
+    override suspend fun addAll(chatList: List<ChatData>) {
+        chatDao.insertAll(chatList)
     }
 
     override suspend fun update(chatData: ChatData) {
-
+        chatDao.updateChat(chatData)
     }
 
     override suspend fun remove(chatData: ChatData) {
-        chatLocalStore.remove(chatData)
+        chatDao.deleteChat(chatData)
     }
 }

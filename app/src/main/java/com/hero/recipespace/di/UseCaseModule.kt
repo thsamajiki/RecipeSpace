@@ -80,7 +80,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetRecipeListUseCase(recipeRepository: RecipeRepository) = GetRecipeListUseCase(recipeRepository)
+    fun provideGetRecipeListUseCase(recipeRepository: RecipeRepository) = ObserveRecipeListUseCase(recipeRepository)
 
     @Provides
     @Singleton

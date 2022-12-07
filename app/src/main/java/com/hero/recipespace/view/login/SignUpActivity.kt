@@ -39,9 +39,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onClick(view: View) {
-    }
-
     private fun signUp() {
         val email = binding.editEmail.text.toString()
         val pwd: String = binding.editPwd.text.toString()
@@ -98,5 +95,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finishAffinity()
+    }
+
+    override fun onClick(view: View) {
     }
 }
