@@ -27,7 +27,7 @@ class ChatListAdapter(
 
     private fun getOtherUserName(
         userNames: HashMap<String, String>,
-        myUserKey: String?,
+        myUserKey: String?
     ): String? {
         for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
@@ -53,6 +53,17 @@ class ChatListAdapter(
         chatDataList.clear()
         chatDataList.addAll(chat)
         notifyDataSetChanged()
+    }
+
+    fun add(position: Int, chat: ChatEntity) {
+        chatDataList.add(position, chat)
+        notifyItemInserted(position)
+    }
+
+    fun replaceItem(chat: ChatEntity) {
+        val index = chatDataList.indexOf(chat)
+        chatDataList[index] = chat
+        notifyItemChanged(index)
     }
 
     override fun getItemCount(): Int {

@@ -8,8 +8,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="recipe"
-            type="com.hero.recipespace.data.recipe.RecipeData" />
+            name="viewModel"
+            type="com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

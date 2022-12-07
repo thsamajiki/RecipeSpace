@@ -10,5 +10,4 @@ class GetMessageListUseCase @Inject constructor(
 ) {
     operator fun invoke(userKey: String) : Flow<List<MessageEntity>> =
         messageRepository.getMessageList(userKey)
-
 }

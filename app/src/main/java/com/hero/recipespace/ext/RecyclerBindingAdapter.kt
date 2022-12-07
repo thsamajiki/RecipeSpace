@@ -2,17 +2,17 @@ package com.hero.recipespace.ext
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.data.notice.NoticeData
-import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.domain.message.entity.MessageEntity
+import com.hero.recipespace.domain.notice.entity.NoticeEntity
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListAdapter
 import com.hero.recipespace.view.main.chat.ChatAdapter
 import com.hero.recipespace.view.main.chat.ChatListAdapter
 import com.hero.recipespace.view.main.recipe.RecipeListAdapter
 
 @BindingAdapter("chatListItems")
-fun RecyclerView.setChatListItems(items: List<ChatData>?) {
+fun RecyclerView.setChatListItems(items: List<ChatEntity>?) {
     items ?: return
 
     val adapter = this.adapter as? ChatListAdapter
@@ -20,7 +20,7 @@ fun RecyclerView.setChatListItems(items: List<ChatData>?) {
 }
 
 @BindingAdapter("chatItems")
-fun RecyclerView.setMessageItems(items: List<MessageData>?) {
+fun RecyclerView.setMessageItems(items: List<MessageEntity>?) {
     items ?: return
 
     val adapter = this.adapter as? ChatAdapter
@@ -28,7 +28,7 @@ fun RecyclerView.setMessageItems(items: List<MessageData>?) {
 }
 
 @BindingAdapter("recipeItems")
-fun RecyclerView.setRecipeListItems(items: List<RecipeData>?) {
+fun RecyclerView.setRecipeListItems(items: List<RecipeEntity>?) {
     items ?: return
 
     val adapter = this.adapter as? RecipeListAdapter
@@ -36,7 +36,7 @@ fun RecyclerView.setRecipeListItems(items: List<RecipeData>?) {
 }
 
 @BindingAdapter("noticeItems")
-fun RecyclerView.setNoticeListItems(items: List<NoticeData>?) {
+fun RecyclerView.setNoticeListItems(items: List<NoticeEntity>?) {
     items ?: return
 
     val adapter = this.adapter as? NoticeListAdapter

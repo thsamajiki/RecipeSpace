@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
@@ -32,11 +34,11 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         const val EXTRA_OTHER_USER_KEY = "otherUserKey"
         const val EXTRA_CHAT_DATA = "chatData"
 
-        const val RECIPE_USER_KEY = "userKey"
+        private const val RECIPE_CHAT_KEY = "chatKey"
 
-        fun getIntent(context: Context, userKey: String): Intent =
+        fun getIntent(context: Context, chatKey: String) =
             Intent(context, ChatActivity::class.java)
-                .putExtra(RECIPE_USER_KEY, userKey)
+                .putExtra(RECIPE_CHAT_KEY, chatKey)
     }
 
     private var messageRegistration: ListenerRegistration? = null
@@ -51,7 +53,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
 
         chat = getChatData()
         if (chat != null) {
-            initAdapter()
+            initRecyclerView(binding.rvChat)
             initMessageRegistration()
         } else {
             checkExistChatData()
@@ -74,7 +76,9 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
 
     private fun setupViewModel() {
         with(viewModel) {
-
+            messageList.observe(this@ChatActivity) { messageList ->
+                chatAdapter.setMessageList(messageList)
+            }
         }
     }
 
@@ -88,7 +92,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
                 fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
                     if (isSuccess && response.isNotEmpty()) {
                         chat = response.getData()
-                        initAdapter()
+                        initRecyclerView()
                         initMessageRegistration()
                     }
                 }
@@ -100,17 +104,21 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
     }
 
 
-    private fun initAdapter() {
-        chatAdapter = ChatAdapter(this, messageList, chat)
-        chatAdapter.setOnRecyclerItemClickListener(this)
-        binding.recyclerChat.adapter = chatAdapter
+    private fun initRecyclerView(recyclerView: RecyclerView) {
+        chatAdapter = ChatAdapter()
+
+        recyclerView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = chatAdapter
+        }
     }
 
     private fun getChatData(): ChatEntity? {
         return intent.getParcelableExtra(ChatActivity.EXTRA_CHAT_DATA)
     }
 
-    private fun getOtherUserKey(): String {
+    private fun getOtherUserKey(): String? {
         return intent.getStringExtra(ChatActivity.EXTRA_OTHER_USER_KEY)
     }
 
@@ -134,24 +142,24 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         }
         binding.editMessage.setText("")
         firebaseData.createChatRoom(this,
-            getOtherUserKey(),
+            getOtherUserKey()!!,
             message,
             object : OnCompleteListener<ChatData?>() {
                 fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
                     if (isSuccess && response.isNotEmpty()) {
                         chat = response.getData()
-                        initAdapter()
+                        initRecyclerView()
                         initMessageRegistration()
                     }
                 }
             })
     }
 
-    override fun onMessage(isSuccess: Boolean, message: MessageData?) {
+    fun onMessage(isSuccess: Boolean, message: MessageEntity?) {
         if (isSuccess && message != null) {
             messageList.add(message)
             chatAdapter.notifyItemInserted(messageList.size - 1)
-            binding.recyclerChat.smoothScrollToPosition(messageList.size - 1)
+            binding.rvChat.smoothScrollToPosition(messageList.size - 1)
         }
     }
 

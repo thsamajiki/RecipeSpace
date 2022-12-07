@@ -40,11 +40,11 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
-        val recipeKey =
         setContentView(binding.root)
-        bindRecipeUI()
 
+        setupView()
         setupViewModel()
         setupListeners()
     }
@@ -91,7 +91,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
     }
 
-    private fun bindRecipeUI() {
+    private fun setupView() {
         val recipe: RecipeEntity? = getRecipe()
         val requestManager = Glide.with(this)
 

@@ -1,7 +1,7 @@
 package com.hero.recipespace.data.recipe.remote
 
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.data.recipe.api.RecipeService
+import com.hero.recipespace.data.recipe.service.RecipeService
 import javax.inject.Inject
 
 class RecipeRemoteDataSourceImpl @Inject constructor(

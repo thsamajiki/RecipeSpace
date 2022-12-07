@@ -1,4 +1,4 @@
-package com.hero.recipespace.data.recipe.api
+package com.hero.recipespace.data.recipe.service
 
 import com.hero.recipespace.data.recipe.RecipeData
 

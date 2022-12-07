@@ -1,25 +1,22 @@
 package com.hero.recipespace.view.main.chat
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
 import com.hero.recipespace.databinding.ItemMessageLeftBinding
 import com.hero.recipespace.databinding.ItemMessageRightBinding
-import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.view.BaseAdapter
 
-class ChatAdapter(
-    private val context: Context,
-    private val messageList: List<MessageEntity>,
-    private val chat: ChatEntity?
-) : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
+class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
 
-    private var requestManager: RequestManager? = null
-    private val LEFT_TYPE = 0
-    private val RIGHT_TYPE = 1
+    private val messageList = mutableListOf<MessageEntity>()
+
+    companion object {
+        private const val LEFT_TYPE = 0
+        private const val RIGHT_TYPE = 1
+    }
+
     private var myUserKey: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -39,6 +36,23 @@ class ChatAdapter(
         } else if (holder is RightMessageViewHolder) {
             holder.bind(message)
         }
+    }
+
+    fun setMessageList(message: List<MessageEntity>) {
+        messageList.clear()
+        messageList.addAll(message)
+        notifyDataSetChanged()
+    }
+
+    fun add(position: Int, message: MessageEntity) {
+        messageList.add(position, message)
+        notifyItemInserted(position)
+    }
+
+    fun replaceItem(message: MessageEntity) {
+        val index = messageList.indexOf(message)
+        messageList[index] = message
+        notifyItemChanged(index)
     }
 
     private fun getOtherUserName(

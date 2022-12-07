@@ -25,6 +25,8 @@ class RecipeDetailViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
+    val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
+
     init {
         viewModelScope.launch {
             getRecipeUseCase(recipeKey)
@@ -33,12 +35,12 @@ class RecipeDetailViewModel @Inject constructor(
                 }
                 .onFailure {
                     it.printStackTrace()
-                    Log.e("RecipeDetailViewModel", "$it ", )
+                    Log.e("RecipeDetailViewModel", "$it ")
                 }
         }
     }
 
-    val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
+
 
 //    val chatKey: String = savedStateHandle.get<String>(RECIPE_USER_KEY)!!
 

@@ -1,9 +1,10 @@
-package com.hero.recipespace.data.recipe.api
+package com.hero.recipespace.data.recipe.service
 
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import javax.inject.Inject
@@ -62,36 +63,41 @@ class RecipeServiceImpl @Inject constructor(): RecipeService {
     }
 
     override suspend fun add(recipeData: RecipeData) {
-        val fireStore = FirebaseFirestore.getInstance()
-        val documentReference = fireStore.collection("RecipeData").document()
-        val key = documentReference.id
-        recipeData.key = key
+        suspendCoroutine<RecipeData> {
+            val fireStore = FirebaseFirestore.getInstance()
+            val documentReference = fireStore.collection("RecipeData").document()
+            val key = documentReference.id
+            recipeData.key = key
 
-        documentReference.set(recipeData)
-            .addOnSuccessListener { continuation.resume(recipeData) }
-            .addOnFailureListener { continuation.resumeWithException(it) }
+            documentReference.set(recipeData)
+                .addOnSuccessListener { continuation.resume(recipeData) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
 
     override suspend fun update(recipeData: RecipeData) {
-        val response: Response<Void> = Response()
-        response.setType(Type.FIRE_STORE)
-        val fireStore = FirebaseFirestore.getInstance()
-        fireStore.collection("RecipeData")
-            .document(recipeData.key!!)
-            .update(editData)
-            .addOnSuccessListener { continuation.resume(recipeData) }
-            .addOnFailureListener { continuation.resumeWithException(it) }
+        suspendCoroutine<RecipeData> {
+            val response: Response<Void> = Response()
+            response.setType(Type.FIRE_STORE)
+            val fireStore = FirebaseFirestore.getInstance()
+            fireStore.collection("RecipeData")
+                .document(recipeData.key!!)
+                .update(editData)
+                .addOnSuccessListener { continuation.resume(recipeData) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
 
     override suspend fun remove(recipeData: RecipeData) {
-        val response: Response<Void> = Response()
-        response.setType(Type.FIRE_STORE)
-        val fireStore = FirebaseFirestore.getInstance()
-        fireStore.collection("RecipeData")
-            .document(recipeData.key!!)
-            .delete()
-            .addOnSuccessListener { continuation.resume(recipeData) }
-            .addOnFailureListener { continuation.resumeWithException(it) }
+        suspendCoroutine<RecipeData> {
+            val response: Response<Void> = Response()
+            response.setType(Type.FIRE_STORE)
+            val fireStore = FirebaseFirestore.getInstance()
+            fireStore.collection("RecipeData")
+                .document(recipeData.key!!)
+                .delete()
+                .addOnSuccessListener { continuation.resume(recipeData) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
-
 }

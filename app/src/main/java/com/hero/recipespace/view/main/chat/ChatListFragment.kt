@@ -52,10 +52,15 @@ class ChatListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userKey = FirebaseAuth.getInstance().currentUser?.uid
-        chatListRegistration = FirebaseData.getInstance().getChatList(userKey, this)
+        chatListRegistration = FirebaseData.getInstance().getChatList(userKey!!, this)
 
         setupView()
         setupViewModel()
+        setupChatListChangeListener()
+    }
+
+    private fun setupView() {
+        initRecyclerView(binding.rvChatList)
     }
 
     private fun setupViewModel() {
@@ -66,30 +71,7 @@ class ChatListFragment: Fragment() {
         }
     }
 
-    private fun setupView() {
-        initRecyclerView(binding.rvChatList)
-    }
-
-    private fun initRecyclerView(recyclerView: RecyclerView) {
-        chatListAdapter = ChatListAdapter(
-            onClick = ::showChatRoom
-        )
-
-        recyclerView.run {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            adapter = chatListAdapter
-        }
-    }
-
-    private fun showChatRoom(chat: ChatEntity) {
-        val intent = Intent(requireActivity(), ChatActivity::class.java)
-        val chatKey = chat.key
-        intent.putExtra(chatKey, chat)
-        startActivity(intent)
-    }
-
-    override fun onChatListChange(changeType: DocumentChange.Type?, chatData: ChatData) {
+    private fun setupChatListChangeListener(changeType: DocumentChange.Type?, chatData: ChatData) {
         when (changeType) {
             DocumentChange.Type.ADDED -> {
                 chatDataList.add(0, chatData)
@@ -105,7 +87,25 @@ class ChatListFragment: Fragment() {
         }
     }
 
+    private fun initRecyclerView(recyclerView: RecyclerView) {
+        chatListAdapter = ChatListAdapter(
+            onClick = ::showChatRoom
+        )
+
+        recyclerView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = chatListAdapter
+        }
+    }
+
+    private fun showChatRoom(chat: ChatEntity) {
+        val intent = ChatActivity.getIntent(requireActivity(), chat.key.orEmpty())
+        startActivity(intent)
+    }
+
     override fun onDestroy() {
+        _binding = null
         super.onDestroy()
         if (chatListRegistration != null) {
             chatListRegistration!!.remove()
