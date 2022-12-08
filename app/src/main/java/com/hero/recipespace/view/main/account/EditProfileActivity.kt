@@ -2,6 +2,7 @@ package com.hero.recipespace.view.main.account
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -15,7 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.databinding.adapters.SeekBarBindingAdapter.setProgress
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
@@ -40,7 +40,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                photoPath = RealPathUtil.getRealPath(this, it.data.toUri())
+                photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
                 Glide.with(this).load(photoPath).into(binding.ivUserProfile)
                 if (binding.editUserName.text.toString().isNotEmpty()) {
                     binding.tvComplete.isEnabled = true
@@ -51,6 +51,12 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     companion object {
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
+
+        private const val USER_KEY = "userKey"
+
+        fun getIntent(context: Context, userKey: String) =
+            Intent(context, EditProfileActivity::class.java)
+                .putExtra(USER_KEY, userKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,7 +157,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         editData[MyInfoUtil.EXTRA_USERNAME] = newUserName
         val userKey: String ?= FirebaseAuth.getInstance().uid
         FirebaseData.getInstance()
-            .updateUserData(userKey, editData, object : OnCompleteListener<Void> {
+            .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {
                 override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                     if (isSuccess) {
                         MyInfoUtil.getInstance()
@@ -172,7 +178,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         LoadingProgress.dismissProgressDialog()
         if (isSuccess) {
-            updateUserData(downloadUrl)
+            updateUserData(downloadUrl.orEmpty())
         } else {
             Toast.makeText(this, "사진 업로드에 실패했습니다", Toast.LENGTH_SHORT).show()
         }

@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -26,10 +27,16 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         FirebaseAuthentication.getInstance()
     private val firebaseData: FirebaseData = FirebaseData.getInstance()
 
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, SignUpActivity::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setupListeners()
     }
 
@@ -77,9 +84,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     private fun uploadUserData() {
         val userName: String = binding.editUsername.text.toString()
         val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
-        val userData = UserData()
-        userData.userName = userName
-        userData.userKey = firebaseUser?.uid
+        val userData = UserData().copy(userKey = firebaseUser?.uid, userName = userName)
         firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void> {
             override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                 if (!isSuccess) {
@@ -92,7 +97,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentMain() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = MainActivity.getIntent(this)
         startActivity(intent)
         finishAffinity()
     }

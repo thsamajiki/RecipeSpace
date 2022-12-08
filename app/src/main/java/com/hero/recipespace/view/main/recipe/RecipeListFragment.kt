@@ -36,7 +36,6 @@ class RecipeListFragment : Fragment() {
             val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostActivity.EXTRA_RECIPE_ENTITY)
             if (recipe != null) {
                 recipeListAdapter.add(0, recipe)
-
                 binding.rvRecipe.smoothScrollToPosition(0)
             }
         }

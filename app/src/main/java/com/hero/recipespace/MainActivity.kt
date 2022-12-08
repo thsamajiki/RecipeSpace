@@ -1,5 +1,6 @@
 package com.hero.recipespace
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
@@ -23,6 +24,11 @@ class MainActivity : AppCompatActivity(),
     NavigationBarView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, MainActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity(),
             when (item.itemId) {
                 R.id.menu_about_us -> showAboutUsDialog()
                 R.id.menu_setting -> {
-                    val intent = Intent(this@MainActivity, SettingActivity::class.java)
+                    val intent = SettingActivity.getIntent(this)
                     startActivity(intent)
                 }
             }

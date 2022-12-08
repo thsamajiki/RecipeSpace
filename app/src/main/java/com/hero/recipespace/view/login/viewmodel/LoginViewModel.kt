@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.login.viewmodel
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun getMyAccount(email: String, password: String) = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+    private fun getMyAccount(email: String, password: String) =
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                setLoginResult(true)
+            }.addOnFailureListener {
+
+            }
 
     private fun setLoginResult(isLogin: Boolean) {
         viewModelScope.launch {

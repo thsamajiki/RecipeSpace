@@ -1,14 +1,20 @@
 package com.hero.recipespace.view.main.recipe
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
@@ -19,6 +25,7 @@ import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.chat.ChatActivity.Companion.EXTRA_OTHER_USER_KEY
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
+import com.hero.recipespace.view.post.PostActivity
 import com.hero.recipespace.view.post.PostActivity.Companion.EXTRA_RECIPE_ENTITY
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +34,20 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityRecipeDetailBinding
     private val viewModel by viewModels<RecipeDetailViewModel>()
+
+    private lateinit var recipeDetailAdapter: RecipeDetailAdapter
+
+    private val updateResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostActivity.EXTRA_RECIPE_ENTITY)
+                if (recipe != null) {
+                    recipeDetailAdapter.add(recipe.photoUrlList.orEmpty())
+                    binding.rvRecipeImages.smoothScrollToPosition(0)
+                    binding.tvRecipeDesc.text = recipe.desc
+                }
+            }
+        }
 
     companion object {
         private const val RECIPE_KEY = "recipeKey"
@@ -49,56 +70,22 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         setupListeners()
     }
 
-    private fun setupViewModel() {
-        with(viewModel) {
-
-        }
-    }
-
-    private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
-            finish()
-        }
-        binding.ivUserProfile.setOnClickListener {
-            intentPhoto(viewModel.recipeKey.photoUrl)
-        }
-        binding.btnQuestion.setOnClickListener {
-            val firebaseUser = FirebaseAuth.getInstance().currentUser
-            val myUserKey: String = firebaseUser?.uid.toString()
-            if (getRecipe()?.userKey.equals(myUserKey)) {
-                Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
-            }
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipe()?.userKey)
-            startActivity(intent)
-        }
-
-        binding.rvRecipeImages.setOnClickListener {
-            intentPhoto(getRecipe()?.photoUrl)
-        }
-
-        binding.ivOptionMenu.setOnClickListener {
-            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
-            if (getRecipe()?.userKey.equals(myUserKey)) {
-                binding.ivOptionMenu.visibility = View.VISIBLE
-                binding.ivOptionMenu.isClickable = true
-                showRecipeDetailOptionMenu()
-            }
-        }
-    }
-
-    private fun getRecipe(): RecipeEntity? {
-        return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
-    }
-
     private fun setupView() {
         val recipe: RecipeEntity? = getRecipe()
         val requestManager = Glide.with(this)
+        val recipeImageList: List<String>? = recipe?.photoUrlList
 
-        if (!TextUtils.isEmpty(recipe?.photoUrl)) {
-            requestManager.load(recipe?.photoUrl)
-                .into(binding.rvRecipeImages)
+        // TODO: 2022-12-08 initRecyclerView 와 어떻게 처리할지 고민하기
+        if (recipe != null) {
+            for (i: Int in 0..recipe.photoUrlList!!.size) {
+                if (!TextUtils.isEmpty(recipe.photoUrlList[i])) {
+                    requestManager.load(recipe.photoUrlList[i])
+                        .into(binding.iv)
+                }
+            }
         }
+
+        initRecyclerView(binding.rvRecipeImages)
 
         if (!TextUtils.isEmpty(recipe?.profileImageUrl)) {
             requestManager.load(recipe?.profileImageUrl)
@@ -116,6 +103,59 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun initRecyclerView(recyclerView: RecyclerView) {
+        // TODO: 2022-12-08 리사이클러뷰 사진들 중 하나 클릭하면 해당 사진에 대해서 PhotoActivity 로 이동할 수 있도록 하기
+        recipeDetailAdapter = RecipeDetailAdapter(
+            onClick = ::intentPhoto
+        )
+
+        recyclerView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = recipeDetailAdapter
+        }
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
+    }
+
+    private fun setupListeners() {
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+
+        binding.ivUserProfile.setOnClickListener {
+            intentPhoto(viewModel.recipe.value?.profileImageUrl.orEmpty())
+        }
+
+        binding.btnQuestion.setOnClickListener {
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            val myUserKey: String = firebaseUser?.uid.toString()
+            if (getRecipe()?.userKey.equals(myUserKey)) {
+                Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
+            }
+            val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipe()?.userKey)
+            startActivity(intent)
+        }
+
+        binding.ivOptionMenu.setOnClickListener {
+            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
+            if (getRecipe()?.userKey.equals(myUserKey)) {
+                binding.ivOptionMenu.visibility = View.VISIBLE
+                binding.ivOptionMenu.isClickable = true
+                showRecipeDetailOptionMenu()
+            }
+        }
+    }
+
+    private fun getRecipe(): RecipeEntity? {
+        return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
+    }
+
     private fun showRecipeDetailOptionMenu() {
         val popupMenu = PopupMenu(this, binding.ivOptionMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_recipe_detail_actionbar_option, popupMenu.menu)
@@ -129,7 +169,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentModifyRecipe() {
-        val intent = EditRecipeActivity.getIntent(this, viewModel.recipeKey.key!!)
+        val intent = EditRecipeActivity.getIntent(this, viewModel.recipeKey)
         startActivity(intent)
     }
 

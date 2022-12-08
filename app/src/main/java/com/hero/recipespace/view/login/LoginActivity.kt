@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -17,13 +18,18 @@ import com.hero.recipespace.view.login.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListener<Void> {
+class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityLoginBinding
 
     private val viewModel by viewModels<LoginViewModel>()
 
     private val firebaseAuthentication: FirebaseAuthentication = FirebaseAuthentication.getInstance()
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, LoginActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,13 +51,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, OnCompleteListe
         binding.btnLogin.setOnClickListener {
             requestLogin()
         }
+
         binding.btnSignUp.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
+            val intent = SignUpActivity.getIntent(this)
             startActivity(intent)
         }
     }
-
-
 
     private fun requestLogin() {
         val email: String = binding.editEmail.text.toString()

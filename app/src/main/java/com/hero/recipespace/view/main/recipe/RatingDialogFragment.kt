@@ -14,6 +14,7 @@ import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
+import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
@@ -66,9 +67,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
             Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
             return
         }
-        val rateData: RateData = makeRateData(rating)
+        val rate: RateEntity = makeRateData(rating)
         FirebaseData.getInstance()
-            .uploadRating(recipe, rateData, object : OnCompleteListener<RecipeData> {
+            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
                 override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
                     if (isSuccess) {
                         Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
@@ -90,11 +91,11 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
             })
     }
 
-    private fun makeRateData(rate: Float): RateData {
+    private fun makeRateData(rate: Float): RateEntity {
         val userKey: String = FirebaseAuth.getInstance().currentUser.uid
         val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
         val profileUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
-        val rateData = RateData()
+        val rateData = RateEntity()
         rateData.date = Timestamp.now()
         rateData.profileImageUrl = profileUrl
         rateData.userKey = userKey

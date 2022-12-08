@@ -1,5 +1,7 @@
 package com.hero.recipespace.view.main.account.setting.notice
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -25,6 +27,11 @@ class NoticeListActivity : AppCompatActivity(),
     private val viewModel by viewModels<NoticeListViewModel>()
 
     private lateinit var noticeListAdapter: NoticeListAdapter
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, NoticeListActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +59,9 @@ class NoticeListActivity : AppCompatActivity(),
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        noticeListAdapter = NoticeListAdapter()
+        noticeListAdapter = NoticeListAdapter(
+            onClick = downloadNoticeData()
+        )
 
         recyclerView.run {
             setHasFixedSize(true)

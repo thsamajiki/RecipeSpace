@@ -26,9 +26,9 @@ class NoticeListAdapter(
         holder.setNotice(notice)
     }
 
-    fun setNoticeList(noticeData: List<NoticeEntity>) {
+    fun setNoticeList(noticeItem: List<NoticeEntity>) {
         noticeList.clear()
-        noticeList.addAll(noticeData)
+        noticeList.addAll(noticeItem)
         notifyDataSetChanged()
     }
 

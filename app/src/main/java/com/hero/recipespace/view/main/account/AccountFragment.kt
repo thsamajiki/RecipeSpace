@@ -16,6 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
+import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.view.login.LoginActivity
 import com.hero.recipespace.view.main.account.viewmodel.AccountViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
@@ -33,7 +34,7 @@ class AccountFragment: Fragment(),
 
     private val editProfileResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            setUserData()
+            setupUserView()
         }
     }
     private val photoResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -45,8 +46,6 @@ class AccountFragment: Fragment(),
 
     companion object {
         fun newInstance() = AccountFragment()
-
-        const val PROFILE_EDIT_REQ = 1010
     }
 
     override fun onCreateView(
@@ -61,27 +60,30 @@ class AccountFragment: Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUserData()
+        setupUserView()
         setupViewModel()
         setupListeners()
     }
 
     private fun setupViewModel() {
         with(viewModel) {
+            user.observe(viewLifecycleOwner) { user ->
 
+            }
         }
     }
 
     private fun setupListeners() {
         binding.btnProfileEdit.setOnClickListener {
-            intentProfileEdit()
+            val user: UserEntity = viewModel.user.value!!
+            intentEditProfile(user)
         }
         binding.btnLogout.setOnClickListener {
             showLogoutDialog()
         }
     }
 
-    private fun setUserData() {
+    private fun setupUserView() {
         val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
         if (TextUtils.isEmpty(profileImageUrl)) {
             Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
@@ -92,9 +94,10 @@ class AccountFragment: Fragment(),
         binding.tvUserName.text = userName
     }
 
-    private fun intentProfileEdit() {
-        val intent = Intent(requireActivity(), EditProfileActivity::class.java)
-        startActivityForResult(intent, PROFILE_EDIT_REQ)
+    private fun intentEditProfile(user: UserEntity) {
+        val intent = EditProfileActivity.getIntent(requireActivity(), user.userKey.orEmpty())
+        startActivity(intent)
+        editProfileResultLauncher.launch(intent)
     }
 
     private fun showLogoutDialog() {

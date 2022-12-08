@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.main.account.setting
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,11 @@ class SettingActivity : AppCompatActivity() {
 
     private val reviewManager: ReviewManager? = null
     private val reviewInfo: ReviewInfo? = null
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, SettingActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +62,7 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun intentNoticeList() {
-        val intent = Intent(this, NoticeListActivity::class.java)
+        val intent = NoticeListActivity.getIntent(this)
         startActivity(intent)
     }
 

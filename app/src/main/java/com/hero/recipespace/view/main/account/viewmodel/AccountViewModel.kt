@@ -4,9 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,6 +18,12 @@ class AccountViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     val user: LiveData<UserEntity> = getUserUseCase().asLiveData()
+
+    init {
+        viewModelScope.launch {
+            getUserUseCase.invoke()
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

@@ -45,7 +45,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-            photoPath = RealPathUtil.getRealPath(this, it.data.toUri())
+            photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
             Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
             if (binding.editContent.text.toString().isNotEmpty()) {
                 binding.tvComplete.isEnabled = true
@@ -67,8 +67,8 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding = ActivityEditRecipeBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        addTextWatcher()
 
+        addTextWatcher()
         setupViewModel()
         setupListeners()
     }

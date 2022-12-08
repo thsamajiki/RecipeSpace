@@ -11,7 +11,7 @@ data class RecipeEntity(
     val userName: String? = null,
     val userKey: String? = null,
     val desc: String? = null,
-    val photoUrl: String? = null,
+    val photoUrlList: List<String>? = null,
     val postDate: Timestamp? = null,
     val rate: Float = 0f,
     val totalRatingCount: Int = 0

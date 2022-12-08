@@ -16,6 +16,7 @@ import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.domain.chat.mapper.toData
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.listener.OnMessageListener
 import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
@@ -49,8 +50,15 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         val view = binding.root
         setContentView(view)
 
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        setupView()
+        setupViewModel()
+        setupListeners()
+    }
+
+    private fun setupView() {
         chat = getChatData()
         if (chat != null) {
             initRecyclerView(binding.rvChat)
@@ -58,9 +66,17 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         } else {
             checkExistChatData()
         }
+    }
 
-        setupViewModel()
+    private fun setupViewModel() {
+        with(viewModel) {
+            messageList.observe(this@ChatActivity) { messageList ->
+                chatAdapter.setMessageList(messageList)
+            }
+        }
+    }
 
+    private fun setupListeners() {
         binding.ivBack.setOnClickListener {
             finish()
         }
@@ -74,36 +90,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         }
     }
 
-    private fun setupViewModel() {
-        with(viewModel) {
-            messageList.observe(this@ChatActivity) { messageList ->
-                chatAdapter.setMessageList(messageList)
-            }
-        }
-    }
-
-    private fun checkExistChatData() {
-        if (TextUtils.isEmpty(getOtherUserKey())) {
-            return
-        }
-        val firebaseData: FirebaseData = FirebaseData.getInstance()
-        firebaseData.checkExistChatData(getOtherUserKey(),
-            object : OnCompleteListener<ChatData?>() {
-                fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
-                    if (isSuccess && response.isNotEmpty()) {
-                        chat = response.getData()
-                        initRecyclerView()
-                        initMessageRegistration()
-                    }
-                }
-            })
-    }
-
-    private fun initMessageRegistration() {
-        messageRegistration = FirebaseData.getInstance().getMessageList(chat?.key, this)
-    }
-
-
     private fun initRecyclerView(recyclerView: RecyclerView) {
         chatAdapter = ChatAdapter()
 
@@ -112,6 +98,27 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
             layoutManager = LinearLayoutManager(context)
             adapter = chatAdapter
         }
+    }
+
+    private fun checkExistChatData() {
+        if (TextUtils.isEmpty(getOtherUserKey())) {
+            return
+        }
+        val firebaseData: FirebaseData = FirebaseData.getInstance()
+        firebaseData.checkExistChatData(getOtherUserKey().orEmpty(),
+            object : OnCompleteListener<ChatData?>() {
+                fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
+                    if (isSuccess && response.isNotEmpty()) {
+                        chat = response.getData()
+                        initRecyclerView(binding.rvChat)
+                        initMessageRegistration()
+                    }
+                }
+            })
+    }
+
+    private fun initMessageRegistration() {
+        messageRegistration = FirebaseData.getInstance().getMessageList(chat?.key, this)
     }
 
     private fun getChatData(): ChatEntity? {
@@ -130,7 +137,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         }
         binding.editMessage.setText("")
         val firebaseData: FirebaseData = FirebaseData.getInstance()
-        firebaseData.sendMessage(message, chat)
+        firebaseData.sendMessage(message, chat!!.toData())
     }
 
     private fun createChatRoom() {
@@ -148,7 +155,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
                 fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
                     if (isSuccess && response.isNotEmpty()) {
                         chat = response.getData()
-                        initRecyclerView()
+                        initRecyclerView(binding.rvChat)
                         initMessageRegistration()
                     }
                 }

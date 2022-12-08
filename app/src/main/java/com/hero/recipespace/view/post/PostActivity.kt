@@ -26,13 +26,11 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
-import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.RealPathUtil
-import com.hero.recipespace.view.main.recipe.RecipeDetailActivity
 import com.hero.recipespace.view.post.viewmodel.PostViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,12 +45,18 @@ class PostActivity : AppCompatActivity(),
 
     private val viewModel by viewModels<PostViewModel>()
 
-    private val photoResultLauncher: ActivityResultLauncher<Intent> =
+    private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                photoPath = RealPathUtil.getRealPath(this, data.data)
+                photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
                 Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+//                for(i : Int in 0..10) {
+//                    photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
+//                    Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+//                }
                 binding.btnPhoto.visibility = View.GONE
+                binding.ivRecipePhoto.visibility = View.GONE
+                binding.rvRecipeImages.visibility = View.VISIBLE
                 if (binding.editContent.text.toString().isNotEmpty()) {
                     binding.tvComplete.isEnabled = true
                 }
@@ -62,7 +66,6 @@ class PostActivity : AppCompatActivity(),
     companion object {
         const val EXTRA_RECIPE_ENTITY = "recipe"
         const val PERMISSION_REQ_CODE = 1010
-        const val PHOTO_REQ_CODE = 2020
 
         fun getIntent(context: Context) =
             Intent(context, PostActivity::class.java)
@@ -90,12 +93,12 @@ class PostActivity : AppCompatActivity(),
        }
        binding.btnPhoto.setOnClickListener {
            if (checkStoragePermission()) {
-               intentGallery()
+               openGallery()
            }
        }
         binding.ivRecipePhoto.setOnClickListener {
             if (checkStoragePermission()) {
-                intentGallery()
+                openGallery()
             }
         }
        binding.tvComplete.setOnClickListener {
@@ -107,10 +110,12 @@ class PostActivity : AppCompatActivity(),
         binding.editContent.addTextChangedListener(this)
     }
 
-    private fun intentGallery() {
-        val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickIntent.type = "image/*"
-        startActivityForResult(pickIntent, PHOTO_REQ_CODE)
+    private fun openGallery() {
+        val pickIntent = Intent(Intent.ACTION_PICK)
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        pickIntent.action = Intent.ACTION_GET_CONTENT
+        openGalleryResultLauncher.launch(pickIntent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -133,7 +138,7 @@ class PostActivity : AppCompatActivity(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            intentGallery()
+            openGallery()
         }
     }
 
@@ -157,7 +162,7 @@ class PostActivity : AppCompatActivity(),
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
             val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
             val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-            val recipe = RecipeEntity()
+            val recipe = RecipeEntity().copy()
             recipe.photoUrl = downloadUrl
             recipe.desc = binding.editContent.text.toString()
             recipe.postDate = Timestamp.now()
