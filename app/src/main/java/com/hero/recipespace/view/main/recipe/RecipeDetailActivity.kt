@@ -12,13 +12,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
+import com.hero.recipespace.databinding.ItemRecipeImageListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
@@ -76,11 +76,13 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         val recipeImageList: List<String>? = recipe?.photoUrlList
 
         // TODO: 2022-12-08 initRecyclerView 와 어떻게 처리할지 고민하기
+        val binding2 = ItemRecipeImageListBinding.inflate(layoutInflater)
+
         if (recipe != null) {
             for (i: Int in 0..recipe.photoUrlList!!.size) {
                 if (!TextUtils.isEmpty(recipe.photoUrlList[i])) {
                     requestManager.load(recipe.photoUrlList[i])
-                        .into(binding.iv)
+                        .into(binding2.ivRecipeImage)
                 }
             }
         }

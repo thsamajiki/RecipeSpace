@@ -9,8 +9,6 @@ class SettingViewModel(
     application: Application
 ): AndroidViewModel(application) {
 
-
-
     override fun onCleared() {
         super.onCleared()
     }

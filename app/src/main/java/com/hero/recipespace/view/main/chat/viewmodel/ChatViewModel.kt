@@ -3,7 +3,6 @@ package com.hero.recipespace.view.main.chat.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.bumptech.glide.Glide.init
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.message.entity.MessageEntity
@@ -46,10 +45,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    val messageList: LiveData<List<MessageEntity>> = getChatUseCase().asLiveData()
+    private val _messageList = MutableLiveData<List<MessageEntity>>()
+    val messageList: LiveData<List<MessageEntity>>
+        get() = _messageList
 
-    fun getChat() {
-        getChatUseCase.invoke()
+    suspend fun getChat() {
+        getChatUseCase.invoke(chatKey)
     }
 
     suspend fun addMessage(messageEntity: MessageEntity) {

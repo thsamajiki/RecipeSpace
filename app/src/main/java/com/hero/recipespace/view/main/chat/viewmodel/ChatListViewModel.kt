@@ -16,6 +16,10 @@ class ChatListViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase
 ) : AndroidViewModel(application) {
 
+//    private val _chatList = MutableLiveData<List<ChatEntity>>()
+//    val chatList2: LiveData<List<ChatEntity>>
+//        get() = _chatList
+
     val userKey = FirebaseAuth.getInstance().currentUser?.uid
     val chatList: LiveData<List<ChatEntity>> = getChatListUseCase(userKey!!).asLiveData()
 

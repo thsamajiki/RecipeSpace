@@ -80,7 +80,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
         if (isSuccess) {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = MainActivity.getIntent(this)
             startActivity(intent)
             finish()
         } else {
