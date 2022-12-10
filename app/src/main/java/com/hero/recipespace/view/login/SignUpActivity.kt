@@ -65,11 +65,13 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
         firebaseAuthentication.setOnCompleteListener(object : OnCompleteListener<Void> {
             override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
-                if (!isSuccess) {
+                if (isSuccess) {
+                    uploadUserData()
+                } else {
                     Toast.makeText(this@SignUpActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     return
                 }
-                uploadUserData()
+
             }
         })
         firebaseAuthentication.signUpEmail(this, email, pwd)
@@ -87,11 +89,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         val userData = UserData().copy(userKey = firebaseUser?.uid, userName = userName)
         firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void> {
             override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
-                if (!isSuccess) {
+                if (isSuccess) {
+                    intentMain()
+                } else {
                     Toast.makeText(this@SignUpActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
                     return
                 }
-                intentMain()
             }
         })
     }
