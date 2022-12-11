@@ -6,17 +6,16 @@ import com.hero.recipespace.listener.OnFileUploadListener
 import java.io.File
 
 class FirebaseStorageApi {
-    private var instance: FirebaseStorageApi? = null
     private var onFileUploadListener: OnFileUploadListener? = null
 
     companion object {
-        val DEFAULT_IMAGE_PATH = "images/"
-        val PROFILE_IMAGE_PATH = "profile/"
+        const val DEFAULT_IMAGE_PATH = "images/"
+        const val PROFILE_IMAGE_PATH = "profile/"
 
         private var instance: FirebaseStorageApi ?= null
 
         fun getInstance(): FirebaseStorageApi {
-            return instance ?: synchronized(this) {
+            return synchronized(this) {
                 instance ?: FirebaseStorageApi().also {
                     instance = it
                 }

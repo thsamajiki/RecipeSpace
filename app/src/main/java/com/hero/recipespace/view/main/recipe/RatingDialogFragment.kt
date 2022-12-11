@@ -10,7 +10,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
@@ -20,7 +19,9 @@ import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.main.recipe.viewmodel.RatingViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
     private var _binding: FragmentDialogRatingBinding? = null
@@ -77,7 +78,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                         // 평가완료했을 때 평가완료된 데이터를 내려주자.
                         val result = Bundle().apply {
                             putParcelable(
-                                Result.KEY_RECIPE,
+                                Result.RECIPE_KEY,
                                 response?.getData()?.toEntity()
                             )
                         }
@@ -111,7 +112,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     }
 
     object Result {
-        const val KEY_RECIPE = "recipe_key"
+        const val RECIPE_KEY = "recipe_key"
     }
 
     companion object {

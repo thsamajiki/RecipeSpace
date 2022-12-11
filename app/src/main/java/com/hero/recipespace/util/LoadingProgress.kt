@@ -14,6 +14,7 @@ class LoadingProgress {
 //    private var dialog: Dialog? = null
 //    private var progressBar: ProgressBar? = null
 
+    // TODO: 2022-12-12 로딩 프로그래스바를 구현하기
     companion object {
         fun initProgressDialog(context: Context) {
             val dialog = Dialog(context, R.style.LoadingDialog)

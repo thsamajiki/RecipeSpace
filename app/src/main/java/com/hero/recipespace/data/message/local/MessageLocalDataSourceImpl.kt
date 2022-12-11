@@ -4,8 +4,9 @@ import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.database.message.dao.MessageDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MessageLocalDataSourceImpl(
+class MessageLocalDataSourceImpl @Inject constructor(
     private val messageDao: MessageDao
 ) : MessageLocalDataSource {
 

@@ -2,8 +2,9 @@ package com.hero.recipespace.data.rate.remote
 
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.service.RateService
+import javax.inject.Inject
 
-class RateRemoteDataSourceImpl(
+class RateRemoteDataSourceImpl @Inject constructor(
     private val rateService: RateService
 ) : RateRemoteDataSource {
     override suspend fun getData(rateKey: String): RateData {

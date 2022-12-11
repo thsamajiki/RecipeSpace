@@ -20,7 +20,9 @@ import com.hero.recipespace.domain.chat.mapper.toData
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.listener.OnMessageListener
 import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListener {
 
     private lateinit var binding: ActivityChatBinding
@@ -100,6 +102,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         }
     }
 
+    // TODO: 2022-12-12 ViewModel 과 작업하기
     private fun checkExistChatData() {
         if (TextUtils.isEmpty(getOtherUserKey())) {
             return
@@ -140,6 +143,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
         firebaseData.sendMessage(message, chat!!.toData())
     }
 
+    // TODO: 2022-12-12 ViewModel 과 작업하기
     private fun createChatRoom() {
         val firebaseData: FirebaseData = FirebaseData.getInstance()
         val message = binding.editMessage.text.toString()
@@ -168,6 +172,10 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener, OnMessageListene
             chatAdapter.notifyItemInserted(messageList.size - 1)
             binding.rvChat.smoothScrollToPosition(messageList.size - 1)
         }
+    }
+
+    object Result {
+        const val CHAT_KEY = "chatKey"
     }
 
     override fun onClick(view: View) {

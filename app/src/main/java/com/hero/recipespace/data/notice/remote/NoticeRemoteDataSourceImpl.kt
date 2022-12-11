@@ -2,8 +2,9 @@ package com.hero.recipespace.data.notice.remote
 
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.data.notice.service.NoticeService
+import javax.inject.Inject
 
-class NoticeRemoteDataSourceImpl(
+class NoticeRemoteDataSourceImpl @Inject constructor(
     private val noticeService: NoticeService
 ) : NoticeRemoteDataSource {
 

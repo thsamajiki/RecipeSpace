@@ -19,8 +19,10 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentChatListBinding
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ChatListFragment: Fragment() {
 
     private var chatListRegistration: ListenerRegistration? = null
@@ -71,6 +73,7 @@ class ChatListFragment: Fragment() {
         }
     }
 
+    // TODO: 2022-12-12 리스너 대체하기
     private fun setupChatListChangeListener(changeType: DocumentChange.Type?, chatData: ChatData) {
         when (changeType) {
             DocumentChange.Type.ADDED -> {

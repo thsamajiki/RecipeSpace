@@ -36,6 +36,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         setupViewModel()
         setupListeners()
         firebaseAuthentication.setOnCompleteListener(this)

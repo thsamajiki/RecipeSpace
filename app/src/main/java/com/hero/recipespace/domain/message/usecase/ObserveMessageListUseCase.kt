@@ -5,7 +5,7 @@ import com.hero.recipespace.domain.message.repository.MessageRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetMessageListUseCase @Inject constructor(
+class ObserveMessageListUseCase @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
     operator fun invoke(userKey: String) : Flow<List<MessageEntity>> =

@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.hero.recipespace.databinding.ActivitySettingBinding
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListActivity
+import com.hero.recipespace.view.main.account.setting.viewmodel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,6 +21,8 @@ class SettingActivity : AppCompatActivity() {
 
     private val reviewManager: ReviewManager? = null
     private val reviewInfo: ReviewInfo? = null
+
+    private val viewModel by viewModels<SettingViewModel>()
 
     companion object {
         fun getIntent(context: Context) =
@@ -30,8 +34,18 @@ class SettingActivity : AppCompatActivity() {
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
+        setupViewModel()
         setupListeners()
 //        readyPlayStoreReview();
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
     }
 
     private fun setupListeners() {

@@ -13,8 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RateRepositoryImpl(
+class RateRepositoryImpl @Inject constructor(
     private val rateLocalDataSource: RateLocalDataSource,
     private val rateRemoteDataSource: RateRemoteDataSource
 ) : RateRepository {

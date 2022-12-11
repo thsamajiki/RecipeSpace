@@ -118,9 +118,12 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    // TODO: 2022-12-12 ViewModel과 작업하기
     private fun setupViewModel() {
         with(viewModel) {
-
+            recipe.observe(this@RecipeDetailActivity) {
+                recipeDetailAdapter.setRecipeImageList()
+            }
         }
     }
 

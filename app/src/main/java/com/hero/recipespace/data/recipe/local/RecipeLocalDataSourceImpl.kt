@@ -4,8 +4,9 @@ import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.recipe.dao.RecipeDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class RecipeLocalDataSourceImpl(
+class RecipeLocalDataSourceImpl @Inject constructor(
     private val recipeDao: RecipeDao
 ) : RecipeLocalDataSource {
 

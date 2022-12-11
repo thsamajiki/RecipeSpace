@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
@@ -28,7 +29,10 @@ import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     OnFileUploadListener, TextWatcher {
 
@@ -37,7 +41,9 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     private var profileUrl: String? = null
     private var userName: String? = null
 
-    private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
+    private val viewModel by viewModels<EditProfileViewModel>()
+
+    private val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
@@ -64,8 +70,18 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         setUserData()
+        setupViewModel()
         setupListeners()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) { user ->
+            requestUpdateProfile(user)
+        }
     }
 
     private fun setupListeners() {
@@ -79,7 +95,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
         binding.fabProfileEdit.setOnClickListener {
             if (checkStoragePermission()) {
-                intentGallery()
+                openGallery()
             }
         }
 
@@ -109,10 +125,10 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
     }
 
-    private fun intentGallery() {
+    private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-        intentGalleryLauncher.launch(pickIntent)
+        openGalleryLauncher.launch(pickIntent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -133,11 +149,11 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            intentGallery()
+            openGallery()
         }
     }
 

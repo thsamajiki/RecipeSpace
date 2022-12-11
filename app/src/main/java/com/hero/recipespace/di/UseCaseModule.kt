@@ -2,15 +2,15 @@ package com.hero.recipespace.di
 
 import com.hero.recipespace.domain.chat.repository.ChatRepository
 import com.hero.recipespace.domain.chat.usecase.AddChatUseCase
-import com.hero.recipespace.domain.chat.usecase.GetChatListUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
+import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
 import com.hero.recipespace.domain.message.repository.MessageRepository
 import com.hero.recipespace.domain.message.usecase.AddMessageUseCase
-import com.hero.recipespace.domain.message.usecase.GetMessageListUseCase
 import com.hero.recipespace.domain.message.usecase.GetMessageUseCase
+import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
 import com.hero.recipespace.domain.notice.repository.NoticeRepository
-import com.hero.recipespace.domain.notice.usecase.GetNoticeListUseCase
 import com.hero.recipespace.domain.notice.usecase.GetNoticeUseCase
+import com.hero.recipespace.domain.notice.usecase.ObserveNoticeListUseCase
 import com.hero.recipespace.domain.rate.repository.RateRepository
 import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
@@ -18,8 +18,8 @@ import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import com.hero.recipespace.domain.recipe.usecase.*
 import com.hero.recipespace.domain.user.repository.UserRepository
-import com.hero.recipespace.domain.user.usecase.GetUserListUseCase
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
+import com.hero.recipespace.domain.user.usecase.ObserveUserListUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,7 +36,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetChatListUseCase(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideGetChatListUseCase(chatRepository: ChatRepository) = ObserveChatListUseCase(chatRepository)
 
     @Provides
     @Singleton
@@ -48,7 +48,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetMessageListUseCase(messageRepository: MessageRepository) = GetMessageListUseCase(messageRepository)
+    fun provideGetMessageListUseCase(messageRepository: MessageRepository) = ObserveMessageListUseCase(messageRepository)
 
     @Provides
     @Singleton
@@ -60,7 +60,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetNoticeListUseCase(noticeRepository: NoticeRepository) = GetNoticeListUseCase(noticeRepository)
+    fun provideGetNoticeListUseCase(noticeRepository: NoticeRepository) = ObserveNoticeListUseCase(noticeRepository)
 
     @Provides
     @Singleton
@@ -100,5 +100,5 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideGetUserListUseCase(userRepository: UserRepository) = GetUserListUseCase(userRepository)
+    fun provideGetUserListUseCase(userRepository: UserRepository) = ObserveUserListUseCase(userRepository)
 }

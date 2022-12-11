@@ -13,8 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChatRepositoryImpl(
+class ChatRepositoryImpl @Inject constructor(
     private val chatRemoteDataSource: ChatRemoteDataSource,
     private val chatLocalDataSource: ChatLocalDataSource
 ) : ChatRepository {

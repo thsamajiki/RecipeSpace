@@ -5,7 +5,7 @@ import com.hero.recipespace.domain.chat.repository.ChatRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetChatListUseCase @Inject constructor(
+class ObserveChatListUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
     operator fun invoke(userKey: String) : Flow<List<ChatEntity>> =

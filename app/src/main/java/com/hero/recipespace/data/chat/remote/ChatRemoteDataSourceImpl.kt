@@ -1,30 +1,29 @@
 package com.hero.recipespace.data.chat.remote
 
 import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.database.chat.datastore.ChatCloudStore
-import kotlinx.coroutines.flow.Flow
+import com.hero.recipespace.data.chat.service.ChatService
+import javax.inject.Inject
 
-class ChatRemoteDataSourceImpl(
-
+class ChatRemoteDataSourceImpl @Inject constructor(
+    private val chatService: ChatService
 ) : ChatRemoteDataSource {
     override suspend fun getData(chatKey: String): ChatData {
-        TODO("Not yet implemented")
+        return chatService.getData(chatKey)
     }
 
     override suspend fun getDataList(userKey: String): List<ChatData> {
-        TODO("Not yet implemented")
+        return chatService.getDataList(userKey)
     }
 
-
     override suspend fun add(chatData: ChatData) {
-        chatCloudStore.add(chatData)
+        chatService.add(chatData)
     }
 
     override suspend fun update(chatData: ChatData) {
-        chatCloudStore.update(chatData)
+        chatService.update(chatData)
     }
 
     override suspend fun remove(chatData: ChatData) {
-        chatCloudStore.remove(chatData)
+        chatService.remove(chatData)
     }
 }

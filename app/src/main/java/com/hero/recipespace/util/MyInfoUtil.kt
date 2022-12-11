@@ -8,12 +8,12 @@ class MyInfoUtil {   // 나의 정보에 관한 것을 단말기에 저장하거
     // 나의 정보에 관한 것을 단말기에 저장하거나 단말기로 불러오는 클래스
 
     companion object {
-        val EXTRA_EMAIL = "email"
-        val EXTRA_PWD = "pwd"
-        val EXTRA_USERNAME = "userName"
-        val EXTRA_PROFILE_IMAGE_URL = "profileImageUrl"
-        val EXTRA_RECIPE_IMAGE = "recipeImageUrl"
-        val EXTRA_RECIPE_CONTENT = "recipeContent"
+        const val EXTRA_EMAIL = "email"
+        const val EXTRA_PWD = "pwd"
+        const val EXTRA_USERNAME = "userName"
+        const val EXTRA_PROFILE_IMAGE_URL = "profileImageUrl"
+        const val EXTRA_RECIPE_IMAGE = "recipeImageUrl"
+        const val EXTRA_RECIPE_CONTENT = "recipeContent"
 
         private var instance: MyInfoUtil? = null
 

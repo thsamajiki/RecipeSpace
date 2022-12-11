@@ -2,8 +2,9 @@ package com.hero.recipespace.data.message.remote
 
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.service.MessageService
+import javax.inject.Inject
 
-class MessageRemoteDataSourceImpl(
+class MessageRemoteDataSourceImpl @Inject constructor(
     private val messageService: MessageService
 ) : MessageRemoteDataSource {
 

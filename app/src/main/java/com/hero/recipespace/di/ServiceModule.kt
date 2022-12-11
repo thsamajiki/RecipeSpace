@@ -1,8 +1,20 @@
 package com.hero.recipespace.di
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.hero.recipespace.data.chat.service.ChatService
+import com.hero.recipespace.data.chat.service.ChatServiceImpl
+import com.hero.recipespace.data.message.service.MessageService
+import com.hero.recipespace.data.message.service.MessageServiceImpl
+import com.hero.recipespace.data.notice.service.NoticeService
+import com.hero.recipespace.data.notice.service.NoticeServiceImpl
+import com.hero.recipespace.data.rate.service.RateService
+import com.hero.recipespace.data.recipe.service.RecipeService
+import com.hero.recipespace.data.user.service.UserService
+import com.hero.recipespace.database.chat.ChatRepositoryImpl
 import com.hero.recipespace.domain.chat.repository.ChatRepository
-import com.hero.recipespace.domain.chat.usecase.GetChatListUseCase
-import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,25 +27,33 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    fun provideChatService(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideFirestore() : FirebaseFirestore = FirebaseFirestore.getInstance()
 
     @Provides
     @Singleton
-    fun provideMessageService(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
-    fun provideNoticeService(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideChatService(chatServiceImpl: ChatServiceImpl) = ChatService()
 
     @Provides
     @Singleton
-    fun provideRateService(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideMessageService(messageServiceImpl: MessageServiceImpl) = MessageService()
 
     @Provides
     @Singleton
-    fun provideRecipeService(chatRepository: ChatRepository) = GetChatUseCase(chatRepository)
+    fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl) = NoticeService(chatRepository)
 
     @Provides
     @Singleton
-    fun provideUserService(chatRepository: ChatRepository) = GetChatListUseCase(chatRepository)
+    fun provideRateService(chatRepository: ChatRepository) = RateService(chatRepository)
+
+    @Provides
+    @Singleton
+    fun provideRecipeService(chatRepository: ChatRepository) = RecipeService(chatRepository)
+
+    @Provides
+    @Singleton
+    fun provideUserService(chatRepository: ChatRepository) = UserService(chatRepository)
 }

@@ -6,14 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.chat.entity.ChatEntity
-import com.hero.recipespace.domain.chat.usecase.GetChatListUseCase
+import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatListViewModel @Inject constructor(
     application: Application,
-    private val getChatListUseCase: GetChatListUseCase
+    private val observeChatListUseCase: ObserveChatListUseCase
 ) : AndroidViewModel(application) {
 
 //    private val _chatList = MutableLiveData<List<ChatEntity>>()
@@ -21,7 +21,7 @@ class ChatListViewModel @Inject constructor(
 //        get() = _chatList
 
     val userKey = FirebaseAuth.getInstance().currentUser?.uid
-    val chatList: LiveData<List<ChatEntity>> = getChatListUseCase(userKey!!).asLiveData()
+    val chatList: LiveData<List<ChatEntity>> = observeChatListUseCase(userKey!!).asLiveData()
 
     override fun onCleared() {
         super.onCleared()

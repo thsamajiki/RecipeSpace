@@ -68,7 +68,7 @@ class AccountFragment: Fragment(),
     private fun setupViewModel() {
         with(viewModel) {
             user.observe(viewLifecycleOwner) { user ->
-
+                getUser()
             }
         }
     }

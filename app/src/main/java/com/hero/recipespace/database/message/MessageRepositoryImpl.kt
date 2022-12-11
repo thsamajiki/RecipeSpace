@@ -13,8 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MessageRepositoryImpl(
+class MessageRepositoryImpl @Inject constructor(
     private val messageLocalDataSource: MessageLocalDataSource,
     private val messageRemoteDataSource: MessageRemoteDataSource
 ) : MessageRepository {

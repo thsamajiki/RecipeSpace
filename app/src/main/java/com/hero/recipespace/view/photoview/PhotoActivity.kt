@@ -7,7 +7,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.hero.recipespace.databinding.ActivityPhotoBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PhotoActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityPhotoBinding

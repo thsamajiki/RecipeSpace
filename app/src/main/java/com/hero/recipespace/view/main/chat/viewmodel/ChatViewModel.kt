@@ -7,7 +7,7 @@ import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.usecase.AddMessageUseCase
-import com.hero.recipespace.domain.message.usecase.GetMessageListUseCase
+import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +17,7 @@ class ChatViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
     private val getChatUseCase: GetChatUseCase,
-    private val getMessageListUseCase: GetMessageListUseCase,
+    private val observeMessageListUseCase: ObserveMessageListUseCase,
     private val addMessageUseCase: AddMessageUseCase
 ) : AndroidViewModel(application) {
 
@@ -41,7 +41,7 @@ class ChatViewModel @Inject constructor(
                     Log.e("ChatViewModel", ": $it")
                 }
 
-            getMessageListUseCase
+            observeMessageListUseCase
         }
     }
 

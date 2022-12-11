@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Patterns
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.MainActivity
@@ -16,6 +17,7 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivitySignUpBinding
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
+import com.hero.recipespace.view.login.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +29,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         FirebaseAuthentication.getInstance()
     private val firebaseData: FirebaseData = FirebaseData.getInstance()
 
+    private val viewModel by viewModels<SignUpViewModel>()
+
     companion object {
         fun getIntent(context: Context) =
             Intent(context, SignUpActivity::class.java)
@@ -37,7 +41,17 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
+        setupViewModel()
         setupListeners()
+    }
+
+    private fun setupViewModel() {
+        with(viewModel) {
+
+        }
     }
 
     private fun setupListeners() {

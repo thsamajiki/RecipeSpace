@@ -13,8 +13,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipeRepositoryImpl(
+class RecipeRepositoryImpl @Inject constructor(
     private val recipeRemoteDataSource: RecipeRemoteDataSource,
     private val recipeLocalDataSource: RecipeLocalDataSource
 ) : RecipeRepository {

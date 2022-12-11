@@ -4,8 +4,9 @@ import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.rate.dao.RateDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class RateLocalDataSourceImpl(
+class RateLocalDataSourceImpl @Inject constructor(
     private val rateDao: RateDao
 ) : RateLocalDataSource {
 

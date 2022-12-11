@@ -23,6 +23,12 @@ class AccountViewModel @Inject constructor(
 
 //    val user: LiveData<UserEntity> = getUserUseCase().asLiveData()
 
+    fun getUser() {
+        viewModelScope.launch {
+
+        }
+    }
+
     init {
         viewModelScope.launch {
             getUserUseCase.invoke()

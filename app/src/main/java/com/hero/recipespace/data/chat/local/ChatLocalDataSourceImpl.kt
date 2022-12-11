@@ -4,8 +4,9 @@ import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.database.chat.dao.ChatDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class ChatLocalDataSourceImpl(
+class ChatLocalDataSourceImpl @Inject constructor(
     private val chatDao: ChatDao
 ) : ChatLocalDataSource {
 

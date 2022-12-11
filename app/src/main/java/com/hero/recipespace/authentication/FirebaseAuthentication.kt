@@ -9,8 +9,11 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import com.hero.recipespace.util.MyInfoUtil
+import javax.inject.Inject
 
-class FirebaseAuthentication {
+class FirebaseAuthentication @Inject constructor(
+    private val auth: FirebaseAuth
+) {
     private var firebaseAuthentication: FirebaseAuthentication? = null
     private var onCompleteListener: OnCompleteListener<Void>? = null
 
@@ -30,33 +33,45 @@ class FirebaseAuthentication {
         this.onCompleteListener = onCompleteListener
     }
 
-    fun signUpEmail(context: Context, email: String, pwd: String) {
-        val response: Response<Void> = Response()
-        response.setType(Type.AUTH)
+    fun signUpEmail(context: Context, email: String, pwd: String, onResult: (Boolean) -> Unit) {
+//        val response: Response<Void> = Response()
+//        response.setType(Type.AUTH)
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pwd)
             .addOnSuccessListener {
-                MyInfoUtil.getInstance().putEmail(context, email)
-                MyInfoUtil.getInstance().putPwd(context, pwd)
-                onCompleteListener?.onComplete(true, response)
-            }.addOnFailureListener { onCompleteListener?.onComplete(false, response) }
+//                MyInfoUtil.getInstance().putEmail(context, email)
+//                MyInfoUtil.getInstance().putPwd(context, pwd)
+//                onCompleteListener?.onComplete(true, response)
+                auth.currentUser?.updateProfile(UserProfileChangeRequest
+                    .Builder()
+                    .build())
+
+                onResult(true)
+            }.addOnFailureListener {
+//                onCompleteListener?.onComplete(false, response)
+                onResult(false)
+            }
     }
 
-    fun login(context: Context, email: String, pwd: String?) {
-        val response: Response<Void> = Response()
-        response.setType(Type.AUTH)
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pwd!!)
+    fun login(context: Context, email: String, pwd: String, onResult: (Boolean) -> Unit) {
+//        val response: Response<Void> = Response()
+//        response.setType(Type.AUTH)
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pwd)
             .addOnSuccessListener {
-                MyInfoUtil.getInstance().putEmail(context, email)
-                MyInfoUtil.getInstance().putPwd(context, pwd)
-                getUserInfo(context)
+//                MyInfoUtil.getInstance().putEmail(context, email)
+//                MyInfoUtil.getInstance().putPwd(context, pwd)
+//                getUserInfo(context)
+                onResult(true)
             }
-            .addOnFailureListener { onCompleteListener?.onComplete(false, response) }
+            .addOnFailureListener {
+//                onCompleteListener?.onComplete(false, response)
+                onResult(false)
+            }
     }
 
     private fun getUserInfo(context: Context) {
         val response: Response<Void> = Response()
         response.setType(Type.AUTH)
-        val myKey: String = FirebaseAuth.getInstance().currentUser.uid
+        val myKey: String = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         val fireStore = FirebaseFirestore.getInstance()
         fireStore.collection("User")
             .document(myKey)
@@ -64,14 +79,16 @@ class FirebaseAuthentication {
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     val userData: UserData? = documentSnapshot.toObject(UserData::class.java)
-                    MyInfoUtil.getInstance().putUserName(context, userData.userName)
-                    MyInfoUtil.getInstance().putProfileImageUrl(context, userData.profileImageUrl)
-                    onCompleteListener?.onComplete(true, response)
+//                    MyInfoUtil.getInstance().putUserName(context, userData.userName)
+//                    MyInfoUtil.getInstance().putProfileImageUrl(context, userData.profileImageUrl)
+//                    onCompleteListener?.onComplete(true, response)
                 } else {
-                    onCompleteListener?.onComplete(false, response)
+//                    onCompleteListener?.onComplete(false, response)
                 }
             }
-            .addOnFailureListener { onCompleteListener?.onComplete(false, response) }
+            .addOnFailureListener {
+//                onCompleteListener?.onComplete(false, response)
+            }
     }
 
     fun getCurrentUser(): FirebaseUser? {
@@ -99,6 +116,6 @@ class FirebaseAuthentication {
     }
 
     fun signOut() {
-        FirebaseAuth.getInstance().signOut()
+        auth.signOut()
     }
 }

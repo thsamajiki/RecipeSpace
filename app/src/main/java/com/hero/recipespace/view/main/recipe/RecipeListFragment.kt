@@ -86,7 +86,7 @@ class RecipeListFragment : Fragment() {
             viewLifecycleOwner) {
             _: String, result: Bundle ->
             // 데이터를 수신하자.
-            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
+            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.RECIPE_KEY)
 
             if (recipe != null) {
                 recipeListAdapter.replaceItem(recipe)
