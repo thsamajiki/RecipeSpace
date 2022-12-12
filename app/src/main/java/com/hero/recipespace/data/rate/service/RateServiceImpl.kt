@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.rate.service
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.rate.RateData
@@ -10,7 +11,10 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class RateServiceImpl @Inject constructor() : RateService {
+class RateServiceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
+) : RateService {
     override fun getData(rateKey: String): RateData {
         TODO("Not yet implemented")
     }

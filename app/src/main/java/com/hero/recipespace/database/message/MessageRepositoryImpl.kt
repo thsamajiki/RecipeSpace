@@ -5,7 +5,6 @@ import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.domain.message.entity.MessageEntity
-import com.hero.recipespace.domain.message.mapper.toData
 import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
 import com.hero.recipespace.listener.OnMessageListener
@@ -54,26 +53,27 @@ class MessageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addMessage(
+        chatKey: String,
         message: String
     ) {
-        val result = messageRemoteDataSource.add(message)
+        val result = messageRemoteDataSource.add(chatKey, message)
         messageLocalDataSource.add(result)
     }
 
     override suspend fun modifyMessage(
+        chatKey: String,
         message: String
     ) {
-        messageRemoteDataSource.update(messageEntity.toData())
-        messageLocalDataSource.update(messageEntity.toData())
-        cancel()
+        val result = messageRemoteDataSource.update(chatKey, message)
+        messageLocalDataSource.update(result)
     }
 
     override suspend fun deleteMessage(
+        chatKey: String,
         message: String
     ) {
-        messageRemoteDataSource.remove(messageEntity.toData())
-        messageLocalDataSource.remove(messageEntity.toData())
-        cancel()
+        val result = messageRemoteDataSource.remove(chatKey, message)
+        messageLocalDataSource.remove(result)
     }
 
     private fun getEntities(data: List<MessageData>): List<MessageEntity> {

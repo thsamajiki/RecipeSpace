@@ -12,27 +12,30 @@ class MessageRemoteDataSourceImpl @Inject constructor(
         return messageService.getData(messageKey)
     }
 
-    override fun getDataList(
+    override suspend fun getDataList(
         chatKey: String
     ): List<MessageData> {
         return messageService.getDataList(chatKey)
     }
 
     override suspend fun add(
+        chatKey: String,
         message: String
-    ) {
-        messageService.add(messageData)
+    ) : MessageData {
+        return messageService.add(chatKey, message)
     }
 
     override suspend fun update(
+        chatKey: String,
         messageData: MessageData
-    ) {
-        messageService.update(messageData)
+    ) : MessageData {
+        return messageService.update(chatKey, messageData)
     }
 
     override suspend fun remove(
+        chatKey: String,
         messageData: MessageData
-    ) {
-        messageService.remove(messageData)
+    ) : MessageData {
+        return messageService.remove(chatKey, messageData)
     }
 }

@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.user.service
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.listener.Response
@@ -8,7 +9,10 @@ import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 import kotlin.coroutines.suspendCoroutine
 
-class UserServiceImpl @Inject constructor() : UserService {
+class UserServiceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
+) : UserService {
     override fun getData(userKey: String): UserData {
         TODO("Not yet implemented")
     }
@@ -23,10 +27,7 @@ class UserServiceImpl @Inject constructor() : UserService {
 
     override suspend fun add(userData: UserData) {
         suspendCoroutine<UserData> {
-            val response: Response<Void> = Response()
-            response.setType(Type.FIRE_STORE)
-            val firestore = FirebaseFirestore.getInstance()
-            firestore.collection("User")
+            firebaseFirestore.collection("User")
                 .document(userData.userKey)
                 .set(userData)
                 .addOnSuccessListener {
@@ -39,10 +40,7 @@ class UserServiceImpl @Inject constructor() : UserService {
 
     override suspend fun update(userData: UserData) {
         suspendCoroutine<UserData> {
-            val response: Response<Void> = Response()
-            response.setType(Type.FIRE_STORE)
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("User")
+            firebaseFirestore.collection("User")
                 .document(userKey)
                 .update(editData)
                 .addOnSuccessListener { it. }
@@ -52,10 +50,7 @@ class UserServiceImpl @Inject constructor() : UserService {
 
     override suspend fun remove(userData: UserData) {
         suspendCoroutine<UserData> {
-            val response: Response<Void> = Response()
-            response.setType(Type.FIRE_STORE)
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("User")
+            firebaseFirestore.collection("User")
                 .document(userData.userKey!!)
                 .delete()
                 .addOnSuccessListener { onCompleteListener.onComplete(true, response) }

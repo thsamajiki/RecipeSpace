@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.recipe.service
 
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.recipe.RecipeData
@@ -12,7 +13,10 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class RecipeServiceImpl @Inject constructor(): RecipeService {
+class RecipeServiceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
+): RecipeService {
     override suspend fun getRecipe(recipeKey: String): RecipeData {
         return suspendCoroutine { continuation ->
             val fireStore = FirebaseFirestore.getInstance()

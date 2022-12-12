@@ -25,16 +25,14 @@ class ChatServiceImpl @Inject constructor(
     }
 
     override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String) : ChatData {
-
         return suspendCoroutine { continuation ->
-            val myKey: String = firebaseAuth.uid.orEmpty()
+            val myUserKey: String = firebaseAuth.uid.orEmpty()
             val userList: MutableList<String> = ArrayList()
-            userList.add(myKey)
+            userList.add(myUserKey)
             userList.add(otherUserKey)
-            val fireStore = firebaseFirestore
-            fireStore.collection("Chat")
+            firebaseFirestore.collection("Chat")
                 .whereEqualTo("userList.$otherUserKey", true)
-                .whereEqualTo("userList.$myKey", true)
+                .whereEqualTo("userList.$myUserKey", true)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents
@@ -68,15 +66,12 @@ class ChatServiceImpl @Inject constructor(
     }
 
     override suspend fun add(chatData: ChatData) {
-        suspendCoroutine<ChatData> {
-            val fireStore = FirebaseFirestore.getInstance()
-            val response: Response<ChatData> = Response()
-            response.setType(Type.FIRE_STORE)
-            fireStore.runTransaction(Transaction.Function<Any> { transaction ->
-                val myUserKey: String = MyInfoUtil.getInstance().getKey()
-                val myProfileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(context)
-                val myUserName: String = MyInfoUtil.getInstance().getUserName(context)
-                val userRef = fireStore.collection("User").document(
+        suspendCoroutine<ChatData> { continuation ->
+            firebaseFirestore.runTransaction(Transaction.Function<Any> { transaction ->
+                val myUserKey: String = firebaseAuth.uid.orEmpty()
+                val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl.toString().orEmpty()
+                val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
+                val userRef = firebaseFirestore.collection("User").document(
                     otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
@@ -86,7 +81,7 @@ class ChatServiceImpl @Inject constructor(
                 userProfiles[userData.userKey] = userData.profileImageUrl
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
-                userNames[userData.getUserKey()] = userData.userName
+                userNames[userData.userKey] = userData.userName
                 val userList = HashMap<String, Boolean>()
                 userList[myUserKey] = true
                 userList[userData.userKey] = true
@@ -106,8 +101,7 @@ class ChatServiceImpl @Inject constructor(
                 transaction[messageRef] = lastMessage
                 chatData
             }).addOnSuccessListener { chatData ->
-                response.setData(chatData)
-                it.resume(chatData)
+                continuation.resume(requireNotNull(chatData))
             }.addOnFailureListener { it.printStackTrace() }
         }
     }
