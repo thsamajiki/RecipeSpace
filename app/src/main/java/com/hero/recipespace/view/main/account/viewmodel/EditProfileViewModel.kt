@@ -21,6 +21,8 @@ class EditProfileViewModel @Inject constructor(
     val user: LiveData<UserEntity>
         get() = _user
 
+    val newUserName: MutableLiveData<String> = MutableLiveData()
+    val newProfileImageUrl: MutableLiveData<String> = MutableLiveData()
 //    val user: LiveData<UserEntity> = getUserUseCase().asLiveData()
 
     suspend fun requestUpdateProfile(userEntity: UserEntity) {

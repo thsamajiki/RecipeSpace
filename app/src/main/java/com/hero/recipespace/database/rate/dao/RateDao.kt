@@ -13,14 +13,14 @@ interface RateDao {
     suspend fun getRateFromKey(key: String?): RateData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRate(rateData: RateData)
+    suspend fun insertRate(rateData: RateData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(rateDataList: List<RateData>)
 
     @Update
-    fun updateRate(rateData: RateData)
+    suspend fun updateRate(rateData: RateData)
 
     @Delete
-    fun deleteRate(rateData: RateData)
+    suspend fun deleteRate(rateData: RateData)
 }

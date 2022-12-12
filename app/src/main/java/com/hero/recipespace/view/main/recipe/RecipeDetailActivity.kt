@@ -23,8 +23,8 @@ import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
-import com.hero.recipespace.view.post.PostActivity
-import com.hero.recipespace.view.post.PostActivity.Companion.EXTRA_RECIPE_ENTITY
+import com.hero.recipespace.view.post.PostRecipeActivity
+import com.hero.recipespace.view.post.PostRecipeActivity.Companion.EXTRA_RECIPE_ENTITY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,7 +38,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val updateResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostActivity.EXTRA_RECIPE_ENTITY)
+                val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
                 if (recipe != null) {
                     recipeDetailAdapter.add(recipe.photoUrlList.orEmpty())
                     binding.rvRecipeImages.smoothScrollToPosition(0)

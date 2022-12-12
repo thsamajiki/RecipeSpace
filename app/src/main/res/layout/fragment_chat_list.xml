@@ -23,6 +23,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:chatListItems="@{viewModel.chatList}"
             tools:listitem="@layout/item_chat_list" />
 
     </FrameLayout>

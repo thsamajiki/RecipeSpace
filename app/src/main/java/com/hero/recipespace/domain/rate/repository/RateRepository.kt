@@ -8,9 +8,9 @@ interface RateRepository {
 
     fun observeRateList() : Flow<List<RateEntity>>
 
-    suspend fun addRate(rateEntity: RateEntity)
+    suspend fun addRate(recipeKey: String)
 
-    suspend fun modifyRate(rateEntity: RateEntity)
+    suspend fun modifyRate(rateKey: String)
 
-    suspend fun deleteRate(rateEntity: RateEntity)
+    suspend fun deleteRate(rateKey: String)
 }

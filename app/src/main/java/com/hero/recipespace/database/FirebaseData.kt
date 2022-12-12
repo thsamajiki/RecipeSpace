@@ -118,7 +118,7 @@ class FirebaseData {
     fun uploadRating(
         recipeData: RecipeData,
         rateData: RateData,
-        onCompleteListener: OnCompleteListener<RecipeData>,
+        onCompleteListener: OnCompleteListener<RecipeData>
     ) {
         val firestore = FirebaseFirestore.getInstance()
         val response: Response<RecipeData> = Response()

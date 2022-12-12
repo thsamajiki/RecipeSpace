@@ -49,35 +49,29 @@ class UserRepositoryImpl @Inject constructor(
         email: String,
         pwd: String
     ) {
-        val userData: UserData()
-        userData.userName = userName
-        userRemoteDataSource.add(userName, email)
+        val userData = UserData(
+            userKey = ,
+            userName = userName,
+            email = email,
+            profileImageUrl = ""
+        )
 
-        CoroutineScope(Dispatchers.IO).launch {
-            userRemoteDataSource.add(recipeEntity.toData())
-            userLocalDataSource.add(recipeEntity.toData())
-            cancel()
-        }
+        val result = userRemoteDataSource.add(userData)
+        userLocalDataSource.add(result)
     }
 
     override suspend fun updateUser(
         userEntity: UserEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userRemoteDataSource.update(userEntity.toData())
-            userLocalDataSource.update(userEntity.toData())
-            cancel()
-        }
+        val result = userRemoteDataSource.update(userEntity.toData())
+        userLocalDataSource.update(result)
     }
 
     override suspend fun deleteUser(
         userEntity: UserEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            userRemoteDataSource.remove(userEntity.toData())
-            userLocalDataSource.remove(userEntity.toData())
-            cancel()
-        }
+        val result = userRemoteDataSource.remove(userEntity.toData())
+        userLocalDataSource.remove(result)
     }
 
     override suspend fun signOut() {

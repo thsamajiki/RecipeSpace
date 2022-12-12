@@ -9,7 +9,7 @@ interface MessageService {
 
     suspend fun add(chatKey: String, message: String) : MessageData
 
-    suspend fun update(chatKey: String, messageData: MessageData) : MessageData
+    suspend fun update(chatKey: String, message: String) : MessageData
 
-    suspend fun remove(chatKey: String, messageData: MessageData) : MessageData
+    suspend fun remove(chatKey: String, message: String) : MessageData
 }

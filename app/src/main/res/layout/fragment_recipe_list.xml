@@ -23,6 +23,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:recipeItems="@{viewModel.recipeList}"
             tools:listitem="@layout/item_recipe_list" />
 
         <com.skydoves.elasticviews.ElasticFloatingActionButton

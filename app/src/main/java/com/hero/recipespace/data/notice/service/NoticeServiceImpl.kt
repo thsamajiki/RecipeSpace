@@ -16,8 +16,7 @@ class NoticeServiceImpl @Inject constructor(
 ) : NoticeService {
     override suspend fun getData(noticeKey: String): NoticeData {
         return suspendCoroutine { continuation ->
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("Notice")
+            firebaseFirestore.collection("Notice")
                 .document(noticeKey)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->

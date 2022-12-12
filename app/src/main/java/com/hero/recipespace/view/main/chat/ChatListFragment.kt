@@ -102,6 +102,7 @@ class ChatListFragment: Fragment() {
         }
     }
 
+    // TODO: 2022-12-13 3번째 인자 넣어주기
     private fun showChatRoom(chat: ChatEntity) {
         val intent = ChatActivity.getIntent(requireActivity(), chat.key.orEmpty())
         startActivity(intent)

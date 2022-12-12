@@ -100,7 +100,13 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     private fun uploadUserData() {
         val userName: String = binding.editUsername.text.toString()
         val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
-        val userData = UserData().copy(userKey = firebaseUser?.uid, userName = userName)
+        val userData = UserData(
+            userKey = firebaseUser?.uid,
+            userName = userName,
+            email = firebaseUser?.uid,
+            profileImageUrl = firebaseUser?.photoUrl.toString()
+        )
+
         firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void> {
             override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                 if (isSuccess) {

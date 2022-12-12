@@ -15,16 +15,15 @@ class RateRemoteDataSourceImpl @Inject constructor(
         return rateService.getDataList()
     }
 
-
-    override suspend fun add(rateData: RateData) {
-        rateService.add(rateData)
+    override suspend fun add(recipeKey: String) : RateData {
+        return rateService.add(recipeKey)
     }
 
-    override suspend fun update(rateData: RateData) {
-        rateService.update(rateData)
+    override suspend fun update(rateKey: String) : RateData  {
+        return rateService.update(rateKey)
     }
 
-    override suspend fun remove(rateData: RateData) {
-        rateService.remove(rateData)
+    override suspend fun remove(rateKey: String) : RateData {
+        return rateService.remove(rateKey)
     }
 }

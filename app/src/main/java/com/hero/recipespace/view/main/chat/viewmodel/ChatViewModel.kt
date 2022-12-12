@@ -53,6 +53,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    val message: MutableLiveData<String> = MutableLiveData()
     private val _messageList = MutableLiveData<List<MessageEntity>>()
     val messageList: LiveData<List<MessageEntity>>
         get() = _messageList
@@ -63,7 +64,7 @@ class ChatViewModel @Inject constructor(
 
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            addMessageUseCase.invoke(message)
+            addMessageUseCase.invoke(chatKey, message)
         }
     }
 }

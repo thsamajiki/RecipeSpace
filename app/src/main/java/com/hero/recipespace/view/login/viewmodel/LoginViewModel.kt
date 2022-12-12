@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
@@ -20,6 +21,9 @@ class LoginViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase
 ) : AndroidViewModel(application) {
 
+    val email: MutableLiveData<String> = MutableLiveData()
+    val pwd: MutableLiveData<String> = MutableLiveData()
+
     fun requestLogin() {
         viewModelScope.launch {
             getMyAccount()
@@ -35,8 +39,6 @@ class LoginViewModel @Inject constructor(
             }
 
     fun login2(context: Context, email: String, pwd: String?) {
-        val response: Response<Void> = Response()
-        response.setType(Type.AUTH)
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pwd!!)
             .addOnSuccessListener {
                 MyInfoUtil.getInstance().putEmail(context, email)

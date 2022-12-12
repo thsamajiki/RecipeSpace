@@ -57,7 +57,7 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="@string/tv_finish"
-                    android:textColor="@color/selector_complete_btn"
+                    android:textColor="@selector/selector_complete_btn"
                     android:textSize="@dimen/title_text_size" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -75,7 +75,7 @@
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                tools:src="@drawable/ic_user" />
+                app:imageURI="@={viewModel.newProfileImageUrl}" />
 
             <com.skydoves.elasticviews.ElasticFloatingActionButton
                 android:id="@+id/fab_profile_edit"
@@ -96,13 +96,14 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="30dp"
-            android:hint="닉네임">
+            android:hint="@string/please_input_new_user_name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="text"
+                android:text="@={viewModel.newUserName}"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>

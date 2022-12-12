@@ -58,11 +58,11 @@ class MessageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(chatKey: String, messageData: MessageData) : MessageData {
+    override suspend fun update(chatKey: String, message: String) : MessageData {
         TODO("Not yet implemented")
     }
 
-    override suspend fun remove(chatKey: String, messageData: MessageData) : MessageData {
+    override suspend fun remove(chatKey: String, message: String) : MessageData {
         TODO("Not yet implemented")
     }
 }

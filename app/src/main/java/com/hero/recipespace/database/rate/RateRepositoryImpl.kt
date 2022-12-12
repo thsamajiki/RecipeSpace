@@ -4,7 +4,6 @@ import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.local.RateLocalDataSource
 import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
 import com.hero.recipespace.domain.rate.entity.RateEntity
-import com.hero.recipespace.domain.rate.mapper.toData
 import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
 import kotlinx.coroutines.CoroutineScope
@@ -39,30 +38,19 @@ class RateRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun addRate(
-        rateEntity: RateEntity
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            rateRemoteDataSource.add(rateEntity.toData())
-            rateLocalDataSource.add(rateEntity.toData())
-            cancel()
-        }
+    override suspend fun addRate(recipeKey: String) {
+        val result = rateRemoteDataSource.add(recipeKey)
+        rateLocalDataSource.add(result)
     }
 
-    override suspend fun modifyRate(rateEntity: RateEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-            rateRemoteDataSource.update(rateEntity.toData())
-            rateLocalDataSource.update(rateEntity.toData())
-            cancel()
-        }
+    override suspend fun modifyRate(rateKey: String) {
+        val result = rateRemoteDataSource.update(rateKey)
+        rateLocalDataSource.update(result)
     }
 
-    override suspend fun deleteRate(rateEntity: RateEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-            rateRemoteDataSource.remove(rateEntity.toData())
-            rateLocalDataSource.remove(rateEntity.toData())
-            cancel()
-        }
+    override suspend fun deleteRate(rateKey: String) {
+        val result = rateRemoteDataSource.remove(rateKey)
+        rateLocalDataSource.remove(result)
     }
 
     private fun getEntities(data: List<RateData>): List<RateEntity> {

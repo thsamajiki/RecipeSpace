@@ -23,12 +23,11 @@ class UserRemoteDataSourceImpl(
         }
 
         val userEntity = UserData(
-            firebaseUser.displayName,
-            firebaseUser.email,
-            profileImageUrl
+            userKey = firebaseUser.uid,
+            userName = firebaseUser.displayName,
+            email = firebaseUser.email,
+            profileImageUrl = profileImageUrl
         )
-
-        userEntity.copy(firebaseUser.uid, firebaseUser.displayName, firebaseUser.photoUrl.toString())
 
         return userEntity
     }
@@ -41,20 +40,20 @@ class UserRemoteDataSourceImpl(
         return userService.getDataList()
     }
 
-    override suspend fun add(userData: UserData) {
-        userService.add(userData)
+    override suspend fun add(userData: UserData)  : UserData {
+        return userService.add(userData)
     }
 
     override suspend fun update(
         userData: UserData
-    ) {
-        userService.update(userData)
+    ) : UserData {
+        return userService.update(userData)
     }
 
     override suspend fun remove(
         userData: UserData
-    ) {
-        userService.remove(userData)
+    ) : UserData {
+        return userService.remove(userData)
     }
 
     override suspend fun signOut() {

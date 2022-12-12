@@ -7,9 +7,9 @@ interface RateRemoteDataSource {
 
     suspend fun getDataList() : List<RateData>
 
-    suspend fun add(rateData: RateData)
+    suspend fun add(recipeKey: String) : RateData
 
-    suspend fun update(rateData: RateData)
+    suspend fun update(rateKey: String) : RateData
 
-    suspend fun remove(rateData: RateData)
+    suspend fun remove(rateKey: String) : RateData
 }

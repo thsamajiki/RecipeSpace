@@ -19,8 +19,7 @@ class RecipeServiceImpl @Inject constructor(
 ): RecipeService {
     override suspend fun getRecipe(recipeKey: String): RecipeData {
         return suspendCoroutine { continuation ->
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("RecipeData")
+            firebaseFirestore.collection("RecipeData")
                 .document(recipeKey)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
@@ -45,8 +44,7 @@ class RecipeServiceImpl @Inject constructor(
 
     override suspend fun getRecipeList(): List<RecipeData> {
         return suspendCoroutine { continuation ->
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("RecipeData")
+            firebaseFirestore.collection("RecipeData")
                 .orderBy("postDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
@@ -67,9 +65,8 @@ class RecipeServiceImpl @Inject constructor(
     }
 
     override suspend fun add(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> {
-            val fireStore = FirebaseFirestore.getInstance()
-            val documentReference = fireStore.collection("RecipeData").document()
+        suspendCoroutine<RecipeData> { continuation ->
+            val documentReference = firebaseFirestore.collection("RecipeData").document()
             val key = documentReference.id
             recipeData.key = key
 
@@ -80,12 +77,9 @@ class RecipeServiceImpl @Inject constructor(
     }
 
     override suspend fun update(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> {
-            val response: Response<Void> = Response()
-            response.setType(Type.FIRE_STORE)
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("RecipeData")
-                .document(recipeData.key!!)
+        suspendCoroutine<RecipeData> { continuation ->
+            firebaseFirestore.collection("RecipeData")
+                .document(recipeData.key.orEmpty())
                 .update(editData)
                 .addOnSuccessListener { continuation.resume(recipeData) }
                 .addOnFailureListener { continuation.resumeWithException(it) }
@@ -93,12 +87,9 @@ class RecipeServiceImpl @Inject constructor(
     }
 
     override suspend fun remove(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> {
-            val response: Response<Void> = Response()
-            response.setType(Type.FIRE_STORE)
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("RecipeData")
-                .document(recipeData.key!!)
+        suspendCoroutine<RecipeData> { continuation ->
+            firebaseFirestore.collection("RecipeData")
+                .document(recipeData.key.orEmpty())
                 .delete()
                 .addOnSuccessListener { continuation.resume(recipeData) }
                 .addOnFailureListener { continuation.resumeWithException(it) }

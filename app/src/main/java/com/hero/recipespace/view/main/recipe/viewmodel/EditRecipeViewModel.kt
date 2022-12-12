@@ -23,6 +23,8 @@ class EditRecipeViewModel @Inject constructor(
 
     val recipeKey: String = savedStateHandle.get<String>(RecipeDetailViewModel.RECIPE_KEY)!!
 
+    val newRecipeContent: MutableLiveData<String> = MutableLiveData()
+
     suspend fun requestUpdateRecipe(recipeEntity: RecipeEntity) {
         updateRecipeUseCase.invoke(recipeEntity)
     }

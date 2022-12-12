@@ -23,7 +23,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
-import com.hero.recipespace.databinding.ActivityPostBinding
+import com.hero.recipespace.databinding.ActivityPostRecipeBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.ext.hideLoading
@@ -34,22 +34,23 @@ import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.RealPathUtil
-import com.hero.recipespace.view.post.viewmodel.PostViewModel
+import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PostActivity : AppCompatActivity(),
+class PostRecipeActivity : AppCompatActivity(),
     View.OnClickListener,
     TextWatcher,
     OnFileUploadListener {
 
-    private lateinit var binding: ActivityPostBinding
+    private lateinit var binding: ActivityPostRecipeBinding
     private var photoPath: String? = null
 
     private lateinit var postAdapter: PostAdapter
 
-    private val viewModel by viewModels<PostViewModel>()
+    private val viewModel by viewModels<PostRecipeViewModel>()
 
+    // TODO: 2022-12-13 rv_recipe_images 리사이클러뷰에 갤러리에서 선택한 이미지들을 넣어주기
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
@@ -73,12 +74,12 @@ class PostActivity : AppCompatActivity(),
         const val PERMISSION_REQ_CODE = 1010
 
         fun getIntent(context: Context) =
-            Intent(context, PostActivity::class.java)
+            Intent(context, PostRecipeActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPostBinding.inflate(layoutInflater)
+        binding = ActivityPostRecipeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupViewModel()
@@ -166,8 +167,20 @@ class PostActivity : AppCompatActivity(),
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
             val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+            val userKey: String? = FirebaseAuth.getInstance().currentUser?.uid
             val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-            val recipe = RecipeEntity().copy()
+            val recipe = RecipeEntity(
+                key = ,
+                profileImageUrl = profileImageUrl,
+                userName = userName,
+                userKey = userKey,
+                desc = binding.editContent.text.toString(),
+                photoUrlList = ,
+                postDate = Timestamp.now(),
+                rate = ,
+                totalRatingCount =
+
+            )
             recipe.photoUrl = downloadUrl
             recipe.desc = binding.editContent.text.toString()
             recipe.postDate = Timestamp.now()

@@ -29,7 +29,6 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
-import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
 import com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel
@@ -41,7 +40,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
 
     private lateinit var binding: ActivityEditProfileBinding
     private var photoPath: String? = null
-    private var profileUrl: String? = null
+    private var profileImageUrl: String? = null
     private var userName: String? = null
 
     private val viewModel by viewModels<EditProfileViewModel>()
@@ -106,24 +105,24 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun setUserData() {
-        profileUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-        if (TextUtils.isEmpty(profileUrl)) {
+        profileImageUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
+        if (TextUtils.isEmpty(profileImageUrl)) {
             Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
         } else {
-            Glide.with(this).load(profileUrl).into(binding.ivUserProfile)
+            Glide.with(this).load(profileImageUrl).into(binding.ivUserProfile)
         }
         userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         binding.editUserName.setText(userName)
     }
 
     private fun isNewProfile(): Boolean {
-        return if (TextUtils.isEmpty(profileUrl)) {
+        return if (TextUtils.isEmpty(profileImageUrl)) {
             !TextUtils.isEmpty(photoPath)
         } else {
             if (TextUtils.isEmpty(photoPath)) {
                 false
             } else {
-                profileUrl != photoPath
+                profileImageUrl != photoPath
             }
         }
     }
@@ -174,7 +173,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
         val newUserName = binding.editUserName.text.toString()
         editData[MyInfoUtil.EXTRA_USERNAME] = newUserName
-        val userKey: String ?= FirebaseAuth.getInstance().uid
+        val userKey: String? = FirebaseAuth.getInstance().uid
         FirebaseData.getInstance()
             .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {
                 override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
@@ -205,7 +204,6 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
 
     override suspend fun onFileUploadProgress(percent: Float) {
         setProgressPercent(percent.toInt())
-
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

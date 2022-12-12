@@ -35,25 +35,25 @@ object ServiceModule {
 
     @Provides
     @Singleton
-    fun provideChatService(chatServiceImpl: ChatServiceImpl) = ChatService()
+    fun provideChatService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = ChatService(firebaseAuth, firebaseFirestore)
 
     @Provides
     @Singleton
-    fun provideMessageService(messageServiceImpl: MessageServiceImpl) = MessageService()
+    fun provideMessageService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = MessageService(firebaseAuth, firebaseFirestore)
 
     @Provides
     @Singleton
-    fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl) = NoticeService(chatRepository)
+    fun provideNoticeService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = NoticeService(firebaseAuth, firebaseFirestore)
 
     @Provides
     @Singleton
-    fun provideRateService(chatRepository: ChatRepository) = RateService(chatRepository)
+    fun provideRateService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = RateService(firebaseAuth, firebaseFirestore)
 
     @Provides
     @Singleton
-    fun provideRecipeService(chatRepository: ChatRepository) = RecipeService(chatRepository)
+    fun provideRecipeService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = RecipeService(firebaseAuth, firebaseFirestore)
 
     @Provides
     @Singleton
-    fun provideUserService(chatRepository: ChatRepository) = UserService(chatRepository)
+    fun provideUserService(firebaseAuth: FirebaseAuth, firebaseFirestore: FirebaseFirestore) = UserService(firebaseAuth, firebaseFirestore)
 }

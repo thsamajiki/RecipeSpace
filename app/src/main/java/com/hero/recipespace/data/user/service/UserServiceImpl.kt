@@ -7,6 +7,8 @@ import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class UserServiceImpl @Inject constructor(
@@ -25,41 +27,40 @@ class UserServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(userData: UserData) {
-        suspendCoroutine<UserData> {
+    override suspend fun add(userData: UserData) : UserData {
+        return suspendCoroutine<UserData> { continuation ->
             firebaseFirestore.collection("User")
-                .document(userData.userKey)
+                .document(userData.userKey.orEmpty())
                 .set(userData)
                 .addOnSuccessListener {
                     MyInfoUtil.getInstance().putUserName(context, userData.userName)
-                    onCompleteListener.onComplete(true, response)
+                    continuation.resume(userData)
                 }
-                .addOnFailureListener { onCompleteListener.onComplete(false, response) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
-    override suspend fun update(userData: UserData) {
-        suspendCoroutine<UserData> {
+    override suspend fun update(userData: UserData) : UserData {
+        return suspendCoroutine<UserData> { continuation ->
             firebaseFirestore.collection("User")
-                .document(userKey)
+                .document(userData.userKey.orEmpty())
                 .update(editData)
-                .addOnSuccessListener { it. }
-                .addOnFailureListener { onCompleteListener.onComplete(false, response) }
+                .addOnSuccessListener { continuation.resume(userData) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
-    override suspend fun remove(userData: UserData) {
-        suspendCoroutine<UserData> {
+    override suspend fun remove(userData: UserData) : UserData {
+        return suspendCoroutine<UserData> { continuation ->
             firebaseFirestore.collection("User")
-                .document(userData.userKey!!)
+                .document(userData.userKey.orEmpty())
                 .delete()
-                .addOnSuccessListener { onCompleteListener.onComplete(true, response) }
-                .addOnFailureListener { onCompleteListener.onComplete(false, response) }
+                .addOnSuccessListener { continuation.resume(userData) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
     override suspend fun signOut() {
-        TODO("Not yet implemented")
+        firebaseAuth.signOut()
     }
-
 }

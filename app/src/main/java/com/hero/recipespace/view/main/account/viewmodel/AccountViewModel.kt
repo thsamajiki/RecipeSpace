@@ -21,6 +21,8 @@ class AccountViewModel @Inject constructor(
     val user: LiveData<UserEntity>
         get() = _user
 
+    val profileImageUrl: MutableLiveData<String> = MutableLiveData()
+    val userName: MutableLiveData<String> = MutableLiveData()
 //    val user: LiveData<UserEntity> = getUserUseCase().asLiveData()
 
     fun getUser() {

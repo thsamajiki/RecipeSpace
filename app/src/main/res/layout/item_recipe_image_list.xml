@@ -9,7 +9,7 @@
 
         <variable
             name="recipe"
-            type="com.hero.recipespace.data.recipe.RecipeData" />
+            type="com.hero.recipespace.domain.recipe.entity.RecipeEntity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -23,6 +23,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
+import com.hero.recipespace.ext.hideLoading
+import com.hero.recipespace.ext.setProgressPercent
+import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
@@ -148,8 +151,19 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         if (isSuccess) {
             Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
             val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+            val userKey: String? = FirebaseAuth.getInstance().currentUser?.uid
             val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-            val recipeData = RecipeData()
+            val recipeData = RecipeData(
+                key = ,
+                profileImageUrl = profileImageUrl,
+                userName = userName,
+                userKey = userKey,
+                desc = binding.editContent.text.toString(),
+                photoUrlList = ,
+                postDate = Timestamp.now(),
+                rate = ,
+                totalRatingCount =
+            )
             recipeData.photoUrl = downloadUrl
             recipeData.desc = binding.editContent.text.toString()
             recipeData.postDate = Timestamp.now()
@@ -162,11 +176,11 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     }
 
     override suspend fun onFileUploadProgress(percent: Float) {
-        LoadingProgress.setProgress(percent.toInt())
+        setProgressPercent(percent.toInt())
     }
 
     override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-        LoadingProgress.dismissProgressDialog()
+        hideLoading()
         if (isSuccess) {
             val intent = Intent()
             intent.putExtra(EXTRA_RECIPE_DATA, response?.getData())

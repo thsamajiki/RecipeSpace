@@ -13,14 +13,14 @@ interface MessageDao {
     suspend fun getMessageFromKey(key: String?): MessageData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMessage(messageData: MessageData)
+    suspend fun insertMessage(messageData: MessageData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(messageDataList: List<MessageData>)
 
     @Update
-    fun updateMessage(messageData: MessageData)
+    suspend fun updateMessage(messageData: MessageData)
 
     @Delete
-    fun deleteMessage(messageData: MessageData)
+    suspend fun deleteMessage(messageData: MessageData)
 }

@@ -1,112 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.main.recipe.EditRecipeActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.Toolbar
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="com.hero.recipespace.view.main.recipe.viewmodel.EditRecipeViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:contentInsetStart="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.main.recipe.EditRecipeActivity">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_update_recipe"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_complete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="@string/btn_finish"
+                    android:textColor="@selector/selector_complete_btn"
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="250dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recipe_images"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_recipe_image_list" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_back"
-                android:layout_width="?attr/actionBarSize"
+                android:id="@+id/iv_recipe_photo"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="14dp"
-                android:src="@drawable/ic_arrow"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:scaleType="centerCrop" />
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/btn_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_update_recipe"
-                android:textColor="@color/black"
-                android:textSize="@dimen/title_text_size"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tv_complete"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
-                android:text="@string/btn_finish"
-                android:textColor="@color/selector_complete_btn"
-                android:textSize="@dimen/title_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/ic_camera"
+                    app:tint="@color/dark_gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/touch_here_and_add_pictures"
+                    android:textColor="@color/dark_gray" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.appcompat.widget.Toolbar>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="250dp">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_recipe_photo"
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edit_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="top|start"
+            android:hint="@string/please_input_recipe_desc"
+            android:padding="20dp"
+            android:text="@={viewModel.newRecipeContent}"
+            android:textSize="@dimen/body_text_size" />
 
-        <LinearLayout
-            android:id="@+id/btn_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_camera"
-                app:tint="@color/dark_gray" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="@string/touch_here_and_add_pictures"
-                android:textColor="@color/dark_gray" />
-
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/light_gray" />
-
-    <EditText
-        android:id="@+id/edit_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:background="@null"
-        android:gravity="top|start"
-        android:hint="@string/please_input_recipe_desc"
-        android:padding="20dp"
-        android:textSize="@dimen/body_text_size" />
-
-</LinearLayout>
+    </LinearLayout>
+</layout>

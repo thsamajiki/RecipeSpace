@@ -30,7 +30,7 @@
                 android:id="@+id/tv_date_notice_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2022.01.11"
+                android:text="@{notice.noticeDate}"
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/small_text_size"
                 app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="첫번째 공지사항입니다."
+                android:text="@{notice.noticeTitle}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/body_text_size"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
                     android:id="@+id/tv_content_notice_item"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/first_notice_desc"
+                    android:text="@{notice.noticeDesc}"
                     android:textColor="@color/dark_gray"
                     android:textSize="@dimen/body_text_size" />
 

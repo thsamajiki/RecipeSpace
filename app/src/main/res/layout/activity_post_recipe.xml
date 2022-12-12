@@ -9,14 +9,14 @@
 
         <variable
             name="viewModel"
-            type="com.hero.recipespace.view.post.viewmodel.PostViewModel" />
+            type="com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".view.post.PostActivity">
+        tools:context=".view.post.PostRecipeActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -132,7 +132,7 @@
             android:gravity="top|start"
             android:hint="@string/please_input_recipe_desc"
             android:padding="20dp"
-            android:text=""
+            android:text="@={viewModel.recipeContent}"
             android:textSize="@dimen/body_text_size" />
 
     </LinearLayout>

@@ -65,14 +65,14 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(chatData: ChatData) {
-        suspendCoroutine<ChatData> { continuation ->
+    override suspend fun add(chatData: ChatData) : ChatData {
+        return suspendCoroutine<ChatData> { continuation ->
             firebaseFirestore.runTransaction(Transaction.Function<Any> { transaction ->
                 val myUserKey: String = firebaseAuth.uid.orEmpty()
                 val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl.toString().orEmpty()
                 val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
-                val userRef = firebaseFirestore.collection("User").document(
-                    otherUserKey)
+                val userRef = firebaseFirestore
+                    .collection("User").document(otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
                 transaction[userRef] = userData
@@ -85,24 +85,32 @@ class ChatServiceImpl @Inject constructor(
                 val userList = HashMap<String, Boolean>()
                 userList[myUserKey] = true
                 userList[userData.userKey] = true
-                val lastMessage = MessageData()
+                val lastMessage = MessageData(
+                    userKey = ,
+                    message = ,
+                    timestamp = Timestamp.now()
+                )
                 lastMessage.setMessage(message)
                 lastMessage.setUserKey(myUserKey)
                 lastMessage.setTimestamp(Timestamp.now())
-                val chatRef = fireStore.collection("Chat").document()
-                val chatData = ChatData()
-                chatData.userProfiles = userProfiles
-                chatData.userNames = userNames
-                chatData.userList = userList
-                chatData.lastMessage = lastMessage
-                chatData.key = chatRef.id
+                val chatRef = firebaseFirestore.collection("Chat").document()
+                val chatData = ChatData(userProfiles = userProfiles,
+                        userNames = userNames,
+                        userList = userList,
+                        lastMessage = lastMessage,
+                        key = chatRef.id)
+//                chatData.userProfiles = userProfiles
+//                chatData.userNames = userNames
+//                chatData.userList = userList
+//                chatData.lastMessage = lastMessage
+//                chatData.key = chatRef.id
                 transaction[chatRef] = chatData
                 val messageRef = chatRef.collection("Messages").document()
                 transaction[messageRef] = lastMessage
                 chatData
             }).addOnSuccessListener { chatData ->
-                continuation.resume(requireNotNull(chatData))
-            }.addOnFailureListener { it.printStackTrace() }
+                continuation.resume(chatData)
+            }.addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 

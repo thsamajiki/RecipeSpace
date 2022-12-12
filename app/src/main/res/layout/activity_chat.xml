@@ -26,16 +26,16 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_back"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/ic_arrow"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:src="@drawable/ic_arrow" />
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -68,11 +68,11 @@
                     android:id="@+id/mcv_send"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:cardBackgroundColor="@color/colorPrimary"
                     app:cardCornerRadius="5dp"
                     app:cardUseCompatPadding="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:rippleColor="@color/colorPrimary30">
 
                     <androidx.appcompat.widget.AppCompatImageView
@@ -84,22 +84,23 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edit_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toStartOf="@+id/mcv_send"
                     android:background="@null"
                     android:hint="@string/please_input_message"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:imeOptions="normal"
                     android:inputType="textMultiLine"
                     android:maxHeight="200dp"
                     android:minHeight="50dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:textSize="@dimen/body_text_size" />
+                    android:text="@={viewModel.message}"
+                    android:textSize="@dimen/body_text_size"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

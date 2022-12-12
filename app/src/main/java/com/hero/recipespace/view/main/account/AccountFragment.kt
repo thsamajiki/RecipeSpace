@@ -65,6 +65,17 @@ class AccountFragment: Fragment(),
         setupListeners()
     }
 
+    private fun setupUserView() {
+        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
+        if (TextUtils.isEmpty(profileImageUrl)) {
+            Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
+        } else {
+            Glide.with(requireActivity()).load(profileImageUrl).into(binding.ivUserProfile)
+        }
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+        binding.tvUserName.text = userName
+    }
+
     private fun setupViewModel() {
         with(viewModel) {
             user.observe(viewLifecycleOwner) { user ->
@@ -78,26 +89,26 @@ class AccountFragment: Fragment(),
             val user: UserEntity = viewModel.user.value!!
             intentEditProfile(user)
         }
+
+        binding.ivUserProfile.setOnClickListener {
+            val profileImageUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
+            intentPhoto(profileImageUrl)
+        }
+
         binding.btnLogout.setOnClickListener {
             showLogoutDialog()
         }
-    }
-
-    private fun setupUserView() {
-        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-        if (TextUtils.isEmpty(profileImageUrl)) {
-            Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
-        } else {
-            Glide.with(requireActivity()).load(profileImageUrl).into(binding.ivUserProfile)
-        }
-        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
-        binding.tvUserName.text = userName
     }
 
     private fun intentEditProfile(user: UserEntity) {
         val intent = EditProfileActivity.getIntent(requireActivity(), user.userKey.orEmpty())
         startActivity(intent)
         editProfileResultLauncher.launch(intent)
+    }
+
+    private fun intentPhoto(profileImageUrl: String) {
+        val intent = PhotoActivity.getIntent(requireActivity(), profileImageUrl)
+        startActivity(intent)
     }
 
     private fun showLogoutDialog() {
@@ -114,7 +125,7 @@ class AccountFragment: Fragment(),
 
     private fun signOut() {
         FirebaseAuth.getInstance().signOut()
-        val intent = Intent(requireActivity(), LoginActivity::class.java)
+        val intent = LoginActivity.getIntent(requireActivity())
         startActivity(intent)
         requireActivity().finishAffinity()
     }

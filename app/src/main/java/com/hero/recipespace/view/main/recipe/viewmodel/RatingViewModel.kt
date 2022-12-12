@@ -1,14 +1,12 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
 import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
+import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,10 +19,19 @@ class RatingViewModel @Inject constructor(
     private val updateRateUseCase: UpdateRateUseCase
 ) : AndroidViewModel(application) {
 
-    val rate: LiveData<RateEntity> = getRateUseCase().asLiveData()
+    companion object {
+        const val RECIPE_KEY = "recipeKey"
+        const val RATE_KEY = "rateKey"
+    }
+
+    private val _rate = MutableLiveData<RateEntity>()
+    val rate: LiveData<RateEntity>
+        get() = _rate
+
+    val rate2: LiveData<RateEntity> = getRateUseCase().asLiveData()
 
     suspend fun requestAddRateData(rateEntity: RateEntity) {
-        addRateUseCase.invoke(rateEntity)
+        addRateUseCase.invoke(rateEntity.key)
     }
 
     suspend fun requestUpdateRateData(rateEntity: RateEntity) {

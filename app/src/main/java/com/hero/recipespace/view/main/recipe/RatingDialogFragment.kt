@@ -95,20 +95,23 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     private fun makeRateData(rate: Float): RateEntity {
         val userKey: String = FirebaseAuth.getInstance().currentUser.uid
         val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
-        val profileUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
-        val rateData = RateEntity()
+        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
+        val rateData = RateEntity(
+            key = ,
+            userKey = userKey,
+            userName = userName,
+            profileImageUrl = profileImageUrl,
+            rate = rate,
+            date = Timestamp.now()
+        )
         rateData.date = Timestamp.now()
-        rateData.profileImageUrl = profileUrl
+        rateData.profileImageUrl = profileImageUrl
         rateData.userKey = userKey
         rateData.key = userKey
         rateData.userName = userName
         rateData.rate = rate
 
         return rateData
-    }
-
-    override fun onClick(view: View) {
-
     }
 
     object Result {
@@ -126,5 +129,8 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         private const val KEY_RECIPE = "recipe_key"
 
         const val TAG = "RatingDialog"
+    }
+
+    override fun onClick(view: View) {
     }
 }

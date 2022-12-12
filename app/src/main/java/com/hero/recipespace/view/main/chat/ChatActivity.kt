@@ -82,6 +82,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    // 채팅방에 이미 메시지가 있을 때 첫 메시지를 보낼 때 사용되는 메소드
     private fun sendMessage() {
         val message = binding.editMessage.text.toString()
         if (TextUtils.isEmpty(message)) {
@@ -94,6 +95,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
+    // 채팅방에 메시지가 없을 때 첫 메시지를 보낼 때 사용되는 메소드
     // TODO: 2022-12-12 ViewModel 과 작업하기
 //    private fun createChatRoom() {
 //        val firebaseData: FirebaseData = FirebaseData.getInstance()

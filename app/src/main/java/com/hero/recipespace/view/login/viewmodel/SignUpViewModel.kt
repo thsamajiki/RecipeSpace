@@ -3,6 +3,7 @@ package com.hero.recipespace.view.login.viewmodel
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -17,6 +18,10 @@ class SignUpViewModel @Inject constructor(
     application: Application,
     private val addUserUseCase: AddUserUseCase
 ) : AndroidViewModel(application) {
+
+    val email: MutableLiveData<String> = MutableLiveData()
+    val userName: MutableLiveData<String> = MutableLiveData()
+    val pwd: MutableLiveData<String> = MutableLiveData()
 
     suspend fun signUpUserAccount(userName: String,
                                   email: String,

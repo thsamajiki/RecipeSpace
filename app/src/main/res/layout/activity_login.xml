@@ -40,9 +40,10 @@
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="이메일"
+                android:hint="@string/input_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
+                android:text="@={viewModel.email}"
                 android:textSize="@dimen/title_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -61,9 +62,10 @@
                 android:id="@+id/edit_pwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="패스워드"
+                android:hint="@string/input_pwd"
                 android:inputType="textPassword"
                 android:maxLines="1"
+                android:text="@={viewModel.pwd}"
                 android:textSize="@dimen/title_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>

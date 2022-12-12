@@ -9,6 +9,7 @@ import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class RateServiceImpl @Inject constructor(
@@ -23,14 +24,11 @@ class RateServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(rateData: RateData) {
-        suspendCoroutine<RateData> {
-            val fireStore = FirebaseFirestore.getInstance()
-            val response: Response<RecipeData> = Response()
-            response.setType(Type.FIRE_STORE)
-            fireStore.runTransaction(Transaction.Function<Any?> { transaction ->
-                val recipeRef = fireStore.collection("RecipeData").document(recipeData.key)
-                val rateRef = recipeRef.collection("RateList").document(rateData.userKey)
+    override suspend fun add(recipeKey: String) : RateData {
+        return suspendCoroutine<RateData> { continuation ->
+            firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
+                val recipeRef = firebaseFirestore.collection("RecipeData").document(recipeKey)
+                val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
                 val rateSnapShot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount
                 val originRate: Float = recipeData.rate
@@ -51,16 +49,16 @@ class RateServiceImpl @Inject constructor(
                 recipeData
             }).addOnSuccessListener { data ->
                 response.date = date
-                it.resume(rateData)
-            }.addOnFailureListener { it.printStackTrace() }
+                continuation.resume(rateData)
+            }.addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
-    override suspend fun update(rateData: RateData) {
+    override suspend fun update(rateKey: String) : RateData {
         TODO("Not yet implemented")
     }
 
-    override suspend fun remove(rateData: RateData) {
+    override suspend fun remove(rateKey: String) : RateData {
         TODO("Not yet implemented")
     }
 }

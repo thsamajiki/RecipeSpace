@@ -17,7 +17,7 @@ import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel
-import com.hero.recipespace.view.post.PostActivity
+import com.hero.recipespace.view.post.PostRecipeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +33,7 @@ class RecipeListFragment : Fragment() {
     private val postResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostActivity.EXTRA_RECIPE_ENTITY)
+            val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
             if (recipe != null) {
                 recipeListAdapter.add(0, recipe)
                 binding.rvRecipe.smoothScrollToPosition(0)
@@ -124,7 +124,7 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun intentPostActivity() {
-        val intent = PostActivity.getIntent(requireActivity())
+        val intent = PostRecipeActivity.getIntent(requireActivity())
         postResultLauncher.launch(intent)
     }
 }
