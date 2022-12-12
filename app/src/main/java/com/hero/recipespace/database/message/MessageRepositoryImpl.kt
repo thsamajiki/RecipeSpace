@@ -3,10 +3,12 @@ package com.hero.recipespace.database.message
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
+import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.mapper.toData
 import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
+import com.hero.recipespace.listener.OnMessageListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -24,14 +26,26 @@ class MessageRepositoryImpl @Inject constructor(
         return messageLocalDataSource.getData(messageKey).toEntity()
     }
 
-    override fun getMessageList(userKey: String) : Flow<List<MessageEntity>> {
+    override fun getMessageList(chatKey: String) : Flow<List<MessageEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
-            val messageList = messageRemoteDataSource.getDataList(userKey)
+            FirebaseData.getInstance()
+                .getMessageList(chatKey, object : OnMessageListener {
+                    override fun onMessage(isSuccess: Boolean, messageData: MessageData?) {
+                        if (messageData != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                messageLocalDataSource.add(messageData)
+                                cancel()
+                            }
+                        }
+                    }
+                })
+
+            val messageList = messageRemoteDataSource.getDataList(chatKey)
             messageLocalDataSource.addAll(messageList)
             cancel()
         }
 
-        return messageLocalDataSource.observeDataList(userKey)
+        return messageLocalDataSource.observeDataList(chatKey)
             .map { it ->
                 it.map {
                     it.toEntity()
@@ -40,33 +54,26 @@ class MessageRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addMessage(
-        messageEntity: MessageEntity
+        message: String
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            messageRemoteDataSource.add(messageEntity.toData())
-            messageLocalDataSource.add(messageEntity.toData())
-            cancel()
-        }
+        val result = messageRemoteDataSource.add(message)
+        messageLocalDataSource.add(result)
     }
 
     override suspend fun modifyMessage(
-        messageEntity: MessageEntity
+        message: String
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            messageRemoteDataSource.update(messageEntity.toData())
-            messageLocalDataSource.update(messageEntity.toData())
-            cancel()
-        }
+        messageRemoteDataSource.update(messageEntity.toData())
+        messageLocalDataSource.update(messageEntity.toData())
+        cancel()
     }
 
     override suspend fun deleteMessage(
-        messageEntity: MessageEntity
+        message: String
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            messageRemoteDataSource.remove(messageEntity.toData())
-            messageLocalDataSource.remove(messageEntity.toData())
-            cancel()
-        }
+        messageRemoteDataSource.remove(messageEntity.toData())
+        messageLocalDataSource.remove(messageEntity.toData())
+        cancel()
     }
 
     private fun getEntities(data: List<MessageData>): List<MessageEntity> {

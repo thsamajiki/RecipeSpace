@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.chat.service
 
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
@@ -12,11 +13,38 @@ import com.hero.recipespace.listener.Type
 import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class ChatServiceImpl @Inject constructor() : ChatService {
+class ChatServiceImpl @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    private val firebaseFirestore: FirebaseFirestore
+) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String) : ChatData {
+
+        return suspendCoroutine { continuation ->
+            val myKey: String = firebaseAuth.uid.orEmpty()
+            val userList: MutableList<String> = ArrayList()
+            userList.add(myKey)
+            userList.add(otherUserKey)
+            val fireStore = firebaseFirestore
+            fireStore.collection("Chat")
+                .whereEqualTo("userList.$otherUserKey", true)
+                .whereEqualTo("userList.$myKey", true)
+                .get()
+                .addOnSuccessListener { queryDocumentSnapshots ->
+                    val chatData = queryDocumentSnapshots.documents
+                        .firstOrNull()
+                        ?.toObject(ChatData::class.java)
+
+                    continuation.resume(requireNotNull(chatData))
+                }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
 
     override suspend fun getDataList(userKey: String): List<ChatData> {

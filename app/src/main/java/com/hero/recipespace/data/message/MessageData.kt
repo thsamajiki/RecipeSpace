@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "message_db")
 data class MessageData(
     val userKey: String,
+    val message: String,
     val timestamp: Timestamp
 ) : Parcelable {
 }

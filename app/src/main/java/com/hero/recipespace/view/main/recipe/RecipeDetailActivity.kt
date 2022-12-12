@@ -18,11 +18,9 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
-import com.hero.recipespace.databinding.ItemRecipeImageListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
-import com.hero.recipespace.view.main.chat.ChatActivity.Companion.EXTRA_OTHER_USER_KEY
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.PostActivity
@@ -73,19 +71,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private fun setupView() {
         val recipe: RecipeEntity? = getRecipe()
         val requestManager = Glide.with(this)
-        val recipeImageList: List<String>? = recipe?.photoUrlList
-
-        // TODO: 2022-12-08 initRecyclerView 와 어떻게 처리할지 고민하기
-        val binding2 = ItemRecipeImageListBinding.inflate(layoutInflater)
-
-        if (recipe != null) {
-            for (i: Int in 0..recipe.photoUrlList!!.size) {
-                if (!TextUtils.isEmpty(recipe.photoUrlList[i])) {
-                    requestManager.load(recipe.photoUrlList[i])
-                        .into(binding2.ivRecipeImage)
-                }
-            }
-        }
 
         initRecyclerView(binding.rvRecipeImages)
 
@@ -106,7 +91,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        // TODO: 2022-12-08 리사이클러뷰 사진들 중 하나 클릭하면 해당 사진에 대해서 PhotoActivity 로 이동할 수 있도록 하기
         recipeDetailAdapter = RecipeDetailAdapter(
             onClick = ::intentPhoto
         )
@@ -118,11 +102,10 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    // TODO: 2022-12-12 ViewModel과 작업하기
     private fun setupViewModel() {
         with(viewModel) {
             recipe.observe(this@RecipeDetailActivity) {
-                recipeDetailAdapter.setRecipeImageList()
+                recipeDetailAdapter.setRecipeImageList(it.photoUrlList.orEmpty())
             }
         }
     }
@@ -137,13 +120,14 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.btnQuestion.setOnClickListener {
+            val recipe = getRecipe() ?: return@setOnClickListener
             val firebaseUser = FirebaseAuth.getInstance().currentUser
             val myUserKey: String = firebaseUser?.uid.toString()
             if (getRecipe()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra(EXTRA_OTHER_USER_KEY, getRecipe()?.userKey)
+
+            val intent = ChatActivity.getIntent(this, recipe.key.orEmpty(), recipe.userKey.orEmpty())
             startActivity(intent)
         }
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.databinding.ItemRecipeImageListBinding
+import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
 class RecipeDetailAdapter(
@@ -51,12 +52,11 @@ class RecipeDetailAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(image: String) {
-            // TODO: 2022-12-08 이미지에 대한 어떤 데이터를 추가하고 클릭 리스너 추가해야 한다.
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
-            binding.ivRecipeImage
+            binding.ivRecipeImage.setImageUrl(image)
             binding.executePendingBindings()
         }
     }

@@ -5,6 +5,8 @@ import com.hero.recipespace.data.chat.ChatData
 interface ChatService {
     suspend fun getData(chatKey: String) : ChatData
 
+    suspend fun getChatByUserKeys(myKey: String, otherUserKey: String) : ChatData
+
     suspend fun getDataList(userKey: String) : List<ChatData>
 
     suspend fun add(chatData: ChatData)

@@ -7,13 +7,14 @@ import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
+import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor() : MessageService {
     override fun getData(messageKey: String): MessageData {
     }
 
-    override fun getDataList(userKey: String): List<MessageData> {
+    override fun getDataList(chatKey: String): List<MessageData> {
         return suspendCoroutine { continuation ->
             val fireStore = FirebaseFirestore.getInstance()
             fireStore.collection("Chat")
@@ -38,19 +39,18 @@ class MessageServiceImpl @Inject constructor() : MessageService {
         }
     }
 
-    override suspend fun add(messageData: MessageData) {
-        suspendCoroutine<MessageData> {
-            val messageData = MessageData()
+    override suspend fun add(chatKey: String, message: String) : MessageData {
+        return suspendCoroutine<MessageData> { continuation ->
             val myUserKey: String = MyInfoUtil.getInstance().getKey()
-            messageData.userKey = myUserKey
-            messageData.setMessage(message)
-            messageData.setTimestamp(Timestamp.now())
+            val messageData = MessageData(myUserKey, message, Timestamp.now())
+
             val fireStore = FirebaseFirestore.getInstance()
             fireStore.runTransaction<Any> { transaction ->
-                val chatRef = fireStore.collection("Chat").document(chatData.key)
+                val chatRef = fireStore.collection("Chat").document(chatKey)
                 val messageRef = chatRef.collection("Messages").document()
                 transaction.update(chatRef, "lastMessage", messageData)
                 transaction[messageRef] = messageData
+                continuation.resume(messageData)
                 null
             }
         }

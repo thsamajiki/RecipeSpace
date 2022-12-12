@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.databinding.ItemRecipeImageListBinding
+import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
 class PostAdapter(
@@ -45,17 +46,16 @@ class PostAdapter(
     }
 
     class PostRecipeImageViewHolder(
-        val binding: ItemRecipeImageListBinding,
+        private val binding: ItemRecipeImageListBinding,
         private val onClick: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(image: String) {
-
-            // TODO: 2022-12-08 이미지 엔티티를 추가하고 클릭 리스너 추가해야 한다.
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
+            binding.ivRecipeImage.setImageUrl(image)
             binding.executePendingBindings()
         }
     }

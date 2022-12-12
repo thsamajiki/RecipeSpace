@@ -21,7 +21,11 @@ class ChatRepositoryImpl @Inject constructor(
 ) : ChatRepository {
 
     override suspend fun getChat(chatKey: String) : ChatEntity {
-        return chatLocalDataSource.getData(chatKey).toEntity()
+        return chatRemoteDataSource.getData(chatKey).toEntity()
+    }
+
+    override suspend fun getChatByUserKeys(otherUserKey: String): ChatEntity {
+        return chatRemoteDataSource.getChatByUserKeys(otherUserKey).toEntity()
     }
 
     override fun observeChatList(

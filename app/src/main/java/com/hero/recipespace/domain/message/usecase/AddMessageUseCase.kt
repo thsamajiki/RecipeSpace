@@ -7,6 +7,6 @@ import javax.inject.Inject
 class AddMessageUseCase @Inject constructor(
     private val messageRepository: MessageRepository
 ) {
-    suspend operator fun invoke(messageEntity: MessageEntity) =
-        messageRepository.addMessage(messageEntity)
+    suspend operator fun invoke(message: String) =
+        messageRepository.addMessage(message)
 }

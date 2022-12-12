@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
+import com.hero.recipespace.ext.hideLoading
+import com.hero.recipespace.ext.setProgressPercent
+import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
@@ -158,7 +161,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     private fun uploadProfileImage() {
-        LoadingProgress.initProgressDialog(this)
+        showLoading()
         FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
         FirebaseStorageApi.getInstance()
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
@@ -192,7 +195,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
-        LoadingProgress.dismissProgressDialog()
+        hideLoading()
         if (isSuccess) {
             updateUserData(downloadUrl.orEmpty())
         } else {
@@ -201,7 +204,8 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     override suspend fun onFileUploadProgress(percent: Float) {
-        LoadingProgress.setProgress(percent.toInt())
+        setProgressPercent(percent.toInt())
+
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

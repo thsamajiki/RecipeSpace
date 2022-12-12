@@ -5,9 +5,9 @@ import com.hero.recipespace.data.message.MessageData
 interface MessageRemoteDataSource {
     fun getData(messageKey: String) : MessageData
 
-    fun getDataList(userKey: String) : List<MessageData>
+    fun getDataList(chatKey: String) : List<MessageData>
 
-    suspend fun add(messageData: MessageData)
+    suspend fun add(message: String) : MessageData
 
     suspend fun update(messageData: MessageData)
 

@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 interface MessageRepository {
     suspend fun getMessage(messageKey: String) : MessageEntity
 
-    fun getMessageList(userKey: String) : Flow<List<MessageEntity>>
+    fun getMessageList(chatKey: String) : Flow<List<MessageEntity>>
 
-    suspend fun addMessage(messageEntity: MessageEntity)
+    suspend fun addMessage(message: String)
 
     suspend fun modifyMessage(messageEntity: MessageEntity)
 

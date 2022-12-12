@@ -26,6 +26,9 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
+import com.hero.recipespace.ext.hideLoading
+import com.hero.recipespace.ext.setProgressPercent
+import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
@@ -42,6 +45,8 @@ class PostActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityPostBinding
     private var photoPath: String? = null
+
+    private lateinit var postAdapter: PostAdapter
 
     private val viewModel by viewModels<PostViewModel>()
 
@@ -151,7 +156,7 @@ class PostActivity : AppCompatActivity(),
     }
 
     private fun uploadImage() {
-        LoadingProgress.initProgressDialog(this)
+        showLoading()
         FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
         FirebaseStorageApi.getInstance()
             .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
@@ -175,11 +180,12 @@ class PostActivity : AppCompatActivity(),
     }
 
     override suspend fun onFileUploadProgress(percent: Float) {
+        setProgressPercent(percent.toInt())
         LoadingProgress.setProgress(percent.toInt())
     }
 
     override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-        LoadingProgress.dismissProgressDialog()
+        hideLoading()
         if (isSuccess) {
             val intent = Intent()
             intent.putExtra(EXTRA_RECIPE_ENTITY, response?.getData()?.toEntity())
