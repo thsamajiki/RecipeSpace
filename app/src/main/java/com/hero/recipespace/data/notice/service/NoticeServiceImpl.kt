@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.notice.NoticeData
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -34,10 +35,9 @@ class NoticeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataList(): List<NoticeData> {
+    override suspend fun getDataList(): Flow<List<NoticeData>> {
         return suspendCoroutine { continuation ->
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("Notice")
+            firebaseFirestore.collection("Notice")
                 .orderBy("postDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->

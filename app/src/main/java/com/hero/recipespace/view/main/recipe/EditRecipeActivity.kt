@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -25,31 +27,48 @@ import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
-import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
 import com.hero.recipespace.view.main.recipe.viewmodel.EditRecipeViewModel
+import com.hero.recipespace.view.photoview.PhotoActivity
+import com.hero.recipespace.view.post.PostRecipeImageListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher,
-    OnFileUploadListener {
+class EditRecipeActivity : AppCompatActivity(),
+    View.OnClickListener,
+    TextWatcher {
 
     private lateinit var binding: ActivityEditRecipeBinding
+    private val recipePhotoPathList: MutableList<String> = mutableListOf()
+
+    private lateinit var editRecipeImageListAdapter: EditRecipeImageListAdapter
 
     private val viewModel by viewModels<EditRecipeViewModel>()
 
     private var photoPath: String? = null
 
-    private val intentGalleryLauncher: ActivityResultLauncher<Intent> =
+    private val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-            photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
-            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
+            if (it.data!!.clipData != null) {
+                val count = it.data!!.clipData!!.itemCount
+
+                for (index in 0 until count) {
+                    // 이미지 담기
+                    val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
+                    // 이미지 추가
+                    recipePhotoPathList.add(photoPath)
+                }
+            } else {
+                val photoPath = it.data!!.data.toString()
+                recipePhotoPathList.add(photoPath)
+            }
+//            photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
+//            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
             if (binding.editContent.text.toString().isNotEmpty()) {
                 binding.tvComplete.isEnabled = true
             }
@@ -71,9 +90,26 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         val view = binding.root
         setContentView(view)
 
+        setupView()
         addTextWatcher()
         setupViewModel()
         setupListeners()
+    }
+
+    private fun setupView() {
+        initRecyclerView(binding.rvRecipeImages)
+    }
+
+    private fun initRecyclerView(recyclerView: RecyclerView) {
+        editRecipeImageListAdapter = EditRecipeImageListAdapter(
+            onClick = ::intentPhoto
+        )
+
+        recyclerView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = editRecipeImageListAdapter
+        }
     }
 
     private fun setupViewModel() {
@@ -89,7 +125,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding.tvComplete.setOnClickListener {
             uploadImage()
         }
-        binding.ivRecipePhoto.setOnClickListener {
+        binding.btnPhoto.setOnClickListener {
             if (checkStoragePermission()) {
                 intentGallery()
             }
@@ -103,7 +139,9 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     private fun intentGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-        intentGalleryLauncher.launch(intent)
+        pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        pickIntent.action = Intent.ACTION_GET_CONTENT
+        openGalleryLauncher.launch(intent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -144,7 +182,7 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         LoadingProgress.initProgressDialog(this)
         FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
         FirebaseStorageApi.getInstance()
-            .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
+            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
     override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
@@ -189,6 +227,11 @@ class EditRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         } else {
             Toast.makeText(this, "레시피 수정에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun intentPhoto(photoUrl: String?) {
+        val intent = PhotoActivity.getIntent(this, photoUrl)
+        startActivity(intent)
     }
 
     override fun onClick(view: View) {

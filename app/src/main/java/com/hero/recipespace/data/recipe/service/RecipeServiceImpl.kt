@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.recipe.service
 
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -22,20 +23,21 @@ class RecipeServiceImpl @Inject constructor(
             firebaseFirestore.collection("RecipeData")
                 .document(recipeKey)
                 .get()
-                .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
+                .addOnSuccessListener { queryDocumentSnapshots ->
                     if (queryDocumentSnapshots.isEmpty()) {
                         return@OnSuccessListener
                     }
-                    val recipeData = queryDocumentSnapshots.data
-                        ?.mapNotNull { documentSnapshot ->
-                            documentSnapshot.apply {
-
-                            }
+//                    val recipeData = queryDocumentSnapshots.data
+//                        ?.mapNotNull { documentSnapshot ->
+//                            documentSnapshot.apply {
+//
+//                            }
 //                            documentSnapshot.toObject(RecipeData::class.java)
-                        }
+//                        }
+                    val recipeData = queryDocumentSnapshots.data?.getValue(recipeKey)
 
-                    continuation.resume(recipeData)
-                })
+                    continuation.resume(recipeData as RecipeData)
+                }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
                 }
@@ -64,11 +66,25 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> { continuation ->
+    override suspend fun add(profileImageUrl : String,
+                             userName: String,
+                             userKey: String,
+                             desc: String,
+                             photoUrlList: List<String>,
+                             postDate: Timestamp
+    ) : RecipeData {
+        return suspendCoroutine<RecipeData> { continuation ->
             val documentReference = firebaseFirestore.collection("RecipeData").document()
             val key = documentReference.id
-            recipeData.key = key
+            val recipeData = RecipeData(
+                key,
+                profileImageUrl,
+                userName,
+                userKey,
+                desc,
+                photoUrlList,
+                postDate
+            )
 
             documentReference.set(recipeData)
                 .addOnSuccessListener { continuation.resume(recipeData) }
@@ -76,8 +92,8 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> { continuation ->
+    override suspend fun update(recipeData: RecipeData) : RecipeData {
+        return suspendCoroutine<RecipeData> { continuation ->
             firebaseFirestore.collection("RecipeData")
                 .document(recipeData.key.orEmpty())
                 .update(editData)
@@ -86,8 +102,8 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun remove(recipeData: RecipeData) {
-        suspendCoroutine<RecipeData> { continuation ->
+    override suspend fun remove(recipeData: RecipeData) : RecipeData {
+        return suspendCoroutine<RecipeData> { continuation ->
             firebaseFirestore.collection("RecipeData")
                 .document(recipeData.key.orEmpty())
                 .delete()

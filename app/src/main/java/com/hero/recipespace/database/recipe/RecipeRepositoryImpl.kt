@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.recipe
 
+import com.google.firebase.Timestamp
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
@@ -46,33 +47,29 @@ class RecipeRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addRecipe(
-        recipeEntity: RecipeEntity
+        profileImageUrl : String,
+        userName: String,
+        userKey: String,
+        desc: String,
+        photoUrlList: List<String>,
+        postDate: Timestamp
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeRemoteDataSource.add(recipeEntity.toData())
-            recipeLocalDataSource.add(recipeEntity.toData())
-            cancel()
-        }
+        val result = recipeRemoteDataSource.add(profileImageUrl, userName, userKey, desc, photoUrlList, postDate)
+        recipeLocalDataSource.add(result)
     }
 
     override suspend fun modifyRecipe(
         recipeEntity: RecipeEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeRemoteDataSource.update(recipeEntity.toData())
-            recipeLocalDataSource.update(recipeEntity.toData())
-            cancel()
-        }
+        val result = recipeRemoteDataSource.update(recipeEntity.toData())
+        recipeLocalDataSource.update(result)
     }
 
     override suspend fun deleteRecipe(
         recipeEntity: RecipeEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeRemoteDataSource.remove(recipeEntity.toData())
-            recipeLocalDataSource.remove(recipeEntity.toData())
-            cancel()
-        }
+        val result = recipeRemoteDataSource.remove(recipeEntity.toData())
+        recipeLocalDataSource.remove(result)
     }
 
     private fun getEntities(data: List<RecipeData>): List<RecipeEntity> {

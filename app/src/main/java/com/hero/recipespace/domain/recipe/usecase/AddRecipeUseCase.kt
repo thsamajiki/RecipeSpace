@@ -1,12 +1,17 @@
 package com.hero.recipespace.domain.recipe.usecase
 
-import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.google.firebase.Timestamp
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import javax.inject.Inject
 
 class AddRecipeUseCase @Inject constructor(
     private val recipeRepository: RecipeRepository
 ) {
-    suspend operator fun invoke(recipeEntity: RecipeEntity) =
-        recipeRepository.addRecipe(recipeEntity)
+    suspend operator fun invoke(profileImageUrl : String,
+                                userName: String,
+                                userKey: String,
+                                desc: String,
+                                photoUrlList: List<String>,
+                                postDate: Timestamp) =
+        recipeRepository.addRecipe(profileImageUrl, userName, userKey, desc, photoUrlList, postDate)
 }

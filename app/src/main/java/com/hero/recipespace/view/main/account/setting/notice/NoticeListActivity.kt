@@ -41,7 +41,7 @@ class NoticeListActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         initRecyclerView(binding.rvNoticeList)
-        downloadNoticeData()
+        getNoticeData(viewModel.noticeItem)
         //        getNoticeListFromDatabase();
         setupView()
         setupViewModel()
@@ -60,7 +60,7 @@ class NoticeListActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         noticeListAdapter = NoticeListAdapter(
-            onClick = downloadNoticeData()
+            onClick = ::getNoticeData
         )
 
         recyclerView.run {
@@ -90,7 +90,7 @@ class NoticeListActivity : AppCompatActivity(),
     //            }
     //        });
     //    }
-    private fun downloadNoticeData() {
+    private fun getNoticeData(notice: NoticeEntity) {
         FirebaseData.getInstance()
             .getNoticeList(object : OnCompleteListener<List<NoticeData>> {
                 override fun onComplete(

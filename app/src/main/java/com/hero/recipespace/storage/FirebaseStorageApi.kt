@@ -27,8 +27,8 @@ class FirebaseStorageApi {
         this.onFileUploadListener = onFileUploadListener
     }
 
-    fun uploadImage(folderPath: String, filePath: String?) {
-        val file = Uri.fromFile(File(filePath))
+    fun uploadImages(folderPath: String, filePathList: List<String>?) {
+        val file = Uri.fromFile(File(filePathList))
         val storageRef =
             FirebaseStorage.getInstance().reference.child(folderPath + file.lastPathSegment)
         val uploadTask = storageRef.putFile(file)

@@ -7,9 +7,9 @@ import com.hero.recipespace.databinding.ItemRecipeImageListBinding
 import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
-class PostAdapter(
+class PostRecipeImageListAdapter(
     private val onClick: (String) -> Unit
-) : BaseAdapter<PostAdapter.PostRecipeImageViewHolder, String>() {
+) : BaseAdapter<PostRecipeImageListAdapter.PostRecipeImageViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
 
@@ -41,6 +41,12 @@ class PostAdapter(
         notifyItemChanged(index)
     }
 
+    fun delete(position: Int, images: List<String>) {
+        recipeImageList.removeAt(position)
+        recipeImageList.addAll(images)
+        notifyItemRemoved(position)
+    }
+
     override fun getItemCount(): Int {
         return recipeImageList.size
     }
@@ -53,6 +59,10 @@ class PostAdapter(
         fun bind(image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
+            }
+
+            binding.ivRecipeImageCancel.setOnClickListener {
+                // TODO: 2022-12-13 X 버튼 클릭하면 이미지가 목록에서 삭제되도록 하기
             }
 
             binding.ivRecipeImage.setImageUrl(image)

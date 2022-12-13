@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import com.bumptech.glide.Glide
 import com.google.firebase.Timestamp
@@ -29,24 +31,23 @@ import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.LoadingProgress
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PostRecipeActivity : AppCompatActivity(),
     View.OnClickListener,
-    TextWatcher,
-    OnFileUploadListener {
+    TextWatcher {
 
     private lateinit var binding: ActivityPostRecipeBinding
-    private var photoPath: String? = null
+    private val recipePhotoPathList: MutableList<String> = mutableListOf()
 
-    private lateinit var postAdapter: PostAdapter
+    private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
     private val viewModel by viewModels<PostRecipeViewModel>()
 
@@ -54,16 +55,27 @@ class PostRecipeActivity : AppCompatActivity(),
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
-                Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-//                for(i : Int in 0..10) {
-//                    photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
+                if (it.data!!.clipData != null) {
+                    val count = it.data!!.clipData!!.itemCount
+
+                    for (index in 0 until count) {
+                        // 이미지 담기
+                        val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
+                        // 이미지 추가
+                        recipePhotoPathList.add(photoPath)
+                    }
+                } else {
+                    val photoPath = it.data!!.data.toString()
+                    recipePhotoPathList.add(photoPath)
+                }
+//                recipePhotoPathList = RealPathUtil.getRealPath(this, it.data?.data!!)
+//                Glide.with(this).load(recipePhotoPathList).into(binding.ivRecipePhoto)
+//                for(i : Int in 0..9) {
+//                    recipePhotoUrlList[i] = RealPathUtil.getRealPath(this, it.data?.data!!)
 //                    Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
 //                }
-                binding.btnPhoto.visibility = View.GONE
-                binding.ivRecipePhoto.visibility = View.GONE
                 binding.rvRecipeImages.visibility = View.VISIBLE
-                if (binding.editContent.text.toString().isNotEmpty()) {
+                if (binding.editContent.text.toString().isNotEmpty() && recipePhotoPathList.isNotEmpty()) {
                     binding.tvComplete.isEnabled = true
                 }
             }
@@ -82,9 +94,26 @@ class PostRecipeActivity : AppCompatActivity(),
         binding = ActivityPostRecipeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupView()
         setupViewModel()
         setupListeners()
         addTextWatcher()
+    }
+
+    private fun setupView() {
+        initRecyclerView(binding.rvRecipeImages)
+    }
+
+    private fun initRecyclerView(recyclerView: RecyclerView) {
+        postRecipeImageListAdapter = PostRecipeImageListAdapter(
+            onClick = ::intentPhoto
+        )
+
+        recyclerView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+            adapter = postRecipeImageListAdapter
+        }
     }
 
     private fun setupViewModel() {
@@ -102,13 +131,10 @@ class PostRecipeActivity : AppCompatActivity(),
                openGallery()
            }
        }
-        binding.ivRecipePhoto.setOnClickListener {
-            if (checkStoragePermission()) {
-                openGallery()
-            }
-        }
+
        binding.tvComplete.setOnClickListener {
            uploadImage()
+           viewModel.postRecipe()
        }
     }
 
@@ -153,17 +179,17 @@ class PostRecipeActivity : AppCompatActivity(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
+        binding.tvComplete.isEnabled = s.isNotEmpty() && recipePhotoPathList.isNotEmpty()
     }
 
     private fun uploadImage() {
         showLoading()
         FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
         FirebaseStorageApi.getInstance()
-            .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
+            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, recipePhotoPathList)
     }
 
-    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         if (isSuccess) {
             Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
             val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
@@ -192,12 +218,12 @@ class PostRecipeActivity : AppCompatActivity(),
         }
     }
 
-    override suspend fun onFileUploadProgress(percent: Float) {
+    suspend fun onFileUploadProgress(percent: Float) {
         setProgressPercent(percent.toInt())
         LoadingProgress.setProgress(percent.toInt())
     }
 
-    override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
+    fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
         hideLoading()
         if (isSuccess) {
             val intent = Intent()
@@ -207,6 +233,11 @@ class PostRecipeActivity : AppCompatActivity(),
         } else {
             Toast.makeText(this, "업로드에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun intentPhoto(photoUrl: String?) {
+        val intent = PhotoActivity.getIntent(this, photoUrl)
+        startActivity(intent)
     }
 
     override fun onClick(view: View) {

@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.recipe.remote
 
+import com.google.firebase.Timestamp
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.service.RecipeService
 import javax.inject.Inject
@@ -15,19 +16,25 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
         return recipeService.getRecipeList()
     }
 
-    override suspend fun add(recipeData: RecipeData) {
-        recipeService.add(recipeData)
+    override suspend fun add(profileImageUrl : String,
+                             userName: String,
+                             userKey: String,
+                             desc: String,
+                             photoUrlList: List<String>,
+                             postDate: Timestamp
+    ) : RecipeData {
+        return recipeService.add(profileImageUrl, userName, userKey, desc, photoUrlList, postDate)
     }
 
     override suspend fun update(
         recipeData: RecipeData
-    ) {
-        recipeService.update(recipeData)
+    ) : RecipeData {
+        return recipeService.update(recipeData)
     }
 
     override suspend fun remove(
         recipeData: RecipeData
-    ) {
-        recipeService.remove(recipeData)
+    ) : RecipeData {
+        return recipeService.remove(recipeData)
     }
 }

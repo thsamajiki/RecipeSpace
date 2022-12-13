@@ -35,8 +35,9 @@ import com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
-    OnFileUploadListener, TextWatcher {
+class EditProfileActivity : AppCompatActivity(),
+    View.OnClickListener,
+    TextWatcher {
 
     private lateinit var binding: ActivityEditProfileBinding
     private var photoPath: String? = null
@@ -163,7 +164,7 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         showLoading()
         FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
         FirebaseStorageApi.getInstance()
-            .uploadImage(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
+            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
     }
 
     private fun updateUserData(newProfileImageUrl: String) {

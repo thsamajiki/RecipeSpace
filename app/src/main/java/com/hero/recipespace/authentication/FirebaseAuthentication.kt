@@ -5,23 +5,22 @@ import android.text.TextUtils
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 
 class FirebaseAuthentication @Inject constructor(
-    private val auth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth
 ) {
     private var firebaseAuthentication: FirebaseAuthentication? = null
 
     companion object {
         private var instance: FirebaseAuthentication? = null
 
-        fun getInstance(): FirebaseAuthentication {
+        fun getInstance(firebaseAuth: FirebaseAuth): FirebaseAuthentication {
             return synchronized(this) {
-                instance ?: FirebaseAuthentication().also {
+                instance ?: FirebaseAuthentication(firebaseAuth).also {
                     instance = it
                 }
             }
@@ -96,6 +95,6 @@ class FirebaseAuthentication @Inject constructor(
     }
 
     fun signOut() {
-        auth.signOut()
+        firebaseAuth.signOut()
     }
 }

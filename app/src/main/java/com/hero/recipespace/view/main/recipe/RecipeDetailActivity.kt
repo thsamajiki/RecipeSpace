@@ -161,7 +161,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun intentModifyRecipe() {
         val intent = EditRecipeActivity.getIntent(this, viewModel.recipeKey)
-        startActivity(intent)
+        updateResultLauncher.launch(intent)
     }
 
     private fun deleteRecipeData() {

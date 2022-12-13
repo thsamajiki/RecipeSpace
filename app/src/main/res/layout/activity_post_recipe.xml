@@ -68,40 +68,31 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="120dp">
             <!-- 처음에는 AppCompatImageView 만 보이게 하고 갤러리에 가서 이미지들을 선택하면
                 RecyclerView 로 View 가 바뀌게 하려고 하는데 어떻게 해야 하나요? -->
             <!-- activity_recipe_detail.xml 과 겹치는데 공유해도 되나요?
                 아니면 아이템을 별도로 만들어야 하나요?-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_recipe_images"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_recipe_image_list" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_recipe_photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop" />
+            <!--            <androidx.appcompat.widget.AppCompatImageView-->
+            <!--                android:id="@+id/iv_recipe_photo"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:scaleType="centerCrop" />-->
 
             <LinearLayout
                 android:id="@+id/btn_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="10dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ic_camera"
                     app:tint="@color/dark_gray" />
@@ -110,11 +101,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/touch_here_and_add_pictures"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/add_pictures_count_limit"
                     android:textColor="@color/dark_gray" />
 
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recipe_images"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_recipe_image_list" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/touch_here_and_add_pictures"
+                android:textColor="@color/dark_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +137,7 @@
             android:layout_height="1dp"
             android:background="@color/light_gray" />
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

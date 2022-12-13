@@ -85,7 +85,7 @@ class AccountFragment: Fragment(),
     }
 
     private fun setupListeners() {
-        binding.btnProfileEdit.setOnClickListener {
+        binding.btnEditProfile.setOnClickListener {
             val user: UserEntity = viewModel.user.value!!
             intentEditProfile(user)
         }
