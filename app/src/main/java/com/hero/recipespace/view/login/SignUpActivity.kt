@@ -56,11 +56,11 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupListeners() {
         binding.btnSignUp.setOnClickListener {
-            signUp()
+            requestSignUp()
         }
     }
 
-    private fun signUp() {
+    private fun requestSignUp() {
         val email = binding.editEmail.text.toString()
         val pwd: String = binding.editPwd.text.toString()
         val userName: String = binding.editUsername.text.toString()
@@ -77,18 +77,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        firebaseAuthentication.setOnCompleteListener(object : OnCompleteListener<Void> {
-            override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
-                if (isSuccess) {
-                    uploadUserData()
-                } else {
-                    Toast.makeText(this@SignUpActivity, "회원가입에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    return
-                }
-
-            }
-        })
-        firebaseAuthentication.signUpEmail(this, email, pwd)
+        viewModel.signUpUserAccount(userName, email, pwd)
     }
 
     private fun checkEmailValid(email: String): Boolean {
@@ -97,17 +86,17 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         } else Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    private fun uploadUserData() {
+    private fun signUp() {
         val userName: String = binding.editUsername.text.toString()
         val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
         val userData = UserData(
             userKey = firebaseUser?.uid,
             userName = userName,
-            email = firebaseUser?.uid,
+            email = firebaseUser?.email,
             profileImageUrl = firebaseUser?.photoUrl.toString()
         )
 
-        firebaseData.uploadUserData(this, userData, object : OnCompleteListener<Void> {
+        firebaseData.signUp(this, userData, object : OnCompleteListener<Void> {
             override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
                 if (isSuccess) {
                     intentMain()

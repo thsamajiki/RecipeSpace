@@ -6,8 +6,6 @@ import javax.inject.Inject
 class AddUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend fun invoke(userName: String,
-                       email: String,
-                       pwd: String
+    suspend fun invoke(userName: String, email: String, pwd: String
     ) = userRepository.addUser(userName, email, pwd)
 }

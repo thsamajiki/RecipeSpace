@@ -1,8 +1,10 @@
 package com.hero.recipespace.data.chat.remote
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.service.ChatService
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ChatRemoteDataSourceImpl @Inject constructor(
@@ -21,8 +23,13 @@ class ChatRemoteDataSourceImpl @Inject constructor(
         return chatService.getDataList(userKey)
     }
 
-    override suspend fun add(chatData: ChatData) {
-        chatService.add(chatData)
+    override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
+        return chatService.observeNewChat(userKey)
+    }
+
+    override suspend fun add(otherUserKey: String,
+                             message: String) : ChatData {
+        return chatService.add(otherUserKey, message)
     }
 
     override suspend fun update(chatData: ChatData) {
@@ -31,5 +38,9 @@ class ChatRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun remove(chatData: ChatData) {
         chatService.remove(chatData)
+    }
+
+    override suspend fun checkExistChatData(otherUserKey: String): Boolean {
+        return chatService.checkExistChatData(otherUserKey)
     }
 }

@@ -40,8 +40,10 @@ class UserRemoteDataSourceImpl(
         return userService.getDataList()
     }
 
-    override suspend fun add(userData: UserData)  : UserData {
-        return userService.add(userData)
+    override suspend fun add(userName: String,
+                             email: String,
+                             pwd: String)  : UserData {
+        return userService.add(userName, email, pwd)
     }
 
     override suspend fun update(

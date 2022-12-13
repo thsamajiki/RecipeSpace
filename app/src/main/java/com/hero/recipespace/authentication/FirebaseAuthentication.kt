@@ -15,7 +15,6 @@ class FirebaseAuthentication @Inject constructor(
     private val auth: FirebaseAuth
 ) {
     private var firebaseAuthentication: FirebaseAuthentication? = null
-    private var onCompleteListener: OnCompleteListener<Void>? = null
 
     companion object {
         private var instance: FirebaseAuthentication? = null
@@ -29,27 +28,10 @@ class FirebaseAuthentication @Inject constructor(
         }
     }
 
-    fun setOnCompleteListener(onCompleteListener: OnCompleteListener<Void>) {
-        this.onCompleteListener = onCompleteListener
-    }
-
     fun signUpEmail(context: Context, email: String, pwd: String, onResult: (Boolean) -> Unit) {
 //        val response: Response<Void> = Response()
 //        response.setType(Type.AUTH)
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, pwd)
-            .addOnSuccessListener {
-//                MyInfoUtil.getInstance().putEmail(context, email)
-//                MyInfoUtil.getInstance().putPwd(context, pwd)
-//                onCompleteListener?.onComplete(true, response)
-                auth.currentUser?.updateProfile(UserProfileChangeRequest
-                    .Builder()
-                    .build())
 
-                onResult(true)
-            }.addOnFailureListener {
-//                onCompleteListener?.onComplete(false, response)
-                onResult(false)
-            }
     }
 
     fun login(context: Context, email: String, pwd: String, onResult: (Boolean) -> Unit) {
@@ -97,8 +79,6 @@ class FirebaseAuthentication @Inject constructor(
 
     fun autoLogin(context: Context?) {
         val firebaseUser = getCurrentUser()
-        val response: Response<Void> = Response()
-        response.setType(Type.AUTH)
         if (firebaseUser == null) {
             onCompleteListener.onComplete(false, response)
         } else {

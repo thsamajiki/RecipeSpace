@@ -1,14 +1,24 @@
 package com.hero.recipespace.data.message.service
 
+import android.content.Context
+import android.text.TextUtils
+import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Transaction
+import com.google.firebase.firestore.ktx.toObject
+import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.database.FirebaseData
+import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor(
@@ -16,6 +26,7 @@ class MessageServiceImpl @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore
 ) : MessageService {
     override fun getData(messageKey: String): MessageData {
+        return MessageData()
     }
 
     override suspend fun getDataList(chatKey: String): List<MessageData> {
@@ -26,21 +37,24 @@ class MessageServiceImpl @Inject constructor(
                 .orderBy("timestamp", Query.Direction.ASCENDING)
                 .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
                     if (e != null) {
-                        onMessageListener.onMessage(false, null)
+                        continuation.resumeWithException(e)
                         return@EventListener
                     }
                     if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
-                        onMessageListener.onMessage(true, null)
+                        continuation.resumeWithException(Exception("queryDocumentSnapshot is Null or Empty"))
                         return@EventListener
                     }
-                    for (documentChange in queryDocumentSnapshots.documentChanges) {
-                        val messageData: MessageData =
-                            documentChange.document.toObject(MessageData::class.java)
-                        onMessageListener.onMessage(true, messageData)
+
+                    val list = queryDocumentSnapshots.documentChanges.map {
+                        it.document.toObject(MessageData::class.java)
                     }
+
+                    continuation.resume(list)
                 })
         }
     }
+
+
 
     override suspend fun add(chatKey: String, message: String) : MessageData {
         return suspendCoroutine<MessageData> { continuation ->

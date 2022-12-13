@@ -3,7 +3,6 @@ package com.hero.recipespace.database.user
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.local.UserLocalDataSource
 import com.hero.recipespace.data.user.remote.UserRemoteDataSource
-import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.mapper.toData
 import com.hero.recipespace.domain.user.mapper.toEntity
@@ -49,14 +48,7 @@ class UserRepositoryImpl @Inject constructor(
         email: String,
         pwd: String
     ) {
-        val userData = UserData(
-            userKey = ,
-            userName = userName,
-            email = email,
-            profileImageUrl = ""
-        )
-
-        val result = userRemoteDataSource.add(userData)
+        val result = userRemoteDataSource.add(userName, email, pwd)
         userLocalDataSource.add(result)
     }
 

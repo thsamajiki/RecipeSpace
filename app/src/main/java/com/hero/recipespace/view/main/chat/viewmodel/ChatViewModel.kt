@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.GetChatByUserKeyUseCase
+import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.usecase.AddMessageUseCase
 import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
@@ -18,6 +19,7 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
+    private val getChatUseCase: GetChatUseCase,
     private val getChatByUserKeyUseCase: GetChatByUserKeyUseCase,
     private val observeMessageListUseCase: ObserveMessageListUseCase,
     private val addMessageUseCase: AddMessageUseCase
@@ -37,13 +39,7 @@ class ChatViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getChatByUserKeyUseCase(otherUserKey)
-                .onSuccess {
-                    _chat.value = it
-                }.onFailure {
-                    it.printStackTrace()
-                    Log.e("ChatViewModel", ": $it")
-                }
+            getChatRoom()
 
             observeMessageListUseCase(chatKey)
                 .flowOn(Dispatchers.Main)
@@ -53,18 +49,42 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getChatRoom() {
+        // chatKey 만 들어올 수도 있고,
+        // otherUserKey 만 들어올 수도 있음.
+
+        if(chatKey.isNotEmpty()) {
+            getChatUseCase(chatKey)
+                .onSuccess {
+                    _chat.value = it
+                }
+                .onFailure {
+                    it.printStackTrace()
+                    Log.e("ChatViewModel", ": $it")
+                }
+        } else if (otherUserKey.isNotEmpty()) {
+            getChatByUserKeyUseCase(otherUserKey)
+                .onSuccess {
+                    _chat.value = it
+                }.onFailure {
+                    it.printStackTrace()
+                    Log.e("ChatViewModel", ": $it")
+                }
+        }
+    }
+
     val message: MutableLiveData<String> = MutableLiveData()
     private val _messageList = MutableLiveData<List<MessageEntity>>()
     val messageList: LiveData<List<MessageEntity>>
         get() = _messageList
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            addMessageUseCase.invoke(chatKey, message)
+            addMessageUseCase.invoke(chatKey, otherUserKey, message)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
     }
 }

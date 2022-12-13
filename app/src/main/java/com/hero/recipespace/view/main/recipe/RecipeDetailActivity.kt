@@ -127,7 +127,9 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
 
-            val intent = ChatActivity.getIntent(this, recipe.key.orEmpty(), recipe.userKey.orEmpty())
+            val intent = ChatActivity.getIntent(
+                this,
+                recipe.userKey.orEmpty())
             startActivity(intent)
         }
 

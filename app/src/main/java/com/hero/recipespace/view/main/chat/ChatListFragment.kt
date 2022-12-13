@@ -1,6 +1,5 @@
 package com.hero.recipespace.view.main.chat
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,21 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
-import com.hero.recipespace.data.chat.ChatData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentChatListBinding
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
 class ChatListFragment: Fragment() {
-
-    private var chatListRegistration: ListenerRegistration? = null
 
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
@@ -54,11 +46,10 @@ class ChatListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userKey = FirebaseAuth.getInstance().currentUser?.uid
-        chatListRegistration = FirebaseData.getInstance().getChatList(userKey!!, this)
 
         setupView()
         setupViewModel()
-        setupChatListChangeListener()
+//        setupChatListChangeListener()
     }
 
     private fun setupView() {
@@ -74,21 +65,21 @@ class ChatListFragment: Fragment() {
     }
 
     // TODO: 2022-12-12 리스너 대체하기
-    private fun setupChatListChangeListener(changeType: DocumentChange.Type?, chatData: ChatData) {
-        when (changeType) {
-            DocumentChange.Type.ADDED -> {
-                chatDataList.add(0, chatData)
-                Collections.sort(chatDataList)
-                chatListAdapter.notifyDataSetChanged()
-            }
-            DocumentChange.Type.MODIFIED -> {
-                chatDataList.remove(chatData)
-                chatDataList.add(0, chatData)
-                chatListAdapter.notifyDataSetChanged()
-            }
-            DocumentChange.Type.REMOVED -> {}
-        }
-    }
+//    private fun setupChatListChangeListener(changeType: DocumentChange.Type?, chatData: ChatData) {
+//        when (changeType) {
+//            DocumentChange.Type.ADDED -> {
+//                chatDataList.add(0, chatData)
+//                Collections.sort(chatDataList)
+//                chatListAdapter.notifyDataSetChanged()
+//            }
+//            DocumentChange.Type.MODIFIED -> {
+//                chatDataList.remove(chatData)
+//                chatDataList.add(0, chatData)
+//                chatListAdapter.notifyDataSetChanged()
+//            }
+//            DocumentChange.Type.REMOVED -> {}
+//        }
+//    }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         chatListAdapter = ChatListAdapter(
@@ -111,8 +102,5 @@ class ChatListFragment: Fragment() {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
-        if (chatListRegistration != null) {
-            chatListRegistration!!.remove()
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.chat
 
+import com.google.firebase.firestore.DocumentChange
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.local.ChatLocalDataSource
 import com.hero.recipespace.data.chat.remote.ChatRemoteDataSource
@@ -32,6 +33,17 @@ class ChatRepositoryImpl @Inject constructor(
         userKey: String
     ) : Flow<List<ChatEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
+            chatRemoteDataSource.observeNewChat(userKey)
+                .collect { (type, chatData) ->
+                    when(type) {
+                        DocumentChange.Type.ADDED -> chatLocalDataSource.add(chatData)
+                        DocumentChange.Type.MODIFIED -> chatLocalDataSource.update(chatData)
+                        DocumentChange.Type.REMOVED -> chatLocalDataSource.remove(chatData)
+                    }
+                }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
             val chatList = chatRemoteDataSource.getDataList(userKey)
             chatLocalDataSource.addAll(chatList)
             cancel()
@@ -45,32 +57,26 @@ class ChatRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun addChat(chatEntity: ChatEntity) {
-        CoroutineScope(Dispatchers.IO).launch {
-            chatRemoteDataSource.add(chatEntity.toData())
-            chatLocalDataSource.add(chatEntity.toData())
-            cancel()
+    override suspend fun addChat(otherUserKey: String,
+                                 message: String) {
+        if (!chatRemoteDataSource.checkExistChatData(otherUserKey)) {
+            val result = chatRemoteDataSource.add(otherUserKey, message)
+            chatLocalDataSource.add(result)
         }
     }
 
     override suspend fun modifyChat(
         chatEntity: ChatEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            chatRemoteDataSource.update(chatEntity.toData())
-            chatLocalDataSource.update(chatEntity.toData())
-            cancel()
-        }
+        chatRemoteDataSource.update(chatEntity.toData())
+        chatLocalDataSource.update(chatEntity.toData())
     }
 
     override suspend fun deleteChat(
         chatEntity: ChatEntity
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            chatRemoteDataSource.remove(chatEntity.toData())
-            chatLocalDataSource.remove(chatEntity.toData())
-            cancel()
-        }
+        chatRemoteDataSource.remove(chatEntity.toData())
+        chatLocalDataSource.remove(chatEntity.toData())
     }
 
     private fun getEntities(data: List<ChatData>): List<ChatEntity> {

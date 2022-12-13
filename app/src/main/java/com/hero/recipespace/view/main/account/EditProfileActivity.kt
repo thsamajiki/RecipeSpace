@@ -80,6 +80,17 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         setupListeners()
     }
 
+    private fun setUserData() {
+        profileImageUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
+        if (TextUtils.isEmpty(profileImageUrl)) {
+            Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
+        } else {
+            Glide.with(this).load(profileImageUrl).into(binding.ivUserProfile)
+        }
+        userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+        binding.editUserName.setText(userName)
+    }
+
     private fun setupViewModel() {
         with(viewModel) { user ->
             requestUpdateProfile(user)
@@ -102,17 +113,6 @@ class EditProfileActivity : AppCompatActivity(), View.OnClickListener,
         }
 
         binding.editUserName.addTextChangedListener(this)
-    }
-
-    private fun setUserData() {
-        profileImageUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-        if (TextUtils.isEmpty(profileImageUrl)) {
-            Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
-        } else {
-            Glide.with(this).load(profileImageUrl).into(binding.ivUserProfile)
-        }
-        userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
-        binding.editUserName.setText(userName)
     }
 
     private fun isNewProfile(): Boolean {

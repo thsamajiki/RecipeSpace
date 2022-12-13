@@ -29,13 +29,10 @@ class FirebaseData {
         }
     }
 
-    fun uploadUserData(
+    fun signUp(
         context: Context,
-        userData: UserData,
-        onCompleteListener: OnCompleteListener<Void>,
+        userData: UserData
     ) {
-        val response: Response<Void> = Response()
-        response.setType(Type.FIRE_STORE)
         val firestore = FirebaseFirestore.getInstance()
         firestore.collection("User")
             .document(userData.userKey)
@@ -165,26 +162,26 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
-    fun getChatList(
-        userKey: String,
-        onChatListChangeListener: OnChatListChangeListener
-    ): ListenerRegistration {
-        val firestore = FirebaseFirestore.getInstance()
-        return firestore.collection("Chat")
-            .whereEqualTo("userList.$userKey", true)
-            .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
-                if (e != null) {
-                    return@EventListener
-                }
-                if (queryDocumentSnapshots != null) {
-                    for (documentChange in queryDocumentSnapshots.documentChanges) {
-                        val chatData: ChatData =
-                            documentChange.document.toObject(ChatData::class.java)
-                        onChatListChangeListener.onChatListChange(documentChange.type, chatData)
-                    }
-                }
-            })
-    }
+//    fun getChatList(
+//        userKey: String,
+//        onChatListChangeListener: OnChatListChangeListener
+//    ): ListenerRegistration {
+//        val fireStore = FirebaseFirestore.getInstance()
+//        return fireStore.collection("Chat")
+//            .whereEqualTo("userList.$userKey", true)
+//            .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
+//                if (e != null) {
+//                    return@EventListener
+//                }
+//                if (queryDocumentSnapshots != null) {
+//                    for (documentChange in queryDocumentSnapshots.documentChanges) {
+//                        val chatData: ChatData =
+//                            documentChange.document.toObject(ChatData::class.java)
+//                        onChatListChangeListener.onChatListChange(documentChange.type, chatData)
+//                    }
+//                }
+//            })
+//    }
 
     fun createChatRoom(
         context: Context,
@@ -192,44 +189,43 @@ class FirebaseData {
         message: String,
         onCompleteListener: OnCompleteListener<ChatData>
     ) {
-        val firestore = FirebaseFirestore.getInstance()
-        val response: Response<ChatData> = Response()
-        response.setType(Type.FIRE_STORE)
-        firestore.runTransaction(Transaction.Function<Any> { transaction ->
-            val myUserKey: String = MyInfoUtil.getInstance().getKey()
-            val myProfileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(context)
-            val myUserName: String = MyInfoUtil.getInstance().getUserName(context)
-            val userRef = firestore.collection("User").document(
+        val fireStore = FirebaseFirestore.getInstance()
+        fireStore.runTransaction(Transaction.Function<Any> { transaction ->
+            val myUserKey: String = MyInfoUtil.getInstance().getKey().orEmpty()
+            val myProfileUrl: String = MyInfoUtil.getInstance().getProfileImageUrl(context).orEmpty()
+            val myUserName: String = MyInfoUtil.getInstance().getUserName(context).orEmpty()
+            val userRef = fireStore.collection("User").document(
                 otherUserKey)
             val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                 ?: return@Function null
             transaction[userRef] = userData
             val userProfiles = HashMap<String, String>()
             userProfiles[myUserKey] = myProfileUrl
-            userProfiles[userData.userKey] = userData.profileImageUrl
+            userProfiles[userData.userKey.orEmpty()] = userData.profileImageUrl.orEmpty()
             val userNames = HashMap<String, String>()
             userNames[myUserKey] = myUserName
-            userNames[userData.getUserKey()] = userData.userName
+            userNames[userData.userKey.orEmpty()] = userData.userName.orEmpty()
             val userList = HashMap<String, Boolean>()
             userList[myUserKey] = true
-            userList[userData.userKey] = true
-            val lastMessage = MessageData()
-            lastMessage.setMessage(message)
-            lastMessage.setUserKey(myUserKey)
-            lastMessage.setTimestamp(Timestamp.now())
-            val chatRef = firestore.collection("Chat").document()
-            val chatData = ChatData()
-            chatData.userProfiles = userProfiles
-            chatData.userNames = userNames
-            chatData.userList = userList
-            chatData.lastMessage = lastMessage
-            chatData.key = chatRef.id
+            userList[userData.userKey.orEmpty()] = true
+            val lastMessage = MessageData(
+                userKey = myUserKey,
+                message = message,
+                timestamp = Timestamp.now()
+            )
+            val chatRef = fireStore.collection("Chat").document()
+            val chatData = ChatData(
+                key = chatRef.id,
+                lastMessage = lastMessage,
+                userProfiles = userProfiles,
+                userNames = userNames,
+                userList = userList
+            )
             transaction[chatRef] = chatData
             val messageRef = chatRef.collection("Messages").document()
             transaction[messageRef] = lastMessage
             chatData
         }).addOnSuccessListener { chatData ->
-            response.setData(chatData)
             onCompleteListener.onComplete(true, response)
         }.addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
@@ -276,34 +272,7 @@ class FirebaseData {
         }
     }
 
-    fun checkExistChatData(
-        otherUserKey: String,
-        onCompleteListener: OnCompleteListener<ChatData>,
-    ) {
-        val myUserKey: String? = MyInfoUtil.getInstance().getKey()
-        val userList: MutableList<String> = ArrayList()
-        userList.add(myUserKey)
-        userList.add(otherUserKey)
-        val firestore = FirebaseFirestore.getInstance()
-        val response: Response<ChatData> = Response()
-        response.setType(Type.FIRE_STORE)
-        firestore.collection("Chat")
-            .whereEqualTo("userList.$otherUserKey", true)
-            .whereEqualTo("userList.$myUserKey", true)
-            .get()
-            .addOnSuccessListener { queryDocumentSnapshots ->
-                if (!queryDocumentSnapshots.isEmpty) {
-                    val documentSnapshotList = queryDocumentSnapshots.documents
-                    if (documentSnapshotList.size > 0) {
-                        val chatData: ChatData =
-                            documentSnapshotList[0].toObject(ChatData::class.java)
-                        response.setData(chatData)
-                    }
-                }
-                onCompleteListener.onComplete(true, response)
-            }
-            .addOnFailureListener { onCompleteListener.onComplete(false, response) }
-    }
+
 
     fun getNoticeList(onCompleteListener: OnCompleteListener<List<NoticeData>>): Task<QuerySnapshot> {
         val response: Response<ArrayList<NoticeData>> = Response()

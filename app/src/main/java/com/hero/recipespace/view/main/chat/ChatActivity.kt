@@ -24,7 +24,10 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     private val viewModel by viewModels<ChatViewModel>()
 
     companion object {
-        fun getIntent(context: Context, chatKey: String, otherUserKey: String) =
+        fun getIntent(
+            context: Context,
+            chatKey: String = "",
+            otherUserKey: String = "") =
             Intent(context, ChatActivity::class.java)
                 .putExtra(ChatViewModel.RECIPE_CHAT_KEY, chatKey)
                 .putExtra(ChatViewModel.EXTRA_OTHER_USER_KEY, otherUserKey)
@@ -92,34 +95,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         binding.editMessage.setText("")
 
         viewModel.sendMessage(message)
-
     }
-
-    // 채팅방에 메시지가 없을 때 첫 메시지를 보낼 때 사용되는 메소드
-    // TODO: 2022-12-12 ViewModel 과 작업하기
-//    private fun createChatRoom() {
-//        val firebaseData: FirebaseData = FirebaseData.getInstance()
-//        val message = binding.editMessage.text.toString()
-//        if (TextUtils.isEmpty(message)) {
-//            Toast.makeText(this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//        binding.editMessage.setText("")
-//
-//
-//        firebaseData.createChatRoom(this,
-//            getOtherUserKey()!!,
-//            message,
-//            object : OnCompleteListener<ChatData?>() {
-//                fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
-//                    if (isSuccess && response.isNotEmpty()) {
-//                        chat = response.getData()
-//                        initRecyclerView(binding.rvChat)
-//                        initMessageRegistration()
-//                    }
-//                }
-//            })
-//    }
 
     object Result {
         const val CHAT_KEY = "chatKey"

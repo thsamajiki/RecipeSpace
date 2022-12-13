@@ -9,7 +9,7 @@ interface UserRemoteDataSource {
 
     suspend fun getDataList() : List<UserData>
 
-    suspend fun add(userData: UserData) : UserData
+    suspend fun add(userName: String, email: String, pwd: String) : UserData
 
     suspend fun update(userData: UserData) : UserData
 

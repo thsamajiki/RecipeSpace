@@ -2,15 +2,19 @@ package com.hero.recipespace.data.chat.service
 
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 import com.hero.recipespace.util.MyInfoUtil
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -65,52 +69,69 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(chatData: ChatData) : ChatData {
-        return suspendCoroutine<ChatData> { continuation ->
+    override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
+        return callbackFlow {
+            firebaseFirestore.collection("Chat")
+                .whereEqualTo("userList.$userKey", true)
+                .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
+                    if (e != null) {
+                        return@EventListener
+                    }
+                    if (queryDocumentSnapshots != null) {
+                        for (documentChange in queryDocumentSnapshots.documentChanges) {
+                            val chatData: ChatData =
+                                documentChange.document.toObject(ChatData::class.java)
+
+                            this.trySend(documentChange.type to chatData)
+                        }
+                    }
+                })
+        }
+    }
+
+    override suspend fun add(otherUserKey: String,
+                             message: String) : ChatData {
+        return suspendCoroutine { continuation ->
             firebaseFirestore.runTransaction(Transaction.Function<Any> { transaction ->
                 val myUserKey: String = firebaseAuth.uid.orEmpty()
-                val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl.toString().orEmpty()
+                val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
                 val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
-                val userRef = firebaseFirestore
-                    .collection("User").document(otherUserKey)
+                val userRef = firebaseFirestore.collection("User").document(
+                    otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
                 transaction[userRef] = userData
                 val userProfiles = HashMap<String, String>()
                 userProfiles[myUserKey] = myProfileUrl
-                userProfiles[userData.userKey] = userData.profileImageUrl
+                userProfiles[userData.userKey.orEmpty()] = userData.profileImageUrl.orEmpty()
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
-                userNames[userData.userKey] = userData.userName
+                userNames[userData.userKey.orEmpty()] = userData.userName.orEmpty()
                 val userList = HashMap<String, Boolean>()
                 userList[myUserKey] = true
-                userList[userData.userKey] = true
+                userList[userData.userKey.orEmpty()] = true
                 val lastMessage = MessageData(
-                    userKey = ,
-                    message = ,
+                    userKey = myUserKey,
+                    message = message,
                     timestamp = Timestamp.now()
                 )
-                lastMessage.setMessage(message)
-                lastMessage.setUserKey(myUserKey)
-                lastMessage.setTimestamp(Timestamp.now())
                 val chatRef = firebaseFirestore.collection("Chat").document()
-                val chatData = ChatData(userProfiles = userProfiles,
-                        userNames = userNames,
-                        userList = userList,
-                        lastMessage = lastMessage,
-                        key = chatRef.id)
-//                chatData.userProfiles = userProfiles
-//                chatData.userNames = userNames
-//                chatData.userList = userList
-//                chatData.lastMessage = lastMessage
-//                chatData.key = chatRef.id
+                val chatData = ChatData(
+                    key = chatRef.id,
+                    lastMessage = lastMessage,
+                    userProfiles = userProfiles,
+                    userNames = userNames,
+                    userList = userList
+                )
                 transaction[chatRef] = chatData
                 val messageRef = chatRef.collection("Messages").document()
                 transaction[messageRef] = lastMessage
                 chatData
             }).addOnSuccessListener { chatData ->
-                continuation.resume(chatData)
-            }.addOnFailureListener { continuation.resumeWithException(it) }
+                continuation.resume(chatData as ChatData)
+            }.addOnFailureListener {
+                continuation.resumeWithException(it)
+            }
         }
     }
 
@@ -120,5 +141,24 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun remove(chatData: ChatData) {
 
+    }
+
+    override suspend fun checkExistChatData(otherUserKey: String): Boolean {
+        return suspendCoroutine { continuation ->
+            val myUserKey: String = firebaseAuth.uid.orEmpty()
+            val userList: MutableList<String> = ArrayList()
+            userList.add(myUserKey)
+            userList.add(otherUserKey)
+            firebaseFirestore.collection("Chat")
+                .whereEqualTo("userList.$otherUserKey", true)
+                .whereEqualTo("userList.$myUserKey", true)
+                .get()
+                .addOnSuccessListener { queryDocumentSnapshots ->
+                    val chatData = queryDocumentSnapshots.documents.firstOrNull()?.toObject(ChatData::class.java)
+                    continuation.resume(chatData != null)
+
+                }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
     }
 }

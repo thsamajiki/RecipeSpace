@@ -4,6 +4,7 @@ import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
 import com.hero.recipespace.database.FirebaseData
+import com.hero.recipespace.domain.chat.repository.ChatRepository
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 class MessageRepositoryImpl @Inject constructor(
     private val messageLocalDataSource: MessageLocalDataSource,
-    private val messageRemoteDataSource: MessageRemoteDataSource
+    private val messageRemoteDataSource: MessageRemoteDataSource,
+    private val chatRepository: ChatRepository
 ) : MessageRepository {
 
     override suspend fun getMessage(messageKey: String) : MessageEntity {
@@ -54,10 +56,15 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun addMessage(
         chatKey: String,
+        otherUserKey: String,
         message: String
     ) {
-        val result = messageRemoteDataSource.add(chatKey, message)
-        messageLocalDataSource.add(result)
+        if (chatKey.isNotEmpty()) { // 기존 채팅방이 있음.
+            val result = messageRemoteDataSource.add(chatKey, message)
+            messageLocalDataSource.add(result)
+        } else if (otherUserKey.isNotEmpty()) {
+            chatRepository.addChat(otherUserKey, message)
+        }
     }
 
     override suspend fun modifyMessage(
