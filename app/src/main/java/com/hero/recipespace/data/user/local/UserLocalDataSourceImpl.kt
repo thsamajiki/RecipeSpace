@@ -28,6 +28,10 @@ class UserLocalDataSourceImpl(
         userDao.updateUser(userData)
     }
 
+//    override suspend fun updateUserInfo(newUserName: String, newProfileImageUrl: String) {
+//        userDao.updateUser(newUserName, newProfileImageUrl)
+//    }
+
     override suspend fun remove(
         userData: UserData
     ) {

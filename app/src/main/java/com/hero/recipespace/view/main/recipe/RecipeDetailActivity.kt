@@ -133,6 +133,13 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(intent)
         }
 
+        binding.ratingBar.setOnClickListener {
+            val recipe: RecipeEntity? = getRecipe()
+            if (recipe != null) {
+                showRatingDialog(recipe)
+            }
+        }
+
         binding.ivOptionMenu.setOnClickListener {
             val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
             if (getRecipe()?.userKey.equals(myUserKey)) {
@@ -169,6 +176,12 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 //        if (!TextUtils.isEmpty(newProfileUrl)) {
 //            editData.put(MyInfoUtil.EXTRA_PROFILE_URL, newProfileUrl);
 //        }
+    }
+
+    private fun showRatingDialog(recipe: RecipeEntity) {
+        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe)
+
+        ratingDialogFragment.show(supportFragmentManager, RatingDialogFragment.TAG)
     }
 
     private fun intentPhoto(photoUrl: String?) {

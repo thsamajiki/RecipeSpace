@@ -6,17 +6,17 @@ import com.hero.recipespace.domain.notice.entity.NoticeEntity
 fun NoticeData.toEntity(): NoticeEntity {
     return NoticeEntity(
         key = key,
-        noticeTitle = noticeTitle,
-        noticeDesc = noticeDesc,
-        noticeDate = noticeDate
+        title = title,
+        desc = desc,
+        postDate = postDate
     )
 }
 
 fun NoticeEntity.toData(): NoticeData {
     return NoticeData(
         key = key,
-        noticeTitle = noticeTitle,
-        noticeDesc = noticeDesc,
-        noticeDate = noticeDate
+        title = title,
+        desc = desc,
+        postDate = postDate
     )
 }

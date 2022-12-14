@@ -7,7 +7,7 @@ fun ChatData.toEntity(): ChatEntity {
     return ChatEntity(
         key = key,
         lastMessage = lastMessage,
-        userProfiles = userProfiles,
+        userProfileImages = userProfileImages,
         userNames = userNames,
         userList = userList
     )
@@ -17,7 +17,7 @@ fun ChatEntity.toData(): ChatData {
     return ChatData(
         key = key,
         lastMessage = lastMessage,
-        userProfiles = userProfiles,
+        userProfileImages = userProfileImages,
         userNames = userNames,
         userList = userList
     )

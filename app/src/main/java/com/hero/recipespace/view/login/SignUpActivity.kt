@@ -90,8 +90,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         val userName: String = binding.editUsername.text.toString()
         val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
         val userData = UserData(
-            userKey = firebaseUser?.uid,
-            userName = userName,
+            key = firebaseUser?.uid,
+            name = userName,
             email = firebaseUser?.email,
             profileImageUrl = firebaseUser?.photoUrl.toString()
         )

@@ -59,6 +59,11 @@ class UserRepositoryImpl @Inject constructor(
         userLocalDataSource.update(result)
     }
 
+//    override suspend fun updateUserInfo(newUserName: String, newProfileImageUrl: String) {
+//        val result = userRemoteDataSource.update(newUserName, newProfileImageUrl)
+//        userLocalDataSource.update(result)
+//    }
+
     override suspend fun deleteUser(
         userEntity: UserEntity
     ) {

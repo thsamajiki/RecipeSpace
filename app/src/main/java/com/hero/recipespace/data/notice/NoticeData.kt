@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "notice_db")
 data class NoticeData(
     val key: String? = null,
-    val noticeTitle: String? = null,
-    val noticeDesc: String? = null,
-    val noticeDate: String? = null
+    val title: String? = null,
+    val desc: String? = null,
+    val postDate: String? = null
 ) : Parcelable {
 
 }

@@ -5,16 +5,18 @@ import com.hero.recipespace.domain.user.entity.UserEntity
 
 fun UserData.toEntity(): UserEntity {
     return UserEntity(
-        userKey = userKey,
-        userName = userName,
+        key = key,
+        name = name,
+        email = email,
         profileImageUrl = profileImageUrl
     )
 }
 
 fun UserEntity.toData(): UserData {
     return UserData(
-        userKey = userKey,
-        userName = userName,
+        key = key,
+        name = name,
+        email = email,
         profileImageUrl = profileImageUrl
     )
 }

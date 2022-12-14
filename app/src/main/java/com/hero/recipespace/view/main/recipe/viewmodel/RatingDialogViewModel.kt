@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RatingViewModel @Inject constructor(
+class RatingDialogViewModel @Inject constructor(
     application: Application,
     private val getRateUseCase: GetRateUseCase,
     private val addRateUseCase: AddRateUseCase,

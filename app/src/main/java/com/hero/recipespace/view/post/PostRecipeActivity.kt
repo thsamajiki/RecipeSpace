@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -38,6 +39,7 @@ import com.hero.recipespace.util.RealPathUtil
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PostRecipeActivity : AppCompatActivity(),
@@ -134,7 +136,9 @@ class PostRecipeActivity : AppCompatActivity(),
 
        binding.tvComplete.setOnClickListener {
            uploadImage()
-           viewModel.postRecipe()
+           lifecycleScope.launch {
+               viewModel.postRecipe()
+           }
        }
     }
 

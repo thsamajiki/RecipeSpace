@@ -23,8 +23,8 @@ class UserRemoteDataSourceImpl(
         }
 
         val userEntity = UserData(
-            userKey = firebaseUser.uid,
-            userName = firebaseUser.displayName,
+            key = firebaseUser.uid,
+            name = firebaseUser.displayName,
             email = firebaseUser.email,
             profileImageUrl = profileImageUrl
         )
@@ -51,6 +51,10 @@ class UserRemoteDataSourceImpl(
     ) : UserData {
         return userService.update(userData)
     }
+
+//    override suspend fun update(newUserName: String, newProfileImageUrl: String): UserData {
+//        return userService.update(newUserName, newProfileImageUrl)
+//    }
 
     override suspend fun remove(
         userData: UserData

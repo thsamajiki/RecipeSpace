@@ -13,7 +13,7 @@ data class ChatEntity(
     @ColumnInfo(name = "lastMessage")
     val lastMessage: MessageData? = null,
     @ColumnInfo(name = "userProfiles")
-    val userProfiles: HashMap<String, String>? = null,
+    val userProfileImages: HashMap<String, String>? = null,
     @ColumnInfo(name = "userNames")
     val userNames: HashMap<String, String>? = null,
     @ColumnInfo(name = "userList")

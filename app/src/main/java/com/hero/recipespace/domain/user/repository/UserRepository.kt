@@ -18,6 +18,8 @@ interface UserRepository {
 
     suspend fun updateUser(userEntity: UserEntity)
 
+//    suspend fun updateUserInfo(newUserName: String = "", newProfileImageUrl: String = "")
+
     suspend fun deleteUser(userEntity: UserEntity)
 
     suspend fun signOut()

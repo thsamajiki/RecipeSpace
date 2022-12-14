@@ -15,6 +15,8 @@ interface UserService {
 
     suspend fun update(userData: UserData) : UserData
 
+//    suspend fun update(newUserName: String, newProfileImageUrl: String) : UserData
+
     suspend fun remove(userData: UserData) : UserData
 
     suspend fun signOut()

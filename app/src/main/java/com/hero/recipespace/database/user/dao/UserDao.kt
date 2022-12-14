@@ -6,10 +6,10 @@ import com.hero.recipespace.data.user.UserData
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user_db ORDER BY userKey ASC")
+    @Query("SELECT * FROM user_db ORDER BY `key` ASC")
     fun getAllUsers() : LiveData<List<UserData>>
 
-    @Query("SELECT * FROM user_db WHERE userKey = :key limit 1")
+    @Query("SELECT * FROM user_db WHERE `key` = :key limit 1")
     suspend fun getUserFromKey(key: String?): UserData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

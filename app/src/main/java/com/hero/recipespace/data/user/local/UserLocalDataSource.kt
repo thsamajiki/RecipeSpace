@@ -16,6 +16,8 @@ interface UserLocalDataSource {
 
     suspend fun update(userData: UserData)
 
+//    suspend fun updateUserInfo(newUserName: String, newProfileImageUrl: String)
+
     suspend fun remove(userData: UserData)
 
     suspend fun signOut()

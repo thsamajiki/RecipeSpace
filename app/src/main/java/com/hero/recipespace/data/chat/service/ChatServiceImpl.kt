@@ -9,10 +9,6 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.listener.Type
-import com.hero.recipespace.util.MyInfoUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
@@ -103,13 +99,13 @@ class ChatServiceImpl @Inject constructor(
                 transaction[userRef] = userData
                 val userProfiles = HashMap<String, String>()
                 userProfiles[myUserKey] = myProfileUrl
-                userProfiles[userData.userKey.orEmpty()] = userData.profileImageUrl.orEmpty()
+                userProfiles[userData.key.orEmpty()] = userData.profileImageUrl.orEmpty()
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
-                userNames[userData.userKey.orEmpty()] = userData.userName.orEmpty()
+                userNames[userData.key.orEmpty()] = userData.name.orEmpty()
                 val userList = HashMap<String, Boolean>()
                 userList[myUserKey] = true
-                userList[userData.userKey.orEmpty()] = true
+                userList[userData.key.orEmpty()] = true
                 val lastMessage = MessageData(
                     userKey = myUserKey,
                     message = message,
@@ -119,7 +115,7 @@ class ChatServiceImpl @Inject constructor(
                 val chatData = ChatData(
                     key = chatRef.id,
                     lastMessage = lastMessage,
-                    userProfiles = userProfiles,
+                    userProfileImages = userProfiles,
                     userNames = userNames,
                     userList = userList
                 )

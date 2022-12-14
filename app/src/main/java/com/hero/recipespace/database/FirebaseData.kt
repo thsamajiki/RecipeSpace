@@ -29,21 +29,23 @@ class FirebaseData {
         }
     }
 
+    // UserServiceImpl 의 add 메소드로 옮김
     fun signUp(
         context: Context,
         userData: UserData
     ) {
         val firestore = FirebaseFirestore.getInstance()
         firestore.collection("User")
-            .document(userData.userKey)
+            .document(userData.key)
             .set(userData)
             .addOnSuccessListener {
-                MyInfoUtil.getInstance().putUserName(context, userData.userName)
+                MyInfoUtil.getInstance().putUserName(context, userData.name)
                 onCompleteListener.onComplete(true, response)
             }
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // RecipeServiceImpl 의 add 메소드로 옮김
     fun uploadRecipeData(
         recipeData: RecipeData,
         onCompleteListener: OnCompleteListener<RecipeData>,
@@ -60,6 +62,7 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // RecipeServiceImpl 의 update 메소드로 옮김
     fun modifyRecipeData(
         recipeKey: String,
         editData: HashMap<String, Any>,
@@ -75,6 +78,7 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // RecipeServiceImpl 의 delete 메소드로 옮김
     fun deleteRecipeData(
         recipeKey: String,
         editData: HashMap<String, Any>,
@@ -90,6 +94,7 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // RecipeServiceImpl 의 getRecipeList 메소드로 옮김
     fun downloadRecipeData(onCompleteListener: OnCompleteListener<List<RecipeData>>) {
         val response: Response<List<RecipeData>> = Response()
         response.setType(Type.FIRE_STORE)
@@ -112,6 +117,7 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // RateServiceImpl 의 add 메소드로 옮김
     fun uploadRating(
         recipeData: RecipeData,
         rateData: RateData,
@@ -147,6 +153,7 @@ class FirebaseData {
         }.addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // UserServiceImpl 의 update 메소드로 옮김
     fun updateUserData(
         userKey: String,
         editData: HashMap<String, Any>,
@@ -162,6 +169,7 @@ class FirebaseData {
             .addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // ChatServiceImpl 의 getDataList 메소드로 옮김
 //    fun getChatList(
 //        userKey: String,
 //        onChatListChangeListener: OnChatListChangeListener
@@ -183,6 +191,7 @@ class FirebaseData {
 //            })
 //    }
 
+    // ChatServiceImpl 의 add 메소드로 옮김
     fun createChatRoom(
         context: Context,
         otherUserKey: String,
@@ -201,13 +210,13 @@ class FirebaseData {
             transaction[userRef] = userData
             val userProfiles = HashMap<String, String>()
             userProfiles[myUserKey] = myProfileUrl
-            userProfiles[userData.userKey.orEmpty()] = userData.profileImageUrl.orEmpty()
+            userProfiles[userData.key.orEmpty()] = userData.profileImageUrl.orEmpty()
             val userNames = HashMap<String, String>()
             userNames[myUserKey] = myUserName
-            userNames[userData.userKey.orEmpty()] = userData.userName.orEmpty()
+            userNames[userData.key.orEmpty()] = userData.name.orEmpty()
             val userList = HashMap<String, Boolean>()
             userList[myUserKey] = true
-            userList[userData.userKey.orEmpty()] = true
+            userList[userData.key.orEmpty()] = true
             val lastMessage = MessageData(
                 userKey = myUserKey,
                 message = message,
@@ -217,7 +226,7 @@ class FirebaseData {
             val chatData = ChatData(
                 key = chatRef.id,
                 lastMessage = lastMessage,
-                userProfiles = userProfiles,
+                userProfileImages = userProfiles,
                 userNames = userNames,
                 userList = userList
             )
@@ -230,9 +239,10 @@ class FirebaseData {
         }.addOnFailureListener { onCompleteListener.onComplete(false, response) }
     }
 
+    // MessageServiceImpl 의 getDataList 메소드로 옮김
     fun getMessageList(
         chatDataKey: String?,
-        onMessageListener: OnMessageListener,
+        onMessageListener: OnMessageListener
     ): ListenerRegistration? {
         val firestore = FirebaseFirestore.getInstance()
         return firestore.collection("Chat")
@@ -256,6 +266,7 @@ class FirebaseData {
             })
     }
 
+    // MessageServiceImpl 의 add 메소드로 옮김
     fun sendMessage(message: String, chatData: ChatData) {
         val messageData = MessageData()
         val myUserKey: String = MyInfoUtil.getInstance().getKey()
@@ -272,8 +283,7 @@ class FirebaseData {
         }
     }
 
-
-
+    // NoticeServiceImpl 의 getDataList 메소드로 옮김
     fun getNoticeList(onCompleteListener: OnCompleteListener<List<NoticeData>>): Task<QuerySnapshot> {
         val response: Response<ArrayList<NoticeData>> = Response()
         response.setType(Type.FIRE_STORE)

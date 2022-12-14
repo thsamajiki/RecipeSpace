@@ -9,7 +9,9 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListAdapter
 import com.hero.recipespace.view.main.chat.ChatAdapter
 import com.hero.recipespace.view.main.chat.ChatListAdapter
+import com.hero.recipespace.view.main.recipe.EditRecipeImageListAdapter
 import com.hero.recipespace.view.main.recipe.RecipeListAdapter
+import com.hero.recipespace.view.post.PostRecipeImageListAdapter
 
 @BindingAdapter("chatListItems")
 fun RecyclerView.setChatListItems(items: List<ChatEntity>?) {
@@ -33,6 +35,22 @@ fun RecyclerView.setRecipeListItems(items: List<RecipeEntity>?) {
 
     val adapter = this.adapter as? RecipeListAdapter
     adapter?.setRecipeList(items)
+}
+
+@BindingAdapter("recipeImageItems")
+fun RecyclerView.setRecipeImageListItems(items: List<String>?) {
+    items ?: return
+
+    val adapter = this.adapter as? PostRecipeImageListAdapter
+    adapter?.setRecipeImageList(items)
+}
+
+@BindingAdapter("recipeImageItems")
+fun RecyclerView.setEditRecipeImageListItems(items: List<String>?) {
+    items ?: return
+
+    val adapter = this.adapter as? EditRecipeImageListAdapter
+    adapter?.setRecipeImageList(items)
 }
 
 @BindingAdapter("noticeItems")

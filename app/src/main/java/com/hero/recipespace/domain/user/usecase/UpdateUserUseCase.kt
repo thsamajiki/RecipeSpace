@@ -10,4 +10,8 @@ class UpdateUserUseCase @Inject constructor(
     suspend operator fun invoke(userEntity: UserEntity) {
         userRepository.updateUser(userEntity)
     }
+
+    suspend operator fun invoke(newUserName: String = "", newProfileImageUrl: String = "") {
+        userRepository.updateUserInfo(newUserName, newProfileImageUrl)
+    }
 }

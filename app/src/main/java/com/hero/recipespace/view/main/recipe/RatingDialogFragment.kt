@@ -18,7 +18,7 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
-import com.hero.recipespace.view.main.recipe.viewmodel.RatingViewModel
+import com.hero.recipespace.view.main.recipe.viewmodel.RatingDialogViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,7 +32,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         requireArguments().getParcelable(KEY_RECIPE)!!
     }
 
-    private val viewModel by viewModels<RatingViewModel>()
+    private val viewModel by viewModels<RatingDialogViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,9 +93,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     }
 
     private fun makeRateData(rate: Float): RateEntity {
-        val userKey: String = FirebaseAuth.getInstance().currentUser.uid
-        val userName: String = FirebaseAuth.getInstance().currentUser.displayName.toString()
-        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser.photoUrl.toString()
+        val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
         val rateData = RateEntity(
             key = ,
             userKey = userKey,
