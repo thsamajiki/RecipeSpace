@@ -1,13 +1,12 @@
 package com.hero.recipespace.authentication
 
 import android.content.Context
-import android.text.TextUtils
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
-import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 
 class FirebaseAuthentication @Inject constructor(
@@ -74,23 +73,23 @@ class FirebaseAuthentication @Inject constructor(
         return FirebaseAuth.getInstance().currentUser
     }
 
-    fun autoLogin(context: Context?) {
-        val firebaseUser = getCurrentUser()
-        if (firebaseUser == null) {
-            onCompleteListener.onComplete(false, response)
-        } else {
-            val email: String = MyInfoUtil.getInstance().getEmail(context)
-            val pwd: String = MyInfoUtil.getInstance().getPwd(context)
-            if (TextUtils.isEmpty(email)) {
-                onCompleteListener?.onComplete(false, response)
-                return
-            }
-            val emailAuthCredential = EmailAuthProvider.getCredential(email, pwd)
-            firebaseUser.reauthenticate(emailAuthCredential)
-                .addOnSuccessListener { onCompleteListener?.onComplete(true, response) }
-                .addOnFailureListener { onCompleteListener?.onComplete(false, response) }
-        }
-    }
+//    fun autoLogin(context: Context?) {
+//        val firebaseUser = getCurrentUser()
+//        if (firebaseUser == null) {
+//            onCompleteListener.onComplete(false, response)
+//        } else {
+//            val email: String = MyInfoUtil.getInstance().getEmail(context)
+//            val pwd: String = MyInfoUtil.getInstance().getPwd(context)
+//            if (TextUtils.isEmpty(email)) {
+//                onCompleteListener?.onComplete(false, response)
+//                return
+//            }
+//            val emailAuthCredential = EmailAuthProvider.getCredential(email, pwd)
+//            firebaseUser.reauthenticate(emailAuthCredential)
+//                .addOnSuccessListener { onCompleteListener?.onComplete(true, response) }
+//                .addOnFailureListener { onCompleteListener?.onComplete(false, response) }
+//        }
+//    }
 
     fun signOut() {
         firebaseAuth.signOut()
