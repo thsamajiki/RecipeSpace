@@ -33,7 +33,7 @@ class FirebaseAuthentication @Inject constructor(
 
     }
 
-    fun login(context: Context, email: String, pwd: String, onResult: (Boolean) -> Unit) {
+    fun login(context: Context, email: String, pwd: String) {
 //        val response: Response<Void> = Response()
 //        response.setType(Type.AUTH)
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, pwd)
@@ -41,11 +41,9 @@ class FirebaseAuthentication @Inject constructor(
 //                MyInfoUtil.getInstance().putEmail(context, email)
 //                MyInfoUtil.getInstance().putPwd(context, pwd)
 //                getUserInfo(context)
-                onResult(true)
             }
             .addOnFailureListener {
 //                onCompleteListener?.onComplete(false, response)
-                onResult(false)
             }
     }
 
