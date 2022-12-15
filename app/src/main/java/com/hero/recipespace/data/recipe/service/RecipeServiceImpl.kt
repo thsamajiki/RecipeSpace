@@ -1,14 +1,18 @@
 package com.hero.recipespace.data.recipe.service
 
+import android.content.ContentResolver
+import android.net.Uri
+import android.text.TextUtils
+import android.webkit.MimeTypeMap
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.listener.Type
+import com.hero.recipespace.storage.FirebaseStorageApi
+import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -66,12 +70,13 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(profileImageUrl : String,
-                             userName: String,
-                             userKey: String,
-                             desc: String,
-                             photoUrlList: List<String>,
-                             postDate: Timestamp
+    override suspend fun add(
+        profileImageUrl: String,
+        userName: String,
+        userKey: String,
+        desc: String,
+        photoUrlList: List<String>,
+        postDate: Timestamp,
     ) : RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
             val documentReference = firebaseFirestore.collection("RecipeData").document()
@@ -92,7 +97,57 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun uploadImages(
+        recipePhotoPathList: List<String>,
+        progress: (Float) -> Unit,
+    ): List<String> {
+        return suspendCoroutine { continuation ->
+            // TODO: 2022-12-15 멀티 이미지 파일 한 번에 올리는 방법 찾기
+            val file = Uri.fromFile(File(filePathList))
+            val storageRef =
+                FirebaseStorage.getInstance().reference.child(FirebaseStorageApi.DEFAULT_IMAGE_PATH + file.lastPathSegment)
+
+            val uploadTask = storageRef.putFile(file)
+
+            uploadTask
+                .addOnProgressListener { taskSnapshot ->
+                    val percent =
+                        taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
+                    progress(percent)
+                }.continueWithTask { task ->
+                    if (!task.isSuccessful) {
+                        throw task.exception!!
+                    }
+                    storageRef.downloadUrl
+                }
+                .addOnSuccessListener { uri ->
+                    continuation.resume(listOf(uri.toString()))
+
+                }.addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    //파일타입 가져오기
+    private fun getFileExtension(uri: Uri): String? {
+        val cr: ContentResolver = getContentResolver()
+        val mime = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(cr.getType(uri))
+    }
+
     override suspend fun update(recipeData: RecipeData) : RecipeData {
+        val editData = HashMap<String, Any>()
+
+        // FIXME: 2022-12-15 PhotoList에 갱신된 데이터 넣는 것 수정하기
+        for (i: Int in 0 until recipeData.photoUrlList.orEmpty().size) {
+            if (!TextUtils.isEmpty(recipeData.photoUrlList.orEmpty()[i])) {
+                editData["photoUrlList"] = recipeData.photoUrlList as List<String>
+            }
+        }
+
+        editData["desc"] = recipeData.desc as String
+
         return suspendCoroutine<RecipeData> { continuation ->
             firebaseFirestore.collection("RecipeData")
                 .document(recipeData.key.orEmpty())

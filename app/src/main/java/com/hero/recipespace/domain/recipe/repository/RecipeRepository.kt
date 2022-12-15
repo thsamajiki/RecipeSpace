@@ -1,7 +1,8 @@
 package com.hero.recipespace.domain.recipe.repository
 
-import com.google.firebase.Timestamp
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
+import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository {
@@ -9,15 +10,11 @@ interface RecipeRepository {
 
     fun observeRecipeList(): Flow<List<RecipeEntity>>
 
-    suspend fun addRecipe(profileImageUrl : String,
-                          userName: String,
-                          userKey: String,
-                          desc: String,
-                          photoUrlList: List<String>,
-                          postDate: Timestamp
-    )
+    suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
 
     suspend fun modifyRecipe(recipeEntity: RecipeEntity)
+
+    suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
 
     suspend fun deleteRecipe(recipeEntity: RecipeEntity)
 }

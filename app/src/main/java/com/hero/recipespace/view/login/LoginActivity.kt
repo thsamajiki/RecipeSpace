@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.authentication.FirebaseAuthentication
 import com.hero.recipespace.databinding.ActivityLoginBinding
@@ -16,6 +17,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.login.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
@@ -46,7 +48,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
 
+            }
         }
     }
 
@@ -62,8 +66,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun requestLogin() {
-        val email: String = binding.editEmail.text.toString()
-        val pwd: String = binding.editPwd.text.toString()
+        val email: String = binding.editEmail.text.toString().trim()
+        val pwd: String = binding.editPwd.text.toString().trim()
+
         if (!checkEmailValid(email)) {
             Toast.makeText(this, "이메일 양식을 확인해주세요", Toast.LENGTH_SHORT).show()
             return
@@ -81,7 +86,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         } else Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
+    fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
         if (isSuccess) {
             val intent = MainActivity.getIntent(this)
             startActivity(intent)

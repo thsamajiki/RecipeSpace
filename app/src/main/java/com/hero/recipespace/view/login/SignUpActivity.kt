@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.authentication.FirebaseAuthentication
@@ -19,6 +20,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.login.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
@@ -50,7 +52,9 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
 
+            }
         }
     }
 
@@ -61,9 +65,9 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun requestSignUp() {
-        val email = binding.editEmail.text.toString()
-        val pwd: String = binding.editPwd.text.toString()
-        val userName: String = binding.editUsername.text.toString()
+        val email = binding.editEmail.text.toString().trim()
+        val pwd: String = binding.editPwd.text.toString().trim()
+        val userName: String = binding.editUsername.text.toString().trim()
         if (!checkEmailValid(email)) {
             Toast.makeText(this, "이메일 양식을 확인해주세요", Toast.LENGTH_SHORT).show()
             return
@@ -73,7 +77,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
         if (TextUtils.isEmpty(userName)) {
-            Toast.makeText(this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "사용자명을 입력해주세요", Toast.LENGTH_SHORT).show()
             return
         }
 

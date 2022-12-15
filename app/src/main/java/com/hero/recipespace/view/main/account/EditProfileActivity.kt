@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
@@ -26,13 +27,14 @@ import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.OnFileUploadListener
 import com.hero.recipespace.listener.Response
-import com.hero.recipespace.storage.FirebaseStorageApi
 import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.main.account.viewmodel.EditProfileUiState
 import com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EditProfileActivity : AppCompatActivity(),
@@ -43,6 +45,9 @@ class EditProfileActivity : AppCompatActivity(),
     private var photoPath: String? = null
     private var profileImageUrl: String? = null
     private var userName: String? = null
+
+    private var newUserName: String? = null
+    private var newProfileImageUrl: String = ""
 
     private val viewModel by viewModels<EditProfileViewModel>()
 
@@ -60,6 +65,7 @@ class EditProfileActivity : AppCompatActivity(),
     companion object {
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
+        const val EXTRA_USER_ENTITY = "user"
 
         private const val USER_KEY = "userKey"
 
@@ -93,8 +99,38 @@ class EditProfileActivity : AppCompatActivity(),
     }
 
     private fun setupViewModel() {
-        with(viewModel) { user ->
-            requestUpdateProfile(user)
+        with(viewModel) {
+            lifecycleScope.launch {
+                loadingState.collect { state ->
+                    when (state) {
+                        LoadingState.Hidden -> hideLoading()
+                        LoadingState.Idle -> {}
+                        LoadingState.Loading -> showLoading()
+                        is LoadingState.Progress -> setProgressPercent(state.value)
+                    }
+                }
+            }
+
+            lifecycleScope.launch {
+                editProfileUiState.collect { state ->
+                    when (state) {
+                        is EditProfileUiState.Success -> {
+                            val intent = Intent()
+                            intent.putExtra(EXTRA_USER_ENTITY, state.user)
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+                        is EditProfileUiState.Failed -> {
+                            Toast.makeText(
+                                this@EditProfileActivity,
+                                "프로필 사진 변경에 실패했습니다. 다시 시도해주세요 ${state.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        EditProfileUiState.Idle -> {}
+                    }
+                }
+            }
         }
     }
 
@@ -104,7 +140,7 @@ class EditProfileActivity : AppCompatActivity(),
         }
         binding.tvComplete.setOnClickListener {
             if (isNewProfile()) {
-                uploadProfileImage()
+                viewModel.requestUpdateProfile(binding.editUserName.text.toString(), newProfileImageUrl)
             }
         }
         binding.fabProfileEdit.setOnClickListener {
@@ -160,13 +196,6 @@ class EditProfileActivity : AppCompatActivity(),
         }
     }
 
-    private fun uploadProfileImage() {
-        showLoading()
-        FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
-        FirebaseStorageApi.getInstance()
-            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
-    }
-
     private fun updateUserData(newProfileImageUrl: String) {
         val editData = HashMap<String, Any>()
         if (!TextUtils.isEmpty(newProfileImageUrl)) {
@@ -194,17 +223,13 @@ class EditProfileActivity : AppCompatActivity(),
             })
     }
 
-    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         hideLoading()
         if (isSuccess) {
             updateUserData(downloadUrl.orEmpty())
         } else {
             Toast.makeText(this, "사진 업로드에 실패했습니다", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    override suspend fun onFileUploadProgress(percent: Float) {
-        setProgressPercent(percent.toInt())
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

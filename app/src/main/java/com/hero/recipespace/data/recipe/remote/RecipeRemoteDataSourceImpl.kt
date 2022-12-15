@@ -1,8 +1,11 @@
 package com.hero.recipespace.data.recipe.remote
 
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.service.RecipeService
+import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
+import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import javax.inject.Inject
 
 class RecipeRemoteDataSourceImpl @Inject constructor(
@@ -16,20 +19,60 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
         return recipeService.getRecipeList()
     }
 
-    override suspend fun add(profileImageUrl : String,
-                             userName: String,
-                             userKey: String,
-                             desc: String,
-                             photoUrlList: List<String>,
-                             postDate: Timestamp
-    ) : RecipeData {
-        return recipeService.add(profileImageUrl, userName, userKey, desc, photoUrlList, postDate)
+    override suspend fun add(
+        request: UploadRecipeRequest,
+        onProgress: (Float) -> Unit
+        ) : RecipeData {
+
+        val downloadUrls = recipeService.uploadImages(
+            request.recipePhotoPathList,
+            progress = onProgress
+        )
+
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
+        val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val profileImageUrl: String
+        = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
+
+        return recipeService.add(
+            profileImageUrl,
+            userName,
+            userKey,
+            request.content,
+            downloadUrls,
+            Timestamp.now()
+        )
     }
 
     override suspend fun update(
         recipeData: RecipeData
     ) : RecipeData {
         return recipeService.update(recipeData)
+    }
+
+    // 레시피를 업로드하는 것과 유사하게 함수를 짜야 할수도 있어서 만들어놓음
+    override suspend fun update(
+        request: UpdateRecipeRequest,
+        onProgress: (Float) -> Unit
+    ): RecipeData {
+        val downloadUrls = recipeService.uploadImages(
+            request.recipePhotoPathList,
+            progress = onProgress
+        )
+
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
+        val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val profileImageUrl: String
+                = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
+
+        return recipeService.update(
+            profileImageUrl,
+            userName,
+            userKey,
+            request.content,
+            downloadUrls,
+            Timestamp.now()
+        )
     }
 
     override suspend fun remove(

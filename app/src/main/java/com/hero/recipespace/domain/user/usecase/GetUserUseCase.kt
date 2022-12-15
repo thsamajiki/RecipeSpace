@@ -9,4 +9,9 @@ class GetUserUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): UserEntity =
         userRepository.getAccountProfile()
+
+    suspend operator fun invoke(userKey: String): Result<UserEntity> =
+        kotlin.runCatching {
+            userRepository.getUser(userKey)
+        }
 }

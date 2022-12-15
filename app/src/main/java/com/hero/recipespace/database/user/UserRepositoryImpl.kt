@@ -7,6 +7,7 @@ import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.mapper.toData
 import com.hero.recipespace.domain.user.mapper.toEntity
 import com.hero.recipespace.domain.user.repository.UserRepository
+import com.hero.recipespace.domain.user.request.UpdateUserRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -63,6 +64,14 @@ class UserRepositoryImpl @Inject constructor(
 //        val result = userRemoteDataSource.update(newUserName, newProfileImageUrl)
 //        userLocalDataSource.update(result)
 //    }
+
+    // 레시피를 업로드하는 것과 유사하게 함수를 짜야할 수도 있어서 만들어놓음
+    override suspend fun updateUser(request: UpdateUserRequest, onProgress: (Float) -> Unit) : UserEntity {
+        val result = userRemoteDataSource.updateUser(request, onProgress)
+        userLocalDataSource.update(result)
+
+        return result.toEntity()
+    }
 
     override suspend fun deleteUser(
         userEntity: UserEntity

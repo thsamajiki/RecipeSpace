@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.service.UserService
+import com.hero.recipespace.domain.user.request.UpdateUserRequest
 
 class UserRemoteDataSourceImpl(
     private val userService: UserService
@@ -55,6 +56,25 @@ class UserRemoteDataSourceImpl(
 //    override suspend fun update(newUserName: String, newProfileImageUrl: String): UserData {
 //        return userService.update(newUserName, newProfileImageUrl)
 //    }
+
+    override suspend fun updateUser(
+        request: UpdateUserRequest,
+        onProgress: (Float) -> Unit
+    ): UserData {
+        val newUserName: String = request.newProfileImageUrl
+        val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val newProfileImageUrl: String
+                = request.newProfileImageUrl
+
+        val newUserData = UserData(
+            key = FirebaseAuth.getInstance().currentUser?.uid.orEmpty(),
+            name = newUserName,
+            email = FirebaseAuth.getInstance().currentUser?.email.orEmpty(),
+            profileImageUrl = newProfileImageUrl
+        )
+
+        return userService.update(newUserData)
+    }
 
     override suspend fun remove(
         userData: UserData

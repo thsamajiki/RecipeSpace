@@ -17,25 +17,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditRecipeBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.storage.FirebaseStorageApi
-import com.hero.recipespace.util.LoadingProgress
-import com.hero.recipespace.util.MyInfoUtil
-import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.ext.showLoading
+import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.main.recipe.viewmodel.EditRecipeUiState
 import com.hero.recipespace.view.main.recipe.viewmodel.EditRecipeViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
-import com.hero.recipespace.view.post.PostRecipeImageListAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EditRecipeActivity : AppCompatActivity(),
@@ -77,6 +71,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
     companion object {
         private const val PERMISSION_REQ_CODE = 1010
+        const val EXTRA_RECIPE_ENTITY = "recipe"
         private const val RECIPE_KEY = "recipeKey"
 
         fun getIntent(context: Context, recipeKey: String) =
@@ -114,7 +109,37 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
+                loadingState.collect { state ->
+                    when (state) {
+                        LoadingState.Hidden -> hideLoading()
+                        LoadingState.Idle -> {}
+                        LoadingState.Loading -> showLoading()
+                        is LoadingState.Progress -> setProgressPercent(state.value)
+                    }
+                }
+            }
 
+            lifecycleScope.launch {
+                editRecipeUiState.collect { state ->
+                    when (state) {
+                        is EditRecipeUiState.Success -> {
+                            val intent = Intent()
+                            intent.putExtra(EXTRA_RECIPE_ENTITY, state.recipe)
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+                        is EditRecipeUiState.Failed -> {
+                            Toast.makeText(
+                                this@EditRecipeActivity,
+                                "업로드에 실패했습니다. 다시 시도해주세요 ${state.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        EditRecipeUiState.Idle -> {}
+                    }
+                }
+            }
         }
     }
 
@@ -123,7 +148,7 @@ class EditRecipeActivity : AppCompatActivity(),
             finish()
         }
         binding.tvComplete.setOnClickListener {
-            uploadImage()
+            viewModel.updateRecipe(binding.editContent.text.toString(), recipePhotoPathList)
         }
         binding.btnPhoto.setOnClickListener {
             if (checkStoragePermission()) {
@@ -176,57 +201,6 @@ class EditRecipeActivity : AppCompatActivity(),
 
     override fun afterTextChanged(s: Editable) {
         binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
-    }
-
-    private fun uploadImage() {
-        LoadingProgress.initProgressDialog(this)
-        FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
-        FirebaseStorageApi.getInstance()
-            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, photoPath)
-    }
-
-    override suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
-        if (isSuccess) {
-            Toast.makeText(this, "수정 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
-            val userKey: String? = FirebaseAuth.getInstance().currentUser?.uid
-            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-            val recipeData = RecipeData(
-                key = ,
-                profileImageUrl = profileImageUrl,
-                userName = userName,
-                userKey = userKey,
-                desc = binding.editContent.text.toString(),
-                photoUrlList = ,
-                postDate = Timestamp.now(),
-                rate = ,
-                totalRatingCount =
-            )
-            recipeData.photoUrl = downloadUrl
-            recipeData.desc = binding.editContent.text.toString()
-            recipeData.postDate = Timestamp.now()
-            recipeData.rate = 0
-            recipeData.userName = userName
-            recipeData.profileImageUrl = profileImageUrl
-            recipeData.userKey = MyInfoUtil.getInstance().getKey()
-            FirebaseData.getInstance().uploadRecipeData(recipeData, this)
-        }
-    }
-
-    override suspend fun onFileUploadProgress(percent: Float) {
-        setProgressPercent(percent.toInt())
-    }
-
-    override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-        hideLoading()
-        if (isSuccess) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_RECIPE_DATA, response?.getData())
-            setResult(RESULT_OK, intent)
-            finish()
-        } else {
-            Toast.makeText(this, "레시피 수정에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun intentPhoto(photoUrl: String?) {

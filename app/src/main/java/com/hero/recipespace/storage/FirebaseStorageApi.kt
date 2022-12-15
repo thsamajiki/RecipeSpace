@@ -2,11 +2,13 @@ package com.hero.recipespace.storage
 
 import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.hero.recipespace.listener.OnFileUploadListener
 import java.io.File
 
 class FirebaseStorageApi {
     private var onFileUploadListener: OnFileUploadListener? = null
+    private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
 
     companion object {
         const val DEFAULT_IMAGE_PATH = "images/"
@@ -27,8 +29,8 @@ class FirebaseStorageApi {
         this.onFileUploadListener = onFileUploadListener
     }
 
-    fun uploadImages(folderPath: String, filePathList: List<String>?) {
-        val file = Uri.fromFile(File(filePathList))
+    fun uploadImages(folderPath: String, filePath: String) {
+        val file = Uri.fromFile(File(filePath))
         val storageRef =
             FirebaseStorage.getInstance().reference.child(folderPath + file.lastPathSegment)
         val uploadTask = storageRef.putFile(file)

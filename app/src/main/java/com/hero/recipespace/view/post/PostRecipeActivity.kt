@@ -8,10 +8,9 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -20,23 +19,13 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
-import com.bumptech.glide.Glide
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityPostRecipeBinding
-import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.storage.FirebaseStorageApi
-import com.hero.recipespace.util.LoadingProgress
-import com.hero.recipespace.util.RealPathUtil
+import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.photoview.PhotoActivity
+import com.hero.recipespace.view.post.viewmodel.PostRecipeUiState
 import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -77,7 +66,9 @@ class PostRecipeActivity : AppCompatActivity(),
 //                    Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
 //                }
                 binding.rvRecipeImages.visibility = View.VISIBLE
-                if (binding.editContent.text.toString().isNotEmpty() && recipePhotoPathList.isNotEmpty()) {
+                if (binding.editContent.text.toString()
+                        .isNotEmpty() && recipePhotoPathList.isNotEmpty()
+                ) {
                     binding.tvComplete.isEnabled = true
                 }
             }
@@ -120,26 +111,53 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
+                loadingState.collect { state ->
+                    when (state) {
+                        LoadingState.Hidden -> hideLoading()
+                        LoadingState.Idle -> {}
+                        LoadingState.Loading -> showLoading()
+                        is LoadingState.Progress -> setProgressPercent(state.value)
+                    }
+                }
+            }
 
+            lifecycleScope.launch {
+                postRecipeUiState.collect { state ->
+                    when (state) {
+                        is PostRecipeUiState.Success -> {
+                            val intent = Intent()
+                            intent.putExtra(EXTRA_RECIPE_ENTITY, state.recipe)
+                            setResult(RESULT_OK, intent)
+                            finish()
+                        }
+                        is PostRecipeUiState.Failed -> {
+                            Toast.makeText(
+                                this@PostRecipeActivity,
+                                "업로드에 실패했습니다. 다시 시도해주세요 ${state.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        PostRecipeUiState.Idle -> {}
+                    }
+                }
+            }
         }
     }
 
     private fun setupListeners() {
-       binding.ivBack.setOnClickListener {
-           finish()
-       }
-       binding.btnPhoto.setOnClickListener {
-           if (checkStoragePermission()) {
-               openGallery()
-           }
-       }
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+        binding.btnPhoto.setOnClickListener {
+            if (checkStoragePermission()) {
+                openGallery()
+            }
+        }
 
-       binding.tvComplete.setOnClickListener {
-           uploadImage()
-           lifecycleScope.launch {
-               viewModel.postRecipe()
-           }
-       }
+        binding.tvComplete.setOnClickListener {
+            viewModel.uploadRecipe(binding.editContent.text.toString(), recipePhotoPathList)
+        }
     }
 
     private fun addTextWatcher() {
@@ -157,12 +175,22 @@ class PostRecipeActivity : AppCompatActivity(),
     private fun checkStoragePermission(): Boolean {
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
         val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        return if (ActivityCompat.checkSelfPermission(this, readPermission) == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, writePermission) == PackageManager.PERMISSION_GRANTED
+        return if (ActivityCompat.checkSelfPermission(
+                this,
+                readPermission
+            ) == PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(
+                this,
+                writePermission
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             true
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), PERMISSION_REQ_CODE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(readPermission, writePermission),
+                PERMISSION_REQ_CODE
+            )
             false
         }
     }
@@ -184,59 +212,6 @@ class PostRecipeActivity : AppCompatActivity(),
 
     override fun afterTextChanged(s: Editable) {
         binding.tvComplete.isEnabled = s.isNotEmpty() && recipePhotoPathList.isNotEmpty()
-    }
-
-    private fun uploadImage() {
-        showLoading()
-        FirebaseStorageApi.getInstance().setOnFileUploadListener(this)
-        FirebaseStorageApi.getInstance()
-            .uploadImages(FirebaseStorageApi.DEFAULT_IMAGE_PATH, recipePhotoPathList)
-    }
-
-    suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
-        if (isSuccess) {
-            Toast.makeText(this, "업로드 완료", Toast.LENGTH_SHORT).show()
-            val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
-            val userKey: String? = FirebaseAuth.getInstance().currentUser?.uid
-            val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-            val recipe = RecipeEntity(
-                key = ,
-                profileImageUrl = profileImageUrl,
-                userName = userName,
-                userKey = userKey,
-                desc = binding.editContent.text.toString(),
-                photoUrlList = ,
-                postDate = Timestamp.now(),
-                rate = ,
-                totalRatingCount =
-
-            )
-            recipe.photoUrl = downloadUrl
-            recipe.desc = binding.editContent.text.toString()
-            recipe.postDate = Timestamp.now()
-            recipe.rate = 0
-            recipe.userName = userName
-            recipe.profileImageUrl = profileImageUrl
-            recipe.userKey = FirebaseAuth.getInstance().currentUser?.uid
-            FirebaseData.getInstance().uploadRecipeData(recipe, this)
-        }
-    }
-
-    suspend fun onFileUploadProgress(percent: Float) {
-        setProgressPercent(percent.toInt())
-        LoadingProgress.setProgress(percent.toInt())
-    }
-
-    fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-        hideLoading()
-        if (isSuccess) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_RECIPE_ENTITY, response?.getData()?.toEntity())
-            setResult(RESULT_OK, intent)
-            finish()
-        } else {
-            Toast.makeText(this, "업로드에 실패했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun intentPhoto(photoUrl: String?) {

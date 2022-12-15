@@ -15,6 +15,8 @@ interface RecipeService {
                     photoUrlList: List<String>,
                     postDate: Timestamp
     ) : RecipeData
+
+    suspend fun uploadImages(recipePhotoPathList: List<String>, progress: (Float) -> Unit): List<String>
     
     suspend fun update(recipeData: RecipeData) : RecipeData
     

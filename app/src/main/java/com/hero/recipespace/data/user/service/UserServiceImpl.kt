@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.user.service
 
+import android.net.Uri
 import android.text.TextUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -47,6 +48,8 @@ class UserServiceImpl @Inject constructor(
                     }
                     .addOnFailureListener { continuation.resumeWithException(it) }
             }
+        } else {
+            error("failed create account")
         }
     }
 
@@ -67,6 +70,7 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
+    // TODO: 2022-12-15 하단에 있는 update 메소드들과 합치기
     override suspend fun update(userData: UserData) : UserData {
         val editData = HashMap<String, Any>()
 
@@ -107,6 +111,22 @@ class UserServiceImpl @Inject constructor(
 //                .addOnFailureListener { continuation.resumeWithException(Throwable.) }
 //        }
 //    }
+
+
+    // FirebaseAuth 객체 수정
+    fun updateLocalUser(userData: UserData) {
+        val firebaseUser = FirebaseAuth.getInstance().currentUser!!
+        val builder = UserProfileChangeRequest.Builder()
+            .setDisplayName(userData.name)
+        if (!TextUtils.isEmpty(userData.profileImageUrl)) {
+            builder.photoUri = Uri.parse(userData.profileImageUrl)
+        }
+        val request = builder.build()
+        firebaseUser.updateProfile(request)
+            .addOnSuccessListener { }
+            .addOnFailureListener { }
+    }
+
 
     // TODO EditProfileActivity를 통해 나의 사용자 정보(나의 프로필 사진, 나의 사용자 이름)가 변경되었을 때
     //  update() 메소드에서 트랜잭션 처리할 때 필요한 데이터
@@ -150,7 +170,7 @@ class UserServiceImpl @Inject constructor(
             null
         }
             .addOnSuccessListener {
-
+                updateLocalUser(userData)
             }
             .addOnFailureListener {
                 it.printStackTrace()

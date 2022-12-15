@@ -1,6 +1,5 @@
 package com.hero.recipespace.database.recipe
 
-import com.google.firebase.Timestamp
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
@@ -8,6 +7,8 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toData
 import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
+import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
+import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -46,16 +47,13 @@ class RecipeRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun addRecipe(
-        profileImageUrl : String,
-        userName: String,
-        userKey: String,
-        desc: String,
-        photoUrlList: List<String>,
-        postDate: Timestamp
-    ) {
-        val result = recipeRemoteDataSource.add(profileImageUrl, userName, userKey, desc, photoUrlList, postDate)
+    override suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity {
+
+        val result = recipeRemoteDataSource.add(request, onProgress)
+
         recipeLocalDataSource.add(result)
+
+        return result.toEntity()
     }
 
     override suspend fun modifyRecipe(
@@ -63,6 +61,14 @@ class RecipeRepositoryImpl @Inject constructor(
     ) {
         val result = recipeRemoteDataSource.update(recipeEntity.toData())
         recipeLocalDataSource.update(result)
+    }
+
+    // 레시피를 업로드하는 것과 유사하게 함수를 짜야 할수도 있어서 만들어놓음
+    override suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit): RecipeEntity {
+        val result = recipeRemoteDataSource.update(request, onProgress)
+        recipeLocalDataSource.update(result)
+
+        return result.toEntity()
     }
 
     override suspend fun deleteRecipe(
