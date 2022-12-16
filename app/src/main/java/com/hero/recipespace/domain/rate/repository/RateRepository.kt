@@ -10,6 +10,8 @@ interface RateRepository {
 
     suspend fun addRate(recipeKey: String)
 
+    suspend fun addRate(rate: Float, recipeKey: String)
+
     suspend fun modifyRate(rateKey: String)
 
     suspend fun deleteRate(rateKey: String)

@@ -64,6 +64,42 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_message_content_option"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_plus"
+                    app:backgroundTint="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.drawerlayout.widget.DrawerLayout
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edit_message"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_toStartOf="@+id/mcv_send"
+                    android:background="@null"
+                    android:hint="@string/please_input_message"
+                    android:imeOptions="normal"
+                    android:inputType="textMultiLine"
+                    android:maxHeight="200dp"
+                    android:minHeight="50dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="@={viewModel.message}"
+                    android:textSize="@dimen/body_text_size"
+                    app:layout_constraintStart_toEndOf="@+id/fab_message_content_option"
+                    app:layout_constraintEnd_toStartOf="@id/mcv_send"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/mcv_send"
                     android:layout_width="wrap_content"
@@ -84,25 +120,10 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/edit_message"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toStartOf="@+id/mcv_send"
-                    android:background="@null"
-                    android:hint="@string/please_input_message"
-                    android:imeOptions="normal"
-                    android:inputType="textMultiLine"
-                    android:maxHeight="200dp"
-                    android:minHeight="50dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:text="@={viewModel.message}"
-                    android:textSize="@dimen/body_text_size"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.card.MaterialCardView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

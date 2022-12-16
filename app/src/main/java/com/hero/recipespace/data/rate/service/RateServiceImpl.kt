@@ -68,6 +68,35 @@ class RateServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun add(rate: Float, recipeKey: String) : RateData {
+        return suspendCoroutine<RateData> { continuation ->
+            firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
+                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeKey)
+                val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
+                val rateSnapShot = transaction[rateRef]
+                val originTotalCount: Int = recipeData.totalRatingCount
+                val originRate: Float = recipeData.rate
+                var originSum = originTotalCount * originRate
+                var newTotalCount = originTotalCount + 1
+                if (rateSnapShot.exists()) {
+                    val myOriginRateData: RateData ?= rateSnapShot.toObject(RateData::class.java)
+                    val myOriginRate: Float = myOriginRateData?.rate!!.toFloat()
+                    originSum -= myOriginRate
+                    newTotalCount--
+                }
+                val userRate: Float = rateData.rate
+                val newRate = (originSum + userRate) / newTotalCount
+                recipeData.totalRatingCount = newTotalCount
+                recipeData.rate = newRate
+                transaction[rateRef] = rateData
+                transaction[recipeRef] = recipeData
+                recipeData
+            }).addOnSuccessListener { data ->
+                continuation.resume(rateData)
+            }.addOnFailureListener { continuation.resumeWithException(it) }
+        }
+    }
+
     override suspend fun update(rateKey: String) : RateData {
         TODO("Not yet implemented")
     }

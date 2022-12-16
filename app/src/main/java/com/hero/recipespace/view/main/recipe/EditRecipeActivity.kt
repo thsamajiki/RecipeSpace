@@ -97,7 +97,8 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         editRecipeImageListAdapter = EditRecipeImageListAdapter(
-            onClick = ::intentPhoto
+            onClick = ::intentPhoto,
+            onCancelClick = ::deletePhoto
         )
 
         recyclerView.run {
@@ -206,6 +207,14 @@ class EditRecipeActivity : AppCompatActivity(),
     private fun intentPhoto(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
+    }
+
+    private fun deletePhoto(photoUrl: String?) {
+        // TODO: 2022-12-16 기존의 RecipeData 에 있는 이미지 목록(RecyclerView)에서 원하는 이미지를 제외하는 것 구현하기
+    }
+
+    object Result {
+        const val RECIPE_KEY = "recipe_key"
     }
 
     override fun onClick(view: View) {

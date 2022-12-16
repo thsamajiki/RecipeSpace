@@ -9,6 +9,8 @@ interface RateService {
 
     suspend fun add(recipeKey: String) : RateData
 
+    suspend fun add(rate: Float, recipeKey: String) : RateData
+
     suspend fun update(rateKey: String) : RateData
 
     suspend fun remove(rateKey: String) : RateData

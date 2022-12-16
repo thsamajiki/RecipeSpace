@@ -103,29 +103,44 @@ class RecipeServiceImpl @Inject constructor(
     ): List<String> {
         return suspendCoroutine { continuation ->
             // TODO: 2022-12-15 여러 이미지 파일 한 번에 올리는 방법 찾기
-            val file = Uri.fromFile(File(recipePhotoPathList))
             val storageRef =
-                FirebaseStorage.getInstance().reference.child(FirebaseStorageApi.DEFAULT_IMAGE_PATH + file.lastPathSegment)
+                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
 
-            val uploadTask = storageRef.putFile(file)
+            val totalPhotoList: MutableList<String> = mutableListOf()
 
-            uploadTask
-                .addOnProgressListener { taskSnapshot ->
-                    val percent =
-                        taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
-                    progress(percent)
-                }.continueWithTask { task ->
-                    if (!task.isSuccessful) {
-                        throw task.exception!!
+            for (imageCount: Int in recipePhotoPathList.indices) {
+                val photoPath: String = recipePhotoPathList[imageCount]
+                val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
+
+                val uploadTask = photoRef.putFile(Uri.fromFile(File(photoPath)))
+
+                uploadTask
+                    .addOnProgressListener { taskSnapshot ->
+                        val percent = taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
+                        progress(percent)
+                    }.continueWithTask { task ->
+                        if (!task.isSuccessful) {
+                            throw task.exception!!
+                        }
+                        storageRef.downloadUrl
                     }
-                    storageRef.downloadUrl
-                }
-                .addOnSuccessListener { uri ->
-                    continuation.resume(listOf(uri.toString()))
+                    .addOnSuccessListener { uri ->
+                        val photoMap: HashMap<String, Any> = HashMap()
+                        photoMap["photoUrl"] = uri
 
-                }.addOnFailureListener {
-                    continuation.resumeWithException(it)
-                }
+                        photoRef.downloadUrl.addOnSuccessListener {
+                            totalPhotoList.add(uri.toString())
+
+                            if (totalPhotoList.size == recipePhotoPathList.size) {
+
+                            }
+                        }
+                        continuation.resume(listOf(uri.toString()))
+
+                    }.addOnFailureListener {
+                        continuation.resumeWithException(it)
+                    }
+            }
         }
     }
 
@@ -165,5 +180,10 @@ class RecipeServiceImpl @Inject constructor(
                 .addOnSuccessListener { continuation.resume(recipeData) }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
+    }
+
+    companion object {
+        const val DEFAULT_IMAGE_PATH = "images/"
+        const val PROFILE_IMAGE_PATH = "profile/"
     }
 }

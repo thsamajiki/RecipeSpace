@@ -8,7 +8,8 @@ import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
 class PostRecipeImageListAdapter(
-    private val onClick: (String) -> Unit
+    private val onClick: (String) -> Unit,
+    private val onCancelClick: (String) -> Unit
 ) : BaseAdapter<PostRecipeImageListAdapter.PostRecipeImageViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
@@ -16,7 +17,7 @@ class PostRecipeImageListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostRecipeImageViewHolder {
         val binding = ItemRecipeImageListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return PostRecipeImageViewHolder(binding, onClick)
+        return PostRecipeImageViewHolder(binding, onClick, onCancelClick)
     }
 
     override fun onBindViewHolder(holder: PostRecipeImageViewHolder, position: Int) {
@@ -53,7 +54,8 @@ class PostRecipeImageListAdapter(
 
     class PostRecipeImageViewHolder(
         private val binding: ItemRecipeImageListBinding,
-        private val onClick: (String) -> Unit
+        private val onClick: (String) -> Unit,
+        private val onCancelClick: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(image: String) {
@@ -62,7 +64,7 @@ class PostRecipeImageListAdapter(
             }
 
             binding.ivRecipeImageCancel.setOnClickListener {
-                // TODO: 2022-12-13 X 버튼 클릭하면 이미지가 목록에서 삭제되도록 하기
+                onCancelClick(image)
             }
 
             binding.ivRecipeImage.setImageUrl(image)

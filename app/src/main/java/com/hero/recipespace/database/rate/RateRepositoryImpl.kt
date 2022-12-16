@@ -43,6 +43,12 @@ class RateRepositoryImpl @Inject constructor(
         rateLocalDataSource.add(result)
     }
 
+    // 혹시 필요할지 몰라서 만듦
+    override suspend fun addRate(rate: Float, recipeKey: String) {
+        val result = rateRemoteDataSource.add(rate, recipeKey)
+        rateLocalDataSource.add(result)
+    }
+
     override suspend fun modifyRate(rateKey: String) {
         val result = rateRemoteDataSource.update(rateKey)
         rateLocalDataSource.update(result)

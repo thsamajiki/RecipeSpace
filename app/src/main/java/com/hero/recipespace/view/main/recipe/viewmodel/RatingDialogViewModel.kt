@@ -28,10 +28,13 @@ class RatingDialogViewModel @Inject constructor(
     val rate: LiveData<RateEntity>
         get() = _rate
 
-    val rate2: LiveData<RateEntity> = getRateUseCase().asLiveData()
+    val rate2: LiveData<RateEntity> = getRateUseCase(RATE_KEY).asLiveData()
 
-    suspend fun requestAddRateData(rateEntity: RateEntity) {
-        addRateUseCase.invoke(rateEntity.key)
+    suspend fun requestAddRateData(rate: Float, recipeKey: String) {
+        viewModelScope.launch {
+            addRateUseCase.invoke(rate, recipeKey)
+        }
+
     }
 
     suspend fun requestUpdateRateData(rateEntity: RateEntity) {

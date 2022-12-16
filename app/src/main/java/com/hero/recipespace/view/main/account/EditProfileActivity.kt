@@ -223,7 +223,7 @@ class EditProfileActivity : AppCompatActivity(),
             })
     }
 
-    suspend fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+    fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
         hideLoading()
         if (isSuccess) {
             updateUserData(downloadUrl.orEmpty())

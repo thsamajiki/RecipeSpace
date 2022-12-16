@@ -99,7 +99,8 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         postRecipeImageListAdapter = PostRecipeImageListAdapter(
-            onClick = ::intentPhoto
+            onClick = ::intentPhoto,
+            onCancelClick = ::deletePhoto
         )
 
         recyclerView.run {
@@ -217,6 +218,10 @@ class PostRecipeActivity : AppCompatActivity(),
     private fun intentPhoto(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
+    }
+
+    private fun deletePhoto(photoUrl: String?) {
+        // TODO: 2022-12-16 갤러리에서 선택한 이미지 목록(RecyclerView)에서 원하는 이미지를 제외하는 것 구현하기
     }
 
     override fun onClick(view: View) {

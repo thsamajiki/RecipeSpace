@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
@@ -20,6 +21,7 @@ import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.main.recipe.viewmodel.RatingDialogViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RatingDialogFragment : DialogFragment(), View.OnClickListener {
@@ -49,7 +51,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
 
+            }
         }
     }
 
@@ -96,20 +100,20 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-        val rateData = RateEntity(
-            key = ,
-            userKey = userKey,
-            userName = userName,
-            profileImageUrl = profileImageUrl,
-            rate = rate,
-            date = Timestamp.now()
-        )
-        rateData.date = Timestamp.now()
-        rateData.profileImageUrl = profileImageUrl
-        rateData.userKey = userKey
-        rateData.key = userKey
-        rateData.userName = userName
-        rateData.rate = rate
+//        val rateData = RateEntity(
+//            key = ,
+//            userKey = userKey,
+//            userName = userName,
+//            profileImageUrl = profileImageUrl,
+//            rate = rate,
+//            date = Timestamp.now()
+//        )
+//        rateData.date = Timestamp.now()
+//        rateData.profileImageUrl = profileImageUrl
+//        rateData.userKey = userKey
+//        rateData.key = userKey
+//        rateData.userName = userName
+//        rateData.rate = rate
 
         return rateData
     }

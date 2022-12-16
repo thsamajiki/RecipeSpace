@@ -19,6 +19,10 @@ class RateRemoteDataSourceImpl @Inject constructor(
         return rateService.add(recipeKey)
     }
 
+    override suspend fun add(rate: Float, recipeKey: String): RateData {
+        return rateService.add(rate, recipeKey)
+    }
+
     override suspend fun update(rateKey: String) : RateData  {
         return rateService.update(rateKey)
     }

@@ -8,4 +8,7 @@ class AddRateUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(recipeKey: String) =
         rateRepository.addRate(recipeKey)
+
+    suspend operator fun invoke(rate: Float, recipeKey: String) =
+        rateRepository.addRate(rate, recipeKey)
 }

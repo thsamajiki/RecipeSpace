@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.authentication.FirebaseAuthentication
@@ -27,8 +28,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivitySignUpBinding
 
-    private val firebaseAuthentication: FirebaseAuthentication =
-        FirebaseAuthentication.getInstance()
     private val firebaseData: FirebaseData = FirebaseData.getInstance()
 
     private val viewModel by viewModels<SignUpViewModel>()
@@ -92,7 +91,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun signUp() {
         val userName: String = binding.editUsername.text.toString()
-        val firebaseUser: FirebaseUser? = firebaseAuthentication.getCurrentUser()
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
         val userData = UserData(
             key = firebaseUser?.uid,
             name = userName,
