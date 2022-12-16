@@ -11,9 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.hero.recipespace.MainActivity
-import com.hero.recipespace.authentication.FirebaseAuthentication
 import com.hero.recipespace.databinding.ActivityLoginBinding
-import com.hero.recipespace.listener.OnCompleteListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.login.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +24,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private val viewModel by viewModels<LoginViewModel>()
 
-    private val firebaseAuthentication: FirebaseAuthentication = FirebaseAuthentication.getInstance()
+//    private val firebaseAuthentication: FirebaseAuthentication = FirebaseAuthentication.getInstance()
 
     companion object {
         fun getIntent(context: Context) =
@@ -43,7 +41,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         setupViewModel()
         setupListeners()
-        firebaseAuthentication.setOnCompleteListener(this)
+//        firebaseAuthentication.setOnCompleteListener(this)
     }
 
     private fun setupViewModel() {
@@ -77,7 +75,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show()
             return
         }
-        firebaseAuthentication.login(this, email, pwd)
+//        firebaseAuthentication.login(this, email, pwd)
     }
 
     private fun checkEmailValid(email: String): Boolean {

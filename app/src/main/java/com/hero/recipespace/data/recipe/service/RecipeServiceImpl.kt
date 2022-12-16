@@ -24,12 +24,12 @@ class RecipeServiceImpl @Inject constructor(
 ): RecipeService {
     override suspend fun getRecipe(recipeKey: String): RecipeData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("RecipeData")
+            firebaseFirestore.collection("Recipe")
                 .document(recipeKey)
                 .get()
-                .addOnSuccessListener { queryDocumentSnapshots ->
-                    if (queryDocumentSnapshots.isEmpty()) {
-                        return@OnSuccessListener
+                .addOnSuccessListener { documentSnapShot ->
+                    if (documentSnapShot == null) {
+                        return@addOnSuccessListener
                     }
 //                    val recipeData = queryDocumentSnapshots.data
 //                        ?.mapNotNull { documentSnapshot ->
@@ -38,7 +38,7 @@ class RecipeServiceImpl @Inject constructor(
 //                            }
 //                            documentSnapshot.toObject(RecipeData::class.java)
 //                        }
-                    val recipeData = queryDocumentSnapshots.data?.getValue(recipeKey)
+                    val recipeData = documentSnapShot.data?.getValue(recipeKey)
 
                     continuation.resume(recipeData as RecipeData)
                 }
@@ -50,7 +50,7 @@ class RecipeServiceImpl @Inject constructor(
 
     override suspend fun getRecipeList(): List<RecipeData> {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("RecipeData")
+            firebaseFirestore.collection("Recipe")
                 .orderBy("postDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
@@ -79,7 +79,7 @@ class RecipeServiceImpl @Inject constructor(
         postDate: Timestamp,
     ) : RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
-            val documentReference = firebaseFirestore.collection("RecipeData").document()
+            val documentReference = firebaseFirestore.collection("Recipe").document()
             val key = documentReference.id
             val recipeData = RecipeData(
                 key,
@@ -99,11 +99,11 @@ class RecipeServiceImpl @Inject constructor(
 
     override suspend fun uploadImages(
         recipePhotoPathList: List<String>,
-        progress: (Float) -> Unit,
+        progress: (Float) -> Unit
     ): List<String> {
         return suspendCoroutine { continuation ->
-            // TODO: 2022-12-15 멀티 이미지 파일 한 번에 올리는 방법 찾기
-            val file = Uri.fromFile(File(filePathList))
+            // TODO: 2022-12-15 여러 이미지 파일 한 번에 올리는 방법 찾기
+            val file = Uri.fromFile(File(recipePhotoPathList))
             val storageRef =
                 FirebaseStorage.getInstance().reference.child(FirebaseStorageApi.DEFAULT_IMAGE_PATH + file.lastPathSegment)
 
@@ -149,7 +149,7 @@ class RecipeServiceImpl @Inject constructor(
         editData["desc"] = recipeData.desc as String
 
         return suspendCoroutine<RecipeData> { continuation ->
-            firebaseFirestore.collection("RecipeData")
+            firebaseFirestore.collection("Recipe")
                 .document(recipeData.key.orEmpty())
                 .update(editData)
                 .addOnSuccessListener { continuation.resume(recipeData) }
@@ -159,7 +159,7 @@ class RecipeServiceImpl @Inject constructor(
 
     override suspend fun remove(recipeData: RecipeData) : RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
-            firebaseFirestore.collection("RecipeData")
+            firebaseFirestore.collection("Recipe")
                 .document(recipeData.key.orEmpty())
                 .delete()
                 .addOnSuccessListener { continuation.resume(recipeData) }

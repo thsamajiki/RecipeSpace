@@ -3,10 +3,8 @@ package com.hero.recipespace.data.rate.service
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
+import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.data.rate.RateData
-import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.listener.Type
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -16,8 +14,25 @@ class RateServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firebaseFirestore: FirebaseFirestore
 ) : RateService {
-    override fun getData(rateKey: String): RateData {
-        TODO("Not yet implemented")
+    override suspend fun getData(rateKey: String, recipeKey: String): RateData {
+        return suspendCoroutine { continuation ->
+            firebaseFirestore.collection("Recipe")
+                .document(recipeKey)
+                .collection("RateList")
+                .document(rateKey)
+                .get()
+                .addOnSuccessListener { documentSnapShot ->
+                    if (documentSnapShot == null) {
+                        return@addOnSuccessListener
+                    }
+                    val rateData = documentSnapShot.data?.getValue(rateKey)
+
+                    continuation.resume(rateData as RateData)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
     }
 
     override fun getDataList(): List<RateData> {
@@ -27,7 +42,7 @@ class RateServiceImpl @Inject constructor(
     override suspend fun add(recipeKey: String) : RateData {
         return suspendCoroutine<RateData> { continuation ->
             firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
-                val recipeRef = firebaseFirestore.collection("RecipeData").document(recipeKey)
+                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeKey)
                 val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
                 val rateSnapShot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount
@@ -48,7 +63,6 @@ class RateServiceImpl @Inject constructor(
                 transaction[recipeRef] = recipeData
                 recipeData
             }).addOnSuccessListener { data ->
-                response.date = date
                 continuation.resume(rateData)
             }.addOnFailureListener { continuation.resumeWithException(it) }
         }

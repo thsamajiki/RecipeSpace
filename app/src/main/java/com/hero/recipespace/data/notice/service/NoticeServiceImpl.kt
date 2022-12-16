@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.notice.NoticeData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -20,18 +21,17 @@ class NoticeServiceImpl @Inject constructor(
             firebaseFirestore.collection("Notice")
                 .document(noticeKey)
                 .get()
-                .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
-                    if (queryDocumentSnapshots.isEmpty) {
-                        return@OnSuccessListener
+                .addOnSuccessListener { documentSnapShot ->
+                    if (documentSnapShot == null) {
+                        return@addOnSuccessListener
                     }
-                    val noticeData = queryDocumentSnapshots.data
-                        ?.mapNotNull { documentSnapshot ->
-                            documentSnapshot.toObject(NoticeData::class.java)
-                        }
+                    val noticeData = documentSnapShot.data?.getValue(noticeKey)
 
-                    continuation.resume(noticeData)
-                })
-                .addOnFailureListener { continuation.resumeWithException(it) }
+                    continuation.resume(noticeData as NoticeData)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
@@ -47,7 +47,7 @@ class NoticeServiceImpl @Inject constructor(
                     val noticeDataList = queryDocumentSnapshots.documents
                         .mapNotNull { documentSnapshot ->
                             documentSnapshot.toObject(NoticeData::class.java)
-                        }
+                        }.asFlow()
 
                     continuation.resume(noticeDataList)
                 })

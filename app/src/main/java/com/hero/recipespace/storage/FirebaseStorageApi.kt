@@ -38,7 +38,7 @@ class FirebaseStorageApi {
             .addOnProgressListener { taskSnapshot ->
                 val percent =
                     taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
-                onFileUploadListener?.onFileUploadProgress(percent)
+//                onFileUploadListener?.onFileUploadProgress(percent)
             }.continueWithTask { task ->
                 if (!task.isSuccessful) {
                     throw task.exception!!
@@ -46,8 +46,9 @@ class FirebaseStorageApi {
                 storageRef.downloadUrl
             }
             .addOnSuccessListener { uri ->
-                onFileUploadListener?.onFileUploadComplete(true,
-                    uri.toString())
-            }.addOnFailureListener { onFileUploadListener?.onFileUploadComplete(false, null) }
+//                onFileUploadListener?.onFileUploadComplete(true, uri.toString())
+            }.addOnFailureListener {
+//                onFileUploadListener?.onFileUploadComplete(false, null)
+            }
     }
 }

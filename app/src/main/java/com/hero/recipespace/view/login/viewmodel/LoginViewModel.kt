@@ -57,7 +57,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
+    private fun getCurrentUser(): FirebaseUser? {
         return FirebaseAuth.getInstance().currentUser
     }
 
