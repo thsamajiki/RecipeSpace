@@ -70,8 +70,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         }
 
+        binding.dlContentOptionMenu.setOnClickListener { view ->
+            view.visibility = View.VISIBLE
+        }
+
         binding.mcvSend.setOnClickListener {
-            sendMessage()
+            sendFirstMessage()
         }
     }
 
@@ -86,7 +90,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // 채팅방에 이미 메시지가 있을 때 첫 메시지를 보낼 때 사용되는 메소드
-    private fun sendMessage() {
+    private fun sendFirstMessage() {
         val message = binding.editMessage.text.toString()
         if (TextUtils.isEmpty(message)) {
             Toast.makeText(this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show()

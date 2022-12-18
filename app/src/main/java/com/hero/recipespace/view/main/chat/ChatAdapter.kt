@@ -1,6 +1,7 @@
 package com.hero.recipespace.view.main.chat
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.databinding.ItemMessageLeftBinding
@@ -96,6 +97,11 @@ class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
 
         fun bind(message: MessageEntity) {
             binding.messageRight = message
+
+            if (message.confirmed) {
+                binding.tvMessageNotReadRemaining.visibility = View.GONE
+            }
+
             binding.executePendingBindings()
         }
     }

@@ -36,6 +36,17 @@
                     android:src="@drawable/ic_arrow"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text='@{viewModel.chat.userNames[1] + "님과의 채팅"}'
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -48,7 +59,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/cv_input"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-            tools:listitem="@layout/item_message_left" />
+            tools:listitem="@layout/item_message_right" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_input"
@@ -76,8 +87,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.drawerlayout.widget.DrawerLayout
+                    android:id="@+id/dl_content_option_menu"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toTopOf="parent" />
 
@@ -96,7 +109,7 @@
                     android:paddingEnd="20dp"
                     android:text="@={viewModel.message}"
                     android:textSize="@dimen/body_text_size"
-                    app:layout_constraintStart_toEndOf="@+id/fab_message_content_option"
+                    app:layout_constraintStart_toEndOf="@+id/iv_message_content_option"
                     app:layout_constraintEnd_toStartOf="@id/mcv_send"
                     app:layout_constraintTop_toTopOf="parent" />
 

@@ -36,7 +36,7 @@
             android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
-            tools:text="UserName" />
+            android:text="UserName" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_chat_container"
@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="200dp"
-                android:text="@string/dummy_text"
+                android:text="@{messageLeft.message}"
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/body_text_size" />
 

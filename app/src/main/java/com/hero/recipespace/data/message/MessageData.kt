@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class MessageData(
     val userKey: String,
     val message: String,
-    val timestamp: Timestamp
+    val timestamp: Timestamp,
+    val confirmed: Boolean
 ) : Parcelable {
 }

@@ -7,7 +7,8 @@ fun MessageData.toEntity(): MessageEntity {
     return MessageEntity(
         userKey = userKey,
         message = message,
-        timestamp = timestamp
+        timestamp = timestamp,
+        confirmed = confirmed
     )
 }
 
@@ -15,6 +16,7 @@ fun MessageEntity.toData(): MessageData {
     return MessageData(
         userKey = userKey,
         message = message,
-        timestamp = timestamp
+        timestamp = timestamp,
+        confirmed = confirmed
     )
 }
