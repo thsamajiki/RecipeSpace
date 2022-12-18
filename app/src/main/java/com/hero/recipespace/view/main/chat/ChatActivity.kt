@@ -31,7 +31,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             chatKey: String = "",
             otherUserKey: String = "") =
             Intent(context, ChatActivity::class.java)
-                .putExtra(ChatViewModel.RECIPE_CHAT_KEY, chatKey)
+                .putExtra(ChatViewModel.CHAT_KEY, chatKey)
                 .putExtra(ChatViewModel.EXTRA_OTHER_USER_KEY, otherUserKey)
     }
 

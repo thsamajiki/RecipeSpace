@@ -2,8 +2,8 @@ package com.hero.recipespace.view.main.account.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
@@ -29,6 +29,7 @@ sealed class EditProfileUiState {
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
     application: Application,
+    savedStateHandle: SavedStateHandle,
     private val getUserUseCase: GetUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase
 ) : AndroidViewModel(application) {
@@ -39,9 +40,15 @@ class EditProfileViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
-    private val _user = MutableLiveData<UserEntity>()
-    val user: LiveData<UserEntity>
-        get() = _user
+//    private val _user = MutableLiveData<UserEntity>()
+//    val user: LiveData<UserEntity>
+//        get() = _user
+
+    companion object {
+        const val USER_KEY = "user"
+    }
+
+    val user: UserEntity = savedStateHandle.get<UserEntity>(USER_KEY)!!
 
     val userKey: String = FirebaseAuth.getInstance().uid.orEmpty()
 

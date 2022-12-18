@@ -1,7 +1,10 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.domain.recipe.usecase.UpdateRecipeUseCase
@@ -34,11 +37,15 @@ class EditRecipeViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
-    private val _recipe = MutableLiveData<RecipeEntity>()
-    val recipe: LiveData<RecipeEntity>
-        get() = _recipe
+//    private val _recipe = MutableLiveData<RecipeEntity>()
+//    val recipe: LiveData<RecipeEntity>
+//        get() = _recipe
 
-    val recipeKey: String = savedStateHandle.get<String>(RecipeDetailViewModel.RECIPE_KEY)!!
+    companion object {
+        const val RECIPE_KEY = "key"
+    }
+
+    val recipe: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_KEY)!!
 
     val newRecipeContent: MutableLiveData<String> = MutableLiveData()
 

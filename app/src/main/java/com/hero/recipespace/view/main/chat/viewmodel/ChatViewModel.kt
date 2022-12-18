@@ -27,14 +27,14 @@ class ChatViewModel @Inject constructor(
 
     companion object {
         const val EXTRA_OTHER_USER_KEY = "otherUserKey"
-        const val RECIPE_CHAT_KEY = "chatKey"
+        const val CHAT_KEY = "chatKey"
     }
 
     private val _chat = MutableLiveData<ChatEntity>()
     val chat: LiveData<ChatEntity>
         get() = _chat
 
-    val chatKey: String = savedStateHandle.get<String>(RECIPE_CHAT_KEY).orEmpty()
+    val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
     val otherUserKey: String = savedStateHandle.get<String>(EXTRA_OTHER_USER_KEY).orEmpty()
 
     init {
