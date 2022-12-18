@@ -113,8 +113,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         binding.tvConfirm.setOnClickListener {
 //            uploadRating()
             val rate = binding.rate.rate
-            if (rate == 0f) {
-                viewModel.requestAddRateData(rate)
+            val userKey = binding.rate.userKey
+            if (userKey == null) {
+                viewModel.requestAddRateData(rate) // db 에서 userKey 가 들어가야 함
             } else {
                 viewModel.requestUpdateRateData(rate)
             }

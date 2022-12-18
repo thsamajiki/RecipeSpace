@@ -8,9 +8,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ListenerRegistration
+import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,9 +39,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityChatBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hero.recipespace.R
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityNoticeListBinding
@@ -35,8 +37,7 @@ class NoticeListActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityNoticeListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_notice_list)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

@@ -50,6 +50,7 @@ class RecipeListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_list, container, false)
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
