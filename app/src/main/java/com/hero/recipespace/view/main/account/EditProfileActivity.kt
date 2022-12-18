@@ -65,7 +65,6 @@ class EditProfileActivity : AppCompatActivity(),
     companion object {
         const val PERMISSION_REQ_CODE = 1010
         const val PHOTO_REQ_CODE = 2020
-        const val EXTRA_USER_ENTITY = "user"
 
         private const val USER_KEY = "userKey"
 
@@ -116,7 +115,6 @@ class EditProfileActivity : AppCompatActivity(),
                     when (state) {
                         is EditProfileUiState.Success -> {
                             val intent = Intent()
-                            intent.putExtra(EXTRA_USER_ENTITY, state.user)
                             setResult(RESULT_OK, intent)
                             finish()
                         }
@@ -199,10 +197,10 @@ class EditProfileActivity : AppCompatActivity(),
     private fun updateUserData(newProfileImageUrl: String) {
         val editData = HashMap<String, Any>()
         if (!TextUtils.isEmpty(newProfileImageUrl)) {
-            editData[MyInfoUtil.EXTRA_PROFILE_IMAGE_URL] = newProfileImageUrl
+            editData["profileImageUrl"] = newProfileImageUrl
         }
         val newUserName = binding.editUserName.text.toString()
-        editData[MyInfoUtil.EXTRA_USERNAME] = newUserName
+        editData["name"] = newUserName
         val userKey: String? = FirebaseAuth.getInstance().uid
         FirebaseData.getInstance()
             .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {

@@ -2,13 +2,19 @@ package com.hero.recipespace.data.user.service
 
 import android.net.Uri
 import android.text.TextUtils
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.domain.user.request.LoginUserRequest
+import com.hero.recipespace.domain.user.request.SignUpUserRequest
+import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -16,26 +22,73 @@ import kotlin.coroutines.suspendCoroutine
 
 class UserServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore,
+    private val firebaseFirestore: FirebaseFirestore
 ) : UserService {
-    override fun getData(userKey: String): UserData {
-        TODO("Not yet implemented")
+    override suspend fun login(request: LoginUserRequest): UserData {
+        val userKey = loginToFirebase(request.email, request.pwd)
+
+        return getUserData(userKey)
+    }
+
+    private suspend fun getUserData(userKey: String) : UserData {
+        return suspendCoroutine { continuation ->
+            firebaseFirestore.collection("User")
+                .document(userKey)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot == null) {
+                        return@addOnSuccessListener
+                    }
+    //                    val userData = documentSnapshot.toObject(UserData::class.java)
+                    val userData = documentSnapshot.data?.getValue(userKey)
+
+                    continuation.resume(userData as UserData)
+                }
+                .addOnFailureListener(OnFailureListener {
+                    continuation.resumeWithException(it)
+                })
+        }
+    }
+
+    private suspend fun loginToFirebase(email: String, pwd: String) : String {
+        return suspendCoroutine { continuation ->
+            firebaseAuth.signInWithEmailAndPassword(email, pwd)
+                .addOnSuccessListener { authResult ->
+                    val userKey = authResult.user?.uid
+                    if (userKey != null) {
+                        continuation.resume(userKey)
+                    } else {
+                        continuation.resumeWithException(Exception("user uid is null"))
+                    }
+                }.addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
     }
 
     override fun getFirebaseAuthProfile(): UserData {
-        TODO("Not yet implemented")
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
+        val profileImageUrl: String = firebaseUser?.photoUrl.toString()
+
+        return UserData(
+            firebaseUser?.uid,
+            firebaseUser?.displayName,
+            firebaseUser?.email,
+            profileImageUrl
+        )
     }
 
     override fun getDataList(): List<UserData> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun add(userName: String, email: String, pwd: String): UserData {
-        if (createAccount(email, pwd)) {
+    override suspend fun add(request: SignUpUserRequest): UserData {
+        if (createAccount(request.email, request.pwd)) {
             val userData = UserData(
                 key = firebaseAuth.uid,
-                name = userName,
-                email = email,
+                name = request.name,
+                email = request.email,
                 profileImageUrl = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
             )
 
@@ -88,33 +141,54 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-//    override suspend fun update(newUserName: String, newProfileImageUrl: String): UserData {
-//        val userData = UserData(
-//            key = firebaseAuth.uid,
-//            name = firebaseAuth.currentUser?.displayName,
-//            email = firebaseAuth.currentUser?.email,
-//            profileImageUrl = firebaseAuth.currentUser?.photoUrl.toString()
-//        )
-//
-//        val newUserData = UserData(
-//            key = firebaseAuth.uid,
-//            name = newUserName,
-//            email = firebaseAuth.currentUser?.email,
-//            profileImageUrl = newProfileImageUrl
-//        )
-//
-//        return suspendCoroutine<UserData> { continuation ->
-//            firebaseFirestore.collection("User")
-//                .document(userData.key.orEmpty())
-//                .update(newUserData)
-//                .addOnSuccessListener { continuation.resume(userData) }
-//                .addOnFailureListener { continuation.resumeWithException(Throwable.) }
-//        }
-//    }
+    override suspend fun uploadImage(
+        profileImageUrl: String,
+        progress: (Float) -> Unit): String {
 
+        return suspendCoroutine { continuation ->
+            val storageRef =
+                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
+
+            val photoPath: String = profileImageUrl
+            val imageFile = Uri.fromFile(File(photoPath))
+
+//            val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
+            val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + "${imageFile.lastPathSegment}")
+
+            val uploadTask = photoRef.putFile(imageFile)
+
+            uploadTask
+                .addOnProgressListener { taskSnapshot ->
+                    val btf = taskSnapshot.bytesTransferred
+                    val tbc = taskSnapshot.totalByteCount
+                    val percent = btf.toFloat() / tbc.toFloat() * 100
+                    progress(percent)
+                }.continueWithTask { task ->
+                    if (!task.isSuccessful) {
+//                        throw task.exception!!
+                        task.exception?.let {
+                            throw it
+                        }
+                    }
+                    storageRef.downloadUrl
+                }
+                .addOnSuccessListener { uri ->
+//                    val photoMap: HashMap<String, Any> = HashMap()
+//                    photoMap["photoUrl"] = uri
+
+//                    photoRef.downloadUrl.addOnSuccessListener {
+//
+//                    }
+                    continuation.resume(uri.toString())
+
+                }.addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
 
     // FirebaseAuth 객체 수정
-    fun updateLocalUser(userData: UserData) {
+    private fun updateLocalUser(userData: UserData) {
         val firebaseUser = FirebaseAuth.getInstance().currentUser!!
         val builder = UserProfileChangeRequest.Builder()
             .setDisplayName(userData.name)
@@ -189,5 +263,10 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun signOut() {
         firebaseAuth.signOut()
+    }
+
+    companion object {
+        const val DEFAULT_IMAGE_PATH = "images/"
+        const val PROFILE_IMAGE_PATH = "profile/"
     }
 }

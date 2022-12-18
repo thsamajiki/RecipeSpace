@@ -1,21 +1,21 @@
 package com.hero.recipespace.data.user.service
 
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.domain.user.request.LoginUserRequest
+import com.hero.recipespace.domain.user.request.SignUpUserRequest
 
 interface UserService {
-    fun getData(userKey: String) : UserData
+    suspend fun login(request: LoginUserRequest) : UserData
 
     fun getFirebaseAuthProfile(): UserData
 
     fun getDataList() : List<UserData>
 
-    suspend fun add(userName: String,
-                    email: String,
-                    pwd: String) : UserData
+    suspend fun add(request: SignUpUserRequest) : UserData
 
     suspend fun update(userData: UserData) : UserData
 
-//    suspend fun update(newUserName: String, newProfileImageUrl: String) : UserData
+    suspend fun uploadImage(profileImageUrl: String, progress: (Float) -> Unit): String
 
     suspend fun remove(userData: UserData) : UserData
 

@@ -9,7 +9,7 @@ import com.hero.recipespace.view.BaseAdapter
 
 class EditRecipeImageListAdapter(
     private val onClick: (String) -> Unit,
-    private val onCancelClick: (String) -> Unit
+    private val onCancelClick: (Int) -> Unit
 ) : BaseAdapter<EditRecipeImageListAdapter.EditRecipeImageViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
@@ -22,7 +22,7 @@ class EditRecipeImageListAdapter(
 
     override fun onBindViewHolder(holder: EditRecipeImageListAdapter.EditRecipeImageViewHolder, position: Int) {
         val image = recipeImageList[position]
-        holder.bind(image)
+        holder.bind(position, image)
     }
 
     fun setRecipeImageList(images: List<String>) {
@@ -55,17 +55,17 @@ class EditRecipeImageListAdapter(
     class EditRecipeImageViewHolder(
         private val binding: ItemRecipeImageListBinding,
         private val onClick: (String) -> Unit,
-        private val onCancelClick: (String) -> Unit
+        private val onCancelClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(image: String) {
+        fun bind(position: Int, image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
             binding.ivRecipeImageCancel.setOnClickListener {
                 // TODO: 2022-12-13 X 버튼 클릭하면 이미지가 목록에서 삭제되도록 하기
-                onCancelClick(image)
+                onCancelClick(position)
             }
 
             binding.ivRecipeImage.setImageUrl(image)

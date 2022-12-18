@@ -7,6 +7,8 @@ import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.mapper.toData
 import com.hero.recipespace.domain.user.mapper.toEntity
 import com.hero.recipespace.domain.user.repository.UserRepository
+import com.hero.recipespace.domain.user.request.LoginUserRequest
+import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +23,8 @@ class UserRepositoryImpl @Inject constructor(
     private val userRemoteDataSource: UserRemoteDataSource
 ) : UserRepository {
 
-    override suspend fun getUser(userKey: String): UserEntity {
-        return userLocalDataSource.getData(userKey).toEntity()
+    override suspend fun login(request: LoginUserRequest): UserEntity {
+        return userRemoteDataSource.login(request).toEntity()
     }
 
     override suspend fun getAccountProfile(): UserEntity {
@@ -44,12 +46,8 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun addUser(
-        userName: String,
-        email: String,
-        pwd: String
-    ) {
-        val result = userRemoteDataSource.add(userName, email, pwd)
+    override suspend fun addUser(request: SignUpUserRequest) {
+        val result = userRemoteDataSource.add(request)
         userLocalDataSource.add(result)
     }
 
@@ -59,11 +57,6 @@ class UserRepositoryImpl @Inject constructor(
         val result = userRemoteDataSource.update(userEntity.toData())
         userLocalDataSource.update(result)
     }
-
-//    override suspend fun updateUserInfo(newUserName: String, newProfileImageUrl: String) {
-//        val result = userRemoteDataSource.update(newUserName, newProfileImageUrl)
-//        userLocalDataSource.update(result)
-//    }
 
     // 레시피를 업로드하는 것과 유사하게 함수를 짜야할 수도 있어서 만들어놓음
     override suspend fun updateUser(request: UpdateUserRequest, onProgress: (Float) -> Unit) : UserEntity {
@@ -81,7 +74,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        userRemoteDataSource.signOut()
+        return userRemoteDataSource.signOut()
     }
 
     private fun getEntities(data: List<UserData>): List<UserEntity> {

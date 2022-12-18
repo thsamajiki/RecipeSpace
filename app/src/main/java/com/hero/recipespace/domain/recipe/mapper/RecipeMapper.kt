@@ -10,7 +10,7 @@ fun RecipeData.toEntity(): RecipeEntity {
         userName = userName,
         userKey = userKey,
         desc = desc,
-        photoUrl = photoUrl,
+        photoUrlList = photoUrlList,
         postDate = postDate,
         rate = rate,
         totalRatingCount = totalRatingCount
@@ -24,7 +24,7 @@ fun RecipeEntity.toData(): RecipeData {
         userName = userName,
         userKey = userKey,
         desc = desc,
-        photoUrl = photoUrl,
+        photoUrlList = photoUrlList,
         postDate = postDate,
         rate = rate,
         totalRatingCount = totalRatingCount

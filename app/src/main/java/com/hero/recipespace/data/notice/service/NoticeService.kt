@@ -1,12 +1,11 @@
 package com.hero.recipespace.data.notice.service
 
 import com.hero.recipespace.data.notice.NoticeData
-import kotlinx.coroutines.flow.Flow
 
 interface NoticeService {
     suspend fun getData(noticeKey: String) : NoticeData
 
-    suspend fun getDataList() : Flow<List<NoticeData>>
+    suspend fun getDataList() : List<NoticeData>
 
     suspend fun add(noticeData: NoticeData)
 

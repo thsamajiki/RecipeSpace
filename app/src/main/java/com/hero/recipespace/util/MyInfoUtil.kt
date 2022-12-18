@@ -81,6 +81,6 @@ class MyInfoUtil {   // 나의 정보에 관한 것을 단말기에 저장하거
 
     fun signOut(context: Context) {
         SharedPreference.getInstance().remove(context)
-        FirebaseAuthentication.getInstance().signOut()
+//        FirebaseAuthentication.getInstance().signOut()
     }
 }

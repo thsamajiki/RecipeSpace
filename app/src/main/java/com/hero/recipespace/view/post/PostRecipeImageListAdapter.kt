@@ -9,7 +9,7 @@ import com.hero.recipespace.view.BaseAdapter
 
 class PostRecipeImageListAdapter(
     private val onClick: (String) -> Unit,
-    private val onCancelClick: (String) -> Unit
+    private val onCancelClick: (Int) -> Unit
 ) : BaseAdapter<PostRecipeImageListAdapter.PostRecipeImageViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
@@ -22,7 +22,12 @@ class PostRecipeImageListAdapter(
 
     override fun onBindViewHolder(holder: PostRecipeImageViewHolder, position: Int) {
         val image = recipeImageList[position]
-        holder.bind(image)
+        holder.bind(position, image)
+    }
+
+    fun getRecipeImageList(): List<String> {
+        // 방어적 복사
+        return recipeImageList.toList()
     }
 
     fun setRecipeImageList(images: List<String>) {
@@ -31,9 +36,10 @@ class PostRecipeImageListAdapter(
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, images: List<String>) {
-        recipeImageList.addAll(position, images)
-        notifyItemInserted(position)
+    fun addAll(images: List<String>) {
+        val oldSize = recipeImageList.size
+        recipeImageList.addAll(images)
+        notifyItemRangeInserted(oldSize, images.size)
     }
 
     fun replaceItem(image: String) {
@@ -42,9 +48,8 @@ class PostRecipeImageListAdapter(
         notifyItemChanged(index)
     }
 
-    fun delete(position: Int, images: List<String>) {
+    fun delete(position: Int) {
         recipeImageList.removeAt(position)
-        recipeImageList.addAll(images)
         notifyItemRemoved(position)
     }
 
@@ -55,16 +60,16 @@ class PostRecipeImageListAdapter(
     class PostRecipeImageViewHolder(
         private val binding: ItemRecipeImageListBinding,
         private val onClick: (String) -> Unit,
-        private val onCancelClick: (String) -> Unit
+        private val onCancelClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(image: String) {
+        fun bind(position: Int, image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
             binding.ivRecipeImageCancel.setOnClickListener {
-                onCancelClick(image)
+                onCancelClick(position)
             }
 
             binding.ivRecipeImage.setImageUrl(image)

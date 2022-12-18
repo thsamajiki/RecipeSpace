@@ -54,13 +54,24 @@ class ChatServiceImpl @Inject constructor(
                     if (e != null) {
                         return@EventListener
                     }
-                    if (queryDocumentSnapshots != null) {
-                        for (documentChange in queryDocumentSnapshots.documentChanges) {
-                            val chatData: ChatData =
-                                documentChange.document.toObject(ChatData::class.java)
-                            onChatListChangeListener.onChatListChange(documentChange.type, chatData)
-                        }
+                    if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
+                        continuation.resumeWithException(Exception("queryDocumentSnapshot is Null or Empty"))
+                        return@EventListener
                     }
+
+                    for (documentChange in queryDocumentSnapshots.documentChanges) {
+                        val chatData: ChatData =
+                            documentChange.document.toObject(ChatData::class.java)
+
+                        // TODO: 2022-12-18 onChatListChangeListener 대체하기 (불필요하면 그냥 없애기)
+                        onChatListChangeListener.onChatListChange(documentChange.type, chatData)
+                    }
+
+                    val chatList = queryDocumentSnapshots.documentChanges.map {
+                        it.document.toObject(ChatData::class.java)
+                    }
+
+                    continuation.resume(chatList)
                 })
         }
     }

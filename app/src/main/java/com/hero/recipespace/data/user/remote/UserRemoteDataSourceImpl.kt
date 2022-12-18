@@ -4,14 +4,16 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.service.UserService
+import com.hero.recipespace.domain.user.request.LoginUserRequest
+import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
 
 class UserRemoteDataSourceImpl(
     private val userService: UserService
 ) : UserRemoteDataSource {
 
-    override suspend fun getData(userKey: String): UserData {
-        return userService.getData(userKey)
+    override suspend fun login(request: LoginUserRequest): UserData {
+        return userService.login(request)
     }
 
     override suspend fun getFirebaseAuthProfile(): UserData {
@@ -23,14 +25,12 @@ class UserRemoteDataSourceImpl(
             null
         }
 
-        val userEntity = UserData(
+        return UserData(
             key = firebaseUser.uid,
             name = firebaseUser.displayName,
             email = firebaseUser.email,
             profileImageUrl = profileImageUrl
         )
-
-        return userEntity
     }
 
     private fun getCurrentUser(): FirebaseUser? {
@@ -41,10 +41,8 @@ class UserRemoteDataSourceImpl(
         return userService.getDataList()
     }
 
-    override suspend fun add(userName: String,
-                             email: String,
-                             pwd: String)  : UserData {
-        return userService.add(userName, email, pwd)
+    override suspend fun add(request: SignUpUserRequest)  : UserData {
+        return userService.add(request)
     }
 
     override suspend fun update(
@@ -52,10 +50,6 @@ class UserRemoteDataSourceImpl(
     ) : UserData {
         return userService.update(userData)
     }
-
-//    override suspend fun update(newUserName: String, newProfileImageUrl: String): UserData {
-//        return userService.update(newUserName, newProfileImageUrl)
-//    }
 
     override suspend fun updateUser(
         request: UpdateUserRequest,
@@ -67,7 +61,7 @@ class UserRemoteDataSourceImpl(
                 = request.newProfileImageUrl
 
         val newUserData = UserData(
-            key = FirebaseAuth.getInstance().currentUser?.uid.orEmpty(),
+            key = userKey,
             name = newUserName,
             email = FirebaseAuth.getInstance().currentUser?.email.orEmpty(),
             profileImageUrl = newProfileImageUrl
@@ -83,6 +77,6 @@ class UserRemoteDataSourceImpl(
     }
 
     override suspend fun signOut() {
-        FirebaseAuth.getInstance().signOut()
+        return FirebaseAuth.getInstance().signOut()
     }
 }

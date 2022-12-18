@@ -209,8 +209,9 @@ class EditRecipeActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
-    private fun deletePhoto(photoUrl: String?) {
+    private fun deletePhoto(position: Int) {
         // TODO: 2022-12-16 기존의 RecipeData 에 있는 이미지 목록(RecyclerView)에서 원하는 이미지를 제외하는 것 구현하기
+        editRecipeImageListAdapter.delete(position, recipePhotoPathList)
     }
 
     object Result {

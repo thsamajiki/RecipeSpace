@@ -36,7 +36,6 @@ class PostRecipeActivity : AppCompatActivity(),
     TextWatcher {
 
     private lateinit var binding: ActivityPostRecipeBinding
-    private val recipePhotoPathList: MutableList<String> = mutableListOf()
 
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
@@ -46,6 +45,9 @@ class PostRecipeActivity : AppCompatActivity(),
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
+
+                val recipePhotoPathList = mutableListOf<String>()
+
                 if (it.data!!.clipData != null) {
                     val count = it.data!!.clipData!!.itemCount
 
@@ -59,6 +61,9 @@ class PostRecipeActivity : AppCompatActivity(),
                     val photoPath = it.data!!.data.toString()
                     recipePhotoPathList.add(photoPath)
                 }
+
+                postRecipeImageListAdapter.addAll(recipePhotoPathList)
+
 //                recipePhotoPathList = RealPathUtil.getRealPath(this, it.data?.data!!)
 //                Glide.with(this).load(recipePhotoPathList).into(binding.ivRecipePhoto)
 //                for(i : Int in 0..9) {
@@ -157,7 +162,7 @@ class PostRecipeActivity : AppCompatActivity(),
         }
 
         binding.tvComplete.setOnClickListener {
-            viewModel.uploadRecipe(binding.editContent.text.toString(), recipePhotoPathList)
+            viewModel.uploadRecipe(binding.editContent.text.toString(), postRecipeImageListAdapter.getRecipeImageList())
         }
     }
 
@@ -212,7 +217,7 @@ class PostRecipeActivity : AppCompatActivity(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.tvComplete.isEnabled = s.isNotEmpty() && recipePhotoPathList.isNotEmpty()
+        binding.tvComplete.isEnabled = s.isNotEmpty() && postRecipeImageListAdapter.getRecipeImageList().isNotEmpty()
     }
 
     private fun intentPhoto(photoUrl: String?) {
@@ -220,8 +225,8 @@ class PostRecipeActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
-    private fun deletePhoto(photoUrl: String?) {
-        // TODO: 2022-12-16 갤러리에서 선택한 이미지 목록(RecyclerView)에서 원하는 이미지를 제외하는 것 구현하기
+    private fun deletePhoto(position: Int) {
+        postRecipeImageListAdapter.delete(position)
     }
 
     override fun onClick(view: View) {

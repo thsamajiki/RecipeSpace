@@ -12,8 +12,6 @@ interface RecipeRepository {
 
     suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
 
-    suspend fun modifyRecipe(recipeEntity: RecipeEntity)
-
     suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
 
     suspend fun deleteRecipe(recipeEntity: RecipeEntity)

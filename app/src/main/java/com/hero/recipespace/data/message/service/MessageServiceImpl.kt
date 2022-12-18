@@ -1,21 +1,11 @@
 package com.hero.recipespace.data.message.service
 
-import android.content.Context
-import android.text.TextUtils
-import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.Transaction
-import com.google.firebase.firestore.ktx.toObject
-import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
-import com.hero.recipespace.data.user.UserData
-import com.hero.recipespace.database.FirebaseData
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.util.MyInfoUtil
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -26,7 +16,7 @@ class MessageServiceImpl @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore
 ) : MessageService {
     override fun getData(messageKey: String): MessageData {
-        return MessageData()
+        TODO("Not yet implemented")
     }
 
     override suspend fun getDataList(chatKey: String): List<MessageData> {
@@ -45,11 +35,11 @@ class MessageServiceImpl @Inject constructor(
                         return@EventListener
                     }
 
-                    val list = queryDocumentSnapshots.documentChanges.map {
+                    val messageList = queryDocumentSnapshots.documentChanges.map {
                         it.document.toObject(MessageData::class.java)
                     }
 
-                    continuation.resume(list)
+                    continuation.resume(messageList)
                 })
         }
     }

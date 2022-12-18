@@ -16,7 +16,7 @@ class NoticeRepositoryImpl @Inject constructor(
         return noticeRemoteDataSource.getData(noticeKey).toEntity()
     }
 
-    override suspend fun observeNoticeList(): Flow<List<NoticeEntity>> {
+    override suspend fun getNoticeList(): Flow<List<NoticeEntity>> {
         return noticeRemoteDataSource.getDataList()
             .map { it ->
                 it.map {
