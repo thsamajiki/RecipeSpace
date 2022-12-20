@@ -8,8 +8,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="rate"
-            type="com.hero.recipespace.data.rate.RateData" />
+            name="viewModel"
+            type="com.hero.recipespace.view.main.recipe.viewmodel.RatingDialogViewModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -51,7 +51,7 @@
                 android:layout_marginBottom="20dp"
                 android:numStars="5"
                 android:stepSize="1"
-                app:rating="@={rate.rate}" />
+                android:rating="@={viewModel.currentRate}" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

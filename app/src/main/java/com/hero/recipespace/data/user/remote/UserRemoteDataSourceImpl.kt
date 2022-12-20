@@ -7,8 +7,9 @@ import com.hero.recipespace.data.user.service.UserService
 import com.hero.recipespace.domain.user.request.LoginUserRequest
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
+import javax.inject.Inject
 
-class UserRemoteDataSourceImpl(
+class UserRemoteDataSourceImpl @Inject constructor(
     private val userService: UserService
 ) : UserRemoteDataSource {
 

@@ -4,10 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.database.rate.dao.RateDao
+import com.hero.recipespace.ext.TypeConverterExt
 
-@Database(entities = [RateData::class], version = 1)
+@Database(entities = [RateData::class], version = 1, exportSchema = false)
+@TypeConverters(TypeConverterExt::class)
 abstract class AppRateDatabase : RoomDatabase() {
     abstract fun rateDao() : RateDao
 

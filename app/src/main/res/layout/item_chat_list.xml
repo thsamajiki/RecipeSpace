@@ -23,7 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:imageURI="@{chat.userProfileImages[1]}" />
+            app:imageUrl="@{chat.userProfileImages[1]}" />
 
         <TextView
             android:id="@+id/tv_user_name"

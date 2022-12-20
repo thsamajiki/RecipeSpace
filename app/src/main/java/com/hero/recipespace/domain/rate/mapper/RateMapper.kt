@@ -20,7 +20,7 @@ fun RateEntity.toData(): RateData {
         userKey = userKey,
         userName = userName,
         profileImageUrl = profileImageUrl,
-        rate = rate,
+        rate = rate ?: 0f,
         date = date
     )
 }

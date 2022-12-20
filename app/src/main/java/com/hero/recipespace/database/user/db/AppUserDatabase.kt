@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.dao.UserDao
 
-@Database(entities = [UserData::class], version = 1)
+@Database(entities = [UserData::class], version = 1, exportSchema = false)
 abstract class AppUserDatabase : RoomDatabase() {
     abstract fun userDao() : UserDao
 

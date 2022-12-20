@@ -22,7 +22,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class UserServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val firebaseFirestore: FirebaseFirestore,
+    private val firebaseStorage: FirebaseStorage
 ) : UserService {
     override suspend fun login(request: LoginUserRequest): UserData {
         val userKey = loginToFirebase(request.email, request.pwd)
@@ -72,7 +73,7 @@ class UserServiceImpl @Inject constructor(
         val profileImageUrl: String = firebaseUser?.photoUrl.toString()
 
         return UserData(
-            firebaseUser?.uid,
+            firebaseUser?.uid.orEmpty(),
             firebaseUser?.displayName,
             firebaseUser?.email,
             profileImageUrl
@@ -86,7 +87,7 @@ class UserServiceImpl @Inject constructor(
     override suspend fun add(request: SignUpUserRequest): UserData {
         if (createAccount(request.email, request.pwd)) {
             val userData = UserData(
-                key = firebaseAuth.uid,
+                key = firebaseAuth.uid.orEmpty(),
                 name = request.name,
                 email = request.email,
                 profileImageUrl = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
@@ -147,7 +148,7 @@ class UserServiceImpl @Inject constructor(
 
         return suspendCoroutine { continuation ->
             val storageRef =
-                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
+                firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
 
             val photoPath: String = profileImageUrl
             val imageFile = Uri.fromFile(File(photoPath))

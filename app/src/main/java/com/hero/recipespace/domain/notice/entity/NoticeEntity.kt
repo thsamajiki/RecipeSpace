@@ -5,10 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class NoticeEntity(
-    val key: String? = null,
-    val title: String? = null,
-    val desc: String? = null,
-    val postDate: String? = null
+    var key: String,
+    var title: String? = null,
+    var desc: String? = null,
+    var postDate: String? = null
 ) : Parcelable {
 
 }

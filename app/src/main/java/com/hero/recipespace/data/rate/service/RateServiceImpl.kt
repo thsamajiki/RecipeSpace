@@ -102,11 +102,11 @@ class RateServiceImpl @Inject constructor(
     override suspend fun add(rateData: RateData, recipeData: RecipeData): RateData {
         return suspendCoroutine<RateData> { continuation ->
             firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
-                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeData.key.orEmpty())
-                val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
+                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeData.key)
+                val rateRef = recipeRef.collection("RateList").document(rateData.userKey)
                 val rateSnapShot = transaction[rateRef]
-                val originTotalCount: Int = recipeData.totalRatingCount
-                val originRate: Float = recipeData.rate
+                val originTotalCount: Int = recipeData.totalRatingCount ?: 0
+                val originRate: Float = recipeData.rate ?: 0f
                 var originSum = originTotalCount * originRate
                 var newTotalCount = originTotalCount + 1
 
@@ -149,8 +149,8 @@ class RateServiceImpl @Inject constructor(
                 val recipeRef = firebaseFirestore.collection("Recipe").document(recipeData.key.orEmpty())
                 val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
                 val rateSnapShot = transaction[rateRef]
-                val originTotalCount: Int = recipeData.totalRatingCount
-                val originRate: Float = recipeData.rate
+                val originTotalCount: Int = recipeData.totalRatingCount ?: 0
+                val originRate: Float = recipeData.rate ?: 0f
                 var originSum = originTotalCount * originRate
 
                 if (rateSnapShot.exists()) {

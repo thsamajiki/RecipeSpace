@@ -4,8 +4,9 @@ import androidx.lifecycle.asFlow
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.dao.UserDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class UserLocalDataSourceImpl(
+class UserLocalDataSourceImpl @Inject constructor(
     private val userDao: UserDao
 ) : UserLocalDataSource {
     override suspend fun getData(userKey: String): UserData {

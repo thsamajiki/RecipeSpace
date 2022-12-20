@@ -22,14 +22,10 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
-import com.hero.recipespace.util.MyInfoUtil
 import com.hero.recipespace.util.RealPathUtil
 import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.main.account.viewmodel.EditProfileUiState
@@ -138,7 +134,7 @@ class EditProfileActivity : AppCompatActivity(),
         }
         binding.tvComplete.setOnClickListener {
             if (isNewProfile()) {
-                viewModel.requestUpdateProfile(binding.editUserName.text.toString(), newProfileImageUrl)
+                viewModel.requestUpdateProfile(binding.editUserName.text.toString().trim(), newProfileImageUrl)
             }
         }
         binding.fabProfileEdit.setOnClickListener {
@@ -199,36 +195,37 @@ class EditProfileActivity : AppCompatActivity(),
         if (!TextUtils.isEmpty(newProfileImageUrl)) {
             editData["profileImageUrl"] = newProfileImageUrl
         }
-        val newUserName = binding.editUserName.text.toString()
+        val newUserName = binding.editUserName.text.toString().trim()
         editData["name"] = newUserName
         val userKey: String? = FirebaseAuth.getInstance().uid
-        FirebaseData.getInstance()
-            .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {
-                override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
-                    if (isSuccess) {
-                        MyInfoUtil.getInstance()
-                            .putUserName(this@EditProfileActivity, newUserName)
-                        if (!TextUtils.isEmpty(newProfileImageUrl)) {
-                            MyInfoUtil.getInstance()
-                                .putProfileImageUrl(this@EditProfileActivity, newProfileImageUrl)
-                        }
-                        setResult(RESULT_OK)
-                        finish()
-                    } else {
-                        Toast.makeText(applicationContext, "사용자 정보 변경에 실패했습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })
+        // TODO: 2022-12-20 UserServiceImpl 의 add 메소드로 옮김
+//        FirebaseData.getInstance()
+//            .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {
+//                override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
+//                    if (isSuccess) {
+//                        MyInfoUtil.getInstance()
+//                            .putUserName(this@EditProfileActivity, newUserName)
+//                        if (!TextUtils.isEmpty(newProfileImageUrl)) {
+//                            MyInfoUtil.getInstance()
+//                                .putProfileImageUrl(this@EditProfileActivity, newProfileImageUrl)
+//                        }
+//                        setResult(RESULT_OK)
+//                        finish()
+//                    } else {
+//                        Toast.makeText(applicationContext, "사용자 정보 변경에 실패했습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            })
     }
 
-    fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
-        hideLoading()
-        if (isSuccess) {
-            updateUserData(downloadUrl.orEmpty())
-        } else {
-            Toast.makeText(this, "사진 업로드에 실패했습니다", Toast.LENGTH_SHORT).show()
-        }
-    }
+//    fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
+//        hideLoading()
+//        if (isSuccess) {
+//            updateUserData(downloadUrl.orEmpty())
+//        } else {
+//            Toast.makeText(this, "사진 업로드에 실패했습니다", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

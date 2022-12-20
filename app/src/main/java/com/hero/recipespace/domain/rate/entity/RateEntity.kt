@@ -6,12 +6,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RateEntity(
-    val key: String? = null,
-    val userKey: String? = null,
-    val userName: String? = null,
-    val profileImageUrl: String? = null,
-    val rate: Float = 0f,
-    val date: Timestamp? = null
+    var key: String,
+    var userKey: String,
+    var userName: String? = null,
+    var profileImageUrl: String? = null,
+    var rate: Float? = 0f,
+    var date: Timestamp? = null
 ) : Parcelable {
 
 }

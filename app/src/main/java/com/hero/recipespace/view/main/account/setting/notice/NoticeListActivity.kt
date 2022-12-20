@@ -10,12 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
-import com.hero.recipespace.data.notice.NoticeData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityNoticeListBinding
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.main.account.setting.notice.viewmodel.NoticeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,7 +38,7 @@ class NoticeListActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         initRecyclerView(binding.rvNoticeList)
-        getNoticeData(viewModel.noticeItem)
+        getNoticeData(viewModel.noticeItem.value!!)
         //        getNoticeListFromDatabase();
         setupView()
         setupViewModel()
@@ -92,21 +88,21 @@ class NoticeListActivity : AppCompatActivity(),
     //        });
     //    }
     private fun getNoticeData(notice: NoticeEntity) {
-        FirebaseData.getInstance()
-            .getNoticeList(object : OnCompleteListener<List<NoticeData>> {
-                override fun onComplete(
-                    isSuccess: Boolean,
-                    response: Response<List<NoticeData>>?
-                ) {
-                    if (response != null) {
-                        if (isSuccess && response.isNotEmpty()) {
-                            noticeList.clear()
-                            noticeList.addAll(response.getData())
-                            noticeListAdapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-            })
+//        FirebaseData.getInstance()
+//            .getNoticeList(object : OnCompleteListener<List<NoticeData>> {
+//                override fun onComplete(
+//                    isSuccess: Boolean,
+//                    response: Response<List<NoticeData>>?
+//                ) {
+//                    if (response != null) {
+//                        if (isSuccess && response.isNotEmpty()) {
+//                            noticeList.clear()
+//                            noticeList.addAll(response.getData())
+//                            noticeListAdapter.notifyDataSetChanged()
+//                        }
+//                    }
+//                }
+//            })
     }
 
     override fun onClick(view: View) {

@@ -2,11 +2,12 @@ package com.hero.recipespace.view.post.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
-import com.hero.recipespace.domain.recipe.usecase.AddRecipeUseCase
+import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,7 @@ sealed class PostRecipeUiState {
 @HiltViewModel
 class PostRecipeViewModel @Inject constructor(
     application: Application,
-    private val addRecipeUseCase: AddRecipeUseCase
+    private val postRecipeUseCase: PostRecipeUseCase
 ) : AndroidViewModel(application) {
 
     private val _postRecipeUiState = MutableStateFlow<PostRecipeUiState>(PostRecipeUiState.Idle)
@@ -35,6 +36,10 @@ class PostRecipeViewModel @Inject constructor(
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
+
+    private val _recipeImageList = MutableLiveData<List<String>>()
+    val recipeImageList: LiveData<List<String>>
+        get() = _recipeImageList
 
     val recipeContent: MutableLiveData<String> = MutableLiveData()
 
@@ -45,7 +50,7 @@ class PostRecipeViewModel @Inject constructor(
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
-            addRecipeUseCase(
+            postRecipeUseCase(
                 UploadRecipeRequest(content, recipePhotoPathList),
                 onProgress = { progress ->
                     _loadingState.value = LoadingState.Progress(progress.toInt())

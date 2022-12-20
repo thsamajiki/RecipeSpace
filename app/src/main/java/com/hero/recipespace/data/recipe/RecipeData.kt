@@ -1,22 +1,36 @@
 package com.hero.recipespace.data.recipe
 
 import android.os.Parcelable
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "recipe_db")
 data class RecipeData(
-    val key: String? = null,
-    val profileImageUrl: String? = null,
-    val userName: String? = null,
-    val userKey: String? = null,
-    val desc: String? = null,
-    val photoUrlList: List<String>? = null,
-    val postDate: Timestamp? = null,
-    val rate: Float = 0f,
-    val totalRatingCount: Int = 0
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "key")
+    var key: String,
+    @ColumnInfo(name = "profileImageUrl")
+    var profileImageUrl: String? = null,
+    @ColumnInfo(name = "userName")
+    var userName: String? = null,
+    @ColumnInfo(name = "userKey")
+    var userKey: String,
+    @ColumnInfo(name = "desc")
+    var desc: String? = null,
+    @ColumnInfo(name = "photoUrlList")
+    var photoUrlList: List<String>? = null,
+    @ColumnInfo(name = "postDate")
+    var postDate: Timestamp? = null,
+    @ColumnInfo(name = "rate")
+    var rate: Float? = 0f,
+    @ColumnInfo(name = "totalRatingCount")
+    var totalRatingCount: Int? = 0
 ) : Parcelable {
 
 }

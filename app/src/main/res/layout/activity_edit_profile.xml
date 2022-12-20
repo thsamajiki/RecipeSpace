@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel" />
@@ -30,35 +32,36 @@
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
+                    android:src="@drawable/ic_arrow"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:src="@drawable/ic_arrow" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:text="@string/title_edit_profile"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/title_text_size" />
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_complete"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:enabled="false"
                     android:gravity="center"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="@string/tv_finish"
-                    android:textColor="@selector/selector_complete_btn"
-                    android:textSize="@dimen/title_text_size" />
+                    android:textSize="@dimen/title_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <!--                    android:textColor="@selector/selector_complete_btn"-->
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -74,8 +77,10 @@
                 android:id="@+id/iv_user_profile"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
-                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                app:imageURI="@={viewModel.newProfileImageUrl}" />
+
+                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+
+<!--            app:imageUrl="@={viewModel.user.profileImageUrl}"-->
 
             <com.skydoves.elasticviews.ElasticFloatingActionButton
                 android:id="@+id/fab_profile_edit"
@@ -103,8 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="text"
-                android:text="@={viewModel.newUserName}"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:text="@={viewModel.newUserName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

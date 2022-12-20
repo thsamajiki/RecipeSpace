@@ -59,14 +59,6 @@ class ChatServiceImpl @Inject constructor(
                         return@EventListener
                     }
 
-                    for (documentChange in queryDocumentSnapshots.documentChanges) {
-                        val chatData: ChatData =
-                            documentChange.document.toObject(ChatData::class.java)
-
-                        // TODO: 2022-12-18 onChatListChangeListener 대체하기 (불필요하면 그냥 없애기)
-                        onChatListChangeListener.onChatListChange(documentChange.type, chatData)
-                    }
-
                     val chatList = queryDocumentSnapshots.documentChanges.map {
                         it.document.toObject(ChatData::class.java)
                     }
@@ -108,9 +100,9 @@ class ChatServiceImpl @Inject constructor(
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
                 transaction[userRef] = userData
-                val userProfiles = HashMap<String, String>()
-                userProfiles[myUserKey] = myProfileUrl
-                userProfiles[userData.key.orEmpty()] = userData.profileImageUrl.orEmpty()
+                val userProfileImages = HashMap<String, String>()
+                userProfileImages[myUserKey] = myProfileUrl
+                userProfileImages[userData.key.orEmpty()] = userData.profileImageUrl.orEmpty()
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
                 userNames[userData.key.orEmpty()] = userData.name.orEmpty()
@@ -120,13 +112,14 @@ class ChatServiceImpl @Inject constructor(
                 val lastMessage = MessageData(
                     userKey = myUserKey,
                     message = message,
-                    timestamp = Timestamp.now()
+                    timestamp = Timestamp.now(),
+                    confirmed = false
                 )
                 val chatRef = firebaseFirestore.collection("Chat").document()
                 val chatData = ChatData(
                     key = chatRef.id,
                     lastMessage = lastMessage,
-                    userProfileImages = userProfiles,
+                    userProfileImages = userProfileImages,
                     userNames = userNames,
                     userList = userList
                 )
@@ -168,4 +161,16 @@ class ChatServiceImpl @Inject constructor(
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
+
+//    companion object {
+//        private var chatService: ChatService? = null
+//
+//        fun getInstance(): ChatService {
+//            return synchronized(this) {
+//                chatService ?: ChatService().also {
+//                    chatService = it
+//                }
+//            }
+//        }
+//    }
 }

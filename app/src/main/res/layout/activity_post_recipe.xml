@@ -117,6 +117,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_photo"
                 app:layout_constraintTop_toTopOf="parent"
+                app:recipeImageItems="@{viewModel.recipeImageList}"
                 tools:listitem="@layout/item_recipe_image_list" />
 
             <TextView

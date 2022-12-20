@@ -53,11 +53,11 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="@string/btn_finish"
-                    android:textColor="@selector/selector_complete_btn"
                     android:textSize="@dimen/title_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+<!--                android:textColor="@selector/selector_complete_btn"-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -66,7 +66,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="120dp">
-            <!-- 처음에는 AppCompatImageView 만 보이게 하고 갤러리에 가서 이미지들을 선택하면
+
+            <!-- TODO 처음에는 AppCompatImageView 만 보이게 하고 갤러리에 가서 이미지들을 선택하면
                 RecyclerView 로 View 가 바뀌게 하려고 하는데 어떻게 해야 하나요? -->
             <!-- activity_recipe_detail.xml 과 겹치는데 공유해도 되나요?
                 아니면 아이템을 별도로 만들어야 하나요?-->
@@ -113,6 +114,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_photo"
                 app:layout_constraintTop_toTopOf="parent"
+                app:editRecipeImageItems="@{viewModel.recipe.photoUrlList}"
                 tools:listitem="@layout/item_recipe_image_list" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

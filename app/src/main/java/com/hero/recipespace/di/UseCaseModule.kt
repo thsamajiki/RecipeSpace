@@ -84,7 +84,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideAddRecipeUseCase(recipeRepository: RecipeRepository) = AddRecipeUseCase(recipeRepository)
+    fun provideAddRecipeUseCase(recipeRepository: RecipeRepository) = PostRecipeUseCase(recipeRepository)
 
     @Provides
     @Singleton

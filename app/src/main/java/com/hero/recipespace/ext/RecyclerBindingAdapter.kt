@@ -45,7 +45,7 @@ fun RecyclerView.setRecipeImageListItems(items: List<String>?) {
     adapter?.setRecipeImageList(items)
 }
 
-@BindingAdapter("recipeImageItems")
+@BindingAdapter("editRecipeImageItems")
 fun RecyclerView.setEditRecipeImageListItems(items: List<String>?) {
     items ?: return
 

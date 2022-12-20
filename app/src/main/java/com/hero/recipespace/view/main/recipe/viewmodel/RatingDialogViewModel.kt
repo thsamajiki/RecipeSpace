@@ -1,7 +1,10 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
@@ -46,21 +49,24 @@ class RatingDialogViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
+    val currentRate = MutableLiveData<Float>()
+
     private val _rate = MutableLiveData<RateEntity>()
-    val rate: LiveData<RateEntity>
+    val rate : LiveData<RateEntity>
         get() = _rate
 
-    val rate2: LiveData<RateEntity> = getRateUseCase(RATE_KEY).asLiveData()
-
     // TODO: 2022-12-18 사용자가 처음으로 Rate 를 add 함
-    fun requestAddRateData(rate: Float) {
+    fun requestAddRateData() {
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
-            addRateUseCase.invoke(_rate.value!!, _recipe.value!!)
+            val requestRateEntity = rate.value!!.copy(rate = currentRate.value)
+            addRateUseCase.invoke(requestRateEntity, _recipe.value!!)
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
                     _rateRecipeUiState.value = RateRecipeUiState.Success(it)
+                    currentRate.value = it.rate!!
+                    _rate.value = it
                 }
                 .onFailure {
                     _loadingState.value = LoadingState.Hidden
@@ -70,22 +76,22 @@ class RatingDialogViewModel @Inject constructor(
         }
     }
 
-    // TODO: 2022-12-18 사용자가 처음으로 Rate 를 update 함
-    fun requestUpdateRateData(rate: Float) {
+    // TODO: 2022-12-18 사용자가 Rate 를 update 함
+    fun requestUpdateRateData() {
         _loadingState.value = LoadingState.Loading
 
-        viewModelScope.launch {
-            addRateUseCase.invoke(_rate.value!!, _recipe.value!!)
-                .onSuccess {
-                    _loadingState.value = LoadingState.Hidden
-                    _rateRecipeUiState.value = RateRecipeUiState.Success(it)
-                }
-                .onFailure {
-                    _loadingState.value = LoadingState.Hidden
-                    _rateRecipeUiState.value = RateRecipeUiState.Failed(it.message.orEmpty())
-                    it.printStackTrace()
-                }
-        }
+//        viewModelScope.launch {
+//            updateRateUseCase.invoke(_rate.value!!, _recipe.value!!)
+//                .onSuccess {
+//                    _loadingState.value = LoadingState.Hidden
+//                    _rateRecipeUiState.value = RateRecipeUiState.Success(it)
+//                }
+//                .onFailure {
+//                    _loadingState.value = LoadingState.Hidden
+//                    _rateRecipeUiState.value = RateRecipeUiState.Failed(it.message.orEmpty())
+//                    it.printStackTrace()
+//                }
+//        }
     }
 
     override fun onCleared() {

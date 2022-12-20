@@ -2,7 +2,6 @@ package com.hero.recipespace.view.main.account
 
 import android.content.Context
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.hero.recipespace.BuildConfig
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.DialogAboutUsBinding
 

@@ -1,34 +1,24 @@
 package com.hero.recipespace.view.main.recipe
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.domain.recipe.mapper.toEntity
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.Response
 import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.main.recipe.viewmodel.RateRecipeUiState
 import com.hero.recipespace.view.main.recipe.viewmodel.RatingDialogViewModel
-import com.hero.recipespace.view.post.PostRecipeActivity
-import com.hero.recipespace.view.post.viewmodel.PostRecipeUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,9 +29,9 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
 
-    private val recipe: RecipeEntity by lazy {
-        requireArguments().getParcelable(KEY_RECIPE)!!
-    }
+//    private val recipe: RecipeEntity by lazy {
+//        requireArguments().getParcelable(KEY_RECIPE)!!
+//    }
 
     private val viewModel by viewModels<RatingDialogViewModel>()
 
@@ -86,14 +76,14 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                             Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
                             // 평가완료했을 때 평가완료된 데이터를 내려주자.
-                            val result = Bundle().apply {
-                                putParcelable(
-                                    Result.RECIPE_KEY,
-                                    recipe
-                                )
-                            }
-                            setFragmentResult(TAG, result)
-                            dismiss()
+//                            val result = Bundle().apply {
+//                                putParcelable(
+//                                    Result.RECIPE_KEY,
+////                                    recipe
+//                                )
+//                            }
+//                            setFragmentResult(TAG, result)
+//                            dismiss()
                         }
                         is RateRecipeUiState.Failed -> {
                             Toast.makeText(context, "평가가 반영되지 않았습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
@@ -112,12 +102,11 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         }
         binding.tvConfirm.setOnClickListener {
 //            uploadRating()
-            val rate = binding.rate.rate
-            val userKey = binding.rate.userKey
+            val userKey = viewModel.rate.value?.userKey
             if (userKey == null) {
-                viewModel.requestAddRateData(rate) // db 에서 userKey 가 들어가야 함
+                viewModel.requestAddRateData() // db 에서 userKey 가 들어가야 함
             } else {
-                viewModel.requestUpdateRateData(rate)
+                viewModel.requestUpdateRateData()
             }
         }
     }
@@ -129,27 +118,28 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
             return
         }
         val rate: RateEntity = makeRateData(rating)
-        FirebaseData.getInstance()
-            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
-                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-                    if (isSuccess) {
-                        Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
-
-                        // 평가완료했을 때 평가완료된 데이터를 내려주자.
-                        val result = Bundle().apply {
-                            putParcelable(
-                                Result.RECIPE_KEY,
-                                response?.getData()?.toEntity()
-                            )
-                        }
-                        setFragmentResult(TAG, result)
-                        dismiss()
-                    } else {
-                        Toast.makeText(context, "평가가 실패하였습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            })
+        // TODO: 2022-12-20 RateServiceImpl 의 add 메소드로 옮김
+//        FirebaseData.getInstance()
+//            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
+//                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
+//                    if (isSuccess) {
+//                        Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+//
+//                        // 평가완료했을 때 평가완료된 데이터를 내려주자.
+//                        val result = Bundle().apply {
+//                            putParcelable(
+//                                Result.RECIPE_KEY,
+//                                response?.getData()?.toEntity()
+//                            )
+//                        }
+//                        setFragmentResult(TAG, result)
+//                        dismiss()
+//                    } else {
+//                        Toast.makeText(context, "평가가 실패하였습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
+//                            .show()
+//                    }
+//                }
+//            })
     }
 
     private fun makeRateData(rate: Float): RateEntity {
@@ -175,7 +165,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         fun newInstance(recipe: RecipeEntity): RatingDialogFragment =
             RatingDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(KEY_RECIPE, recipe)
+//                    putParcelable(KEY_RECIPE, recipe)
                 }
             }
 

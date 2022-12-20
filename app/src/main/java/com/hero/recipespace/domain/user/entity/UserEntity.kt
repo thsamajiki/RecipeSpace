@@ -1,14 +1,18 @@
 package com.hero.recipespace.domain.user.entity
 
 import android.os.Parcelable
+import androidx.annotation.NonNull
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserEntity(
-    val key: String? = null,
-    val name: String? = null,
-    val email: String? = null,
-    val profileImageUrl: String? = null
+    @PrimaryKey
+    @NonNull
+    var key: String,
+    var name: String? = null,
+    var email: String? = null,
+    var profileImageUrl: String? = null
 ) : Parcelable {
 
 }

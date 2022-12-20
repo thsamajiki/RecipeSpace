@@ -1,10 +1,7 @@
 package com.hero.recipespace.view.main.account.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
@@ -48,7 +45,11 @@ class EditProfileViewModel @Inject constructor(
         const val USER_KEY = "user"
     }
 
-    val user: UserEntity = savedStateHandle.get<UserEntity>(USER_KEY)!!
+//    val user: UserEntity = savedStateHandle.get<UserEntity>(USER_KEY)!!
+
+    private val _user = MutableLiveData<UserEntity>()
+    val user: LiveData<UserEntity>
+        get() = _user
 
     val userKey: String = FirebaseAuth.getInstance().uid.orEmpty()
 

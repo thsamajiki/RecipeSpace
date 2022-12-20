@@ -98,7 +98,7 @@ class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
         fun bind(message: MessageEntity) {
             binding.messageRight = message
 
-            if (message.confirmed) {
+            if (message.confirmed!!) {
                 binding.tvMessageNotReadRemaining.visibility = View.GONE
             }
 
