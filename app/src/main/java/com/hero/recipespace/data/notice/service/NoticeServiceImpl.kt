@@ -12,11 +12,12 @@ import kotlin.coroutines.suspendCoroutine
 
 class NoticeServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val db: FirebaseFirestore
 ) : NoticeService {
+
     override suspend fun getData(noticeKey: String): NoticeData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Notice")
+            db.collection("Notice")
                 .document(noticeKey)
                 .get()
                 .addOnSuccessListener { documentSnapShot ->
@@ -35,7 +36,7 @@ class NoticeServiceImpl @Inject constructor(
 
     override suspend fun getDataList(): List<NoticeData> {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Notice")
+            db.collection("Notice")
                 .orderBy("postDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->

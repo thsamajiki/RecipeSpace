@@ -134,7 +134,7 @@ class EditProfileActivity : AppCompatActivity(),
         }
         binding.tvComplete.setOnClickListener {
             if (isNewProfile()) {
-                viewModel.requestUpdateProfile(binding.editUserName.text.toString().trim(), newProfileImageUrl)
+                viewModel.requestUpdateProfile(newProfileImageUrl)
             }
         }
         binding.fabProfileEdit.setOnClickListener {

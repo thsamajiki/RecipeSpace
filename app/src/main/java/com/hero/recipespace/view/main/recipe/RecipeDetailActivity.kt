@@ -49,11 +49,9 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
     companion object {
-        private const val RECIPE_KEY = "recipeKey"
-
         fun getIntent(context: Context, recipeKey: String) =
             Intent(context, RecipeDetailActivity::class.java)
-                .putExtra(RECIPE_KEY, recipeKey)
+                .putExtra(RecipeDetailViewModel.RECIPE_KEY, recipeKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

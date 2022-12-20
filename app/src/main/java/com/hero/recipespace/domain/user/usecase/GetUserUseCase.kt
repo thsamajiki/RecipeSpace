@@ -7,8 +7,8 @@ import javax.inject.Inject
 class GetUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(): Result<UserEntity> =
+    suspend operator fun invoke(userKey: String): Result<UserEntity> =
         kotlin.runCatching {
-            userRepository.getAccountProfile()
+            userRepository.getUser(userKey)
         }
 }

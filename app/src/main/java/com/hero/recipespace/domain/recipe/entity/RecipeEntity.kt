@@ -6,10 +6,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RecipeEntity(
-    var key: String,
+    var key: String = "",
     var profileImageUrl: String? = null,
     var userName: String? = null,
-    var userKey: String,
+    var userKey: String = "",
     var desc: String? = null,
     var photoUrlList: List<String>? = null,
     var postDate: Timestamp? = null,

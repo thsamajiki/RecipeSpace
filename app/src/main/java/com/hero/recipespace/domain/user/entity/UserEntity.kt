@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class UserEntity(
     @PrimaryKey
     @NonNull
-    var key: String,
+    var key: String = "",
     var name: String? = null,
     var email: String? = null,
     var profileImageUrl: String? = null

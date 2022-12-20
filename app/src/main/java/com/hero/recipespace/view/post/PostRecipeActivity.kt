@@ -46,23 +46,38 @@ class PostRecipeActivity : AppCompatActivity(),
     // TODO: 2022-12-13 rv_recipe_images 리사이클러뷰에 갤러리에서 선택한 이미지들을 넣어주기
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
+            if (it.resultCode == Activity.RESULT_OK && it.data?.data != null) {
 
                 val recipePhotoPathList = mutableListOf<String>()
 
-                if (it.data!!.clipData != null) {
-                    val count = it.data!!.clipData!!.itemCount
+                val clipData = it?.data?.clipData
+                val clipDataSize = clipData?.itemCount
 
-                    for (index in 0 until count) {
-                        // 이미지 담기
-                        val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
-                        // 이미지 추가
-                        recipePhotoPathList.add(photoPath)
-                    }
+                if (clipData == null) { //이미지를 하나만 선택할 경우 clipData가 null이 올수 있음
+                    val photoPath = it?.data?.data!!
+                    recipePhotoPathList.add(photoPath.toString())
                 } else {
-                    val photoPath = it.data!!.data.toString()
-                    recipePhotoPathList.add(photoPath)
+                    clipData.let { clipData ->
+                        for (i in 0 until clipDataSize!!) { //선택 한 사진수만큼 반복
+                            val photoPath = clipData.getItemAt(i).uri
+                            recipePhotoPathList.add(photoPath.toString())
+                        }
+                    }
                 }
+
+//                if (it.data!!.clipData != null) {
+//                    val count = it.data!!.clipData!!.itemCount
+//
+//                    for (index in 0 until count) {
+//                        // 이미지 담기
+//                        val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
+//                        // 이미지 추가
+//                        recipePhotoPathList.add(photoPath)
+//                    }
+//                } else {
+//                    val photoPath = it.data!!.data.toString()
+//                    recipePhotoPathList.add(photoPath)
+//                }
 
                 postRecipeImageListAdapter.addAll(recipePhotoPathList)
 
@@ -73,6 +88,7 @@ class PostRecipeActivity : AppCompatActivity(),
 //                    Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
 //                }
                 binding.rvRecipeImages.visibility = View.VISIBLE
+                binding.tvTouchHereAndAddPictures.visibility = View.GONE
                 if (binding.editContent.text.toString()
                         .isNotEmpty() && recipePhotoPathList.isNotEmpty()
                 ) {
@@ -175,7 +191,7 @@ class PostRecipeActivity : AppCompatActivity(),
         val pickIntent = Intent(Intent.ACTION_PICK)
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        pickIntent.action = Intent.ACTION_GET_CONTENT
+        pickIntent.action = Intent.ACTION_PICK
         openGalleryResultLauncher.launch(pickIntent)
     }
 

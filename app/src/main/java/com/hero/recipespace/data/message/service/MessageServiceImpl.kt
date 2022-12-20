@@ -13,15 +13,16 @@ import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val db: FirebaseFirestore
 ) : MessageService {
+
     override fun getData(messageKey: String): MessageData {
         TODO("Not yet implemented")
     }
 
     override suspend fun getDataList(chatKey: String): List<MessageData> {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Chat")
+            db.collection("Chat")
                 .document(chatKey)
                 .collection("Messages")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
@@ -51,8 +52,8 @@ class MessageServiceImpl @Inject constructor(
             val myUserKey: String = firebaseAuth.uid.orEmpty()
             val messageData = MessageData(myUserKey, message, Timestamp.now())
 
-            firebaseFirestore.runTransaction<Any> { transaction ->
-                val chatRef = firebaseFirestore.collection("Chat").document(chatKey)
+            db.runTransaction<Any> { transaction ->
+                val chatRef = db.collection("Chat").document(chatKey)
                 val messageRef = chatRef.collection("Messages").document()
                 transaction.update(chatRef, "lastMessage", messageData)
                 transaction[messageRef] = messageData

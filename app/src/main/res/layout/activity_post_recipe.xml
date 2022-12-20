@@ -69,8 +69,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="120dp">
-            <!-- 처음에는 AppCompatImageView 만 보이게 하고 갤러리에 가서 이미지들을 선택하면
-                RecyclerView 로 View 가 바뀌게 하려고 하는데 어떻게 해야 하나요? -->
             <!-- activity_recipe_detail.xml 과 겹치는데 공유해도 되나요?
                 아니면 아이템을 별도로 만들어야 하나요?-->
 
@@ -121,6 +119,7 @@
                 tools:listitem="@layout/item_recipe_image_list" />
 
             <TextView
+                android:id="@+id/tv_touch_here_and_add_pictures"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

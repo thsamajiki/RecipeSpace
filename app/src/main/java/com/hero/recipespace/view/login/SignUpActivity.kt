@@ -73,6 +73,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupListeners() {
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+
         binding.btnSignUp.setOnClickListener {
             requestSignUp()
         }

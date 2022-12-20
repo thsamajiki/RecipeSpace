@@ -9,6 +9,7 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.user.UserData
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
@@ -18,7 +19,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class ChatServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val db: FirebaseFirestore
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         TODO("Not yet implemented")
@@ -28,9 +29,11 @@ class ChatServiceImpl @Inject constructor(
         return suspendCoroutine { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
             val userList: MutableList<String> = ArrayList()
+
             userList.add(myUserKey)
             userList.add(otherUserKey)
-            firebaseFirestore.collection("Chat")
+
+            db.collection("Chat")
                 .whereEqualTo("userList.$otherUserKey", true)
                 .whereEqualTo("userList.$myUserKey", true)
                 .get()
@@ -70,7 +73,7 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
         return callbackFlow {
-            firebaseFirestore.collection("Chat")
+            db.collection("Chat")
                 .whereEqualTo("userList.$userKey", true)
                 .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
                     if (e != null) {
@@ -85,17 +88,20 @@ class ChatServiceImpl @Inject constructor(
                         }
                     }
                 })
+            awaitClose {
+
+            }
         }
     }
 
     override suspend fun add(otherUserKey: String,
                              message: String) : ChatData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.runTransaction(Transaction.Function<Any> { transaction ->
+            db.runTransaction(Transaction.Function<Any> { transaction ->
                 val myUserKey: String = firebaseAuth.uid.orEmpty()
                 val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
                 val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
-                val userRef = firebaseFirestore.collection("User").document(
+                val userRef = db.collection("User").document(
                     otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
@@ -115,7 +121,7 @@ class ChatServiceImpl @Inject constructor(
                     timestamp = Timestamp.now(),
                     confirmed = false
                 )
-                val chatRef = firebaseFirestore.collection("Chat").document()
+                val chatRef = db.collection("Chat").document()
                 val chatData = ChatData(
                     key = chatRef.id,
                     lastMessage = lastMessage,
@@ -149,7 +155,7 @@ class ChatServiceImpl @Inject constructor(
             val userList: MutableList<String> = ArrayList()
             userList.add(myUserKey)
             userList.add(otherUserKey)
-            firebaseFirestore.collection("Chat")
+            db.collection("Chat")
                 .whereEqualTo("userList.$otherUserKey", true)
                 .whereEqualTo("userList.$myUserKey", true)
                 .get()

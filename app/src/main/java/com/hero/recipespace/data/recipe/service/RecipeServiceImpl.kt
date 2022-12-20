@@ -13,6 +13,11 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -21,12 +26,13 @@ import kotlin.coroutines.suspendCoroutine
 
 class RecipeServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore,
+    private val db: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
-): RecipeService {
+) : RecipeService {
+
     override suspend fun getRecipe(recipeKey: String): RecipeData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Recipe")
+            db.collection("Recipe")
                 .document(recipeKey)
                 .get()
                 .addOnSuccessListener { documentSnapShot ->
@@ -52,7 +58,7 @@ class RecipeServiceImpl @Inject constructor(
 
     override suspend fun getRecipeList(): List<RecipeData> {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Recipe")
+            db.collection("Recipe")
                 .orderBy("postDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
@@ -79,9 +85,9 @@ class RecipeServiceImpl @Inject constructor(
         desc: String,
         photoUrlList: List<String>,
         postDate: Timestamp
-    ) : RecipeData {
+    ): RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
-            val documentReference = firebaseFirestore.collection("Recipe").document()
+            val documentReference = db.collection("Recipe").document()
             val key = documentReference.id
             val recipeData = RecipeData(
                 key,
@@ -103,48 +109,72 @@ class RecipeServiceImpl @Inject constructor(
         recipePhotoPathList: List<String>,
         progress: (Float) -> Unit
     ): List<String> {
-        return suspendCoroutine { continuation ->
+        val storageRef =
+            FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
 
-            val storageRef =
-                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
+        return withContext(Dispatchers.IO) {
+            recipePhotoPathList.map { photoPath ->
+                val photoRef =
+                    storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
 
-            val totalPhotoList: MutableList<String> = mutableListOf()
-
-            for (imageCount: Int in recipePhotoPathList.indices) {
-                val photoPath: String = recipePhotoPathList[imageCount]
-                val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
-
-                val uploadTask = photoRef.putFile(Uri.fromFile(File(photoPath)))
-
-                uploadTask
-                    .addOnProgressListener { taskSnapshot ->
-                        val percent = taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
-                        progress(percent)
-                    }.continueWithTask { task ->
-                        if (!task.isSuccessful) {
-                            throw task.exception!!
-                        }
-                        storageRef.downloadUrl
-                    }
-                    .addOnSuccessListener { uri ->
-                        val photoDbRef = FirebaseStorage.getInstance().reference.child(recipePhotoPathList[imageCount])
-                        val photoMap: HashMap<String, Any> = HashMap()
-                        photoMap["photoUrl"] = uri
-
-                        photoRef.downloadUrl.addOnSuccessListener {
-                            totalPhotoList.add(uri.toString())
-
-                            if (totalPhotoList.size == recipePhotoPathList.size) {
-
-                            }
-                        }
-                        continuation.resume(listOf(uri.toString()))
-
-                    }.addOnFailureListener {
-                        continuation.resumeWithException(it)
-                    }
-            }
+                async {
+                    photoRef
+                        .putFile(Uri.fromFile(File(photoPath)))
+                        .await()
+                        .storage
+                        .downloadUrl
+                        .await()
+                        .toString()
+                }
+            }.awaitAll()
         }
+
+//        return suspendCoroutine { continuation ->
+//
+//            val storageRef =
+//                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
+//
+//            val totalPhotoList: MutableList<String> = mutableListOf()
+//
+//            for (imageCount: Int in recipePhotoPathList.indices) {
+//                val photoPath: String = recipePhotoPathList[imageCount]
+//                val photoRef =
+//                    storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
+//
+//                val uploadTask = photoRef.putFile(Uri.fromFile(File(photoPath)))
+//
+//                uploadTask
+//                    .addOnProgressListener { taskSnapshot ->
+//                        val percent =
+//                            taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
+//                        progress(percent)
+//                    }
+//                    .continueWithTask { task ->
+//                        if (!task.isSuccessful) {
+//                            throw task.exception!!
+//                        }
+//                        storageRef.downloadUrl
+//                    }
+//                    .addOnSuccessListener { uri ->
+//                        val photoDbRef =
+//                            FirebaseStorage.getInstance().reference.child(recipePhotoPathList[imageCount])
+//                        val photoMap: HashMap<String, Any> = HashMap()
+//                        photoMap["photoUrl"] = uri
+//
+//                        photoRef.downloadUrl.addOnSuccessListener {
+//                            totalPhotoList.add(uri.toString())
+//
+//                            if (totalPhotoList.size == recipePhotoPathList.size) {
+//
+//                            }
+//                        }
+//                        continuation.resume(listOf(uri.toString()))
+//                    }
+//                    .addOnFailureListener {
+//                        continuation.resumeWithException(it)
+//                    }
+//            }
+//        }
     }
 
     //파일타입 가져오기
@@ -154,7 +184,10 @@ class RecipeServiceImpl @Inject constructor(
         return mime.getExtensionFromMimeType(cr.getType(uri))
     }
 
-    override suspend fun update(request: UpdateRecipeRequest, onProgress: (Float) -> Unit) : RecipeData {
+    override suspend fun update(
+        request: UpdateRecipeRequest,
+        onProgress: (Float) -> Unit
+    ): RecipeData {
         val editData = HashMap<String, Any>()
 
         // FIXME: 2022-12-15 PhotoList 에 갱신된 데이터 넣는 것 수정하기
@@ -175,9 +208,9 @@ class RecipeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun remove(recipeData: RecipeData) : RecipeData {
+    override suspend fun remove(recipeData: RecipeData): RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
-            firebaseFirestore.collection("Recipe")
+            db.collection("Recipe")
                 .document(recipeData.key.orEmpty())
                 .delete()
                 .addOnSuccessListener { continuation.resume(recipeData) }

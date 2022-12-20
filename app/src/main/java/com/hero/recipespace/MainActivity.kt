@@ -7,10 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hero.recipespace.databinding.ActivityMainBinding
@@ -38,10 +34,10 @@ class MainActivity : AppCompatActivity(),
         setFragmentAdapter()
         setOnClickListener()
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
-        val navController: NavController = navHostFragment.findNavController()
-
-        binding.bottomNav.setupWithNavController(navController)
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
+//        val navController: NavController = navHostFragment.findNavController()
+//
+//        binding.bottomNav.setupWithNavController(navController)
 
         binding.bottomNav.setOnItemSelectedListener(this)
     }

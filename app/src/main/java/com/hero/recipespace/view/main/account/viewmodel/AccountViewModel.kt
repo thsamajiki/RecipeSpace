@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
 import com.hero.recipespace.domain.user.usecase.SignOutUseCase
@@ -51,7 +52,7 @@ class AccountViewModel @Inject constructor(
 
     private fun getUser() {
         viewModelScope.launch {
-            getUserUseCase()
+            getUserUseCase(FirebaseAuth.getInstance().uid.orEmpty())
                 .onSuccess {
                     _user.value = it
                     profileImageUrl.value = it.profileImageUrl.orEmpty()

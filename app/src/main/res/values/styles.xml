@@ -10,6 +10,9 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:ambientShadowAlpha">0.03</item>
         <item name="android:spotShadowAlpha">0.05</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="LoadingDialog" parent="android:Theme.Dialog">

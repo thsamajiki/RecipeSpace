@@ -60,15 +60,12 @@ class EditProfileViewModel @Inject constructor(
 
     // TODO: 2022-12-14 EditProfileViewModel, UpdateUserUseCase, Repository, RemoteSource, LocalSource, UserService에서 update 메소드를 새로 만듦
     // todo: 새로운 이름과 프로필 이미지를 입력받기 위해서 만듦
-    fun requestUpdateProfile(newUserName: String = "", newProfileImageUrl: String = "") {
+    fun requestUpdateProfile(newProfileImageUrl: String = "") {
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
             updateUserUseCase(
-                UpdateUserRequest(newUserName, newProfileImageUrl),
-                onProgress = { progress ->
-                    _loadingState.value = LoadingState.Progress(progress.toInt())
-                }
+                UpdateUserRequest(newUserName.value.orEmpty(), newProfileImageUrl)
             )
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden

@@ -17,6 +17,10 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.login(request)
     }
 
+    override suspend fun getUserData(userKey: String): UserData {
+        return userService.getUserData(userKey)
+    }
+
     override suspend fun getFirebaseAuthProfile(): UserData {
         val firebaseUser: FirebaseUser? = getCurrentUser()
 
@@ -46,20 +50,12 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.add(request)
     }
 
-    override suspend fun update(
-        userData: UserData
-    ) : UserData {
-        return userService.update(userData)
-    }
-
     override suspend fun updateUser(
-        request: UpdateUserRequest,
-        onProgress: (Float) -> Unit
+        request: UpdateUserRequest
     ): UserData {
-        val newUserName: String = request.newProfileImageUrl
+        val newUserName: String = request.newUserName
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-        val newProfileImageUrl: String
-                = request.newProfileImageUrl
+        val newProfileImageUrl: String = request.newProfileImageUrl
 
         val newUserData = UserData(
             key = userKey,

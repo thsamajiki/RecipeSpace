@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import androidx.fragment.app.commitNow
-import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentLoadingBinding
 
 class LoadingFragment : Fragment() {
@@ -23,7 +22,8 @@ class LoadingFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_loading, container, false)
+        _binding = FragmentLoadingBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

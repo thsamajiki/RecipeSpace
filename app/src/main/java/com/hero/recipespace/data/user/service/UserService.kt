@@ -7,6 +7,8 @@ import com.hero.recipespace.domain.user.request.SignUpUserRequest
 interface UserService {
     suspend fun login(request: LoginUserRequest) : UserData
 
+    suspend fun getUserData(userKey: String) : UserData
+
     fun getFirebaseAuthProfile(): UserData
 
     fun getDataList() : List<UserData>

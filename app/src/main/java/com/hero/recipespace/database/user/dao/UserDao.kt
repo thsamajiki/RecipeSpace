@@ -13,14 +13,14 @@ interface UserDao {
     suspend fun getUserFromKey(key: String?): UserData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(userData: UserData)
+    suspend fun insertUser(userData: UserData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(userDataList: List<UserData>)
 
     @Update
-    fun updateUser(userData: UserData)
+    suspend fun updateUser(userData: UserData)
 
     @Delete
-    fun deleteUser(userData: UserData)
+    suspend fun deleteUser(userData: UserData)
 }

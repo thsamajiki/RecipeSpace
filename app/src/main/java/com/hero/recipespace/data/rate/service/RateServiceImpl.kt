@@ -14,11 +14,12 @@ import kotlin.coroutines.suspendCoroutine
 
 class RateServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore
+    private val db: FirebaseFirestore
 ) : RateService {
+
     override suspend fun getData(rateKey: String, recipeKey: String): RateData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("Recipe")
+            db.collection("Recipe")
                 .document(recipeKey)
                 .collection("RateList")
                 .document(rateKey)
@@ -101,8 +102,8 @@ class RateServiceImpl @Inject constructor(
 
     override suspend fun add(rateData: RateData, recipeData: RecipeData): RateData {
         return suspendCoroutine<RateData> { continuation ->
-            firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
-                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeData.key)
+            db.runTransaction(Transaction.Function<Any?> { transaction ->
+                val recipeRef = db.collection("Recipe").document(recipeData.key)
                 val rateRef = recipeRef.collection("RateList").document(rateData.userKey)
                 val rateSnapShot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount ?: 0
@@ -144,9 +145,9 @@ class RateServiceImpl @Inject constructor(
 
     override suspend fun update(request: UpdateRateRequest, rateData: RateData, recipeData: RecipeData) : RateData {
         return suspendCoroutine<RateData> { continuation ->
-            firebaseFirestore.runTransaction(Transaction.Function<Any?> { transaction ->
+            db.runTransaction(Transaction.Function<Any?> { transaction ->
 
-                val recipeRef = firebaseFirestore.collection("Recipe").document(recipeData.key.orEmpty())
+                val recipeRef = db.collection("Recipe").document(recipeData.key.orEmpty())
                 val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
                 val rateSnapShot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount ?: 0

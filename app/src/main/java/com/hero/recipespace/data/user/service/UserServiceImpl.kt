@@ -12,6 +12,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.domain.user.entity.Email
+import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.LoginUserRequest
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import java.io.File
@@ -22,26 +24,27 @@ import kotlin.coroutines.suspendCoroutine
 
 class UserServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val firebaseFirestore: FirebaseFirestore,
+    private val db: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : UserService {
+
     override suspend fun login(request: LoginUserRequest): UserData {
         val userKey = loginToFirebase(request.email, request.pwd)
 
         return getUserData(userKey)
     }
 
-    private suspend fun getUserData(userKey: String) : UserData {
+    override suspend fun getUserData(userKey: String) : UserData {
         return suspendCoroutine { continuation ->
-            firebaseFirestore.collection("User")
+            db.collection("User")
                 .document(userKey)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->
                     if (documentSnapshot == null) {
                         return@addOnSuccessListener
                     }
-    //                    val userData = documentSnapshot.toObject(UserData::class.java)
-                    val userData = documentSnapshot.data?.getValue(userKey)
+                        val userData = documentSnapshot.toObject(UserData::class.java)
+//                    val userData = documentSnapshot.data?.getValue(userKey)
 
                     continuation.resume(userData as UserData)
                 }
@@ -89,12 +92,12 @@ class UserServiceImpl @Inject constructor(
             val userData = UserData(
                 key = firebaseAuth.uid.orEmpty(),
                 name = request.name,
-                email = request.email,
+                email = request.email.value,
                 profileImageUrl = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
             )
 
             return suspendCoroutine<UserData> { continuation ->
-                firebaseFirestore.collection("User")
+                db.collection("User")
                     .document(userData.key.orEmpty())
                     .set(userData)
                     .addOnSuccessListener {
@@ -107,9 +110,9 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-    private suspend fun createAccount(email: String, pwd: String): Boolean {
+    private suspend fun createAccount(email: Email, pwd: Password): Boolean {
         return suspendCoroutine { continuation ->
-            firebaseAuth.createUserWithEmailAndPassword(email, pwd)
+            firebaseAuth.createUserWithEmailAndPassword(email.value, pwd.value)
                 .addOnSuccessListener {
                     firebaseAuth.currentUser?.updateProfile(
                         UserProfileChangeRequest
@@ -134,7 +137,7 @@ class UserServiceImpl @Inject constructor(
         editData["name"] = userData.name as String
 
         return suspendCoroutine<UserData> { continuation ->
-            firebaseFirestore.collection("User")
+            db.collection("User")
                 .document(userData.key.orEmpty())
                 .update(editData)
                 .addOnSuccessListener { continuation.resume(userData) }
@@ -209,7 +212,7 @@ class UserServiceImpl @Inject constructor(
     //  2. RecipeData 의 profileImageUrl, userName
     //  3. ChatActivity의 profileImageUrl, name
     private fun updateUserWithRecipeAndChat(userData: UserData, recipeData: RecipeData, chatData: ChatData) {
-        firebaseFirestore.runTransaction { transaction ->
+        db.runTransaction { transaction ->
             val editUserData = HashMap<String, Any>()
 
             // 1. UserData 의 profileImageUrl, name
@@ -217,7 +220,7 @@ class UserServiceImpl @Inject constructor(
                 editUserData["profileImageUrl"] = userData.profileImageUrl as String
             }
             editUserData["name"] = userData.name as String
-            val userRef: DocumentReference = firebaseFirestore.collection("User")
+            val userRef: DocumentReference = db.collection("User")
                 .document(userData.key.orEmpty())
             transaction.update(userRef, editUserData)
 
@@ -228,7 +231,7 @@ class UserServiceImpl @Inject constructor(
                 editRecipeData["profileImageUrl"] = recipeData.profileImageUrl as String
             }
             editRecipeData["name"] = recipeData.userName as String
-            val recipeRef: DocumentReference = firebaseFirestore.collection("Recipe")
+            val recipeRef: DocumentReference = db.collection("Recipe")
                 .document(recipeData.key.orEmpty())
             transaction.update(recipeRef, editRecipeData)
 
@@ -254,7 +257,7 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun remove(userData: UserData) : UserData {
         return suspendCoroutine<UserData> { continuation ->
-            firebaseFirestore.collection("User")
+            db.collection("User")
                 .document(userData.key.orEmpty())
                 .delete()
                 .addOnSuccessListener { continuation.resume(userData) }

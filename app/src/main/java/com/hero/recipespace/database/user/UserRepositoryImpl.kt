@@ -27,6 +27,10 @@ class UserRepositoryImpl @Inject constructor(
         return userRemoteDataSource.login(request).toEntity()
     }
 
+    override suspend fun getUser(userKey: String): UserEntity {
+        return userRemoteDataSource.getUserData(userKey).toEntity()
+    }
+
     override suspend fun getAccountProfile(): UserEntity {
         return userRemoteDataSource.getFirebaseAuthProfile().toEntity()
     }
@@ -50,17 +54,9 @@ class UserRepositoryImpl @Inject constructor(
         val result = userRemoteDataSource.add(request)
         userLocalDataSource.add(result)
     }
-
-    override suspend fun updateUser(
-        userEntity: UserEntity
-    ) {
-        val result = userRemoteDataSource.update(userEntity.toData())
-        userLocalDataSource.update(result)
-    }
-
     // 레시피를 업로드하는 것과 유사하게 함수를 짜야할 수도 있어서 만들어놓음
-    override suspend fun updateUser(request: UpdateUserRequest, onProgress: (Float) -> Unit) : UserEntity {
-        val result = userRemoteDataSource.updateUser(request, onProgress)
+    override suspend fun updateUser(request: UpdateUserRequest) : UserEntity {
+        val result = userRemoteDataSource.updateUser(request)
         userLocalDataSource.update(result)
 
         return result.toEntity()

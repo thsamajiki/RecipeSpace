@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class RateEntity(
-    var key: String,
-    var userKey: String,
+    var key: String = "",
+    var userKey: String = "",
     var userName: String? = null,
     var profileImageUrl: String? = null,
     var rate: Float? = 0f,
