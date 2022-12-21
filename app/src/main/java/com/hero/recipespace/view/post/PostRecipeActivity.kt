@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Rect
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
@@ -41,29 +43,45 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
+    private val recipePhotoPathList = mutableListOf<String>()
+
     private val viewModel by viewModels<PostRecipeViewModel>()
 
     // TODO: 2022-12-13 rv_recipe_images 리사이클러뷰에 갤러리에서 선택한 이미지들을 넣어주기
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK && it.data?.data != null) {
-
-                val recipePhotoPathList = mutableListOf<String>()
+            if (it.resultCode == Activity.RESULT_OK) {
 
                 val clipData = it?.data?.clipData
                 val clipDataSize = clipData?.itemCount
 
-                if (clipData == null) { //이미지를 하나만 선택할 경우 clipData가 null이 올수 있음
-                    val photoPath = it?.data?.data!!
-                    recipePhotoPathList.add(photoPath.toString())
-                } else {
-                    clipData.let { clipData ->
-                        for (i in 0 until clipDataSize!!) { //선택 한 사진수만큼 반복
-                            val photoPath = clipData.getItemAt(i).uri
-                            recipePhotoPathList.add(photoPath.toString())
+                if (it.data == null) { // 어떤 이미지도 선택하지 않은 경우
+                    Toast.makeText(this, "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show()
+                } else { // 이미지를 하나라도 선택한 경우
+                    if (clipData == null) { //이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
+                        val photoPath = it?.data?.data!!
+                        recipePhotoPathList.add(photoPath.toString())
+                        postRecipeImageListAdapter.addAll(recipePhotoPathList)
+                        initRecyclerView(binding.rvRecipeImages)
+                    } else {
+                        clipData.let { clip ->
+                            if (clipDataSize != null) {
+                                if (clipDataSize > 10) {
+                                    Toast.makeText(this, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show()
+                                } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
+                                    for (i in 0 until clipDataSize) { //선택 한 사진수만큼 반복
+                                        val photoPath = clip.getItemAt(i).uri
+                                        recipePhotoPathList.add(photoPath.toString())
+                                    }
+                                    postRecipeImageListAdapter.addAll(recipePhotoPathList)
+                                    initRecyclerView(binding.rvRecipeImages)
+                                }
+                            }
                         }
                     }
                 }
+
+
 
 //                if (it.data!!.clipData != null) {
 //                    val count = it.data!!.clipData!!.itemCount
@@ -89,9 +107,8 @@ class PostRecipeActivity : AppCompatActivity(),
 //                }
                 binding.rvRecipeImages.visibility = View.VISIBLE
                 binding.tvTouchHereAndAddPictures.visibility = View.GONE
-                if (binding.editContent.text.toString()
-                        .isNotEmpty() && recipePhotoPathList.isNotEmpty()
-                ) {
+                if (binding.editContent.text.toString().isNotEmpty() &&
+                    recipePhotoPathList.isNotEmpty()) {
                     binding.tvComplete.isEnabled = true
                 }
             }
@@ -127,8 +144,40 @@ class PostRecipeActivity : AppCompatActivity(),
 
         recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = postRecipeImageListAdapter
+            val spaceDecoration = HorizontalSpaceItemDecoration(1)
+            removeItemDecoration(object : DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
+
+            })
+            addItemDecoration(spaceDecoration)
+        }
+    }
+
+    // RecyclerView Item 간 간격 조정하기 위한 클래스ㅇ
+    inner class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            val position = parent.getChildAdapterPosition(view)
+            val count = state.itemCount
+
+            when (position) {
+                0 -> {
+                    outRect.left = horizontalSpaceWidth
+                }
+                count - 1 -> {
+                    outRect.right = horizontalSpaceWidth
+                }
+                else -> {
+                    outRect.left = horizontalSpaceWidth
+                    outRect.right = horizontalSpaceWidth
+                }
+            }
         }
     }
 

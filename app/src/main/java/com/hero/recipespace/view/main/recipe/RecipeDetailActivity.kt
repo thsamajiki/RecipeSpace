@@ -39,7 +39,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val updateResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
+                val recipe: RecipeEntity? = it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
                 if (recipe != null) {
                     recipeDetailAdapter.add(recipe.photoUrlList.orEmpty())
                     binding.rvRecipeImages.smoothScrollToPosition(0)

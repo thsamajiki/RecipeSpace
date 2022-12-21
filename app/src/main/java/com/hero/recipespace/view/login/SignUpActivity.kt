@@ -92,7 +92,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun intentMain() {
-        val intent = MainActivity.getIntent(this)
+        val intent = MainActivity.getIntent(this@SignUpActivity)
         startActivity(intent)
         finishAffinity()
     }
