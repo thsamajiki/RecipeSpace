@@ -60,3 +60,11 @@ fun RecyclerView.setNoticeListItems(items: List<NoticeEntity>?) {
     val adapter = this.adapter as? NoticeListAdapter
     adapter?.setNoticeList(items)
 }
+
+@BindingAdapter("recipeImageItemCount")
+fun RecyclerView.setRecipeImageItemCount(items: List<NoticeEntity>?) {
+    items ?: return
+
+    val adapter = this.adapter as? NoticeListAdapter
+    adapter?.setNoticeList(items)
+}

@@ -22,4 +22,6 @@ interface UserRepository {
     suspend fun deleteUser(userEntity: UserEntity)
 
     suspend fun signOut()
+
+    suspend fun getCurrentLoggedUser(): UserEntity
 }

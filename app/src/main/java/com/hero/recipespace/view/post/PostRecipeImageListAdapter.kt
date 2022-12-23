@@ -22,7 +22,7 @@ class PostRecipeImageListAdapter(
 
     override fun onBindViewHolder(holder: PostRecipeImageViewHolder, position: Int) {
         val image = recipeImageList[position]
-        holder.bind(position, image)
+        holder.bind(image)
     }
 
     fun getRecipeImageList(): List<String> {
@@ -63,13 +63,13 @@ class PostRecipeImageListAdapter(
         private val onCancelClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(position: Int, image: String) {
+        fun bind(image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
             binding.ivRecipeImageCancel.setOnClickListener {
-                onCancelClick(position)
+                onCancelClick(absoluteAdapterPosition)
             }
 
             binding.ivRecipeImage.setImageUrl(image)

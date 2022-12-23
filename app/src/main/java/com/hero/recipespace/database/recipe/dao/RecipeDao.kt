@@ -13,14 +13,14 @@ interface RecipeDao {
     suspend fun getRecipeFromKey(key: String?): RecipeData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertRecipe(recipeData: RecipeData)
+    suspend fun insertRecipe(recipeData: RecipeData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(recipeDataList: List<RecipeData>)
 
     @Update
-    fun updateRecipe(recipeData: RecipeData)
+    suspend fun updateRecipe(recipeData: RecipeData)
 
     @Delete
-    fun deleteRecipe(recipeData: RecipeData)
+    suspend fun deleteRecipe(recipeData: RecipeData)
 }

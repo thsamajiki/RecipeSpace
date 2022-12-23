@@ -86,7 +86,7 @@
                 android:layout_height="250dp"
                 android:layout_marginTop="20dp"
                 android:scaleType="centerCrop"
-                app:imageUrl="@{recipe.photoUrlList.get(0)}"
+                app:imageUrl="@{recipe.thumbnailPhoto}"
                 app:layout_constraintTop_toBottomOf="@id/tv_post_date" />
 
 

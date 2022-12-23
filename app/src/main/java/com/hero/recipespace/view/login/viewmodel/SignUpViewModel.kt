@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.hero.recipespace.domain.user.entity.Email
 import com.hero.recipespace.domain.user.entity.Password
@@ -66,6 +67,7 @@ class SignUpViewModel @Inject constructor(
             addUserUseCase(SignUpUserRequest(Email(email), userName, Password(pwd)))
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
+                    _signUpUiState.value = SignUpUiState.Success
                 }
                 .onFailure {
                     _loadingState.value = LoadingState.Hidden
@@ -74,7 +76,9 @@ class SignUpViewModel @Inject constructor(
                         is FirebaseAuthWeakPasswordException ->
                             SignUpUiState.Failed("패스워드가 7자리 이상이어야 합니다")
                         is FirebaseAuthInvalidCredentialsException ->
-                            SignUpUiState.Failed("이메일 형식 잘못됨")
+                            SignUpUiState.Failed("이메일 형식이 잘못되었습니다.")
+                        is FirebaseAuthUserCollisionException ->
+                            SignUpUiState.Failed("이미 존재하는 계정입니다.")
                     }
 
                     _signUpUiState.value = SignUpUiState.Failed("회원가입에 실패했습니다.")

@@ -43,7 +43,7 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
-    private val recipePhotoPathList = mutableListOf<String>()
+//    private val recipePhotoPathList = mutableListOf<String>()
 
     private val viewModel by viewModels<PostRecipeViewModel>()
 
@@ -60,55 +60,34 @@ class PostRecipeActivity : AppCompatActivity(),
                 } else { // 이미지를 하나라도 선택한 경우
                     if (clipData == null) { //이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
                         val photoPath = it?.data?.data!!
-                        recipePhotoPathList.add(photoPath.toString())
-                        postRecipeImageListAdapter.addAll(recipePhotoPathList)
-                        initRecyclerView(binding.rvRecipeImages)
+
+                        viewModel.addRecipePhotoList(listOf(photoPath.toString()))
                     } else {
                         clipData.let { clip ->
                             if (clipDataSize != null) {
                                 if (clipDataSize > 10) {
-                                    Toast.makeText(this, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                                        .show()
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
-                                    for (i in 0 until clipDataSize) { //선택 한 사진수만큼 반복
-                                        val photoPath = clip.getItemAt(i).uri
-                                        recipePhotoPathList.add(photoPath.toString())
+
+                                    // 선택 한 사진수만큼 반복
+                                    val photoList = (0 until clipDataSize).map { index ->
+                                        val photoPath = clip.getItemAt(index).uri
+                                        photoPath.toString()
                                     }
-                                    postRecipeImageListAdapter.addAll(recipePhotoPathList)
-                                    initRecyclerView(binding.rvRecipeImages)
+
+                                    viewModel.addRecipePhotoList(photoList)
                                 }
                             }
                         }
                     }
                 }
 
-
-
-//                if (it.data!!.clipData != null) {
-//                    val count = it.data!!.clipData!!.itemCount
-//
-//                    for (index in 0 until count) {
-//                        // 이미지 담기
-//                        val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
-//                        // 이미지 추가
-//                        recipePhotoPathList.add(photoPath)
-//                    }
-//                } else {
-//                    val photoPath = it.data!!.data.toString()
-//                    recipePhotoPathList.add(photoPath)
-//                }
-
-                postRecipeImageListAdapter.addAll(recipePhotoPathList)
-
-//                recipePhotoPathList = RealPathUtil.getRealPath(this, it.data?.data!!)
-//                Glide.with(this).load(recipePhotoPathList).into(binding.ivRecipePhoto)
-//                for(i : Int in 0..9) {
-//                    recipePhotoUrlList[i] = RealPathUtil.getRealPath(this, it.data?.data!!)
-//                    Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-//                }
                 binding.rvRecipeImages.visibility = View.VISIBLE
                 binding.tvTouchHereAndAddPictures.visibility = View.GONE
                 if (binding.editContent.text.toString().isNotEmpty() &&
-                    recipePhotoPathList.isNotEmpty()) {
+                    viewModel.recipeImageList.value?.isNotEmpty() == true
+                ) {
                     binding.tvComplete.isEnabled = true
                 }
             }
@@ -213,6 +192,10 @@ class PostRecipeActivity : AppCompatActivity(),
                         PostRecipeUiState.Idle -> {}
                     }
                 }
+            }
+
+            recipeImageList.observe(this@PostRecipeActivity) {
+                postRecipeImageListAdapter.setRecipeImageList(it)
             }
         }
     }

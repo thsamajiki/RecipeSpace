@@ -1,10 +1,7 @@
 package com.hero.recipespace.view.post.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
@@ -28,6 +25,7 @@ sealed class PostRecipeUiState {
 @HiltViewModel
 class PostRecipeViewModel @Inject constructor(
     application: Application,
+    savedStateHandle: SavedStateHandle,
     private val postRecipeUseCase: PostRecipeUseCase
 ) : AndroidViewModel(application) {
 
@@ -40,6 +38,8 @@ class PostRecipeViewModel @Inject constructor(
     private val _recipeImageList = MutableLiveData<List<String>>()
     val recipeImageList: LiveData<List<String>>
         get() = _recipeImageList
+
+    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData()
 
     val recipeContent: MutableLiveData<String> = MutableLiveData()
 
@@ -66,5 +66,11 @@ class PostRecipeViewModel @Inject constructor(
                     it.printStackTrace()
                 }
         }
+    }
+
+    fun addRecipePhotoList(photoPathList: List<String>) {
+        _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
+
+        recipeSelectedImageCount.value = "${recipeImageList.value?.size ?: 0}"
     }
 }

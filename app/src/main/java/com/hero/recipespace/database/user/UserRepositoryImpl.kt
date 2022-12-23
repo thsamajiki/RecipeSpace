@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.user
 
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.local.UserLocalDataSource
 import com.hero.recipespace.data.user.remote.UserRemoteDataSource
@@ -24,7 +25,9 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
     override suspend fun login(request: LoginUserRequest): UserEntity {
-        return userRemoteDataSource.login(request).toEntity()
+        val userData = userRemoteDataSource.login(request)
+        userLocalDataSource.update(userData)
+        return userData.toEntity()
     }
 
     override suspend fun getUser(userKey: String): UserEntity {
@@ -70,7 +73,12 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
+        userLocalDataSource.signOut()
         return userRemoteDataSource.signOut()
+    }
+
+    override suspend fun getCurrentLoggedUser(): UserEntity {
+        return userLocalDataSource.getData(FirebaseAuth.getInstance().currentUser?.uid.orEmpty()).toEntity()
     }
 
     private fun getEntities(data: List<UserData>): List<UserEntity> {

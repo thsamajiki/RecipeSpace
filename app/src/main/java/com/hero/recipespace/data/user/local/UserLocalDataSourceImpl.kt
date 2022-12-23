@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.user.local
 
 import androidx.lifecycle.asFlow
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.database.user.dao.UserDao
 import kotlinx.coroutines.flow.Flow
@@ -40,7 +41,8 @@ class UserLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        TODO("Not yet implemented")
+        val userId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        userDao.deleteUser(userId)
     }
 
     override fun clear() {

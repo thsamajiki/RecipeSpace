@@ -23,4 +23,7 @@ interface UserDao {
 
     @Delete
     suspend fun deleteUser(userData: UserData)
+
+    @Query("DELETE FROM user_db WHERE `key` = :userId")
+    suspend fun deleteUser(userId: String)
 }

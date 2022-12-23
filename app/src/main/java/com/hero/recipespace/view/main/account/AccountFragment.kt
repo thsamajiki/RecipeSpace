@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
@@ -20,7 +21,9 @@ import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.login.LoginActivity
 import com.hero.recipespace.view.main.account.viewmodel.AccountViewModel
+import com.hero.recipespace.view.main.account.viewmodel.SignOutUiState
 import com.hero.recipespace.view.photoview.PhotoActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -70,13 +73,28 @@ class AccountFragment: Fragment(),
 
             }
 
-            lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 loadingState.collect { state ->
                     when (state) {
                         LoadingState.Hidden -> hideLoading()
                         LoadingState.Loading -> showLoading()
                         is LoadingState.Progress -> setProgressPercent(state.value)
                         LoadingState.Idle -> {}
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                signOutUiState.collect { state ->
+                    when (state) {
+                        is SignOutUiState.Failed -> Toast.makeText(requireContext(), "로그아웃에 실패했습니다.", Toast.LENGTH_SHORT).show()
+
+                        is SignOutUiState.Success -> {
+                            val intent = LoginActivity.getIntent(requireContext())
+                            startActivity(intent)
+                            requireActivity().finish()
+                        }
+                        SignOutUiState.Idle -> {}
                     }
                 }
             }

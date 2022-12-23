@@ -43,8 +43,8 @@ class UserServiceImpl @Inject constructor(
                     if (documentSnapshot == null) {
                         return@addOnSuccessListener
                     }
-                        val userData = documentSnapshot.toObject(UserData::class.java)
-//                    val userData = documentSnapshot.data?.getValue(userKey)
+
+                    val userData = documentSnapshot.toObject(UserData::class.java)
 
                     continuation.resume(userData as UserData)
                 }
@@ -98,7 +98,7 @@ class UserServiceImpl @Inject constructor(
 
             return suspendCoroutine<UserData> { continuation ->
                 db.collection("User")
-                    .document(userData.key.orEmpty())
+                    .document(userData.key)
                     .set(userData)
                     .addOnSuccessListener {
                         continuation.resume(userData)
