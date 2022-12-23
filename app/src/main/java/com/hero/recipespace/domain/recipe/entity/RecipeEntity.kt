@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 data class RecipeEntity(
     var key: String = "",
     var profileImageUrl: String? = null,
-    var userName: String? = null,
+    var userName: String = "",
     var userKey: String = "",
     var desc: String? = null,
     var photoUrlList: List<String>? = null,

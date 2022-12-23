@@ -60,8 +60,8 @@ class RatingDialogViewModel @Inject constructor(
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
-            val requestRateEntity = rate.value!!.copy(rate = currentRate.value)
-            addRateUseCase.invoke(requestRateEntity, _recipe.value!!)
+            val requestRateEntity = rate.value?.copy(rate = currentRate.value)
+            addRateUseCase.invoke(requestRateEntity!!, _recipe.value!!)
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
                     _rateRecipeUiState.value = RateRecipeUiState.Success(it)

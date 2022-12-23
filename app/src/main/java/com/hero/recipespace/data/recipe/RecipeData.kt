@@ -20,7 +20,7 @@ data class RecipeData(
     @ColumnInfo(name = "profileImageUrl")
     var profileImageUrl: String? = null,
     @ColumnInfo(name = "userName")
-    var userName: String? = null,
+    var userName: String = "",
     @ColumnInfo(name = "userKey")
     var userKey: String = "",
     @ColumnInfo(name = "desc")
@@ -34,5 +34,6 @@ data class RecipeData(
     @ColumnInfo(name = "totalRatingCount")
     var totalRatingCount: Int? = 0
 ) : Parcelable {
-//    constructor() : this(key, profileImageUrl, userName, userKey, desc, photoUrlList, postDate, rate, totalRatingCount)
+    val thumbnailPhoto : String?
+        get() = photoUrlList?.firstOrNull()
 }

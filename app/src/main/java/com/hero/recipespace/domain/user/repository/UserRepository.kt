@@ -15,7 +15,7 @@ interface UserRepository {
 
     fun observeUserList(): Flow<List<UserEntity>>
 
-    suspend fun addUser(request: SignUpUserRequest)
+    suspend fun signUpUser(request: SignUpUserRequest)
 
     suspend fun updateUser(request: UpdateUserRequest) : UserEntity
 

@@ -24,7 +24,6 @@ import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
-import com.hero.recipespace.view.post.PostRecipeActivity
 import com.hero.recipespace.view.post.PostRecipeActivity.Companion.EXTRA_RECIPE_ENTITY
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -127,9 +126,9 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
 
-            val intent = ChatActivity.getIntent(
-                this,
-                recipe.userKey.orEmpty())
+            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
+
+            val intent = ChatActivity.getIntent(this, recipe.userKey)
             startActivity(intent)
         }
 

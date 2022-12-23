@@ -12,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.hero.recipespace.domain.user.entity.Email
 import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
-import com.hero.recipespace.domain.user.usecase.AddUserUseCase
+import com.hero.recipespace.domain.user.usecase.SignUpUserUseCase
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ sealed class SignUpUiState {
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     application: Application,
-    private val addUserUseCase: AddUserUseCase
+    private val signUpUserUseCase: SignUpUserUseCase
 ) : AndroidViewModel(application) {
 
     private val _signUpUiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Idle)
@@ -64,7 +64,7 @@ class SignUpViewModel @Inject constructor(
 
         _loadingState.value = LoadingState.Loading
         viewModelScope.launch {
-            addUserUseCase(SignUpUserRequest(Email(email), userName, Password(pwd)))
+            signUpUserUseCase(SignUpUserRequest(Email(email), userName, Password(pwd)))
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
                     _signUpUiState.value = SignUpUiState.Success

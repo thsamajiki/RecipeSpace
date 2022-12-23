@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.MimeTypeMap
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
@@ -117,6 +118,8 @@ class RecipeServiceImpl @Inject constructor(
             recipePhotoPathList.map { photoPath ->
                 val photoRef =
                     storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
+
+                Log.d("zzzzz", "uploadImages method photoPath : $photoPath")
 
                 async {
                     kotlin.runCatching {

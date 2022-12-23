@@ -122,7 +122,7 @@ class AccountFragment: Fragment(),
     }
 
     private fun intentEditProfile(user: UserEntity) {
-        val intent = EditProfileActivity.getIntent(requireActivity(), user.key.orEmpty())
+        val intent = EditProfileActivity.getIntent(requireActivity(), user.key)
         editProfileResultLauncher.launch(intent)
     }
 

@@ -1,10 +1,13 @@
 package com.hero.recipespace.view.post.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
+import com.hero.recipespace.domain.user.entity.UserEntity
+import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +29,7 @@ sealed class PostRecipeUiState {
 class PostRecipeViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
+    private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val postRecipeUseCase: PostRecipeUseCase
 ) : AndroidViewModel(application) {
 
@@ -42,6 +46,10 @@ class PostRecipeViewModel @Inject constructor(
     val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData()
 
     val recipeContent: MutableLiveData<String> = MutableLiveData()
+
+    private val _user: MutableLiveData<UserEntity> = MutableLiveData()
+    val user: LiveData<UserEntity>
+        get() = _user
 
     fun uploadRecipe(
         content: String,
@@ -66,11 +74,29 @@ class PostRecipeViewModel @Inject constructor(
                     it.printStackTrace()
                 }
         }
+
+        viewModelScope.launch {
+            getLoggedUserUseCase()
+                .onSuccess {
+                    _user.value = it
+                }
+                .onFailure {
+                    it.printStackTrace()
+                }
+        }
     }
 
     fun addRecipePhotoList(photoPathList: List<String>) {
         _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
 
-        recipeSelectedImageCount.value = "${recipeImageList.value?.size ?: 0}"
+//        for (i: Int in 0 .. photoPathList.size) {
+//            Log.d("zxc", "addRecipePhotoList: " + photoPathList[i])
+//            Log.d("zxc", "addRecipePhotoList: " + _recipeImageList.value!![i])
+//        }
+
+
+        recipeSelectedImageCount.value = {recipeImageList.value?.size ?: "0"}.toString()
+        Log.d("zxc", "addRecipePhotoList _recipeImageList.value.orEmpty() : " + _recipeImageList.value)
+        Log.d("zxc", "addRecipePhotoList recipeSelectedImageCount.value : " + recipeSelectedImageCount.value)
     }
 }

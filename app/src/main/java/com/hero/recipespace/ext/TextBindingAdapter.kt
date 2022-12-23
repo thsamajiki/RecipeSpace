@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat
 fun TextView.setTimestamp(timestamp: Timestamp?) {
     timestamp ?: return
 
-    val simpleDateFormat = SimpleDateFormat("mm:ss")
+    val simpleDateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
+//    val simpleDateFormat = SimpleDateFormat("yyyy년 MM월 dd일 HH시 mm분")
     text = simpleDateFormat.format(timestamp.toDate())
 }

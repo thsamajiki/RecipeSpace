@@ -3,12 +3,14 @@ package com.hero.recipespace
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.ActivityMainBinding
 import com.hero.recipespace.view.main.account.AboutUsDialog
 import com.hero.recipespace.view.main.account.setting.SettingActivity
@@ -40,6 +42,8 @@ class MainActivity : AppCompatActivity(),
 //        binding.bottomNav.setupWithNavController(navController)
 
         binding.bottomNav.setOnItemSelectedListener(this)
+
+        Log.d("zxcv", "MainActivity: userName : " + FirebaseAuth.getInstance().currentUser?.displayName)
     }
 
 

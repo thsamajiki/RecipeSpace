@@ -1,5 +1,6 @@
 package com.hero.recipespace.data.recipe.remote
 
+import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.data.recipe.RecipeData
@@ -31,8 +32,11 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
 
         val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-        val profileImageUrl: String
-        = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
+        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
+
+        Log.d("zxcv", "add: userName : $userName")
+        Log.d("zxcv", "add: userKey : $userKey")
+        Log.d("zxcv", "add: profileImageUrl : $profileImageUrl")
 
         return recipeService.add(
             profileImageUrl,

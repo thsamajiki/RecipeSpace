@@ -50,7 +50,7 @@
                     android:paddingEnd="7dp"
                     android:paddingBottom="7dp"
                     android:src="@drawable/ic_option_menu"
-                    android:visibility="invisible" />
+                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>

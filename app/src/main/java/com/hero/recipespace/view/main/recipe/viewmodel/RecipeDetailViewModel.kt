@@ -32,6 +32,11 @@ class RecipeDetailViewModel @Inject constructor(
             getRecipeUseCase(recipeKey)
                 .onSuccess {
                     _recipe.value = it
+                    Log.d("zxc", "RecipeDetailViewModel: $recipeKey")
+                    Log.d("zxc", "RecipeDetailViewModel: ${recipe.value!!.key}")
+                    Log.d("zxc", "RecipeDetailViewModel: ${recipe.value!!.desc}")
+                    Log.d("zxc", "RecipeDetailViewModel: ${recipe.value!!.userKey}")
+                    Log.d("zxc", "RecipeDetailViewModel: ${recipe.value!!.userName}")
                 }
                 .onFailure {
                     it.printStackTrace()
