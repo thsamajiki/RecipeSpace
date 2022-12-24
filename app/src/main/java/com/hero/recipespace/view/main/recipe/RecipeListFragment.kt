@@ -95,11 +95,6 @@ class RecipeListFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
-    }
-
     private fun initRecyclerView(recyclerView: RecyclerView) {
         recipeListAdapter = RecipeListAdapter(
             onClick = ::showRecipeDetail,
@@ -114,7 +109,7 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun showRecipeDetail(recipe: RecipeEntity) {
-        val intent = RecipeDetailActivity.getIntent(requireActivity(), recipe.key.orEmpty())
+        val intent = RecipeDetailActivity.getIntent(requireActivity(), recipe.key)
         startActivity(intent)
     }
 
@@ -127,5 +122,10 @@ class RecipeListFragment : Fragment() {
     private fun intentPostActivity() {
         val intent = PostRecipeActivity.getIntent(requireActivity())
         postResultLauncher.launch(intent)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

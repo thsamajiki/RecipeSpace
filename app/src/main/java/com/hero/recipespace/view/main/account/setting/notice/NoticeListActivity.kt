@@ -38,7 +38,7 @@ class NoticeListActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         initRecyclerView(binding.rvNoticeList)
-        getNoticeData(viewModel.noticeItem.value!!)
+//        getNoticeData(viewModel.noticeItem.value!!)
         //        getNoticeListFromDatabase();
         setupView()
         setupViewModel()

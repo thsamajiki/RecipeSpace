@@ -23,20 +23,20 @@ sealed class SplashUIState {
 class SplashViewModel @Inject constructor(
     private val getLoggedUserUseCase: GetLoggedUserUseCase
 ): ViewModel() {
-    private val _uiState = MutableLiveData<SplashUIState>()
-    val uiState: LiveData<SplashUIState>
-        get() = _uiState
+    private val _splashUiState = MutableLiveData<SplashUIState>()
+    val splashUiState: LiveData<SplashUIState>
+        get() = _splashUiState
 
     init {
         viewModelScope.launch {
             delay(1000)
             getLoggedUserUseCase()
                 .onSuccess {
-                    _uiState.value = SplashUIState.Success(it)
+                    _splashUiState.value = SplashUIState.Success(it)
                 }
                 .onFailure {
                     WLog.e(it)
-                    _uiState.value = SplashUIState.Failed(it.message.orEmpty())
+                    _splashUiState.value = SplashUIState.Failed(it.message.orEmpty())
                 }
         }
     }

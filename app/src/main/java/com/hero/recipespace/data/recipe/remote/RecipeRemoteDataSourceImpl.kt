@@ -3,8 +3,10 @@ package com.hero.recipespace.data.recipe.remote
 import android.util.Log
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.service.RecipeService
+import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import javax.inject.Inject
@@ -45,6 +47,19 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
             request.content,
             downloadUrls,
             Timestamp.now()
+        )
+    }
+
+    private fun getFirebaseAuthProfile(): UserData {
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
+        val profileImageUrl: String = firebaseUser?.photoUrl.toString()
+
+        return UserData(
+            firebaseUser?.uid.orEmpty(),
+            firebaseUser?.displayName,
+            firebaseUser?.email,
+            profileImageUrl
         )
     }
 

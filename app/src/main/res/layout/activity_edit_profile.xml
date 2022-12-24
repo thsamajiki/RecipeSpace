@@ -56,12 +56,12 @@
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:text="@string/tv_finish"
+                    android:textColor="@color/normal_gray"
                     android:textSize="@dimen/title_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
                 <!--                    android:textColor="@selector/selector_complete_btn"-->
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

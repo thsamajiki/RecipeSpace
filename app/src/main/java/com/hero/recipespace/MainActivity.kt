@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.viewpager2.widget.ViewPager2
@@ -14,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.ActivityMainBinding
 import com.hero.recipespace.view.main.account.AboutUsDialog
 import com.hero.recipespace.view.main.account.setting.SettingActivity
+import com.hero.recipespace.view.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity(),
     NavigationBarView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
+
+    private val viewModel by viewModels<MainViewModel>()
 
     companion object {
         fun getIntent(context: Context) =
@@ -33,7 +37,11 @@ class MainActivity : AppCompatActivity(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
         setFragmentAdapter()
+        setupViewModel()
         setOnClickListener()
 
 //        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
@@ -44,6 +52,20 @@ class MainActivity : AppCompatActivity(),
         binding.bottomNav.setOnItemSelectedListener(this)
 
         Log.d("zxcv", "MainActivity: userName : " + FirebaseAuth.getInstance().currentUser?.displayName)
+    }
+
+    private fun setupViewModel() {
+//        with(viewModel) {
+//            lifecycleScope.launch {
+//                mainUiState.observe(this@MainActivity) { state ->
+//                    when (state) {
+//                        is MainUIState.Success -> TODO()
+//                        is MainUIState.Failed -> TODO()
+//                        else -> {}
+//                    }
+//                }
+//            }
+//        }
     }
 
 

@@ -59,9 +59,18 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
                 chatAdapter.setMessageList(messageList)
             }
 
-            chat.observe(this@ChatActivity) {
-
-            }
+//            chat.observe(this@ChatActivity) {
+//
+//            }
+//
+//            lifecycleScope.launch {
+//                chatUiState.observe(this@ChatActivity) { state ->
+//                    when (state) {
+//                        is ChatUIState.Failed -> TODO()
+//                        is ChatUIState.Success -> TODO()
+//                    }
+//                }
+//            }
         }
     }
 

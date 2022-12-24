@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -88,6 +89,7 @@ class PostRecipeActivity : AppCompatActivity(),
                 if (binding.editContent.text.toString().isNotEmpty() &&
                     viewModel.recipeImageList.value?.isNotEmpty() == true
                 ) {
+                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                     binding.tvComplete.isEnabled = true
                 }
             }

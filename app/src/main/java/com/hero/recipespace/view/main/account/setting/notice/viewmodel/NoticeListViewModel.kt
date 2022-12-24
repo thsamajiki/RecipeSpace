@@ -30,11 +30,11 @@ class NoticeListViewModel @Inject constructor(
 //    val notice: LiveData<NoticeEntity> = getNoticeUseCase().asLiveData()
 //    val noticeList: LiveData<List<NoticeEntity>> = observeNoticeListUseCase().asLiveData()
 
-    init {
-        viewModelScope.launch {
-            getNoticeUseCase.invoke(_notice.value!!.key)
-        }
-    }
+//    init {
+//        viewModelScope.launch {
+//            getNoticeUseCase.invoke(_notice.value!!.key)
+//        }
+//    }
 
     fun requestNoticeList() {
 

@@ -12,37 +12,37 @@ import com.hero.recipespace.data.recipe.service.RecipeService
 import com.hero.recipespace.data.recipe.service.RecipeServiceImpl
 import com.hero.recipespace.data.user.service.UserService
 import com.hero.recipespace.data.user.service.UserServiceImpl
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ServiceModule {
+abstract class ServiceModule {
 
-    @Provides
     @Singleton
-    fun provideChatService(chatServiceImpl: ChatServiceImpl) : ChatService = chatServiceImpl
+    @Binds
+    abstract fun provideChatService(chatServiceImpl: ChatServiceImpl) : ChatService
 
-    @Provides
     @Singleton
-    fun provideMessageService(messageServiceImpl: MessageServiceImpl) : MessageService = messageServiceImpl
+    @Binds
+    abstract fun provideMessageService(messageServiceImpl: MessageServiceImpl) : MessageService
 
-    @Provides
     @Singleton
-    fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl) : NoticeService = noticeServiceImpl
+    @Binds
+    abstract fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl) : NoticeService
 
-    @Provides
     @Singleton
-    fun provideRateService(rateServiceImpl: RateServiceImpl) : RateService = rateServiceImpl
+    @Binds
+    abstract fun provideRateService(rateServiceImpl: RateServiceImpl) : RateService
 
-    @Provides
     @Singleton
-    fun provideRecipeService(recipeServiceImpl: RecipeServiceImpl) : RecipeService = recipeServiceImpl
+    @Binds
+    abstract fun provideRecipeService(recipeServiceImpl: RecipeServiceImpl) : RecipeService
 
-    @Provides
     @Singleton
-    fun provideUserService(userServiceImpl: UserServiceImpl) : UserService = userServiceImpl
+    @Binds
+    abstract fun provideUserService(userServiceImpl: UserServiceImpl) : UserService
 }

@@ -20,9 +20,7 @@ class SplashActivity : AppCompatActivity(), Runnable {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-//        Handler(Looper.getMainLooper()).postDelayed(this, 1000)
-
-        viewModel.uiState.observe(this) { state ->
+        viewModel.splashUiState.observe(this) { state ->
             when (state) {
                 is SplashUIState.Success -> {
                     val intent = MainActivity.getIntent(this)

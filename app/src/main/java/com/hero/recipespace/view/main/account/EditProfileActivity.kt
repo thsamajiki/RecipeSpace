@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -54,6 +55,7 @@ class EditProfileActivity : AppCompatActivity(),
                 photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
                 Glide.with(this).load(photoPath).into(binding.ivUserProfile)
                 if (binding.editUserName.text.toString().isNotEmpty()) {
+                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
                     binding.tvComplete.isEnabled = true
                 }
             }

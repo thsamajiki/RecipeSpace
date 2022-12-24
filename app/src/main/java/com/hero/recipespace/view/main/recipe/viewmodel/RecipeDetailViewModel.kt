@@ -9,6 +9,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed class RecipeDetailUIState {
+
+    data class Success(val recipeEntity: RecipeEntity) : RecipeDetailUIState()
+
+    data class Failed(val message: String) : RecipeDetailUIState()
+}
+
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
     application: Application,
@@ -21,11 +28,17 @@ class RecipeDetailViewModel @Inject constructor(
         const val RECIPE_USER_KEY = "userKey"
     }
 
+    private val _recipeDetailUiState = MutableLiveData<RecipeDetailUIState>()
+    val recipeDetailUiState: LiveData<RecipeDetailUIState>
+        get() = _recipeDetailUiState
+
     private val _recipe = MutableLiveData<RecipeEntity>()
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
     val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
+
+    val recipeEntity: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_KEY)!!
 
     init {
         viewModelScope.launch {
@@ -41,6 +54,17 @@ class RecipeDetailViewModel @Inject constructor(
                 .onFailure {
                     it.printStackTrace()
                     Log.e("RecipeDetailViewModel", "$it ")
+                }
+        }
+
+        viewModelScope.launch {
+            getRecipeUseCase(recipeKey)
+                .onSuccess {
+                    _recipeDetailUiState.value = RecipeDetailUIState.Success(it)
+                }
+                .onFailure {
+                    _recipeDetailUiState.value = RecipeDetailUIState.Failed(it.message.orEmpty())
+                    it.printStackTrace()
                 }
         }
     }

@@ -111,27 +111,26 @@ class RecipeServiceImpl @Inject constructor(
         recipePhotoPathList: List<String>,
         progress: (Float) -> Unit
     ): List<String> {
-        val storageRef =
-            FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
+        val imageFolderRef = firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
 
         return withContext(Dispatchers.IO) {
             recipePhotoPathList.map { photoPath ->
-                val photoRef =
-                    storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
+                val imageRef = imageFolderRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
 
-                Log.d("zzzzz", "uploadImages method photoPath : $photoPath")
+                Log.d("zzzzz", "uploadImages method photoPath : $photoPath") // photoPath 는 잘 출력됨
 
                 async {
                     kotlin.runCatching {
-                        photoRef
-                            .putFile(Uri.fromFile(File(photoPath)))
+                        val imageFile = Uri.fromFile(File(photoPath))
+                        val uploadTask = imageRef.putFile(imageFile)
+
+                        uploadTask
                             .await()
                             .storage
                             .downloadUrl
                             .await()
                             .toString()
                     }
-
                         .onFailure {
                             WLog.e(it)
                         }

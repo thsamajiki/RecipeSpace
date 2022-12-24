@@ -106,6 +106,15 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             recipe.observe(this@RecipeDetailActivity) {
                 recipeDetailAdapter.setRecipeImageList(it.photoUrlList.orEmpty())
             }
+
+//            lifecycleScope.launch {
+//                recipeDetailUiState.observe(this@RecipeDetailActivity) { state ->
+//                    when (state) {
+//                        is RecipeDetailUIState.Failed -> TODO()
+//                        is RecipeDetailUIState.Success -> TODO()
+//                    }
+//                }
+//            }
         }
     }
 

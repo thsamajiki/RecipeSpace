@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -15,6 +16,7 @@ import com.hero.recipespace.databinding.FragmentChatListBinding
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ChatListFragment: Fragment() {
@@ -61,6 +63,15 @@ class ChatListFragment: Fragment() {
             chatList.observe(viewLifecycleOwner) { chatList ->
                 chatListAdapter.setChatList(chatList)
             }
+
+            lifecycleScope.launch {
+                chatListUiState.observe(viewLifecycleOwner) { state ->
+//                    when (state) {
+//                        is ChatListUIState.Failed -> TODO()
+//                        is ChatListUIState.Success -> TODO()
+//                    }
+                }
+            }
         }
     }
 
@@ -94,7 +105,7 @@ class ChatListFragment: Fragment() {
     }
 
     private fun showChatRoom(chat: ChatEntity) {
-        val intent = ChatActivity.getIntent(requireActivity(), chat.key.orEmpty())
+        val intent = ChatActivity.getIntent(requireActivity(), chat.key)
         startActivity(intent)
     }
 
