@@ -81,12 +81,12 @@ class RecipeServiceImpl @Inject constructor(
     }
 
     override suspend fun add(
-        profileImageUrl: String,
-        userName: String,
-        userKey: String,
         desc: String,
         photoUrlList: List<String>,
-        postDate: Timestamp
+        postDate: Timestamp,
+        userKey: String,
+        userName: String,
+        profileImageUrl : String
     ): RecipeData {
         return suspendCoroutine<RecipeData> { continuation ->
             val documentReference = db.collection("Recipe").document()

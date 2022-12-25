@@ -49,6 +49,7 @@
                     android:paddingTop="7dp"
                     android:paddingEnd="7dp"
                     android:paddingBottom="7dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_option_menu"
                      />
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,12 @@ sealed class IntentChatUIState {
     data class Failed(val message: String) : IntentChatUIState()
 }
 
+sealed class OpenRateUIState {
+    object Success : OpenRateUIState()
+
+    data class Failed(val message: String) : OpenRateUIState()
+}
+
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
     application: Application,
@@ -80,7 +86,11 @@ class RecipeDetailViewModel @Inject constructor(
         }
     }
 
+    fun openRate() {
+        viewModelScope.launch {
 
+        }
+    }
 
 //    val chatKey: String = savedStateHandle.get<String>(RECIPE_USER_KEY)!!
 

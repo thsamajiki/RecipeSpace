@@ -32,21 +32,21 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
             progress = onProgress
         )
 
-        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
         val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
 
-        Log.d("zxcv", "add: userName : $userName")
-        Log.d("zxcv", "add: userKey : $userKey")
-        Log.d("zxcv", "add: profileImageUrl : $profileImageUrl")
+        Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userName : $userName")
+        Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userKey : $userKey")
+        Log.d("abcd", "RecipeRemoteDataSourceImpl - add: profileImageUrl : $profileImageUrl")
 
         return recipeService.add(
-            profileImageUrl,
-            userName,
-            userKey,
             request.content,
             downloadUrls,
-            Timestamp.now()
+            Timestamp.now(),
+            userKey,
+            userName,
+            profileImageUrl
         )
     }
 

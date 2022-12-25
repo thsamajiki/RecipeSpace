@@ -31,7 +31,7 @@ class RecipeRepositoryImpl @Inject constructor(
         // 지금까지 나는 ViewModel -> get -> Repository -> if(로컬에 데이터가 있는가?) local.getData() else remote.getData
 
         // SSOT 는
-        // ViewModel -> get -> Repository -> remote.requestData() -> Remote -> Repository -> Local에 저장
+        // ViewModel -> get -> Repository -> remote.requestData() -> Remote -> Repository -> Local 에 저장
 
         CoroutineScope(Dispatchers.IO).launch {
             val recipeList = recipeRemoteDataSource.getDataList()

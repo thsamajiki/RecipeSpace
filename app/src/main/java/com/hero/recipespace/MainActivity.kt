@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(),
 
         setFragmentAdapter()
         setupViewModel()
-        setOnClickListener()
+        setupClickListener()
 
 //        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
 //        val navController: NavController = navHostFragment.findNavController()
@@ -51,7 +51,10 @@ class MainActivity : AppCompatActivity(),
 
         binding.bottomNav.setOnItemSelectedListener(this)
 
+        Log.d("zxcv", "MainActivity: auth uid : " + FirebaseAuth.getInstance().uid)
+        Log.d("zxcv", "MainActivity: currentUser uid : " + FirebaseAuth.getInstance().currentUser?.uid)
         Log.d("zxcv", "MainActivity: userName : " + FirebaseAuth.getInstance().currentUser?.displayName)
+        Log.d("zxcv", "MainActivity: profileImageUrl : " + FirebaseAuth.getInstance().currentUser?.photoUrl)
     }
 
     private fun setupViewModel() {
@@ -96,7 +99,7 @@ class MainActivity : AppCompatActivity(),
         })
     }
 
-    private fun setOnClickListener() {
+    private fun setupClickListener() {
         binding.ivAccountOptionMenu.setOnClickListener(this)
     }
 

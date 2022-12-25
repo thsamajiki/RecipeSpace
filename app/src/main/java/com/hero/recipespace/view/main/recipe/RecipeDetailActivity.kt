@@ -123,11 +123,9 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.ivUserProfile.setOnClickListener {
             intentPhoto(viewModel.recipe.value?.profileImageUrl.orEmpty())
-            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnQuestion.setOnClickListener {
-            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
             val recipe = getRecipe() ?: return@setOnClickListener
             val firebaseUser = FirebaseAuth.getInstance().currentUser
             val myUserKey: String = firebaseUser?.uid.orEmpty()
@@ -148,6 +146,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivOptionMenu.setOnClickListener {
+            Toast.makeText(this, "option_menu intent", Toast.LENGTH_SHORT).show()
             val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
             if (getRecipe()?.userKey.equals(myUserKey)) {
                 binding.ivOptionMenu.visibility = View.VISIBLE

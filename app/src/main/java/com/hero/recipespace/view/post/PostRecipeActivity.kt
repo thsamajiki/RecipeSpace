@@ -213,7 +213,10 @@ class PostRecipeActivity : AppCompatActivity(),
         }
 
         binding.tvComplete.setOnClickListener {
-            viewModel.uploadRecipe(binding.editContent.text.toString(), postRecipeImageListAdapter.getRecipeImageList())
+            viewModel.uploadRecipe(
+                binding.editContent.text.toString(),
+                postRecipeImageListAdapter.getRecipeImageList()
+            )
         }
     }
 

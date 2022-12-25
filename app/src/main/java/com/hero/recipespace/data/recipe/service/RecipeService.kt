@@ -9,12 +9,12 @@ interface RecipeService {
     
     suspend fun getRecipeList(): List<RecipeData>
 
-    suspend fun add(profileImageUrl : String,
-                    userName: String,
-                    userKey: String,
-                    desc: String,
+    suspend fun add(desc: String,
                     photoUrlList: List<String>,
-                    postDate: Timestamp
+                    postDate: Timestamp,
+                    userKey: String,
+                    userName: String,
+                    profileImageUrl : String
     ) : RecipeData
 
     suspend fun uploadImages(recipePhotoPathList: List<String>, progress: (Float) -> Unit): List<String>

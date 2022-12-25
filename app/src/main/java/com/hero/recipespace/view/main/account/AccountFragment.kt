@@ -3,6 +3,7 @@ package com.hero.recipespace.view.main.account
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +73,11 @@ class AccountFragment: Fragment(),
     private fun setupViewModel() {
         with(viewModel) {
             user.observe(viewLifecycleOwner) { user ->
-                if (user.profileImageUrl == R.drawable.ic_user.toString()) {
+                if (TextUtils.isEmpty(user.profileImageUrl)) {
                     Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
+                } else {
+                    Glide.with(requireActivity()).load(user.profileImageUrl).into(binding.ivUserProfile)
+                    Toast.makeText(requireActivity(), "accountfragment : " + user.profileImageUrl, Toast.LENGTH_SHORT).show()
                 }
             }
 

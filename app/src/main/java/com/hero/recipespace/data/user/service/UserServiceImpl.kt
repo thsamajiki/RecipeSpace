@@ -6,10 +6,10 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.hero.recipespace.R
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
@@ -26,7 +26,7 @@ import kotlin.coroutines.suspendCoroutine
 class UserServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore,
-    private val firebaseStorage: FirebaseStorage
+    private val firebaseStorage: FirebaseStorage,
 ) : UserService {
 
     override suspend fun login(request: LoginUserRequest): UserData {
@@ -94,7 +94,7 @@ class UserServiceImpl @Inject constructor(
                 key = firebaseAuth.uid.orEmpty(),
                 name = request.name,
                 email = request.email.value,
-                profileImageUrl = R.drawable.ic_user.toString()
+                profileImageUrl = null
             )
 
             return suspendCoroutine<UserData> { continuation ->
@@ -102,6 +102,7 @@ class UserServiceImpl @Inject constructor(
                     .document(userData.key)
                     .set(userData)
                     .addOnSuccessListener {
+                        updateUserProfile(request.name)
                         continuation.resume(userData)
                     }
                     .addOnFailureListener { continuation.resumeWithException(it) }
@@ -112,20 +113,39 @@ class UserServiceImpl @Inject constructor(
     }
 
     private suspend fun createAccount(email: Email, pwd: Password): Boolean {
+//        val user = firebaseAuth.currentUser
+//
+//        val request = userProfileChangeRequest {
+//            displayName = name
+//            photoUri = Uri.parse("https://i.pinimg.com/280x280_RS/02/64/d5/0264d5d1d7f4a60d3eb210809dcce729.jpg")
+//        }
+
         return suspendCoroutine { continuation ->
             firebaseAuth.createUserWithEmailAndPassword(email.value, pwd.value)
                 .addOnSuccessListener {
-                    firebaseAuth.currentUser?.updateProfile(
-                        UserProfileChangeRequest
-                            .Builder()
-                            .build()
-                    )
                     continuation.resume(true)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
                 }
         }
+    }
+
+    private fun updateUserProfile(name: String) {
+        val user = firebaseAuth.currentUser
+
+        val request = userProfileChangeRequest {
+            displayName = name
+            photoUri = Uri.parse("https://i.pinimg.com/280x280_RS/02/64/d5/0264d5d1d7f4a60d3eb210809dcce729.jpg")
+        }
+
+        user!!.updateProfile(request)
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener {
+
+            }
     }
 
     // TODO: 2022-12-15 하단에 있는 update 메소드들과 합치기
@@ -141,14 +161,18 @@ class UserServiceImpl @Inject constructor(
             db.collection("User")
                 .document(userData.key.orEmpty())
                 .update(editData)
-                .addOnSuccessListener { continuation.resume(userData) }
+                .addOnSuccessListener {
+                    updateUserProfile(userData.name!!)
+                    continuation.resume(userData)
+                }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
     override suspend fun uploadImage(
         profileImageUrl: String,
-        progress: (Float) -> Unit): String {
+        progress: (Float) -> Unit,
+    ): String {
 
         return suspendCoroutine { continuation ->
             val storageRef =
