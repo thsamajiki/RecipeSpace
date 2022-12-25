@@ -24,9 +24,9 @@
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="60dp"
-            android:src="@drawable/ic_user"
             app:imageUrl="@{viewModel.profileImageUrl}"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            tools:src="@drawable/ic_user" />
 
         <TextView
             android:id="@+id/tv_user_name"

@@ -9,6 +9,7 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.hero.recipespace.R
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.user.UserData
@@ -93,7 +94,7 @@ class UserServiceImpl @Inject constructor(
                 key = firebaseAuth.uid.orEmpty(),
                 name = request.name,
                 email = request.email.value,
-                profileImageUrl = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
+                profileImageUrl = R.drawable.ic_user.toString()
             )
 
             return suspendCoroutine<UserData> { continuation ->

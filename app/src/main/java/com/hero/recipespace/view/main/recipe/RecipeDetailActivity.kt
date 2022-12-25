@@ -60,8 +60,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        setContentView(binding.root)
-
         setupView()
         setupViewModel()
         setupListeners()
@@ -125,17 +123,18 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.ivUserProfile.setOnClickListener {
             intentPhoto(viewModel.recipe.value?.profileImageUrl.orEmpty())
+            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
         }
 
         binding.btnQuestion.setOnClickListener {
+            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
             val recipe = getRecipe() ?: return@setOnClickListener
             val firebaseUser = FirebaseAuth.getInstance().currentUser
-            val myUserKey: String = firebaseUser?.uid.toString()
+            val myUserKey: String = firebaseUser?.uid.orEmpty()
+
             if (getRecipe()?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             }
-
-            Toast.makeText(this, "chat intent", Toast.LENGTH_SHORT).show()
 
             val intent = ChatActivity.getIntent(this, recipe.userKey)
             startActivity(intent)

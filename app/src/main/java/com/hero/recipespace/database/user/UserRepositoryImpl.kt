@@ -26,7 +26,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun login(request: LoginUserRequest): UserEntity {
         val userData = userRemoteDataSource.login(request)
-        userLocalDataSource.update(userData)
+        userLocalDataSource.add(userData)
         return userData.toEntity()
     }
 
@@ -75,7 +75,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun signOut() {
         userLocalDataSource.signOut()
-        return userRemoteDataSource.signOut()
+        userRemoteDataSource.signOut()
     }
 
     override suspend fun getCurrentLoggedUser(): UserEntity {

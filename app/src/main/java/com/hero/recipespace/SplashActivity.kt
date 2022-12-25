@@ -10,7 +10,7 @@ import com.hero.recipespace.view.viewmodel.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity(), Runnable {
+class SplashActivity : AppCompatActivity() {
 
     val currentUser = FirebaseAuth.getInstance().currentUser
 
@@ -35,9 +35,5 @@ class SplashActivity : AppCompatActivity(), Runnable {
                 }
             }
         }
-    }
-
-    override fun run() {
-
     }
 }

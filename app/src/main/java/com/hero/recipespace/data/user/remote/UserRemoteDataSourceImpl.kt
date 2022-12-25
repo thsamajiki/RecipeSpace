@@ -77,6 +77,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        return FirebaseAuth.getInstance().signOut()
+        FirebaseAuth.getInstance().signOut()
     }
 }

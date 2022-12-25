@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentAccountBinding
@@ -70,7 +72,9 @@ class AccountFragment: Fragment(),
     private fun setupViewModel() {
         with(viewModel) {
             user.observe(viewLifecycleOwner) { user ->
-
+                if (user.profileImageUrl == R.drawable.ic_user.toString()) {
+                    Glide.with(requireActivity()).load(R.drawable.ic_user).into(binding.ivUserProfile)
+                }
             }
 
             viewLifecycleOwner.lifecycleScope.launch {
@@ -87,12 +91,12 @@ class AccountFragment: Fragment(),
             viewLifecycleOwner.lifecycleScope.launch {
                 signOutUiState.collect { state ->
                     when (state) {
-                        is SignOutUiState.Failed -> Toast.makeText(requireContext(), "로그아웃에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        is SignOutUiState.Failed -> Toast.makeText(requireActivity(), "로그아웃에 실패했습니다.", Toast.LENGTH_SHORT).show()
 
                         is SignOutUiState.Success -> {
-                            val intent = LoginActivity.getIntent(requireContext())
+                            val intent = LoginActivity.getIntent(requireActivity())
                             startActivity(intent)
-                            requireActivity().finish()
+                            finishAffinity(requireActivity())
                         }
                         SignOutUiState.Idle -> {}
                     }

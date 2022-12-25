@@ -70,6 +70,7 @@ class AccountViewModel @Inject constructor(
             signOutUseCase()
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
+                    _signOutUiState.value = SignOutUiState.Success
                 }
                 .onFailure {
                     _loadingState.value = LoadingState.Hidden
