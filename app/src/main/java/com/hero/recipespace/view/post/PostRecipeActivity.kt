@@ -106,7 +106,6 @@ class PostRecipeActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_recipe)
-
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -285,7 +284,6 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private fun deletePhoto(position: Int) {
         viewModel.deletePhoto(position)
-//        postRecipeImageListAdapter.delete(position)
     }
 
     override fun onClick(view: View) {

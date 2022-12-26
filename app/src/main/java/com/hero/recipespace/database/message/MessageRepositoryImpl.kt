@@ -9,7 +9,6 @@ import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -33,7 +32,6 @@ class MessageRepositoryImpl @Inject constructor(
                         messageLocalDataSource.addAll(messageList)
                     }
                 }
-            cancel()
         }
 
         return messageLocalDataSource.observeDataList(chatKey)

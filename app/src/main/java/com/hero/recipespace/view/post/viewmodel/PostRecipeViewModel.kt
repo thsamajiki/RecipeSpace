@@ -86,15 +86,15 @@ class PostRecipeViewModel @Inject constructor(
 
     fun addRecipePhotoList(photoPathList: List<String>) {
         _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
-
         updateSelectedImageCount()
     }
 
     fun deletePhoto(position: Int) {
-        _recipeImageList.value = _recipeImageList.value.orEmpty().toMutableList().apply {
-            removeAt(position)
-        }
-
+        _recipeImageList.value = _recipeImageList.value.orEmpty()
+            .toMutableList()
+            .apply {
+                removeAt(position)
+            }
         updateSelectedImageCount()
     }
 

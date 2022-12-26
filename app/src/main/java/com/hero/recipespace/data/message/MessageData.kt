@@ -2,7 +2,6 @@ package com.hero.recipespace.data.message
 
 import android.os.Parcelable
 import androidx.annotation.Keep
-import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
@@ -16,8 +15,7 @@ data class MessageData(
     var message: String? = null,
     var timestamp: Timestamp? = null,
     var confirmed: Boolean? = null,
-    @NonNull
     @PrimaryKey
-    var messageId: String = ""
+    var messageId: String = "",
 ) : Parcelable {
 }

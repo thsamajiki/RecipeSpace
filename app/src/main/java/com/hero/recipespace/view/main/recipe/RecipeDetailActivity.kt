@@ -143,7 +143,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 val intent = ChatActivity.getIntent(
                     this,
-                    otherUserKey = recipe.userKey)
+                    otherUserKey = recipe.userKey
+                )
                 startActivity(intent)
             }
         }
@@ -192,7 +193,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             }
             true
         }
-
         popupMenu.show()
     }
 

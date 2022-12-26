@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.databinding.ItemChatListBinding
 import com.hero.recipespace.domain.chat.entity.ChatEntity
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.BaseAdapter
 
 class ChatListAdapter(
@@ -86,6 +87,7 @@ class ChatListAdapter(
                 onClick(chat)
             }
 
+            WLog.d("chat $chat")
             binding.chat = chat
             binding.executePendingBindings()
         }

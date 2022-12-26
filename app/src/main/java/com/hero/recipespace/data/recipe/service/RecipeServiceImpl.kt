@@ -20,7 +20,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -115,7 +114,7 @@ class RecipeServiceImpl @Inject constructor(
 
                 async {
                     kotlin.runCatching {
-                        val imageFile = Uri.fromFile(File(photoPath))
+                        val imageFile = Uri.parse(photoPath)
                         val uploadTask = imageRef.putFile(imageFile)
 
                         uploadTask

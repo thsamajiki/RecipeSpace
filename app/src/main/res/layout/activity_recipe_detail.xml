@@ -118,10 +118,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:progressTint="@color/colorPrimary"
+                android:rating="@{viewModel.recipe.rate}"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images"
-                android:rating="@{viewModel.recipe.rate}" />
-
+                app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
         </FrameLayout>
 
         <com.google.android.material.button.MaterialButton

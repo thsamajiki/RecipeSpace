@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.ItemMessageLeftBinding
 import com.hero.recipespace.databinding.ItemMessageRightBinding
 import com.hero.recipespace.domain.message.entity.MessageEntity
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.BaseAdapter
 
-class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
+class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
 
     private val messageList = mutableListOf<MessageEntity>()
 
@@ -18,14 +20,16 @@ class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
         private const val RIGHT_TYPE = 1
     }
 
-    private var myUserKey: String? = null
+    private var myUserKey: String? = FirebaseAuth.getInstance().uid
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == RIGHT_TYPE) {
-            val binding = ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding =
+                ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             RightMessageViewHolder(binding)
         } else {
-            val binding = ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding =
+                ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             LeftMessageViewHolder(binding)
         }
     }
@@ -86,6 +90,7 @@ class ChatAdapter() : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
 
     override fun getItemViewType(position: Int): Int {
         val message: MessageEntity = messageList[position]
+        WLog.d("myUserKey $myUserKey message.userKey ${message.userKey}")
         return if (myUserKey == message.userKey) {
             RIGHT_TYPE
         } else LEFT_TYPE

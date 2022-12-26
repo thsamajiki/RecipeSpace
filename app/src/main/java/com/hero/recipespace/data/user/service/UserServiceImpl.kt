@@ -18,7 +18,6 @@ import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.LoginUserRequest
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.util.WLog
-import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -48,7 +47,7 @@ class UserServiceImpl @Inject constructor(
 
                     val userData = documentSnapshot.toObject(UserData::class.java)
 
-                    continuation.resume(userData!!)
+                    continuation.resume(userData as UserData)
                 }
                 .addOnFailureListener(OnFailureListener {
                     continuation.resumeWithException(it)
@@ -193,7 +192,7 @@ class UserServiceImpl @Inject constructor(
                 firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
 
             val photoPath: String = profileImageUrl
-            val imageFile = Uri.fromFile(File(photoPath))
+            val imageFile = Uri.parse(photoPath)
 
 //            val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
             val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + "${imageFile.lastPathSegment}")

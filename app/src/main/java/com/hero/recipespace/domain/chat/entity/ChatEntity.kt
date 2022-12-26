@@ -14,4 +14,7 @@ data class ChatEntity(
     var userList: Map<String, Boolean>? = null
 ) : Parcelable {
 
+    val displayOtherUserName: String
+        get() = userNames?.toList()?.getOrNull(0)?.second.orEmpty()
+
 }

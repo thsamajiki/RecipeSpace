@@ -116,7 +116,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/item_recipe_image_list" />
 
-<!--            app:editRecipeImageItems="@{viewModel.photoUrlList}"-->
+<!--            app:editRecipeImageItems="@{viewModel.recipe.photoUrlList}"-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

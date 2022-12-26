@@ -1,13 +1,8 @@
 package com.hero.recipespace.database
 
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
-import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.listener.OnCompleteListener
-import com.hero.recipespace.listener.OnMessageListener
 import com.hero.recipespace.listener.Response
 import com.hero.recipespace.listener.Type
 
@@ -172,7 +167,7 @@ class FirebaseData {
 //    ): ListenerRegistration {
 //        val fireStore = FirebaseFirestore.getInstance()
 //        return fireStore.collection("Chat")
-//            .whereEqualTo("userList.$userKey", true)
+//            .whereEqualTo("userList+$userKey", true)
 //            .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
 //                if (e != null) {
 //                    return@EventListener
@@ -234,33 +229,6 @@ class FirebaseData {
 //            onCompleteListener.onComplete(true, response)
 //        }.addOnFailureListener { onCompleteListener.onComplete(false, response) }
 //    }
-
-    // MessageServiceImpl 의 getDataList 메소드로 옮김
-    fun getMessageList(
-        chatDataKey: String?,
-        onMessageListener: OnMessageListener
-    ): ListenerRegistration {
-        val firestore = FirebaseFirestore.getInstance()
-        return firestore.collection("Chat")
-            .document(chatDataKey!!)
-            .collection("Messages")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
-            .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
-                if (e != null) {
-                    onMessageListener.onMessage(false, null)
-                    return@EventListener
-                }
-                if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
-                    onMessageListener.onMessage(true, null)
-                    return@EventListener
-                }
-                for (documentChange in queryDocumentSnapshots.documentChanges) {
-                    val messageData: MessageData =
-                        documentChange.document.toObject(MessageData::class.java)
-                    onMessageListener.onMessage(true, messageData)
-                }
-            })
-    }
 
     // MessageServiceImpl 의 add 메소드로 옮김
 //    fun sendMessage(message: String, chatData: ChatData) {
