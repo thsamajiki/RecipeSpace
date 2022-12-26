@@ -1,7 +1,7 @@
 package com.hero.recipespace.di
 
 import com.hero.recipespace.domain.chat.repository.ChatRepository
-import com.hero.recipespace.domain.chat.usecase.AddChatUseCase
+import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
 import com.hero.recipespace.domain.message.repository.MessageRepository
@@ -40,7 +40,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideAddChatUseCase(chatRepository: ChatRepository) = AddChatUseCase(chatRepository)
+    fun provideAddChatUseCase(chatRepository: ChatRepository) = CreateNewChatRoomUseCase(chatRepository)
 
     @Provides
     @Singleton

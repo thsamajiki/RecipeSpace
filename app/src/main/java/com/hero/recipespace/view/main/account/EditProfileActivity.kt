@@ -20,7 +20,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
@@ -40,22 +39,23 @@ class EditProfileActivity : AppCompatActivity(),
     TextWatcher {
 
     private lateinit var binding: ActivityEditProfileBinding
-    private var photoPath: String? = null
-    private var profileImageUrl: String? = null
-    private var userName: String? = null
-
-    private var newUserName: String? = null
-    private var newProfileImageUrl: String = ""
-
     private val viewModel by viewModels<EditProfileViewModel>()
 
     private val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
-                Glide.with(this).load(photoPath).into(binding.ivUserProfile)
+                val path = RealPathUtil.getRealPath(this, it.data?.data!!)
+                if (path != null) {
+                    viewModel.setNewProfileImagePath(path)
+                }
+
                 if (binding.editUserName.text.toString().isNotEmpty()) {
-                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.colorPrimaryDark
+                        )
+                    )
                     binding.tvComplete.isEnabled = true
                 }
             }
@@ -79,20 +79,13 @@ class EditProfileActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        setUserData()
         setupViewModel()
         setupListeners()
     }
 
-    private fun setUserData() {
-        profileImageUrl = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-        if (TextUtils.isEmpty(profileImageUrl)) {
-            Glide.with(this).load(R.drawable.ic_user).into(binding.ivUserProfile)
-        } else {
-            Glide.with(this).load(profileImageUrl).into(binding.ivUserProfile)
-        }
-        userName = FirebaseAuth.getInstance().currentUser?.displayName.toString()
+    private fun setUserData(userName: String) {
         binding.editUserName.setText(userName)
+        binding.editUserName.setSelection(binding.editUserName.length())
     }
 
     private fun setupViewModel() {
@@ -127,6 +120,10 @@ class EditProfileActivity : AppCompatActivity(),
                     }
                 }
             }
+
+            user.observe(this@EditProfileActivity) {
+                setUserData(it.name.orEmpty())
+            }
         }
     }
 
@@ -135,9 +132,7 @@ class EditProfileActivity : AppCompatActivity(),
             finish()
         }
         binding.tvComplete.setOnClickListener {
-            if (isNewProfile()) {
-                viewModel.requestUpdateProfile(newProfileImageUrl)
-            }
+            viewModel.requestUpdateProfile()
         }
         binding.fabProfileEdit.setOnClickListener {
             if (checkStoragePermission()) {
@@ -146,18 +141,6 @@ class EditProfileActivity : AppCompatActivity(),
         }
 
         binding.editUserName.addTextChangedListener(this)
-    }
-
-    private fun isNewProfile(): Boolean {
-        return if (TextUtils.isEmpty(profileImageUrl)) {
-            !TextUtils.isEmpty(photoPath)
-        } else {
-            if (TextUtils.isEmpty(photoPath)) {
-                false
-            } else {
-                profileImageUrl != photoPath
-            }
-        }
     }
 
     private fun openGallery() {
@@ -176,7 +159,11 @@ class EditProfileActivity : AppCompatActivity(),
         ) {
             true
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), PERMISSION_REQ_CODE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(readPermission, writePermission),
+                PERMISSION_REQ_CODE
+            )
             false
         }
     }
@@ -237,7 +224,7 @@ class EditProfileActivity : AppCompatActivity(),
         if (s.isEmpty()) {
             binding.tvComplete.isEnabled = false
         } else {
-            binding.tvComplete.isEnabled = s.toString() != userName
+            binding.tvComplete.isEnabled = s.toString() != viewModel.userName
         }
     }
 

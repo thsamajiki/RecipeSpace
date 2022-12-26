@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
+import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +30,8 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         fun getIntent(
             context: Context,
             chatKey: String = "",
-            otherUserKey: String = "") =
+            otherUserKey: String = "",
+        ) =
             Intent(context, ChatActivity::class.java)
                 .putExtra(ChatViewModel.CHAT_KEY, chatKey)
                 .putExtra(ChatViewModel.EXTRA_OTHER_USER_KEY, otherUserKey)
@@ -84,7 +86,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.mcvSend.setOnClickListener {
-            sendFirstMessage()
+            sendMessage()
         }
     }
 
@@ -99,7 +101,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // 채팅방에 이미 메시지가 있을 때 첫 메시지를 보낼 때 사용되는 메소드
-    private fun sendFirstMessage() {
+    private fun sendMessage() {
         val message = binding.editMessage.text.toString()
         if (TextUtils.isEmpty(message)) {
             Toast.makeText(this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -108,6 +110,29 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         binding.editMessage.setText("")
 
         viewModel.sendMessage(message)
+    }
+
+    // 첫 메시지를 보낼 때
+    private fun createChatRoom() {
+        val firebaseData: FirebaseData = FirebaseData.getInstance()
+        val message: String = binding.editMessage.text.toString()
+        if (TextUtils.isEmpty(message)) {
+            Toast.makeText(this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show()
+            return
+        }
+//        editMessage.setText("")
+//        firebaseData.createChatRoom(this,
+//            getOtherUserKey(),
+//            message,
+//            object : OnCompleteListener<ChatData?>() {
+//                fun onComplete(isSuccess: Boolean, response: Response<ChatData?>) {
+//                    if (isSuccess && response.isNotEmpty()) {
+//                        chatData = response.getData()
+//                        initAdapter()
+//                        initMessageRegistration()
+//                    }
+//                }
+//            })
     }
 
     object Result {

@@ -62,10 +62,10 @@ class ChatRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun addChat(otherUserKey: String,
-                                 message: String) {
+    override suspend fun createNewChatRoom(otherUserKey: String,
+                                           message: String) {
         if (!chatRemoteDataSource.checkExistChatData(otherUserKey)) {
-            val result = chatRemoteDataSource.add(otherUserKey, message)
+            val result = chatRemoteDataSource.createNewChatRoom(otherUserKey, message)
             chatLocalDataSource.add(result)
         }
     }

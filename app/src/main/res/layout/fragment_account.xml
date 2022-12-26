@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <import type="android.view.View" />
+
+        <import type="com.hero.recipespace.R" />
 
         <variable
             name="viewModel"
@@ -24,6 +27,7 @@
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="60dp"
+            app:fallbackImage="@{R.drawable.ic_user}"
             app:imageUrl="@{viewModel.profileImageUrl}"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
             tools:src="@drawable/ic_user" />

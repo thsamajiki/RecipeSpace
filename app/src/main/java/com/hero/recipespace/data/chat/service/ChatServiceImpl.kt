@@ -22,7 +22,24 @@ class ChatServiceImpl @Inject constructor(
     private val db: FirebaseFirestore
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
-        TODO("Not yet implemented")
+        return suspendCoroutine { continuation ->
+
+            db.collection("Chat")
+                .document(chatKey)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot == null) {
+                        return@addOnSuccessListener
+                    }
+
+                    val chatData = documentSnapshot.data?.getValue(chatKey)
+
+                    continuation.resume(chatData as ChatData)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
     }
 
     override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String) : ChatData {
@@ -101,6 +118,7 @@ class ChatServiceImpl @Inject constructor(
                 val myUserKey: String = firebaseAuth.uid.orEmpty()
                 val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
                 val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
+
                 val userRef = db.collection("User").document(
                     otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
@@ -108,19 +126,21 @@ class ChatServiceImpl @Inject constructor(
                 transaction[userRef] = userData
                 val userProfileImages = HashMap<String, String>()
                 userProfileImages[myUserKey] = myProfileUrl
-                userProfileImages[userData.key.orEmpty()] = userData.profileImageUrl.orEmpty()
+                userProfileImages[userData.key] = userData.profileImageUrl.orEmpty()
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
-                userNames[userData.key.orEmpty()] = userData.name.orEmpty()
+                userNames[userData.key] = userData.name.orEmpty()
                 val userList = HashMap<String, Boolean>()
                 userList[myUserKey] = true
-                userList[userData.key.orEmpty()] = true
+                userList[userData.key] = true
+
                 val lastMessage = MessageData(
                     userKey = myUserKey,
                     message = message,
                     timestamp = Timestamp.now(),
                     confirmed = false
                 )
+
                 val chatRef = db.collection("Chat").document()
                 val chatData = ChatData(
                     key = chatRef.id,
@@ -130,8 +150,10 @@ class ChatServiceImpl @Inject constructor(
                     userList = userList
                 )
                 transaction[chatRef] = chatData
+
                 val messageRef = chatRef.collection("Messages").document()
                 transaction[messageRef] = lastMessage
+
                 chatData
             }).addOnSuccessListener { chatData ->
                 continuation.resume(chatData as ChatData)

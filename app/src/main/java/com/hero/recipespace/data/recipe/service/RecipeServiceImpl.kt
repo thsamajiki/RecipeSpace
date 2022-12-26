@@ -37,18 +37,12 @@ class RecipeServiceImpl @Inject constructor(
             db.collection("Recipe")
                 .document(recipeKey)
                 .get()
-                .addOnSuccessListener { documentSnapShot ->
-                    if (documentSnapShot == null) {
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot == null) {
                         return@addOnSuccessListener
                     }
-//                    val recipeData = queryDocumentSnapshots.data
-//                        ?.mapNotNull { documentSnapshot ->
-//                            documentSnapshot.apply {
-//
-//                            }
-//                            documentSnapshot.toObject(RecipeData::class.java)
-//                        }
-                    val recipeData = documentSnapShot.data?.getValue(recipeKey)
+
+                    val recipeData = documentSnapshot.data?.getValue(recipeKey)
 
                     continuation.resume(recipeData as RecipeData)
                 }

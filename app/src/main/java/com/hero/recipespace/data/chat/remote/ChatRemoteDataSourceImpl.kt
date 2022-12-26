@@ -27,8 +27,8 @@ class ChatRemoteDataSourceImpl @Inject constructor(
         return chatService.observeNewChat(userKey)
     }
 
-    override suspend fun add(otherUserKey: String,
-                             message: String) : ChatData {
+    override suspend fun createNewChatRoom(otherUserKey: String,
+                                           message: String) : ChatData {
         return chatService.add(otherUserKey, message)
     }
 

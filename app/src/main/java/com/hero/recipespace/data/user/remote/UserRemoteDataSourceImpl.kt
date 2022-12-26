@@ -49,7 +49,22 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.getDataList()
     }
 
-    override suspend fun add(request: SignUpUserRequest)  : UserData {
+    override suspend fun add(request: SignUpUserRequest) : UserData {
+//        val user = getCurrentUser()
+//
+//        val changeRequest = userProfileChangeRequest {
+//            displayName = request.name
+//            photoUri = null
+//        }
+//
+//        user!!.updateProfile(changeRequest)
+//            .addOnSuccessListener {
+//
+//            }
+//            .addOnFailureListener {
+//
+//            }
+
         return userService.add(request)
     }
 

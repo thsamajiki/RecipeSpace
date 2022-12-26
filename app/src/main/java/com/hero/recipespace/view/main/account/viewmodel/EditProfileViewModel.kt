@@ -5,8 +5,9 @@ import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
-import com.hero.recipespace.domain.user.usecase.GetUserUseCase
+import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.domain.user.usecase.UpdateUserUseCase
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,7 @@ sealed class EditProfileUiState {
 class EditProfileViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
-    private val getUserUseCase: GetUserUseCase,
+    private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase
 ) : AndroidViewModel(application) {
 
@@ -37,30 +38,43 @@ class EditProfileViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
-//    private val _user = MutableLiveData<UserEntity>()
-//    val user: LiveData<UserEntity>
-//        get() = _user
-
-    companion object {
-        const val USER_KEY = "user"
-    }
-
-//    val user: UserEntity = savedStateHandle.get<UserEntity>(USER_KEY)!!
+    val profileImage: MutableLiveData<String> = MutableLiveData()
 
     private val _user = MutableLiveData<UserEntity>()
     val user: LiveData<UserEntity>
         get() = _user
 
+    val userName: String?
+        get() = user.value?.name
+
     val userKey: String = FirebaseAuth.getInstance().uid.orEmpty()
 
     val newUserName: MutableLiveData<String> = MutableLiveData()
-    val newProfileImageUrl: MutableLiveData<String> = MutableLiveData()
-//    val user: LiveData<UserEntity> = getUserUseCase().asLiveData()
+    var newProfileImagePath: String? = null
+        private set
+
+    fun setNewProfileImagePath(path: String) {
+        newProfileImagePath = path
+        profileImage.value = path
+    }
+
+    init {
+        viewModelScope.launch {
+            getLoggedUserUseCase()
+                .onSuccess {
+                    _user.value = it
+                }
+                .onFailure(WLog::e)
+        }
+    }
 
 
     // TODO: 2022-12-14 EditProfileViewModel, UpdateUserUseCase, Repository, RemoteSource, LocalSource, UserService에서 update 메소드를 새로 만듦
     // todo: 새로운 이름과 프로필 이미지를 입력받기 위해서 만듦
     fun requestUpdateProfile(newProfileImageUrl: String = "") {
+
+        if (!isNewProfile()) return
+
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
@@ -76,6 +90,17 @@ class EditProfileViewModel @Inject constructor(
                     _editProfileUiState.value = EditProfileUiState.Failed(it.message.orEmpty())
                     it.printStackTrace()
                 }
+        }
+    }
+
+    private fun isNewProfile(): Boolean {
+        val oldProfileImageUrl = user.value?.profileImageUrl
+        val newProfileImagePath = newProfileImagePath
+
+        return when {
+            oldProfileImageUrl.isNullOrEmpty() -> !newProfileImagePath.isNullOrEmpty()
+            newProfileImagePath.isNullOrEmpty() -> false
+            else -> oldProfileImageUrl != newProfileImagePath
         }
     }
 

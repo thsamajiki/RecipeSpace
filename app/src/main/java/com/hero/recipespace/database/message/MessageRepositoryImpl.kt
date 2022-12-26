@@ -41,8 +41,10 @@ class MessageRepositoryImpl @Inject constructor(
                     }
                 })
 
-            val messageList = messageRemoteDataSource.getDataList(chatKey)
-            messageLocalDataSource.addAll(messageList)
+            val messageList = kotlin.runCatching { messageRemoteDataSource.getDataList(chatKey) }.getOrNull()
+            if (messageList != null) {
+                messageLocalDataSource.addAll(messageList)
+            }
             cancel()
         }
 
@@ -63,7 +65,7 @@ class MessageRepositoryImpl @Inject constructor(
             val result = messageRemoteDataSource.add(chatKey, message)
             messageLocalDataSource.add(result)
         } else if (otherUserKey.isNotEmpty()) {
-            chatRepository.addChat(otherUserKey, message)
+            chatRepository.createNewChatRoom(otherUserKey, message)
         }
     }
 

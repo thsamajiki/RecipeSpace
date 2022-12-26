@@ -17,6 +17,7 @@ import com.hero.recipespace.domain.user.entity.Email
 import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.LoginUserRequest
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
+import com.hero.recipespace.util.WLog
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -102,8 +103,16 @@ class UserServiceImpl @Inject constructor(
                     .document(userData.key)
                     .set(userData)
                     .addOnSuccessListener {
-                        updateUserProfile(request.name)
-                        continuation.resume(userData)
+                        updateUserProfile(
+                            request.name,
+                            onSuccess = {
+                                continuation.resume(userData)
+                            },
+                            onFailure = {
+                                WLog.e("$it")
+                                continuation.resume(userData)
+                            }
+                        )
                     }
                     .addOnFailureListener { continuation.resumeWithException(it) }
             }
@@ -131,20 +140,20 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-    private fun updateUserProfile(name: String) {
+    private fun updateUserProfile(name: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val user = firebaseAuth.currentUser
 
         val request = userProfileChangeRequest {
             displayName = name
-            photoUri = Uri.parse("https://i.pinimg.com/280x280_RS/02/64/d5/0264d5d1d7f4a60d3eb210809dcce729.jpg")
+//            photoUri = null
         }
 
         user!!.updateProfile(request)
             .addOnSuccessListener {
-
+                onSuccess()
             }
             .addOnFailureListener {
-
+                onFailure(it)
             }
     }
 
@@ -162,8 +171,13 @@ class UserServiceImpl @Inject constructor(
                 .document(userData.key.orEmpty())
                 .update(editData)
                 .addOnSuccessListener {
-                    updateUserProfile(userData.name!!)
-                    continuation.resume(userData)
+                    updateUserProfile(userData.name!!,
+                    onSuccess = {
+                        continuation.resume(userData)
+                    },
+                    onFailure = {
+                        continuation.resumeWithException(it)
+                    })
                 }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
@@ -231,7 +245,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    // TODO EditProfileActivity를 통해 나의 사용자 정보(나의 프로필 사진, 나의 사용자 이름)가 변경되었을 때
+    // TODO EditProfileActivity 를 통해 나의 사용자 정보(나의 프로필 사진, 나의 사용자 이름)가 변경되었을 때
     //  update() 메소드에서 트랜잭션 처리할 때 필요한 데이터
     //  1. UserData 의 profileImageUrl, name
     //  2. RecipeData 의 profileImageUrl, userName

@@ -166,8 +166,8 @@ class EditRecipeActivity : AppCompatActivity(),
         val pickIntent = Intent(Intent.ACTION_PICK)
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        pickIntent.action = Intent.ACTION_GET_CONTENT
-        openGalleryLauncher.launch(intent)
+        pickIntent.action = Intent.ACTION_PICK
+        openGalleryLauncher.launch(pickIntent)
     }
 
     private fun checkStoragePermission(): Boolean {

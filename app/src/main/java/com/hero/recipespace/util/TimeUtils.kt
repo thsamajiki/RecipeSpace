@@ -26,6 +26,7 @@ class TimeUtils {
     }
 
     fun convertTimeFormat(date: Date?, format: String?): String? {
+        date ?: return null
         val dateFormat = SimpleDateFormat(format)
         return dateFormat.format(date)
     }

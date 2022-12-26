@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -63,27 +63,33 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         setupView()
         setupViewModel()
         setupListeners()
+        setupFragmentResultListener()
     }
 
     private fun setupView() {
-        val recipe: RecipeEntity? = getRecipe()
-        val requestManager = Glide.with(this)
-
         initRecyclerView(binding.rvRecipeImages)
+    }
 
-        if (!TextUtils.isEmpty(recipe?.profileImageUrl)) {
-            requestManager.load(recipe?.profileImageUrl)
+    private fun bindRecipe(recipe: RecipeEntity) {
+        val requestManager = Glide.with(this)
+        if (!recipe.profileImageUrl.isNullOrEmpty()) {
+            requestManager.load(recipe.profileImageUrl)
                 .into(binding.ivUserProfile)
         } else {
             requestManager.load(R.drawable.ic_default_user_profile)
                 .into(binding.ivUserProfile)
         }
 
-        if (recipe != null) {
-            binding.tvUserName.text = recipe.userName
-            binding.tvRecipeDesc.text = recipe.desc
-            binding.tvPostDate.text = TimeUtils.getInstance().convertTimeFormat(recipe.postDate?.toDate(), "yy.MM.dd")
-            binding.ratingBar.rating = recipe.rate ?: 0f
+        binding.tvUserName.text = recipe.userName
+        binding.tvRecipeDesc.text = recipe.desc
+        binding.tvPostDate.text =
+            TimeUtils.getInstance().convertTimeFormat(recipe.postDate?.toDate(), "yy.MM.dd")
+        binding.ratingBar.rating = recipe.rate ?: 0f
+
+        val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
+        if (recipe.userKey == myUserKey) {
+            binding.ivOptionMenu.visibility = View.VISIBLE
+            binding.ivOptionMenu.isClickable = true
         }
     }
 
@@ -101,8 +107,10 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupViewModel() {
         with(viewModel) {
-            recipe.observe(this@RecipeDetailActivity) {
-                recipeDetailAdapter.setRecipeImageList(it.photoUrlList.orEmpty())
+            recipe.observe(this@RecipeDetailActivity) { recipe ->
+                recipeDetailAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
+
+                bindRecipe(recipe)
             }
 
 //            lifecycleScope.launch {
@@ -126,38 +134,50 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.btnQuestion.setOnClickListener {
-            val recipe = getRecipe() ?: return@setOnClickListener
+            val recipe = viewModel.recipe.value ?: return@setOnClickListener
             val firebaseUser = FirebaseAuth.getInstance().currentUser
             val myUserKey: String = firebaseUser?.uid.orEmpty()
 
-            if (getRecipe()?.userKey.equals(myUserKey)) {
+            if (viewModel.recipe.value?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = ChatActivity.getIntent(this, recipe.userKey)
+                startActivity(intent)
             }
-
-            val intent = ChatActivity.getIntent(this, recipe.userKey)
-            startActivity(intent)
         }
 
         binding.ratingBar.setOnClickListener {
-            val recipe: RecipeEntity? = getRecipe()
-            if (recipe != null) {
-                showRatingDialog(recipe)
-            }
+            val recipe = viewModel.recipe.value ?: return@setOnClickListener
+            Log.d("qwer", "setupListeners: recipe : " + recipe.key)
+            Toast.makeText(this, "ratingBar.setOnClickListener", Toast.LENGTH_SHORT).show()
+
+            showRatingDialog(recipe)
         }
 
         binding.ivOptionMenu.setOnClickListener {
             Toast.makeText(this, "option_menu intent", Toast.LENGTH_SHORT).show()
-            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
-            if (getRecipe()?.userKey.equals(myUserKey)) {
-                binding.ivOptionMenu.visibility = View.VISIBLE
-                binding.ivOptionMenu.isClickable = true
-                showRecipeDetailOptionMenu()
-            }
+//            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
+//            if (getRecipe()?.userKey.equals(myUserKey)) {
+//                binding.ivOptionMenu.visibility = View.VISIBLE
+//                binding.ivOptionMenu.isClickable = true
+//            }
+            showRecipeDetailOptionMenu()
         }
     }
 
-    private fun getRecipe(): RecipeEntity? {
-        return intent.getParcelableExtra(EXTRA_RECIPE_ENTITY)
+    private fun setupFragmentResultListener() {
+        // FragmentResult - 데이터를 수신하기 위한 부분
+        supportFragmentManager.setFragmentResultListener(
+            RatingDialogFragment.TAG,
+            this
+        ) { _: String, result: Bundle ->
+            // 데이터를 수신하자.
+            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.RECIPE_KEY)
+
+            if (recipe != null) {
+                recipeDetailAdapter.replaceItem(recipe.key)
+            }
+        }
     }
 
     private fun showRecipeDetailOptionMenu() {

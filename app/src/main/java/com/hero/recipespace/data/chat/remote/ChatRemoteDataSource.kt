@@ -13,8 +13,8 @@ interface ChatRemoteDataSource {
 
     suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>>
 
-    suspend fun add(otherUserKey: String,
-                    message: String) : ChatData
+    suspend fun createNewChatRoom(otherUserKey: String,
+                                  message: String) : ChatData
 
     suspend fun update(chatData: ChatData)
 

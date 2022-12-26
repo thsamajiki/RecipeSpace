@@ -3,7 +3,8 @@ package com.hero.recipespace.view.main.recipe.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.hero.recipespace.domain.chat.usecase.AddChatUseCase
+import com.google.firebase.Timestamp
+import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
@@ -33,7 +34,7 @@ sealed class OpenRateUIState {
 class RecipeDetailViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
-    private val addChatUseCase: AddChatUseCase,
+    private val createNewChatRoomUseCase: CreateNewChatRoomUseCase,
     private val getChatUseCase: GetChatUseCase,
     private val getRecipeUseCase: GetRecipeUseCase
 ) : AndroidViewModel(application) {
@@ -52,6 +53,15 @@ class RecipeDetailViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
+    val profileImageUrl: MutableLiveData<String> = MutableLiveData()
+    val userName: MutableLiveData<String> = MutableLiveData()
+
+    val postDate: MutableLiveData<Timestamp?> = MutableLiveData()
+    val desc: MutableLiveData<String> = MutableLiveData()
+
+    val rate: MutableLiveData<Float?> = MutableLiveData()
+    val photoUrlList: MutableLiveData<List<String>> = MutableLiveData()
+
     val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
 
 //    val recipeEntity: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_ENTITY)!!
@@ -61,10 +71,12 @@ class RecipeDetailViewModel @Inject constructor(
             getRecipeUseCase(recipeKey)
                 .onSuccess {
                     _recipe.value = it
-                    Log.d("zxc", "RecipeDetailViewModel recipeKey: $recipeKey")
-                    Log.d("zxc", "RecipeDetailViewModel {recipe.value!!.key}: ${recipe.value!!.key}")
-                    Log.d("zxc", "RecipeDetailViewModel {recipe.value!!.desc}: ${recipe.value!!.desc}")
-                    Log.d("zxc", "RecipeDetailViewModel {recipe.value!!.userKey}: ${recipe.value!!.userKey}")
+                    profileImageUrl.value = it.profileImageUrl.orEmpty()
+                    userName.value = it.userName
+                    postDate.value = it.postDate
+                    desc.value = it.desc.orEmpty()
+                    rate.value = it.rate
+                    photoUrlList.value = it.photoUrlList.orEmpty()
                     Log.d("zxc", "RecipeDetailViewModel {recipe.value!!.userName}: ${recipe.value!!.userName}")
                     Log.d("zxc", "RecipeDetailViewModel {recipe.value!!.profileImageUrl}: ${recipe.value!!.profileImageUrl}")
                 }

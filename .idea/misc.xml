@@ -5,7 +5,7 @@
       <map>
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_chat.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_detail.xml" value="0.3411458333333333" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_profile.xml" value="0.3411458333333333" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_profile.xml" value="0.13858695652173914" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_recipe.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_login.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_main.xml" value="0.22" />
@@ -20,7 +20,7 @@
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/dialog_about_us.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/dialog_open_source_license.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/dialog_rating.xml" value="0.3411458333333333" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_account.xml" value="0.3411458333333333" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_account.xml" value="0.1" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_chat_list.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_dialog_rating.xml" value="0.1" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_loading.xml" value="0.3333333333333333" />
@@ -33,6 +33,7 @@
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_message_right.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_notice_list.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_recipe.xml" value="0.34010416666666665" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_recipe_detail_image_list.xml" value="0.17916666666666667" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_recipe_image_list.xml" value="0.1" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_recipe_list.xml" value="0.1" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/menu/menu_account_actionbar_option.xml" value="0.3411458333333333" />
