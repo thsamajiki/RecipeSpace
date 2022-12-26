@@ -48,7 +48,7 @@ class UserServiceImpl @Inject constructor(
 
                     val userData = documentSnapshot.toObject(UserData::class.java)
 
-                    continuation.resume(userData as UserData)
+                    continuation.resume(userData!!)
                 }
                 .addOnFailureListener(OnFailureListener {
                     continuation.resumeWithException(it)

@@ -1,7 +1,6 @@
 package com.hero.recipespace.view.post.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
@@ -24,7 +23,6 @@ sealed class PostRecipeUiState {
     object Idle : PostRecipeUiState()
 }
 
-
 @HiltViewModel
 class PostRecipeViewModel @Inject constructor(
     application: Application,
@@ -43,7 +41,7 @@ class PostRecipeViewModel @Inject constructor(
     val recipeImageList: LiveData<List<String>>
         get() = _recipeImageList
 
-    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData()
+    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData("0")
 
     val recipeContent: MutableLiveData<String> = MutableLiveData()
 
@@ -89,14 +87,18 @@ class PostRecipeViewModel @Inject constructor(
     fun addRecipePhotoList(photoPathList: List<String>) {
         _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
 
-//        for (i: Int in 0 .. photoPathList.size) {
-//            Log.d("zxc", "addRecipePhotoList: " + photoPathList[i])
-//            Log.d("zxc", "addRecipePhotoList: " + _recipeImageList.value!![i])
-//        }
+        updateSelectedImageCount()
+    }
 
+    fun deletePhoto(position: Int) {
+        _recipeImageList.value = _recipeImageList.value.orEmpty().toMutableList().apply {
+            removeAt(position)
+        }
 
-        recipeSelectedImageCount.value = {recipeImageList.value?.size ?: "0"}.toString()
-        Log.d("zxc", "addRecipePhotoList _recipeImageList.value.orEmpty() : " + _recipeImageList.value)
-        Log.d("zxc", "addRecipePhotoList recipeSelectedImageCount.value : " + recipeSelectedImageCount.value)
+        updateSelectedImageCount()
+    }
+
+    private fun updateSelectedImageCount() {
+        recipeSelectedImageCount.value = (recipeImageList.value?.size ?: "0").toString()
     }
 }

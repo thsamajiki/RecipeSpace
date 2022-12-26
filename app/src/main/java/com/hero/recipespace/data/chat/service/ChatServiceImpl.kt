@@ -23,7 +23,6 @@ class ChatServiceImpl @Inject constructor(
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         return suspendCoroutine { continuation ->
-
             db.collection("Chat")
                 .document(chatKey)
                 .get()
@@ -32,9 +31,13 @@ class ChatServiceImpl @Inject constructor(
                         return@addOnSuccessListener
                     }
 
-                    val chatData = documentSnapshot.data?.getValue(chatKey)
+                    val chatData: ChatData? = documentSnapshot.toObject(ChatData::class.java)
 
-                    continuation.resume(chatData as ChatData)
+                    if (chatData != null) {
+                        continuation.resume(chatData)
+                    } else {
+                        continuation.resumeWithException(Exception("ChatData is null"))
+                    }
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
@@ -42,7 +45,7 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String) : ChatData {
+    override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String): ChatData {
         return suspendCoroutine { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
             val userList: MutableList<String> = ArrayList()
@@ -51,8 +54,8 @@ class ChatServiceImpl @Inject constructor(
             userList.add(otherUserKey)
 
             db.collection("Chat")
-                .whereEqualTo("userList.$otherUserKey", true)
-                .whereEqualTo("userList.$myUserKey", true)
+                .whereEqualTo("userList+$otherUserKey", true)
+                .whereEqualTo("userList+$myUserKey", true)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents
@@ -69,7 +72,7 @@ class ChatServiceImpl @Inject constructor(
         return suspendCoroutine { continuation ->
             val fireStore = FirebaseFirestore.getInstance()
             fireStore.collection("Chat")
-                .whereEqualTo("userList.$userKey", true)
+                .whereEqualTo("userList+$userKey", true)
                 .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
                     if (e != null) {
                         return@EventListener
@@ -91,7 +94,7 @@ class ChatServiceImpl @Inject constructor(
     override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
         return callbackFlow {
             db.collection("Chat")
-                .whereEqualTo("userList.$userKey", true)
+                .whereEqualTo("userList+$userKey", true)
                 .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
                     if (e != null) {
                         return@EventListener
@@ -111,16 +114,18 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(otherUserKey: String,
-                             message: String) : ChatData {
+    override suspend fun add(
+        otherUserKey: String,
+        message: String
+    ): ChatData {
         return suspendCoroutine { continuation ->
             db.runTransaction(Transaction.Function<Any> { transaction ->
                 val myUserKey: String = firebaseAuth.uid.orEmpty()
                 val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
                 val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
 
-                val userRef = db.collection("User").document(
-                    otherUserKey)
+                val userRef = db.collection("User")
+                    .document(otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
                 transaction[userRef] = userData
@@ -178,11 +183,12 @@ class ChatServiceImpl @Inject constructor(
             userList.add(myUserKey)
             userList.add(otherUserKey)
             db.collection("Chat")
-                .whereEqualTo("userList.$otherUserKey", true)
-                .whereEqualTo("userList.$myUserKey", true)
+                .whereEqualTo("userList+$otherUserKey", true)
+                .whereEqualTo("userList+$myUserKey", true)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatData = queryDocumentSnapshots.documents.firstOrNull()?.toObject(ChatData::class.java)
+                    val chatData = queryDocumentSnapshots.documents.firstOrNull()
+                        ?.toObject(ChatData::class.java)
                     continuation.resume(chatData != null)
 
                 }

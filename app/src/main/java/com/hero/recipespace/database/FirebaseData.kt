@@ -239,7 +239,7 @@ class FirebaseData {
     fun getMessageList(
         chatDataKey: String?,
         onMessageListener: OnMessageListener
-    ): ListenerRegistration? {
+    ): ListenerRegistration {
         val firestore = FirebaseFirestore.getInstance()
         return firestore.collection("Chat")
             .document(chatDataKey!!)

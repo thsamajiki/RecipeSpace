@@ -80,6 +80,10 @@ class ChatViewModel @Inject constructor(
     val user: LiveData<UserEntity>
         get() = _user
 
+    val message: MutableLiveData<String> = MutableLiveData()
+    private val _messageList = MutableLiveData<List<MessageEntity>>()
+    val messageList: LiveData<List<MessageEntity>>
+        get() = _messageList
 
 
     // TODO: 2022-12-26 이전에 채팅한 적이 있으면 채팅방을 불러오기
@@ -92,12 +96,13 @@ class ChatViewModel @Inject constructor(
                 getChatRoom()
             }
 
-
-            observeMessageListUseCase(chatKey)
-                .flowOn(Dispatchers.Main)
-                .collect {
-                    _messageList.value = it
-                }
+            if (chatKey.isNotEmpty()) {
+                observeMessageListUseCase(chatKey)
+                    .flowOn(Dispatchers.Main)
+                    .collect {
+                        _messageList.value = it
+                    }
+            }
         }
 
         viewModelScope.launch {
@@ -111,7 +116,9 @@ class ChatViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            createNewChatRoomUseCase(otherUserKey, message.value.orEmpty())
+            if (otherUserKey.isNotEmpty()) {
+                createNewChatRoomUseCase(otherUserKey, message.value.orEmpty())
+            }
         }
     }
 
@@ -148,11 +155,6 @@ class ChatViewModel @Inject constructor(
                 }
         }
     }
-
-    val message: MutableLiveData<String> = MutableLiveData()
-    private val _messageList = MutableLiveData<List<MessageEntity>>()
-    val messageList: LiveData<List<MessageEntity>>
-        get() = _messageList
 
     // TODO: 2022-12-26 이전에 채팅한 적이 없는 경우에 DB에 저장된 채팅방을 생성하기
     fun sendMessage(message: String) {

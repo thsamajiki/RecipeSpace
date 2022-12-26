@@ -20,9 +20,14 @@ class EditRecipeImageListAdapter(
         return EditRecipeImageViewHolder(binding, onClick, onCancelClick)
     }
 
-    override fun onBindViewHolder(holder: EditRecipeImageListAdapter.EditRecipeImageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EditRecipeImageViewHolder, position: Int) {
         val image = recipeImageList[position]
-        holder.bind(position, image)
+        holder.bind(image)
+    }
+
+    fun getRecipeImageList(): List<String> {
+        // 방어적 복사
+        return recipeImageList.toList()
     }
 
     fun setRecipeImageList(images: List<String>) {
@@ -31,9 +36,10 @@ class EditRecipeImageListAdapter(
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, images: List<String>) {
-        recipeImageList.addAll(position, images)
-        notifyItemInserted(position)
+    fun addAll(images: List<String>) {
+        val oldSize = recipeImageList.size
+        recipeImageList.addAll(images)
+        notifyItemRangeInserted(oldSize, images.size)
     }
 
     fun replaceItem(image: String) {
@@ -42,9 +48,8 @@ class EditRecipeImageListAdapter(
         notifyItemChanged(index)
     }
 
-    fun delete(position: Int, images: List<String>) {
+    fun delete(position: Int) {
         recipeImageList.removeAt(position)
-        recipeImageList.addAll(images)
         notifyItemRemoved(position)
     }
 
@@ -58,14 +63,13 @@ class EditRecipeImageListAdapter(
         private val onCancelClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(position: Int, image: String) {
+        fun bind(image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
             }
 
             binding.ivRecipeImageCancel.setOnClickListener {
-                // TODO: 2022-12-13 X 버튼 클릭하면 이미지가 목록에서 삭제되도록 하기
-                onCancelClick(position)
+                onCancelClick(absoluteAdapterPosition)
             }
 
             binding.ivRecipeImage.setImageUrl(image)

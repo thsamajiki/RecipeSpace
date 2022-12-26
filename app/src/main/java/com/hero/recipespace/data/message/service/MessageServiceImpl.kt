@@ -2,13 +2,15 @@ package com.hero.recipespace.data.message.service
 
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.util.WLog
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor(
@@ -20,34 +22,38 @@ class MessageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getDataList(chatKey: String): List<MessageData> {
-        return suspendCoroutine { continuation ->
+    override suspend fun getDataList(chatKey: String): Flow<List<MessageData>> {
+        return callbackFlow {
             db.collection("Chat")
                 .document(chatKey)
                 .collection("Messages")
                 .orderBy("timestamp", Query.Direction.ASCENDING)
-                .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
+                .addSnapshotListener { queryDocumentSnapshots, e ->
                     if (e != null) {
-                        continuation.resumeWithException(e)
-                        return@EventListener
+                        throw e
                     }
                     if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
-                        continuation.resumeWithException(Exception("queryDocumentSnapshot is Null or Empty"))
-                        return@EventListener
+                        throw Exception("queryDocumentSnapshot is Null or Empty")
                     }
 
-                    val messageList = queryDocumentSnapshots.documentChanges.map {
-                        it.document.toObject(MessageData::class.java)
+                    val messageList = queryDocumentSnapshots.documentChanges.mapNotNull {
+                        it.document.toObject(MessageData::class.java).apply {
+                            messageId = it.document.id
+                        }
                     }
 
-                    continuation.resume(messageList)
-                })
+                    WLog.d("messageList $messageList")
+                    trySend(messageList)
+                }
+
+            awaitClose {
+
+            }
         }
     }
 
 
-
-    override suspend fun add(chatKey: String, message: String) : MessageData {
+    override suspend fun add(chatKey: String, message: String): MessageData {
         return suspendCoroutine<MessageData> { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
             val messageData = MessageData(myUserKey, message, Timestamp.now())
@@ -63,11 +69,11 @@ class MessageServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(chatKey: String, message: String) : MessageData {
+    override suspend fun update(chatKey: String, message: String): MessageData {
         TODO("Not yet implemented")
     }
 
-    override suspend fun remove(chatKey: String, message: String) : MessageData {
+    override suspend fun remove(chatKey: String, message: String): MessageData {
         TODO("Not yet implemented")
     }
 }

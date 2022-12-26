@@ -28,9 +28,9 @@ class RateServiceImpl @Inject constructor(
                     if (documentSnapShot == null) {
                         return@addOnSuccessListener
                     }
-                    val rateData = documentSnapShot.data?.getValue(rateKey)
+                    val rateData = documentSnapShot.toObject(RateData::class.java)
 
-                    continuation.resume(rateData as RateData)
+                    continuation.resume(rateData!!)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)

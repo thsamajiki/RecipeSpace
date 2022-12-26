@@ -42,9 +42,9 @@ class RecipeServiceImpl @Inject constructor(
                         return@addOnSuccessListener
                     }
 
-                    val recipeData = documentSnapshot.data?.getValue(recipeKey)
+                    val recipeData = documentSnapshot.toObject(RecipeData::class.java)
 
-                    continuation.resume(recipeData as RecipeData)
+                    continuation.resume(recipeData!!)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)

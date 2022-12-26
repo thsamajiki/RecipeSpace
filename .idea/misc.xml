@@ -6,14 +6,14 @@
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_chat.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_detail.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_profile.xml" value="0.13858695652173914" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_recipe.xml" value="0.3411458333333333" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_edit_recipe.xml" value="0.13858695652173914" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_login.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_notice_list.xml" value="0.3265625" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_photo.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_post.xml" value="0.3411458333333333" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_post_recipe.xml" value="0.3333333333333333" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_recipe_detail.xml" value="0.22" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_post_recipe.xml" value="0.22" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_recipe_detail.xml" value="0.21518987341772153" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_setting.xml" value="0.4024896265560166" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_sign_up.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/activity_splash.xml" value="0.34010416666666665" />
@@ -27,7 +27,7 @@
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_recipe.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/fragment_recipe_list.xml" value="0.1" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_chat_left.xml" value="0.3411458333333333" />
-        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_chat_list.xml" value="0.34010416666666665" />
+        <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_chat_list.xml" value="0.2888283378746594" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_chat_right.xml" value="0.34010416666666665" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_message_left.xml" value="0.3411458333333333" />
         <entry key="..\:/Users/Hoseop/AndroidStudioProjects/RecipeSpace/app/src/main/res/layout/item_message_right.xml" value="0.3411458333333333" />

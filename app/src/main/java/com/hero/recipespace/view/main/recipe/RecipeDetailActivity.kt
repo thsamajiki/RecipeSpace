@@ -141,12 +141,14 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             if (viewModel.recipe.value?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             } else {
-                val intent = ChatActivity.getIntent(this, recipe.userKey)
+                val intent = ChatActivity.getIntent(
+                    this,
+                    otherUserKey = recipe.userKey)
                 startActivity(intent)
             }
         }
 
-        binding.ratingBar.setOnClickListener {
+        binding.ratingContainer.setOnClickListener {
             val recipe = viewModel.recipe.value ?: return@setOnClickListener
             Log.d("qwer", "setupListeners: recipe : " + recipe.key)
             Toast.makeText(this, "ratingBar.setOnClickListener", Toast.LENGTH_SHORT).show()
@@ -190,6 +192,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             }
             true
         }
+
+        popupMenu.show()
     }
 
     private fun intentModifyRecipe() {

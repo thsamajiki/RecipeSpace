@@ -1,13 +1,12 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
+import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.domain.recipe.usecase.UpdateRecipeUseCase
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +27,7 @@ sealed class EditRecipeUiState {
 class EditRecipeViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
+    private val getRecipeUseCase: GetRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase
 ) : AndroidViewModel(application) {
 
@@ -37,15 +37,33 @@ class EditRecipeViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
+    private val _recipeImageList = MutableLiveData<List<String>>()
+    val recipeImageList: LiveData<List<String>>
+        get() = _recipeImageList
+
+    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData()
+
+    val recipeContent: MutableLiveData<String> = MutableLiveData()
+
 //    private val _recipe = MutableLiveData<RecipeEntity>()
 //    val recipe: LiveData<RecipeEntity>
 //        get() = _recipe
 
     companion object {
-        const val RECIPE_KEY = "key"
+        const val KEY_RECIPE_KEY = "key"
     }
 
-    val recipe: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_KEY)!!
+    init {
+        val recipeKey = savedStateHandle.get<String>(KEY_RECIPE_KEY).orEmpty()
+
+        viewModelScope.launch {
+            getRecipeUseCase(recipeKey)
+                .onSuccess { recipe ->
+
+                }
+                .onFailure(WLog::e)
+        }
+    }
 
     val newRecipeContent: MutableLiveData<String> = MutableLiveData()
 

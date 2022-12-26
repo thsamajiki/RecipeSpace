@@ -24,9 +24,9 @@ class NoticeServiceImpl @Inject constructor(
                     if (documentSnapShot == null) {
                         return@addOnSuccessListener
                     }
-                    val noticeData = documentSnapShot.data?.getValue(noticeKey)
+                    val noticeData = documentSnapShot.toObject(NoticeData::class.java)
 
-                    continuation.resume(noticeData as NoticeData)
+                    continuation.resume(noticeData!!)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)

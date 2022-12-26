@@ -3,12 +3,10 @@ package com.hero.recipespace.database.message
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.domain.chat.repository.ChatRepository
 import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
-import com.hero.recipespace.listener.OnMessageListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -29,22 +27,12 @@ class MessageRepositoryImpl @Inject constructor(
 
     override fun getMessageList(chatKey: String) : Flow<List<MessageEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
-            FirebaseData.getInstance()
-                .getMessageList(chatKey, object : OnMessageListener {
-                    override fun onMessage(isSuccess: Boolean, messageData: MessageData?) {
-                        if (messageData != null) {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                messageLocalDataSource.add(messageData)
-                                cancel()
-                            }
-                        }
+            messageRemoteDataSource.getDataList(chatKey)
+                .collect { messageList ->
+                    if (messageList.isNotEmpty()) {
+                        messageLocalDataSource.addAll(messageList)
                     }
-                })
-
-            val messageList = kotlin.runCatching { messageRemoteDataSource.getDataList(chatKey) }.getOrNull()
-            if (messageList != null) {
-                messageLocalDataSource.addAll(messageList)
-            }
+                }
             cancel()
         }
 

@@ -12,11 +12,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "message_db")
 data class MessageData(
-    @NonNull
-    @PrimaryKey
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,
-    var confirmed: Boolean? = null
+    var confirmed: Boolean? = null,
+    @NonNull
+    @PrimaryKey
+    var messageId: String = ""
 ) : Parcelable {
 }

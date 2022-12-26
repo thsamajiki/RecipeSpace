@@ -39,7 +39,7 @@ class ChatListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_list, container, false)
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         return binding.root
@@ -105,7 +105,7 @@ class ChatListFragment: Fragment() {
     }
 
     private fun showChatRoom(chat: ChatEntity) {
-        val intent = ChatActivity.getIntent(requireActivity(), chat.key)
+        val intent = ChatActivity.getIntent(requireActivity(), chatKey = chat.key)
         startActivity(intent)
     }
 

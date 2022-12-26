@@ -13,14 +13,14 @@ interface ChatDao {
     suspend fun getChatFromKey(key: String?): ChatData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertChat(chatData: ChatData)
+    suspend fun insertChat(chatData: ChatData)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(chatDataList: List<ChatData>)
 
     @Update
-    fun updateChat(chatData: ChatData)
+    suspend fun updateChat(chatData: ChatData)
 
     @Delete
-    fun deleteChat(chatData: ChatData)
+    suspend fun deleteChat(chatData: ChatData)
 }

@@ -47,7 +47,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private var photoPath: String? = null
 
-    private val openGalleryLauncher: ActivityResultLauncher<Intent> =
+    private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK && it.data != null) {
             if (it.data!!.clipData != null) {
@@ -74,11 +74,10 @@ class EditRecipeActivity : AppCompatActivity(),
     companion object {
         private const val PERMISSION_REQ_CODE = 1010
         const val EXTRA_RECIPE_ENTITY = "recipe"
-        private const val RECIPE_KEY = "recipeKey"
 
         fun getIntent(context: Context, recipeKey: String) =
             Intent(context, EditRecipeActivity::class.java)
-                .putExtra(RECIPE_KEY, recipeKey)
+                .putExtra(EditRecipeViewModel.KEY_RECIPE_KEY, recipeKey)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +140,10 @@ class EditRecipeActivity : AppCompatActivity(),
                     }
                 }
             }
+
+            recipeImageList.observe(this@EditRecipeActivity) {
+                editRecipeImageListAdapter.setRecipeImageList(it)
+            }
         }
     }
 
@@ -148,13 +151,18 @@ class EditRecipeActivity : AppCompatActivity(),
         binding.ivBack.setOnClickListener {
             finish()
         }
-        binding.tvComplete.setOnClickListener {
-            viewModel.updateRecipe(binding.editContent.text.toString(), recipePhotoPathList)
-        }
+
         binding.btnPhoto.setOnClickListener {
             if (checkStoragePermission()) {
-                intentGallery()
+                openGallery()
             }
+        }
+
+        binding.tvComplete.setOnClickListener {
+            viewModel.updateRecipe(
+                binding.editContent.text.toString(),
+                recipePhotoPathList
+            )
         }
     }
 
@@ -162,12 +170,12 @@ class EditRecipeActivity : AppCompatActivity(),
         binding.editContent.addTextChangedListener(this)
     }
 
-    private fun intentGallery() {
+    private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickIntent.action = Intent.ACTION_PICK
-        openGalleryLauncher.launch(pickIntent)
+        openGalleryResultLauncher.launch(pickIntent)
     }
 
     private fun checkStoragePermission(): Boolean {
@@ -192,7 +200,7 @@ class EditRecipeActivity : AppCompatActivity(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            intentGallery()
+            openGallery()
         }
     }
 
@@ -210,8 +218,7 @@ class EditRecipeActivity : AppCompatActivity(),
     }
 
     private fun deletePhoto(position: Int) {
-        // TODO: 2022-12-16 기존의 RecipeData 에 있는 이미지 목록(RecyclerView)에서 원하는 이미지를 제외하는 것 구현하기
-        editRecipeImageListAdapter.delete(position, recipePhotoPathList)
+        editRecipeImageListAdapter.delete(position)
     }
 
     object Result {
