@@ -51,13 +51,14 @@
                     android:layout_height="match_parent"
                     android:enabled="false"
                     android:paddingStart="20dp"
+                    android:paddingTop="15dp"
                     android:paddingEnd="20dp"
-                    android:text="@string/btn_finish"
+                    android:text="@string/tv_finish"
+                    android:textColor="@color/normal_gray"
                     android:textSize="@dimen/title_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-<!--                android:textColor="@selector/selector_complete_btn"-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -66,17 +67,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="120dp">
-
-            <!-- TODO 처음에는 AppCompatImageView 만 보이게 하고 갤러리에 가서 이미지들을 선택하면
-                RecyclerView 로 View 가 바뀌게 하려고 하는데 어떻게 해야 하나요? -->
-            <!-- activity_recipe_detail.xml 과 겹치는데 공유해도 되나요?
-                아니면 아이템을 별도로 만들어야 하나요?-->
-
-            <!--            <androidx.appcompat.widget.AppCompatImageView-->
-            <!--                android:id="@+id/iv_recipe_photo"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:scaleType="centerCrop" />-->
 
             <LinearLayout
                 android:id="@+id/btn_photo"
@@ -100,23 +90,36 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-                    android:text="@string/add_pictures_count_limit"
+                    android:text='@{viewModel.recipeImageList.size() + "/" + "10"}'
                     android:textColor="@color/dark_gray" />
 
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_recipe_images"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:editRecipeImageItems="@{viewModel.recipeImageList}"
                 tools:listitem="@layout/item_recipe_image_list" />
 
-<!--            app:editRecipeImageItems="@{viewModel.recipe.photoUrlList}"-->
+            <TextView
+                android:id="@+id/tv_touch_here_and_add_pictures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/touch_here_and_add_pictures"
+                android:textColor="@color/dark_gray"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,8 +137,9 @@
             android:gravity="top|start"
             android:hint="@string/please_input_recipe_desc"
             android:padding="20dp"
-            android:text="@={viewModel.newRecipeContent}"
+            android:text="@={viewModel.recipeContent}"
             android:textSize="@dimen/body_text_size" />
 
     </LinearLayout>
+
 </layout>

@@ -9,7 +9,8 @@ data class MessageEntity(
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,
-    var confirmed: Boolean? = null
+    var confirmed: Boolean? = null,
+    var messageId: String = ""
 ) : Parcelable {
 
 }

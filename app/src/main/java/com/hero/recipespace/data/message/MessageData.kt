@@ -16,6 +16,6 @@ data class MessageData(
     var timestamp: Timestamp? = null,
     var confirmed: Boolean? = null,
     @PrimaryKey
-    var messageId: String = "",
+    var messageId: String = ""
 ) : Parcelable {
 }

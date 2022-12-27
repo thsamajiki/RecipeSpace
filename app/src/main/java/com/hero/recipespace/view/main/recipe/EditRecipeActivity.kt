@@ -17,6 +17,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,7 +41,6 @@ class EditRecipeActivity : AppCompatActivity(),
     TextWatcher {
 
     private lateinit var binding: ActivityEditRecipeBinding
-    private val recipePhotoPathList: MutableList<String> = mutableListOf()
 
     private lateinit var editRecipeImageListAdapter: EditRecipeImageListAdapter
 
@@ -49,26 +50,49 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-            if (it.data!!.clipData != null) {
-                val count = it.data!!.clipData!!.itemCount
+            if (it.resultCode == Activity.RESULT_OK) {
 
-                for (index in 0 until count) {
-                    // 이미지 담기
-                    val photoPath = it.data!!.clipData!!.getItemAt(index).toString()
-                    // 이미지 추가
-                    recipePhotoPathList.add(photoPath)
+                val clipData = it?.data?.clipData
+                val clipDataSize = clipData?.itemCount
+
+                if (it.data == null) { // 어떤 이미지도 선택하지 않은 경우
+                    Toast.makeText(this, "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show()
+                } else { // 이미지를 하나라도 선택한 경우
+                    if (clipData == null) { //이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
+                        val photoPath = it?.data?.data!!
+
+                        viewModel.addRecipePhotoList(listOf(photoPath.toString()))
+                    } else {
+                        clipData.let { clip ->
+                            if (clipDataSize != null) {
+                                if (clipDataSize > 10) {
+                                    Toast.makeText(this, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                                        .show()
+                                } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
+
+                                    // 선택 한 사진수만큼 반복
+                                    val photoList = (0 until clipDataSize).map { index ->
+                                        val photoPath = clip.getItemAt(index).uri
+                                        photoPath.toString()
+                                    }
+
+                                    viewModel.addRecipePhotoList(photoList)
+                                }
+                            }
+                        }
+                    }
                 }
-            } else {
-                val photoPath = it.data!!.data.toString()
-                recipePhotoPathList.add(photoPath)
+
+                binding.rvRecipeImages.visibility = View.VISIBLE
+                binding.tvTouchHereAndAddPictures.isVisible = viewModel.recipeImageList.value?.size == 0
+
+                if (binding.editContent.text.toString().isNotEmpty() &&
+                    viewModel.recipeImageList.value?.isNotEmpty() == true
+                ) {
+                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                    binding.tvComplete.isEnabled = true
+                }
             }
-//            photoPath = RealPathUtil.getRealPath(this, it.data?.data!!)
-//            Glide.with(this).load(photoPath).into(binding.ivRecipePhoto)
-            if (binding.editContent.text.toString().isNotEmpty()) {
-                binding.tvComplete.isEnabled = true
-            }
-        }
     }
 
     companion object {
@@ -83,6 +107,9 @@ class EditRecipeActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_recipe)
+
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         setupView()
         addTextWatcher()
@@ -102,7 +129,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
         recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = editRecipeImageListAdapter
         }
     }
@@ -160,8 +187,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
         binding.tvComplete.setOnClickListener {
             viewModel.updateRecipe(
-                binding.editContent.text.toString(),
-                recipePhotoPathList
+                binding.editContent.text.toString()
             )
         }
     }
@@ -218,7 +244,7 @@ class EditRecipeActivity : AppCompatActivity(),
     }
 
     private fun deletePhoto(position: Int) {
-        editRecipeImageListAdapter.delete(position)
+        viewModel.deletePhoto(position)
     }
 
     object Result {

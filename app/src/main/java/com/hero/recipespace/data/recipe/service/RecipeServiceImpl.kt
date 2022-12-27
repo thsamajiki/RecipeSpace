@@ -1,11 +1,6 @@
 package com.hero.recipespace.data.recipe.service
 
-import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
-import android.text.TextUtils
-import android.util.Log
-import android.webkit.MimeTypeMap
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -13,13 +8,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.recipe.RecipeData
-import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.util.WLog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -104,13 +95,19 @@ class RecipeServiceImpl @Inject constructor(
         recipePhotoPathList: List<String>,
         progress: (Float) -> Unit
     ): List<String> {
+        val oldImageList = recipePhotoPathList.filter {
+            it.startsWith("https://") || it.startsWith("http://")
+        }
+
+        val pathList = recipePhotoPathList.filterNot {
+            it.startsWith("https://") || it.startsWith("http://")
+        }
+
         val imageFolderRef = firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
 
         return withContext(Dispatchers.IO) {
-            recipePhotoPathList.map { photoPath ->
-                val imageRef = imageFolderRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
-
-                Log.d("zzzzz", "uploadImages method photoPath : $photoPath") // photoPath 는 잘 출력됨
+            val newImageList = pathList.map { photoPath ->
+                val imageRef = imageFolderRef.child("${Uri.parse(photoPath).lastPathSegment}")
 
                 async {
                     kotlin.runCatching {
@@ -133,86 +130,34 @@ class RecipeServiceImpl @Inject constructor(
                 .mapNotNull {
                     it.getOrNull()
                 }
+
+            oldImageList + newImageList
         }
-
-//        return suspendCoroutine { continuation ->
-//
-//            val imageFolderRef =
-//                FirebaseStorage.getInstance().reference.child(DEFAULT_IMAGE_PATH)
-//
-//            val totalPhotoList: MutableList<String> = mutableListOf()
-//
-//            for (imageCount: Int in recipeImagePathList.indices) {
-//                val imagePath: String = recipeImagePathList[imageCount]
-//                val imageFileRef =
-//                    imageFolderRef.child(DEFAULT_IMAGE_PATH + Uri.parse(imagePath).lastPathSegment)
-//
-//                val uploadTask = imageFileRef.putFile(Uri.fromFile(File(imagePath)))
-//
-//                uploadTask
-//                    .addOnProgressListener { taskSnapshot ->
-//                        val percent =
-//                            taskSnapshot.bytesTransferred.toFloat() / taskSnapshot.totalByteCount.toFloat() * 100
-//                        progress(percent)
-//                    }
-//                    .continueWithTask { task ->
-//                        if (!task.isSuccessful) {
-//                            throw task.exception!!
-//                        }
-//
-//                        imageFolderRef.downloadUrl
-//                    }
-//                    .addOnSuccessListener { uri ->
-////                        val photoDbRef =
-////                            firebaseStorage.reference.child(recipePhotoPathList[imageCount])
-////                        val photoMap: HashMap<String, Any> = HashMap()
-////                        photoMap["photoUrl"] = uri
-////
-////                        photoRef.downloadUrl.addOnSuccessListener {
-////                            totalPhotoList.add(uri.toString())
-////
-////                            if (totalPhotoList.size == recipePhotoPathList.size) {
-////
-////                            }
-////                        }
-//                        Log.d("zxc", "uploadImages: " + recipeImagePathList.size)
-//                        continuation.resume(listOf(uri.toString()))
-//                    }
-//                    .addOnFailureListener {
-//                        continuation.resumeWithException(it)
-//                    }
-//            }
-//        }
-    }
-
-    //파일타입 가져오기
-    private fun getFileExtension(context: Context, uri: Uri): String? {
-        val cr: ContentResolver = context.contentResolver
-        val mime = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(cr.getType(uri))
     }
 
     override suspend fun update(
-        request: UpdateRecipeRequest,
+        key: String,
+        content: String,
+        photoUrlList: List<String>,
         onProgress: (Float) -> Unit
     ): RecipeData {
         val editData = HashMap<String, Any>()
 
         // FIXME: 2022-12-15 PhotoList 에 갱신된 데이터 넣는 것 수정하기
-        for (i: Int in 0 until request.recipePhotoPathList.orEmpty().size) {
-            if (!TextUtils.isEmpty(request.recipePhotoPathList.orEmpty()[i])) {
-                editData["photoUrlList"] = request.recipePhotoPathList
-            }
-        }
-
-        editData["desc"] = request.content
+        editData["desc"] = content
+        editData["photoUrlList"] = photoUrlList
 
         return suspendCoroutine<RecipeData> { continuation ->
-//            firebaseFirestore.collection("Recipe")
-//                .document(recipeData.key.orEmpty())
-//                .update(editData)
-//                .addOnSuccessListener { continuation.resume(recipeData) }
-//                .addOnFailureListener { continuation.resumeWithException(it) }
+            db.collection("Recipe")
+                .document(key)
+                .update(editData)
+                .addOnSuccessListener {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        continuation.resume(getRecipe(key))
+                        cancel()
+                    }
+                }
+                .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 

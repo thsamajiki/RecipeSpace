@@ -44,14 +44,11 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun addMessage(
         chatKey: String,
-        otherUserKey: String,
         message: String
     ) {
         if (chatKey.isNotEmpty()) { // 기존 채팅방이 있음.
             val result = messageRemoteDataSource.add(chatKey, message)
             messageLocalDataSource.add(result)
-        } else if (otherUserKey.isNotEmpty()) {
-            chatRepository.createNewChatRoom(otherUserKey, message)
         }
     }
 

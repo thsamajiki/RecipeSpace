@@ -194,8 +194,7 @@ class UserServiceImpl @Inject constructor(
             val photoPath: String = profileImageUrl
             val imageFile = Uri.parse(photoPath)
 
-//            val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + Uri.parse(photoPath).lastPathSegment)
-            val photoRef = storageRef.child(DEFAULT_IMAGE_PATH + "${imageFile.lastPathSegment}")
+            val photoRef = storageRef.child("${imageFile.lastPathSegment}")
 
             val uploadTask = photoRef.putFile(imageFile)
 

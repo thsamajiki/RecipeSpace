@@ -21,7 +21,7 @@ class ChatRepositoryImpl @Inject constructor(
     private val chatLocalDataSource: ChatLocalDataSource
 ) : ChatRepository {
 
-    override suspend fun getChat(chatKey: String) : ChatEntity {
+    override suspend fun getChat(chatKey: String): ChatEntity {
         return chatRemoteDataSource.getData(chatKey).toEntity()
     }
 
@@ -31,11 +31,11 @@ class ChatRepositoryImpl @Inject constructor(
 
     override fun observeChatList(
         userKey: String
-    ) : Flow<List<ChatEntity>> {
+    ): Flow<List<ChatEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
             chatRemoteDataSource.observeNewChat(userKey)
                 .collect { (type, chatData) ->
-                    when(type) {
+                    when (type) {
                         DocumentChange.Type.ADDED -> chatLocalDataSource.add(chatData)
                         DocumentChange.Type.MODIFIED -> chatLocalDataSource.update(chatData)
                         DocumentChange.Type.REMOVED -> chatLocalDataSource.remove(chatData)
@@ -62,12 +62,15 @@ class ChatRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun createNewChatRoom(otherUserKey: String,
-                                           message: String) {
-        if (!chatRemoteDataSource.checkExistChatData(otherUserKey)) {
+    override suspend fun createNewChatRoom(
+        otherUserKey: String,
+        message: String
+    ): ChatEntity {
+        return if (!chatRemoteDataSource.checkExistChatData(otherUserKey)) {
             val result = chatRemoteDataSource.createNewChatRoom(otherUserKey, message)
             chatLocalDataSource.add(result)
-        }
+            result.toEntity()
+        } else throw Exception("exist chat data")
     }
 
     override suspend fun modifyChat(

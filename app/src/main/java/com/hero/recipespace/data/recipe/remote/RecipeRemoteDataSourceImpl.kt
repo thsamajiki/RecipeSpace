@@ -69,7 +69,12 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
         onProgress: (Float) -> Unit
     ): RecipeData {
 
-        return recipeService.update(request, onProgress)
+        val downloadUrls = recipeService.uploadImages(
+            request.recipePhotoPathList,
+            progress = onProgress
+        )
+
+        return recipeService.update(request.key, request.content, downloadUrls, onProgress)
     }
 
     override suspend fun remove(

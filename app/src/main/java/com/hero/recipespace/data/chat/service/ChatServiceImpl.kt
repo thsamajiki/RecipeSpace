@@ -48,14 +48,15 @@ class ChatServiceImpl @Inject constructor(
     override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String): ChatData {
         return suspendCoroutine { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
-            val userList: MutableList<String> = ArrayList()
+            val userList: MutableMap<String, Boolean> = mutableMapOf()
 
-            userList.add(myUserKey)
-            userList.add(otherUserKey)
+            userList[myUserKey] = true
+            userList[otherUserKey] = true
 
             db.collection("Chat")
-                .whereEqualTo("userList+$otherUserKey", true)
-                .whereEqualTo("userList+$myUserKey", true)
+                .whereArrayContains("userList", userList.toList())
+//                .whereEqualTo("userList+$otherUserKey", true)
+//                .whereEqualTo("userList+$myUserKey", true)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents

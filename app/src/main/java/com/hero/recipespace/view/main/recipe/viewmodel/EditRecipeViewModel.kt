@@ -41,13 +41,12 @@ class EditRecipeViewModel @Inject constructor(
     val recipeImageList: LiveData<List<String>>
         get() = _recipeImageList
 
-    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData()
-
+    val oldRecipeImageList: MutableLiveData<List<String>> = MutableLiveData()
     val recipeContent: MutableLiveData<String> = MutableLiveData()
 
-//    private val _recipe = MutableLiveData<RecipeEntity>()
-//    val recipe: LiveData<RecipeEntity>
-//        get() = _recipe
+    private val _recipe = MutableLiveData<RecipeEntity>()
+    val recipe: LiveData<RecipeEntity>
+        get() = _recipe
 
     companion object {
         const val KEY_RECIPE_KEY = "key"
@@ -58,24 +57,30 @@ class EditRecipeViewModel @Inject constructor(
 
         viewModelScope.launch {
             getRecipeUseCase(recipeKey)
-                .onSuccess { recipe ->
+                .onSuccess {
+                    _recipe.value = it
+                    oldRecipeImageList.value = it.photoUrlList.orEmpty()
+                    recipeContent.value = it.desc.orEmpty()
 
+                    addRecipePhotoList(it.photoUrlList.orEmpty())
                 }
                 .onFailure(WLog::e)
         }
     }
 
-    val newRecipeContent: MutableLiveData<String> = MutableLiveData()
-
-    fun updateRecipe(
-        content: String,
-        recipePhotoPathList: List<String>
-    ) {
+    fun updateRecipe(content: String) {
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
+            val key = recipe.value?.key ?: return@launch
+            val recipePhotoPathList = _recipeImageList.value.orEmpty()
+
             updateRecipeUseCase(
-                UpdateRecipeRequest(content, recipePhotoPathList),
+                UpdateRecipeRequest(
+                    key,
+                    content,
+                    recipePhotoPathList
+                ),
                 onProgress = { progress ->
                     _loadingState.value = LoadingState.Progress(progress.toInt())
                 }
@@ -90,6 +95,18 @@ class EditRecipeViewModel @Inject constructor(
                     it.printStackTrace()
                 }
         }
+    }
+
+    fun addRecipePhotoList(photoPathList: List<String>) {
+        _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
+    }
+
+    fun deletePhoto(position: Int) {
+        _recipeImageList.value = _recipeImageList.value.orEmpty()
+            .toMutableList()
+            .apply {
+                removeAt(position)
+            }
     }
 
     override fun onCleared() {

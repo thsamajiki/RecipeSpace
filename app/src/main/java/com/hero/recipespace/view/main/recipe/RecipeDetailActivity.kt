@@ -40,7 +40,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             if (it.resultCode == Activity.RESULT_OK) {
                 val recipe: RecipeEntity? = it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
                 if (recipe != null) {
-                    recipeDetailAdapter.add(recipe.photoUrlList.orEmpty())
+                    recipeDetailAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
                     binding.rvRecipeImages.smoothScrollToPosition(0)
                     binding.tvRecipeDesc.text = recipe.desc
                 }
@@ -100,7 +100,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = recipeDetailAdapter
         }
     }

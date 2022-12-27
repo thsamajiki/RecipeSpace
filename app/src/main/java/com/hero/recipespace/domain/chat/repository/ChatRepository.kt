@@ -10,7 +10,7 @@ interface ChatRepository {
 
     fun observeChatList(userKey: String) : Flow<List<ChatEntity>>
 
-    suspend fun createNewChatRoom(otherUserKey: String, message: String)
+    suspend fun createNewChatRoom(otherUserKey: String, message: String): ChatEntity
 
     suspend fun modifyChat(chatEntity: ChatEntity)
 

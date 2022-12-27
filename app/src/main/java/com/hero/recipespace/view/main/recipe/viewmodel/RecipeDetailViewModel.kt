@@ -85,17 +85,17 @@ class RecipeDetailViewModel @Inject constructor(
                     Log.e("RecipeDetailViewModel", "$it ")
                 }
         }
-
-        viewModelScope.launch {
-            getRecipeUseCase(recipeKey)
-                .onSuccess {
-                    _recipeDetailUiState.value = RecipeDetailUIState.Success(it)
-                }
-                .onFailure {
-                    _recipeDetailUiState.value = RecipeDetailUIState.Failed(it.message.orEmpty())
-                    it.printStackTrace()
-                }
-        }
+//
+//        viewModelScope.launch {
+//            getRecipeUseCase(recipeKey)
+//                .onSuccess {
+//                    _recipeDetailUiState.value = RecipeDetailUIState.Success(it)
+//                }
+//                .onFailure {
+//                    _recipeDetailUiState.value = RecipeDetailUIState.Failed(it.message.orEmpty())
+//                    it.printStackTrace()
+//                }
+//        }
     }
 
     fun openRate() {

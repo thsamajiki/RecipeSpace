@@ -69,14 +69,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="120dp">
-            <!-- activity_recipe_detail.xml 과 겹치는데 공유해도 되나요?
-                아니면 아이템을 별도로 만들어야 하나요?-->
-
-            <!--            <androidx.appcompat.widget.AppCompatImageView-->
-            <!--                android:id="@+id/iv_recipe_photo"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent"-->
-            <!--                android:scaleType="centerCrop" />-->
 
             <LinearLayout
                 android:id="@+id/btn_photo"
@@ -100,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-                    android:text='@{viewModel.recipeSelectedImageCount + "/" + "10"}'
+                    android:text='@{viewModel.recipeImageList.size() + "/" + "10"}'
                     android:textColor="@color/dark_gray" />
 
             </LinearLayout>

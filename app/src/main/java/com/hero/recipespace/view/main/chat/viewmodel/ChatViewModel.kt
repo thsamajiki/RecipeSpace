@@ -1,7 +1,6 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
@@ -73,9 +72,6 @@ class ChatViewModel @Inject constructor(
     val otherUserName: LiveData<String>
         get() = _otherUserName
 
-    val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
-    val otherUserKey: String = savedStateHandle.get<String>(EXTRA_OTHER_USER_KEY).orEmpty()
-
     private val _user: MutableLiveData<UserEntity> = MutableLiveData()
     val user: LiveData<UserEntity>
         get() = _user
@@ -89,77 +85,59 @@ class ChatViewModel @Inject constructor(
     // TODO: 2022-12-26 이전에 채팅한 적이 있으면 채팅방을 불러오기
     // TODO: 2022-12-26 이전에 채팅한 적이 없으면 우측 하단의 메시지 전송 버튼을 눌렀을 때 채팅방을 생성하기
     init {
-        viewModelScope.launch {
-            if (checkNewChatRoom(otherUserKey)) {
-                sendMessage(message.value.orEmpty())
-            } else {
-                getChatRoom()
-            }
+        val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
+        val otherUserKey: String = savedStateHandle.get<String>(EXTRA_OTHER_USER_KEY).orEmpty()
 
-            if (chatKey.isNotEmpty()) {
-                observeMessageListUseCase(chatKey)
-                    .flowOn(Dispatchers.Main)
-                    .collect {
-                        _messageList.value = it
-                    }
-            }
-        }
+        WLog.d("otherUserKey $otherUserKey chatKey $chatKey")
 
         viewModelScope.launch {
-            getChatUseCase(chatKey)
-                .onSuccess {
-                    _chatUiState.value = ChatUIState.Success(it)
-                }
-                .onFailure {
-                    _chatUiState.value = ChatUIState.Failed(it.message.orEmpty())
-                }
-        }
+            val chatEntity: ChatEntity = getChatRoom(chatKey, otherUserKey)
+                ?: createNewChatRoomUseCase(otherUserKey, message.value.orEmpty())
 
-        viewModelScope.launch {
-            if (otherUserKey.isNotEmpty()) {
-                createNewChatRoomUseCase(otherUserKey, message.value.orEmpty())
-            }
+            observeMessage(chatEntity.key)
+            _chat.value = chatEntity
         }
     }
 
-    // TODO: 2022-12-26 이전에 채팅한 적이 있는지 없는지 확인하기
-    private fun checkNewChatRoom(otherUserKey: String): Boolean {
-        if (otherUserKey.isEmpty()) {
-            return true
-        }
-
-        return false
+    private suspend fun observeMessage(chatKey: String) {
+        observeMessageListUseCase(chatKey)
+            .flowOn(Dispatchers.Main)
+            .collect {
+                _messageList.value = it
+            }
     }
 
-    // TODO: 2022-12-26 이전에 채팅한 적이 있는 경우에 이미 DB에 저장된 채팅방을 불러오기
-    private suspend fun getChatRoom() {
+    private suspend fun getChatRoom(chatKey: String, otherUserKey: String): ChatEntity? {
         // chatKey 만 들어올 수도 있고,
         // otherUserKey 만 들어올 수도 있음.
 
-        if (chatKey.isNotEmpty()) {
+        return if (chatKey.isNotEmpty()) {
             getChatUseCase(chatKey)
-                .onSuccess {
-                    _chat.value = it
-                }
                 .onFailure {
                     it.printStackTrace()
-                    Log.e("ChatViewModel", ": $it")
+                    WLog.e(it)
                 }
+                .getOrNull()
         } else if (otherUserKey.isNotEmpty()) {
             getChatByUserKeyUseCase(otherUserKey)
-                .onSuccess {
-                    _chat.value = it
-                }.onFailure {
+                .onFailure {
                     it.printStackTrace()
-                    Log.e("ChatViewModel", ": $it")
+                    WLog.e(it)
                 }
-        }
+                .getOrNull()
+        } else null
     }
 
     // TODO: 2022-12-26 이전에 채팅한 적이 없는 경우에 DB에 저장된 채팅방을 생성하기
+    // TODO: 2022-12-26 메시지 내용을 입력하지 않고 그냥 '보내기' 버튼을 누르면 Toast 메시지 띄우고 메시지를 보내지 않도록 하기
     fun sendMessage(message: String) {
         viewModelScope.launch {
-            sendMessageUseCase.invoke(chatKey, otherUserKey, message)
+            if (message != "") {
+                val chatKey = chat.value?.key ?: return@launch
+                sendMessageUseCase(chatKey, message)
+            } else {
+                return@launch
+            }
         }
     }
 

@@ -41,8 +41,6 @@ class PostRecipeViewModel @Inject constructor(
     val recipeImageList: LiveData<List<String>>
         get() = _recipeImageList
 
-    val recipeSelectedImageCount: MutableLiveData<String> = MutableLiveData("0")
-
     val recipeContent: MutableLiveData<String> = MutableLiveData()
 
     private val _user: MutableLiveData<UserEntity> = MutableLiveData()
@@ -86,7 +84,6 @@ class PostRecipeViewModel @Inject constructor(
 
     fun addRecipePhotoList(photoPathList: List<String>) {
         _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
-        updateSelectedImageCount()
     }
 
     fun deletePhoto(position: Int) {
@@ -95,10 +92,5 @@ class PostRecipeViewModel @Inject constructor(
             .apply {
                 removeAt(position)
             }
-        updateSelectedImageCount()
-    }
-
-    private fun updateSelectedImageCount() {
-        recipeSelectedImageCount.value = (recipeImageList.value?.size ?: "0").toString()
     }
 }

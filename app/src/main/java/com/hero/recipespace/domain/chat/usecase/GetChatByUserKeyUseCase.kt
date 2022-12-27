@@ -9,6 +9,6 @@ class GetChatByUserKeyUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(chatKey: String) : Result<ChatEntity> =
         kotlin.runCatching {
-            chatRepository.getChat(chatKey)
+            chatRepository.getChatByUserKeys(chatKey)
         }
 }
