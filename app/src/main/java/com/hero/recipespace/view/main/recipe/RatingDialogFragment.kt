@@ -118,7 +118,6 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
             return
         }
         val rate: RateEntity = makeRateData(rating)
-        // TODO: 2022-12-20 RateServiceImpl 의 add 메소드로 옮김
 //        FirebaseData.getInstance()
 //            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
 //                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
@@ -148,10 +147,8 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
 
         return RateEntity(
-            key = "",
+            key = "",   // RateServiceImpl 에서 document.id를 넣어주면 된다고 생각해서 "" 을 대입함
             userKey = userKey,
-            userName = userName,
-            profileImageUrl = profileImageUrl,
             rate = rate,
             date = Timestamp.now()
         )

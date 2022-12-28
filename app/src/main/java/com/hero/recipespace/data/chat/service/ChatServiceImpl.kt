@@ -54,16 +54,17 @@ class ChatServiceImpl @Inject constructor(
             userList[otherUserKey] = true
 
             db.collection("Chat")
-                .whereArrayContains("userList", userList.toList())
-//                .whereEqualTo("userList+$otherUserKey", true)
-//                .whereEqualTo("userList+$myUserKey", true)
+                .whereEqualTo("userList", hashMapOf("myUserKey" to true))
+                .whereEqualTo("userList", hashMapOf("otherUserKey" to true))
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatData = queryDocumentSnapshots.documents
-                        .firstOrNull()
-                        ?.toObject(ChatData::class.java)
+                    val chatData = queryDocumentSnapshots.documents.mapNotNull {
+                        it.toObject(ChatData::class.java)
+                    }
+//                        .firstOrNull()
+//                        ?.toObject(ChatData::class.java)
 
-                    continuation.resume(requireNotNull(chatData))
+                    continuation.resume(chatData.first())
                 }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }

@@ -7,8 +7,6 @@ fun RateData.toEntity(): RateEntity {
     return RateEntity(
         key = key,
         userKey = userKey,
-        userName = userName,
-        profileImageUrl = profileImageUrl,
         rate = rate,
         date = date
     )
@@ -18,8 +16,6 @@ fun RateEntity.toData(): RateData {
     return RateData(
         key = key,
         userKey = userKey,
-        userName = userName,
-        profileImageUrl = profileImageUrl,
         rate = rate ?: 0f,
         date = date
     )

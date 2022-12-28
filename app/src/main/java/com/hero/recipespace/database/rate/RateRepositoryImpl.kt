@@ -3,11 +3,10 @@ package com.hero.recipespace.database.rate
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.local.RateLocalDataSource
 import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
-import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.domain.rate.entity.RateEntity
-import com.hero.recipespace.domain.rate.mapper.toData
 import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
+import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toData
@@ -54,15 +53,15 @@ class RateRepositoryImpl @Inject constructor(
 //        rateLocalDataSource.add(result)
 //    }
 
-    override suspend fun addRate(rateEntity: RateEntity, recipeEntity: RecipeEntity): RateEntity {
-        val result = rateRemoteDataSource.add(rateEntity.toData(), recipeEntity.toData())
+    override suspend fun addRate(request: AddRateRequest, recipeEntity: RecipeEntity): RateEntity {
+        val result = rateRemoteDataSource.add(request, recipeEntity.toData())
         rateLocalDataSource.add(result)
 
         return result.toEntity()
     }
 
-    override suspend fun modifyRate(request: UpdateRateRequest, rateData: RateData, recipeData: RecipeData): RateEntity {
-        val result = rateRemoteDataSource.update(request, rateData, recipeData)
+    override suspend fun modifyRate(request: UpdateRateRequest, recipeEntity: RecipeEntity): RateEntity {
+        val result = rateRemoteDataSource.update(request, recipeEntity.toData())
         rateLocalDataSource.update(result)
 
         return result.toEntity()

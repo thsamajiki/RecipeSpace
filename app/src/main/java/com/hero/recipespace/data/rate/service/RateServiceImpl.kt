@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -28,6 +29,7 @@ class RateServiceImpl @Inject constructor(
                     if (documentSnapShot == null) {
                         return@addOnSuccessListener
                     }
+
                     val rateData = documentSnapShot.toObject(RateData::class.java)
 
                     continuation.resume(rateData!!)
@@ -100,26 +102,33 @@ class RateServiceImpl @Inject constructor(
 //        }
 //    }
 
-    override suspend fun add(rateData: RateData, recipeData: RecipeData): RateData {
+    override suspend fun add(request: AddRateRequest, recipeData: RecipeData): RateData {
         return suspendCoroutine<RateData> { continuation ->
             db.runTransaction(Transaction.Function<Any?> { transaction ->
                 val recipeRef = db.collection("Recipe").document(recipeData.key)
-                val rateRef = recipeRef.collection("RateList").document(rateData.userKey)
-                val rateSnapShot = transaction[rateRef]
+                val rateRef = recipeRef.collection("RateList").document(request.userKey)
+                val rateSnapshot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount ?: 0
                 val originRate: Float = recipeData.rate ?: 0f
                 var originSum = originTotalCount * originRate
                 var newTotalCount = originTotalCount + 1
 
-                if (rateSnapShot.exists()) {
-                    val myOriginRateData: RateData ?= rateSnapShot.toObject(RateData::class.java)
+                if (rateSnapshot.exists()) {
+                    val myOriginRateData: RateData ?= rateSnapshot.toObject(RateData::class.java)
                     val myOriginRate: Float = myOriginRateData?.rate!!.toFloat()
                     originSum -= myOriginRate
                     newTotalCount--
                 }
 
-                val userRate: Float = rateData.rate
+                val userRate: Float = request.rate
                 val newRate = (originSum + userRate) / newTotalCount
+
+                val rateData = RateData(
+                    key = recipeRef.collection("RateList").document(request.userKey).id,
+                    userKey = request.userKey,
+                    rate = request.rate,
+                    date = Timestamp.now()
+                )
 
                 val newRecipeData = RecipeData(
                     key = recipeData.key,
@@ -143,12 +152,12 @@ class RateServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(request: UpdateRateRequest, rateData: RateData, recipeData: RecipeData) : RateData {
+    override suspend fun update(request: UpdateRateRequest, recipeData: RecipeData) : RateData {
         return suspendCoroutine<RateData> { continuation ->
             db.runTransaction(Transaction.Function<Any?> { transaction ->
 
-                val recipeRef = db.collection("Recipe").document(recipeData.key.orEmpty())
-                val rateRef = recipeRef.collection("RateList").document(rateData.userKey.orEmpty())
+                val recipeRef = db.collection("Recipe").document(recipeData.key)
+                val rateRef = recipeRef.collection("RateList").document(request.userKey)
                 val rateSnapShot = transaction[rateRef]
                 val originTotalCount: Int = recipeData.totalRatingCount ?: 0
                 val originRate: Float = recipeData.rate ?: 0f
@@ -172,10 +181,8 @@ class RateServiceImpl @Inject constructor(
                 transaction.update(recipeRef, editRecipeData)
 
                 val newRateData = RateData(
-                    key = rateData.key,
-                    userKey = rateData.userKey,
-                    userName = rateData.userName,
-                    profileImageUrl = rateData.profileImageUrl,
+                    key = request.key,
+                    userKey = request.userKey,
                     rate = newRate,
                     date = Timestamp.now()
                 )

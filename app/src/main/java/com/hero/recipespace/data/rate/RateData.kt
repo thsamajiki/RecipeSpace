@@ -19,10 +19,6 @@ data class RateData(
     var key: String = "",
     @ColumnInfo(name = "userKey")
     var userKey: String = "",
-    @ColumnInfo(name = "userName")
-    var userName: String? = null,
-    @ColumnInfo(name = "profileImageUrl")
-    var profileImageUrl: String? = null,
     @ColumnInfo(name = "rate")
     var rate: Float = 0f,
     @ColumnInfo(name = "date")

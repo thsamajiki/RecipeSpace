@@ -1,15 +1,16 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.google.firebase.Timestamp
 import com.hero.recipespace.domain.rate.entity.RateEntity
+import com.hero.recipespace.domain.rate.request.AddRateRequest
+import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
 import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,14 +30,16 @@ sealed class RateRecipeUiState {
 @HiltViewModel
 class RatingDialogViewModel @Inject constructor(
     application: Application,
+    savedStateHandle: SavedStateHandle,
     private val getRateUseCase: GetRateUseCase,
     private val addRateUseCase: AddRateUseCase,
-    private val updateRateUseCase: UpdateRateUseCase
+    private val updateRateUseCase: UpdateRateUseCase,
+    private val getRecipeUseCase: GetRecipeUseCase
 ) : AndroidViewModel(application) {
 
     companion object {
-        const val RECIPE_KEY = "recipeKey"
-        const val RATE_KEY = "rateKey"
+        const val RECIPE_KEY = "key"
+        const val RATE_KEY = "key"
     }
 
     private val _rateRecipeUiState = MutableStateFlow<RateRecipeUiState>(RateRecipeUiState.Idle)
@@ -49,11 +52,33 @@ class RatingDialogViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
-    val currentRate = MutableLiveData<Float>()
+    var userKey: MutableLiveData<String> = MutableLiveData()
+    val currentRate: MutableLiveData<Float> = MutableLiveData()
+    val date: MutableLiveData<Timestamp> = MutableLiveData()
 
     private val _rate = MutableLiveData<RateEntity>()
     val rate : LiveData<RateEntity>
         get() = _rate
+
+    val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
+
+    init {
+        getRate()
+    }
+
+    private fun getRate() {
+        viewModelScope.launch {
+            getRateUseCase.invoke(rate.value!!.key)
+                .onSuccess {
+                    userKey.value = it.userKey
+                    currentRate.value = it.rate!!
+                    date.value = it.date!!
+                }
+                .onFailure {
+                    it.printStackTrace()
+                }
+        }
+    }
 
     // TODO: 2022-12-18 사용자가 처음으로 Rate 를 add 함
     fun requestAddRateData() {
@@ -61,7 +86,7 @@ class RatingDialogViewModel @Inject constructor(
 
         viewModelScope.launch {
             val requestRateEntity = rate.value?.copy(rate = currentRate.value)
-            addRateUseCase.invoke(requestRateEntity!!, _recipe.value!!)
+            addRateUseCase.invoke(AddRateRequest(userKey.value!!, rate.value!!.rate!!), _recipe.value!!)
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
                     _rateRecipeUiState.value = RateRecipeUiState.Success(it)
@@ -76,22 +101,39 @@ class RatingDialogViewModel @Inject constructor(
         }
     }
 
+    fun getRecipeData() {
+        viewModelScope.launch {
+            getRecipeUseCase.invoke(recipeKey)
+        }
+    }
+
     // TODO: 2022-12-18 사용자가 Rate 를 update 함
     fun requestUpdateRateData() {
         _loadingState.value = LoadingState.Loading
 
-//        viewModelScope.launch {
-//            updateRateUseCase.invoke(_rate.value!!, _recipe.value!!)
-//                .onSuccess {
-//                    _loadingState.value = LoadingState.Hidden
-//                    _rateRecipeUiState.value = RateRecipeUiState.Success(it)
-//                }
-//                .onFailure {
-//                    _loadingState.value = LoadingState.Hidden
-//                    _rateRecipeUiState.value = RateRecipeUiState.Failed(it.message.orEmpty())
-//                    it.printStackTrace()
-//                }
-//        }
+        viewModelScope.launch {
+            val key = rate.value?.key ?: return@launch
+            val userKey = rate.value?.userKey ?: return@launch
+            val newRate: MutableLiveData<Float> = MutableLiveData()
+
+            updateRateUseCase.invoke(
+                UpdateRateRequest(
+                    key,
+                    userKey,
+                    newRate.value!!
+                ),
+                recipe.value!!
+            )
+                .onSuccess {
+                    _loadingState.value = LoadingState.Hidden
+                    _rateRecipeUiState.value = RateRecipeUiState.Success(it)
+                }
+                .onFailure {
+                    _loadingState.value = LoadingState.Hidden
+                    _rateRecipeUiState.value = RateRecipeUiState.Failed(it.message.orEmpty())
+                    it.printStackTrace()
+                }
+        }
     }
 
     override fun onCleared() {

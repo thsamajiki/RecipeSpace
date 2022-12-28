@@ -3,6 +3,7 @@ package com.hero.recipespace.data.rate.remote
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.rate.service.RateService
 import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import javax.inject.Inject
 
@@ -25,12 +26,12 @@ class RateRemoteDataSourceImpl @Inject constructor(
 //        return rateService.add(rate, recipeKey)
 //    }
 
-    override suspend fun add(rateData: RateData, recipeData: RecipeData): RateData {
-        return rateService.add(rateData, recipeData)
+    override suspend fun add(request: AddRateRequest, recipeData: RecipeData): RateData {
+        return rateService.add(request, recipeData)
     }
 
-    override suspend fun update(request: UpdateRateRequest, rateData: RateData, recipeData: RecipeData) : RateData  {
-        return rateService.update(request, rateData, recipeData)
+    override suspend fun update(request: UpdateRateRequest, recipeData: RecipeData) : RateData  {
+        return rateService.update(request, recipeData)
     }
 
     override suspend fun remove(rateKey: String) : RateData {

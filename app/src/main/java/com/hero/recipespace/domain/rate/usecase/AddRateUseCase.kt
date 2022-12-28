@@ -2,6 +2,7 @@ package com.hero.recipespace.domain.rate.usecase
 
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
+import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import javax.inject.Inject
 
@@ -12,8 +13,8 @@ class AddRateUseCase @Inject constructor(
 //    suspend operator fun invoke(rate: Float, recipeKey: String) =
 //        rateRepository.addRate(rate, recipeKey)
 
-    suspend operator fun invoke(rateEntity: RateEntity, recipeEntity: RecipeEntity) : Result<RateEntity> =
+    suspend operator fun invoke(request: AddRateRequest, recipeEntity: RecipeEntity) : Result<RateEntity> =
         kotlin.runCatching {
-            rateRepository.addRate(rateEntity, recipeEntity)
+            rateRepository.addRate(request, recipeEntity)
         }
 }
