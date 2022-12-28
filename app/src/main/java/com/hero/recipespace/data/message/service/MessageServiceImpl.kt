@@ -56,7 +56,12 @@ class MessageServiceImpl @Inject constructor(
     override suspend fun add(chatKey: String, message: String): MessageData {
         return suspendCoroutine<MessageData> { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
-            val messageData = MessageData(myUserKey, message, Timestamp.now())
+            val messageData = MessageData(
+                chatKey = chatKey,
+                userKey = myUserKey,
+                message = message,
+                timestamp = Timestamp.now()
+            )
 
             db.runTransaction<Any> { transaction ->
                 val chatRef = db.collection("Chat").document(chatKey)

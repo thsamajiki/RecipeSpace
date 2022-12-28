@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "message_db")
 data class MessageData(
+    var chatKey: String = "",
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,

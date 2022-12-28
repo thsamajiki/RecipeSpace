@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface MessageLocalDataSource {
     suspend fun getData(messageKey: String) : MessageData
 
-    fun observeDataList(userKey: String) : Flow<List<MessageData>>
+    fun observeDataList(chatKey: String) : Flow<List<MessageData>>
 
     fun clear()
 

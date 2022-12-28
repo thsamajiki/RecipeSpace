@@ -68,18 +68,12 @@ class ChatViewModel @Inject constructor(
     private val _otherUserName = MediatorLiveData<String>().apply {
         value = otherUserInfo?.name.orEmpty()
 
-        addSource(chat) {
+        addSource(chat) { chatEntity ->
             viewModelScope.launch {
-                val myKey = getLoggedUserUseCase().getOrNull()?.key
+                val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
+                val otherUserName = getOtherUserName(chatEntity, myKey)
 
-                val otherUserName = it.userNames?.toList()
-                    ?.filterNot {
-                        it.first == myKey
-                    }
-                    ?.firstOrNull()
-                    ?.second
-
-                if (!otherUserName.isNullOrEmpty()) {
+                if (otherUserName.isNotEmpty()) {
                     value = otherUserName
                 }
             }
@@ -168,9 +162,27 @@ class ChatViewModel @Inject constructor(
     }
 
     private suspend fun activateChatRoom(chatEntity: ChatEntity) {
-        _chat.value = chatEntity
-        observeMessage(chatEntity.key)
+        viewModelScope.launch {
+            val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
+            _chat.value = chatEntity.copy(
+                displayOtherUserName = {
+                    getOtherUserName(chatEntity, myKey).apply {
+                        WLog.d("getOtherUserName $this")
+                    }
+                }
+            )
+            observeMessage(chatEntity.key)
+        }
     }
+
+    private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
+        chatEntity.userNames?.toList()
+            ?.filterNot {
+                it.first == myKey
+            }
+            ?.firstOrNull()
+            ?.second
+            .orEmpty()
 
     override fun onCleared() {
         super.onCleared()

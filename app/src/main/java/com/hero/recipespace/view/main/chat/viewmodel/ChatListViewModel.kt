@@ -11,6 +11,7 @@ import com.hero.recipespace.domain.user.usecase.GetUserUseCase
 import com.hero.recipespace.util.WLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,6 +41,13 @@ class ChatListViewModel @Inject constructor(
     val userKey = FirebaseAuth.getInstance().currentUser?.uid
     val chatList: LiveData<List<ChatEntity>> =
         observeChatListUseCase(userKey!!)
+            .map { it ->
+                it.map { chat ->
+                    chat.copy(displayOtherUserName = {
+                        getOtherUserName(chat, userKey)
+                    })
+                }
+            }
             .catch { exception ->
                 WLog.e(exception)
             }
@@ -81,6 +89,17 @@ class ChatListViewModel @Inject constructor(
                 }
         }
     }
+
+    private fun getOtherUserName(
+        chatEntity: ChatEntity,
+        myKey: String
+    ) = chatEntity.userNames?.toList()
+        ?.filterNot {
+            it.first == myKey
+        }
+        ?.firstOrNull()
+        ?.second
+        .orEmpty()
 
     override fun onCleared() {
         super.onCleared()

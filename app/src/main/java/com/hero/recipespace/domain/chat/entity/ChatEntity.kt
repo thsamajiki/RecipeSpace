@@ -11,10 +11,23 @@ data class ChatEntity(
     val lastMessage: MessageEntity? = null,
     val userProfileImages: Map<String, String>? = null,
     val userNames: Map<String, String>? = null,
-    var userList: Map<String, Boolean>? = null
+    val userList: List<String>? = null,
+    val displayOtherUserName: () -> String = {
+        ""
+    }
 ) : Parcelable {
 
-    val displayOtherUserName: String
-        get() = userNames?.toList()?.getOrNull(0)?.second.orEmpty()
+//    val displayOtherUserName: String
+//        get() = userNames?.toList()?.getOrNull(0)?.second.orEmpty()
+//
+//    fun getDisplayOtherUserName(myKey: String): String {
+//        return userNames?.toList()
+//            ?.filterNot {
+//                it.first == myKey
+//            }
+//            ?.firstOrNull()
+//            ?.second
+//            .orEmpty()
+//    }
 
 }

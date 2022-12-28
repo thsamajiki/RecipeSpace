@@ -34,6 +34,8 @@ class ChatServiceImpl @Inject constructor(
 
                     val chatData: ChatData? = documentSnapshot.toObject(ChatData::class.java)
 
+                    WLog.d("chatData $chatData")
+
                     if (chatData != null) {
                         continuation.resume(chatData)
                     } else {
@@ -48,21 +50,17 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String): ChatData {
         return suspendCoroutine { continuation ->
-            val userList: MutableMap<String, Boolean> = mutableMapOf()
-
-            userList[myKey] = true
-            userList[otherUserKey] = true
-
-            WLog.d("userList $userList")
+            val userList = listOf(myKey, otherUserKey)
 
             db.collection("Chat")
-                .whereEqualTo("userList", userList)
+                .whereArrayContains("userList", userList)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents.firstNotNullOfOrNull {
                         it.toObject(ChatData::class.java)
                     }
 
+                    WLog.d("chatData $chatData")
                     if (chatData != null) {
                         continuation.resume(chatData)
                     } else {
@@ -75,31 +73,30 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun getDataList(userKey: String): List<ChatData> {
         return suspendCoroutine { continuation ->
+            val userList = listOf(userKey)
+
             val fireStore = FirebaseFirestore.getInstance()
             fireStore.collection("Chat")
-                .whereEqualTo("userList+$userKey", true)
-                .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
-                    if (e != null) {
-                        return@EventListener
-                    }
-                    if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
-                        continuation.resumeWithException(Exception("queryDocumentSnapshot is Null or Empty"))
-                        return@EventListener
-                    }
-
+                .whereArrayContainsAny("userList", userList)
+                .get()
+                .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatList = queryDocumentSnapshots.documentChanges.map {
                         it.document.toObject(ChatData::class.java)
                     }
+                    WLog.d("chatList $chatList")
 
                     continuation.resume(chatList)
-                })
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
     override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
         return callbackFlow {
             db.collection("Chat")
-                .whereEqualTo("userList+$userKey", true)
+                .whereArrayContainsAny("userList", listOf(userKey))
                 .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
                     if (e != null) {
                         return@EventListener
@@ -140,20 +137,21 @@ class ChatServiceImpl @Inject constructor(
                 val userNames = HashMap<String, String>()
                 userNames[myUserKey] = myUserName
                 userNames[userData.key] = userData.name.orEmpty()
-                val userList = HashMap<String, Boolean>()
-                userList[myUserKey] = true
-                userList[userData.key] = true
+                val userList = listOf(myUserKey, userData.key)
+
+                val chatRef = db.collection("Chat").document()
+                val chatKey = chatRef.id
 
                 val lastMessage = MessageData(
+                    chatKey = chatKey,
                     userKey = myUserKey,
                     message = message,
                     timestamp = Timestamp.now(),
                     confirmed = false
                 )
 
-                val chatRef = db.collection("Chat").document()
                 val chatData = ChatData(
-                    key = chatRef.id,
+                    key = chatKey,
                     lastMessage = lastMessage,
                     userProfileImages = userProfileImages,
                     userNames = userNames,
@@ -188,8 +186,7 @@ class ChatServiceImpl @Inject constructor(
             userList.add(myUserKey)
             userList.add(otherUserKey)
             db.collection("Chat")
-                .whereEqualTo("userList+$otherUserKey", true)
-                .whereEqualTo("userList+$myUserKey", true)
+                .whereArrayContainsAny("userList", listOf(otherUserKey, myUserKey))
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents.firstOrNull()

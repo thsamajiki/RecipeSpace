@@ -14,8 +14,8 @@ class MessageLocalDataSourceImpl @Inject constructor(
         return messageDao.getMessageFromKey(messageKey) ?: error("not found MessageData")
     }
 
-    override fun observeDataList(userKey: String): Flow<List<MessageData>> {
-        return messageDao.getAllMessages().asFlow()
+    override fun observeDataList(chatKey: String): Flow<List<MessageData>> {
+        return messageDao.getMessages(chatKey).asFlow()
     }
 
     override suspend fun add(

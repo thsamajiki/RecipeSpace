@@ -15,7 +15,7 @@ class ChatLocalDataSourceImpl @Inject constructor(
     }
 
     override fun observeDataList(userKey: String) : Flow<List<ChatData>> {
-        return chatDao.getAllChats().asFlow()
+        return chatDao.getChats(userKey).asFlow()
     }
 
     override fun clear() {

@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MessageEntity(
+    var chatKey: String = "",
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,

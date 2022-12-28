@@ -46,7 +46,11 @@ class ChatRepositoryImpl @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             val chatList = kotlin.runCatching {
                 chatRemoteDataSource.getDataList(userKey)
-            }.getOrNull()
+            }
+                .onFailure {
+
+                }
+                .getOrNull()
 
             if (chatList != null) {
                 chatLocalDataSource.addAll(chatList)
