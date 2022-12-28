@@ -9,6 +9,7 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.util.WLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -47,24 +48,26 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String): ChatData {
         return suspendCoroutine { continuation ->
-            val myUserKey: String = firebaseAuth.uid.orEmpty()
             val userList: MutableMap<String, Boolean> = mutableMapOf()
 
-            userList[myUserKey] = true
+            userList[myKey] = true
             userList[otherUserKey] = true
 
+            WLog.d("userList $userList")
+
             db.collection("Chat")
-                .whereEqualTo("userList", hashMapOf("myUserKey" to true))
-                .whereEqualTo("userList", hashMapOf("otherUserKey" to true))
+                .whereEqualTo("userList", userList)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatData = queryDocumentSnapshots.documents.mapNotNull {
+                    val chatData = queryDocumentSnapshots.documents.firstNotNullOfOrNull {
                         it.toObject(ChatData::class.java)
                     }
-//                        .firstOrNull()
-//                        ?.toObject(ChatData::class.java)
 
-                    continuation.resume(chatData.first())
+                    if (chatData != null) {
+                        continuation.resume(chatData)
+                    } else {
+                        continuation.resumeWithException(Exception("chat data is empty"))
+                    }
                 }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }

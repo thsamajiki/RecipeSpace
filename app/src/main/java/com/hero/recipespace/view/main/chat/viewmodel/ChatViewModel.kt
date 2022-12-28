@@ -12,6 +12,7 @@ import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.main.chat.OtherUserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
@@ -35,7 +36,7 @@ sealed class MessageUIState {
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     application: Application,
-    savedStateHandle: SavedStateHandle,
+    private val savedStateHandle: SavedStateHandle,
     private val getChatUseCase: GetChatUseCase,
     private val getChatByUserKeyUseCase: GetChatByUserKeyUseCase,
     private val createNewChatRoomUseCase: CreateNewChatRoomUseCase,
@@ -45,9 +46,12 @@ class ChatViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     companion object {
-        const val EXTRA_OTHER_USER_KEY = "otherUserKey"
+        const val EXTRA_OTHER_USER = "otherUser"
         const val CHAT_KEY = "chatKey"
     }
+
+    private val otherUserInfo: OtherUserInfo? =
+        savedStateHandle.get<OtherUserInfo>(EXTRA_OTHER_USER)
 
     private val _chatUiState = MutableLiveData<ChatUIState>()
     val chatUiState: LiveData<ChatUIState>
@@ -62,11 +66,23 @@ class ChatViewModel @Inject constructor(
         get() = _chat
 
     private val _otherUserName = MediatorLiveData<String>().apply {
-        addSource(chat) {
-            WLog.d("it.userNames ${it.userNames} it.userNames?.toList() ${it.userNames?.toList()}")
-            val otherUserName = it.userNames?.toList()?.get(1)?.second.orEmpty()
+        value = otherUserInfo?.name.orEmpty()
 
-            value = otherUserName
+        addSource(chat) {
+            viewModelScope.launch {
+                val myKey = getLoggedUserUseCase().getOrNull()?.key
+
+                val otherUserName = it.userNames?.toList()
+                    ?.filterNot {
+                        it.first == myKey
+                    }
+                    ?.firstOrNull()
+                    ?.second
+
+                if (!otherUserName.isNullOrEmpty()) {
+                    value = otherUserName
+                }
+            }
         }
     }
     val otherUserName: LiveData<String>
@@ -86,24 +102,28 @@ class ChatViewModel @Inject constructor(
     // TODO: 2022-12-26 이전에 채팅한 적이 없으면 우측 하단의 메시지 전송 버튼을 눌렀을 때 채팅방을 생성하기
     init {
         val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
-        val otherUserKey: String = savedStateHandle.get<String>(EXTRA_OTHER_USER_KEY).orEmpty()
-
-        WLog.d("otherUserKey $otherUserKey chatKey $chatKey")
+        val otherUserKey: String = otherUserInfo?.key.orEmpty()
 
         viewModelScope.launch {
-            val chatEntity: ChatEntity = getChatRoom(chatKey, otherUserKey)
-                ?: createNewChatRoomUseCase(otherUserKey, message.value.orEmpty())
-
-            observeMessage(chatEntity.key)
-            _chat.value = chatEntity
+            val chatEntity: ChatEntity? = getChatRoom(chatKey, otherUserKey)
+            if (chatEntity != null) {
+                activateChatRoom(chatEntity)
+            }
         }
     }
 
     private suspend fun observeMessage(chatKey: String) {
         observeMessageListUseCase(chatKey)
             .flowOn(Dispatchers.Main)
-            .collect {
-                _messageList.value = it
+            .collect { messageList ->
+                WLog.d("observeMessage $messageList")
+                _messageList.value = messageList.map { message ->
+                    val userName = chat.value?.userNames?.get(message.userKey)
+                    message.copy(userName = userName.orEmpty())
+                }
+                    .sortedBy {
+                        it.timestamp
+                    }
             }
     }
 
@@ -133,12 +153,23 @@ class ChatViewModel @Inject constructor(
     fun sendMessage(message: String) {
         viewModelScope.launch {
             if (message != "") {
-                val chatKey = chat.value?.key ?: return@launch
-                sendMessageUseCase(chatKey, message)
+                val chatKey = chat.value?.key
+                if (!chatKey.isNullOrEmpty()) {
+                    sendMessageUseCase(chatKey, message)
+                } else {
+                    val otherUserKey: String = otherUserInfo?.key.orEmpty()
+                    val chatEntity = createNewChatRoomUseCase(otherUserKey, message)
+                    activateChatRoom(chatEntity)
+                }
             } else {
                 return@launch
             }
         }
+    }
+
+    private suspend fun activateChatRoom(chatEntity: ChatEntity) {
+        _chat.value = chatEntity
+        observeMessage(chatEntity.key)
     }
 
     override fun onCleared() {

@@ -36,7 +36,7 @@
             android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
-            android:text="UserName" />
+            android:text="@{messageLeft.userName}" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_chat_container"

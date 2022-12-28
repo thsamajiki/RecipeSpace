@@ -22,6 +22,7 @@ import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.view.main.chat.ChatActivity
+import com.hero.recipespace.view.main.chat.OtherUserInfo
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.PostRecipeActivity.Companion.EXTRA_RECIPE_ENTITY
@@ -143,7 +144,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 val intent = ChatActivity.getIntent(
                     this,
-                    otherUserKey = recipe.userKey
+                    otherUserInfo = OtherUserInfo(recipe.userKey, recipe.userName)
                 )
                 startActivity(intent)
             }

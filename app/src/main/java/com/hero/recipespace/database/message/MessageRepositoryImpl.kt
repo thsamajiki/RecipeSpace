@@ -47,8 +47,7 @@ class MessageRepositoryImpl @Inject constructor(
         message: String
     ) {
         if (chatKey.isNotEmpty()) { // 기존 채팅방이 있음.
-            val result = messageRemoteDataSource.add(chatKey, message)
-            messageLocalDataSource.add(result)
+            messageRemoteDataSource.add(chatKey, message)
         }
     }
 

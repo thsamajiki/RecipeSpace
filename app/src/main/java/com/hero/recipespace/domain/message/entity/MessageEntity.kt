@@ -10,7 +10,8 @@ data class MessageEntity(
     var message: String? = null,
     var timestamp: Timestamp? = null,
     var confirmed: Boolean? = null,
-    var messageId: String = ""
+    var messageId: String = "",
+    var userName: String = ""
 ) : Parcelable {
 
 }
