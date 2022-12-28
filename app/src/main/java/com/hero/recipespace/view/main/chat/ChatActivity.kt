@@ -95,6 +95,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
+            smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
             adapter = chatAdapter
         }
     }

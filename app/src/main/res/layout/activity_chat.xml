@@ -59,6 +59,8 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/cv_input"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+            android:stackFromBottom="true"
+            app:reverseLayout="true"
             tools:listitem="@layout/item_message_right" />
 
         <com.google.android.material.card.MaterialCardView
