@@ -41,11 +41,17 @@ class ChatListViewModel @Inject constructor(
     val userKey = FirebaseAuth.getInstance().currentUser?.uid
     val chatList: LiveData<List<ChatEntity>> =
         observeChatListUseCase(userKey!!)
-            .map { it ->
-                it.map { chat ->
-                    chat.copy(displayOtherUserName = {
-                        getOtherUserName(chat, userKey)
-                    })
+            .map {
+                it.mapNotNull { chat ->
+                    if (chat.userList?.contains(userKey) == true) {
+                        chat.copy(
+                            displayOtherUserName = {
+                                getOtherUserName(chat, userKey)
+                            }
+                        )
+                    } else {
+                        null
+                    }
                 }
             }
             .catch { exception ->
@@ -64,8 +70,7 @@ class ChatListViewModel @Inject constructor(
         getUser()
 
         viewModelScope.launch {
-            getLoggedUserUseCase(
-            )
+            getLoggedUserUseCase()
                 .onSuccess {
                     _chatListUiState.value = ChatListUIState.Success(it)
                 }
@@ -90,16 +95,14 @@ class ChatListViewModel @Inject constructor(
         }
     }
 
-    private fun getOtherUserName(
-        chatEntity: ChatEntity,
-        myKey: String
-    ) = chatEntity.userNames?.toList()
-        ?.filterNot {
-            it.first == myKey
-        }
-        ?.firstOrNull()
-        ?.second
-        .orEmpty()
+    private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
+        chatEntity.userNames?.toList()
+            ?.filterNot {
+                it.first == myKey
+            }
+            ?.firstOrNull()
+            ?.second
+            .orEmpty()
 
     override fun onCleared() {
         super.onCleared()

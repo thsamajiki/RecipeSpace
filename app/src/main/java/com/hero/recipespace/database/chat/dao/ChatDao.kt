@@ -6,8 +6,8 @@ import com.hero.recipespace.data.chat.ChatData
 
 @Dao
 interface ChatDao {
-    @Query("SELECT * FROM chat_db WHERE userList LIKE :userKey")
-    fun getChats(userKey: String) : LiveData<List<ChatData>>
+    @Query("SELECT * FROM chat_db")
+    fun getChats(): LiveData<List<ChatData>>
 
     @Query("SELECT * FROM chat_db WHERE `key` = :key limit 1")
     suspend fun getChatFromKey(key: String?): ChatData?

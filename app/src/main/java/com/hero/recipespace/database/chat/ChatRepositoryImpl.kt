@@ -8,6 +8,7 @@ import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.mapper.toData
 import com.hero.recipespace.domain.chat.mapper.toEntity
 import com.hero.recipespace.domain.chat.repository.ChatRepository
+import com.hero.recipespace.util.WLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -48,7 +49,7 @@ class ChatRepositoryImpl @Inject constructor(
                 chatRemoteDataSource.getDataList(userKey)
             }
                 .onFailure {
-
+                    WLog.e(it)
                 }
                 .getOrNull()
 

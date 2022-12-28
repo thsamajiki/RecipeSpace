@@ -10,12 +10,12 @@ class ChatLocalDataSourceImpl @Inject constructor(
     private val chatDao: ChatDao
 ) : ChatLocalDataSource {
 
-    override suspend fun getData(chatKey: String) : ChatData {
-       return chatDao.getChatFromKey(chatKey) ?: error("not found ChatData")
+    override suspend fun getData(chatKey: String): ChatData {
+        return chatDao.getChatFromKey(chatKey) ?: error("not found ChatData")
     }
 
-    override fun observeDataList(userKey: String) : Flow<List<ChatData>> {
-        return chatDao.getChats(userKey).asFlow()
+    override fun observeDataList(userKey: String): Flow<List<ChatData>> {
+        return chatDao.getChats().asFlow()
     }
 
     override fun clear() {

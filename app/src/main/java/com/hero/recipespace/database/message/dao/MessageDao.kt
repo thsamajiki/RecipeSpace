@@ -7,7 +7,7 @@ import com.hero.recipespace.data.message.MessageData
 @Dao
 interface MessageDao {
     @Query("SELECT * FROM message_db WHERE chatKey = :chatKey")
-    fun getMessages(chatKey: String) : LiveData<List<MessageData>>
+    fun getMessages(chatKey: String): LiveData<List<MessageData>>
 
     @Query("SELECT * FROM message_db WHERE messageId = :messageKey limit 1")
     suspend fun getMessageFromKey(messageKey: String): MessageData?

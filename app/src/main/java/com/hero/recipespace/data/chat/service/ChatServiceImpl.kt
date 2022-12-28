@@ -182,11 +182,8 @@ class ChatServiceImpl @Inject constructor(
     override suspend fun checkExistChatData(otherUserKey: String): Boolean {
         return suspendCoroutine { continuation ->
             val myUserKey: String = firebaseAuth.uid.orEmpty()
-            val userList: MutableList<String> = ArrayList()
-            userList.add(myUserKey)
-            userList.add(otherUserKey)
             db.collection("Chat")
-                .whereArrayContainsAny("userList", listOf(otherUserKey, myUserKey))
+                .whereArrayContains("userList", listOf(otherUserKey, myUserKey))
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents.firstOrNull()

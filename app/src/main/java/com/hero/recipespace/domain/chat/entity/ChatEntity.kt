@@ -16,18 +16,4 @@ data class ChatEntity(
         ""
     }
 ) : Parcelable {
-
-//    val displayOtherUserName: String
-//        get() = userNames?.toList()?.getOrNull(0)?.second.orEmpty()
-//
-//    fun getDisplayOtherUserName(myKey: String): String {
-//        return userNames?.toList()
-//            ?.filterNot {
-//                it.first == myKey
-//            }
-//            ?.firstOrNull()
-//            ?.second
-//            .orEmpty()
-//    }
-
 }

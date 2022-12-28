@@ -166,9 +166,7 @@ class ChatViewModel @Inject constructor(
             val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
             _chat.value = chatEntity.copy(
                 displayOtherUserName = {
-                    getOtherUserName(chatEntity, myKey).apply {
-                        WLog.d("getOtherUserName $this")
-                    }
+                    getOtherUserName(chatEntity, myKey)
                 }
             )
             observeMessage(chatEntity.key)
