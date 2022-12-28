@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -83,6 +84,14 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     private fun setupListeners() {
         binding.ivBack.setOnClickListener {
             finish()
+        }
+
+        binding.dlChatMemberList.setOnClickListener {
+            if (binding.dlChatMemberList.isDrawerOpen(Gravity.LEFT)) {
+                binding.dlChatMemberList.closeDrawer(Gravity.LEFT)
+            } else {
+                binding.dlChatMemberList.openDrawer(Gravity.LEFT)
+            }
         }
 
         binding.dlContentOptionMenu.setOnClickListener { view ->

@@ -75,8 +75,7 @@ class ChatServiceImpl @Inject constructor(
         return suspendCoroutine { continuation ->
             val userList = listOf(userKey)
 
-            val fireStore = FirebaseFirestore.getInstance()
-            fireStore.collection("Chat")
+            db.collection("Chat")
                 .whereArrayContainsAny("userList", userList)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->

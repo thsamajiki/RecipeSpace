@@ -59,7 +59,6 @@
                     android:paddingEnd="7dp"
                     android:paddingBottom="7dp"
                     android:src="@drawable/ic_option_menu"
-                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:visibility="visible" />
