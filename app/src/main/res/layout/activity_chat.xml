@@ -13,6 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_root_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.main.chat.ChatActivity">
