@@ -15,10 +15,8 @@ import kotlinx.parcelize.Parcelize
 data class RateData(
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "key")
-    var key: String = "",
     @ColumnInfo(name = "userKey")
-    var userKey: String = "",
+    var rateKey: String = "",
     @ColumnInfo(name = "rate")
     var rate: Float = 0f,
     @ColumnInfo(name = "date")

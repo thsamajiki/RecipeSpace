@@ -17,8 +17,8 @@ import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.view.LoadingState
-import com.hero.recipespace.view.main.recipe.viewmodel.RateRecipeUiState
 import com.hero.recipespace.view.main.recipe.viewmodel.RatingDialogViewModel
+import com.hero.recipespace.view.main.recipe.viewmodel.RecipeRateUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -48,7 +48,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         return binding.root
     }
 
-    // TODO: 2022-12-18 rate 옵저버 구현 (다른 사람들도 평가를 하므로 옵저버를 통해 rate 값이 계속 변경되어야 한다.
+    // TODO: 나의 rate 를 불러오고 표시하기 (다른 사람들도 평가를 하므로 옵저버를 통해 rate 값이 계속 변경되어야 한다.
     private fun setupViewModel() {
         with(viewModel) {
             lifecycleScope.launch {
@@ -68,11 +68,11 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                 }
             }
 
-            // TODO: 2022-12-18 빨간줄 없애기
+            // TODO: 평가 완료 기능 부족한 부분 구현하기
             lifecycleScope.launch {
-                rateRecipeUiState.collect { state ->
+                recipeRateUiState.collect { state ->
                     when (state) {
-                        is RateRecipeUiState.Success -> {
+                        is RecipeRateUiState.Success -> {
                             Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
                             // 평가완료했을 때 평가완료된 데이터를 내려주자.
@@ -85,11 +85,11 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 //                            setFragmentResult(TAG, result)
 //                            dismiss()
                         }
-                        is RateRecipeUiState.Failed -> {
+                        is RecipeRateUiState.Failed -> {
                             Toast.makeText(context, "평가가 반영되지 않았습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
                                 .show()
                         }
-                        RateRecipeUiState.Idle -> {}
+                        RecipeRateUiState.Idle -> {}
                     }
                 }
             }
@@ -102,22 +102,33 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         }
         binding.tvConfirm.setOnClickListener {
 //            uploadRating()
-            val userKey = viewModel.rate.value?.userKey
-            if (userKey == null) {
-                viewModel.requestAddRateData() // db 에서 userKey 가 들어가야 함
+            val rateKey: String? = viewModel.userKey.value
+            if (rateKey == null) {
+//                requestUploadRate(rateKey)
             } else {
-                viewModel.requestUpdateRateData()
+                requestUpdateRate(rateKey, binding.ratingBar.rating)
             }
         }
     }
 
-    private fun uploadRating() {
+    private fun requestUpdateRate(rateKey: String, newRate: Float) {
         val rating = binding.ratingBar.rating
-        if (rating == 0f) { // TODO: 2022-12-18 이건 어디에다가 붙히는게 좋을까요?
+        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요?
+            Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        viewModel.requestUpdateRateData(rateKey, newRate)
+    }
+
+    private fun requestUploadRate(rateKey: String) {
+        val rating = binding.ratingBar.rating
+        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요?
             Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
             return
         }
         val rate: RateEntity = makeRateData(rating)
+        viewModel.requestAddRateData(rateKey, rating,) // db 에서 userKey 가 들어가야 함
 //        FirebaseData.getInstance()
 //            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
 //                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
@@ -147,8 +158,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
 
         return RateEntity(
-            key = "",   // RateServiceImpl 에서 document.id를 넣어주면 된다고 생각해서 "" 을 대입함
-            userKey = userKey,
+            rateKey = userKey,
             rate = rate,
             date = Timestamp.now()
         )

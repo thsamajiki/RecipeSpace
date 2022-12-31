@@ -124,8 +124,7 @@ class RateServiceImpl @Inject constructor(
                 val newRate = (originSum + userRate) / newTotalCount
 
                 val rateData = RateData(
-                    key = recipeRef.collection("RateList").document(request.userKey).id,
-                    userKey = request.userKey,
+                    rateKey = request.userKey,
                     rate = request.rate,
                     date = Timestamp.now()
                 )
@@ -181,8 +180,7 @@ class RateServiceImpl @Inject constructor(
                 transaction.update(recipeRef, editRecipeData)
 
                 val newRateData = RateData(
-                    key = request.key,
-                    userKey = request.userKey,
+                    rateKey = request.userKey,
                     rate = newRate,
                     date = Timestamp.now()
                 )

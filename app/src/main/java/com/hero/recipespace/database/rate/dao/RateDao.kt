@@ -6,10 +6,10 @@ import com.hero.recipespace.data.rate.RateData
 
 @Dao
 interface RateDao {
-    @Query("SELECT * FROM rate_db ORDER BY `key` ASC")
+    @Query("SELECT * FROM rate_db ORDER BY `userKey` ASC")
     fun getAllRates() : LiveData<List<RateData>>
 
-    @Query("SELECT * FROM rate_db WHERE `key` = :key limit 1")
+    @Query("SELECT * FROM rate_db WHERE `userKey` = :key limit 1")
     suspend fun getRateFromKey(key: String?): RateData?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
