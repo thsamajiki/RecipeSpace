@@ -6,7 +6,7 @@ import com.hero.recipespace.domain.rate.entity.RateEntity
 fun RateData.toEntity(): RateEntity {
     return RateEntity(
         rateKey = rateKey,
-        rate = rate,
+        rate = rate ?: 0f,
         date = date
     )
 }

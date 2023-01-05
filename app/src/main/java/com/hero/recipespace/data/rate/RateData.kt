@@ -18,7 +18,7 @@ data class RateData(
     @ColumnInfo(name = "rateKey")
     var rateKey: String = "",
     @ColumnInfo(name = "rate")
-    var rate: Float = 0f,
+    var rate: Float? = 0f,
     @ColumnInfo(name = "date")
     var date: Timestamp? = null
 ) : Parcelable {
