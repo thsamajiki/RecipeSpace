@@ -77,7 +77,8 @@
             app:imageUrl="@{viewModel.recipe.profileImageUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+            app:shapeAppearance="@style/Circle"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tv_user_name"

@@ -45,6 +45,7 @@
                 android:text="@{recipe.userName}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/body_text_size"
+                android:autoSizeTextType="uniform"
                 app:layout_constraintStart_toEndOf="@id/iv_user_profile"
                 app:layout_constraintTop_toTopOf="parent" />
 
