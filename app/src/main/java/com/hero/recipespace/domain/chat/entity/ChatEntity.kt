@@ -12,8 +12,6 @@ data class ChatEntity(
     val userProfileImages: Map<String, String>? = null,
     val userNames: Map<String, String>? = null,
     val userList: List<String>? = null,
-    val displayOtherUserName: () -> String = {
-        ""
-    }
+    val recipeKey: String = ""
 ) : Parcelable {
 }

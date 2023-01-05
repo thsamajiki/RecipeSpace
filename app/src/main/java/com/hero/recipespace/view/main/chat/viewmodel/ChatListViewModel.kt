@@ -9,6 +9,8 @@ import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.main.chat.ChatItem
+import com.hero.recipespace.view.main.chat.toItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -39,20 +41,24 @@ class ChatListViewModel @Inject constructor(
         get() = _chatListUiState
 
     val userKey = FirebaseAuth.getInstance().currentUser?.uid
-    val chatList: LiveData<List<ChatEntity>> =
+    val chatList: LiveData<List<ChatItem>> =
         observeChatListUseCase(userKey!!)
-            .map {
-                it.mapNotNull { chat ->
-                    if (chat.userList?.contains(userKey) == true) {
-                        chat.copy(
-                            displayOtherUserName = {
-                                getOtherUserName(chat, userKey)
-                            }
-                        )
-                    } else {
-                        null
+            .map { chatList ->
+                chatList
+                    .mapNotNull { chat ->
+                        if (chat.userList?.contains(userKey) == true) {
+                            chat.toItem(
+                                displayOtherUserName = {
+                                    getOtherUserName(chat, userKey)
+                                },
+                                displayOtherUserProfileImage = {
+                                    getOtherUserProfileImage(chat, userKey)
+                                }
+                            )
+                        } else {
+                            null
+                        }
                     }
-                }
             }
             .catch { exception ->
                 WLog.e(exception)
@@ -97,6 +103,15 @@ class ChatListViewModel @Inject constructor(
 
     private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
         chatEntity.userNames?.toList()
+            ?.filterNot {
+                it.first == myKey
+            }
+            ?.firstOrNull()
+            ?.second
+            .orEmpty()
+
+    private fun getOtherUserProfileImage(chatEntity: ChatEntity, myKey: String) =
+        chatEntity.userProfileImages?.toList()
             ?.filterNot {
                 it.first == myKey
             }

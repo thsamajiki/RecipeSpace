@@ -33,12 +33,17 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
         fun getIntent(
             context: Context,
-            chatKey: String = "",
-            otherUserInfo: OtherUserInfo? = null,
+            chatKey: String = ""
         ) =
             Intent(context, ChatActivity::class.java)
                 .putExtra(ChatViewModel.CHAT_KEY, chatKey)
-                .putExtra(ChatViewModel.EXTRA_OTHER_USER, otherUserInfo)
+
+        fun getIntent(
+            context: Context,
+            recipeChatInfo: RecipeChatInfo? = null,
+        ) =
+            Intent(context, ChatActivity::class.java)
+                .putExtra(ChatViewModel.EXTRA_RECIPE_CHAT, recipeChatInfo)
     }
 
     private var messageRegistration: ListenerRegistration? = null
@@ -65,19 +70,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             messageList.observe(this@ChatActivity) { messageList ->
                 chatAdapter.setMessageList(messageList)
             }
-
-//            chat.observe(this@ChatActivity) {
-//
-//            }
-//
-//            lifecycleScope.launch {
-//                chatUiState.observe(this@ChatActivity) { state ->
-//                    when (state) {
-//                        is ChatUIState.Failed -> TODO()
-//                        is ChatUIState.Success -> TODO()
-//                    }
-//                }
-//            }
         }
     }
 
@@ -86,16 +78,23 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             finish()
         }
 
-        binding.dlChatMemberList.setOnClickListener {
-            if (binding.dlChatMemberList.isDrawerOpen(Gravity.LEFT)) {
+        binding.ivOptionMenu.setOnClickListener {
+            Toast.makeText(this, "ivOptionMenu-ChatActivity", Toast.LENGTH_SHORT).show()
+            val isDrawerOpened = binding.dlChatMemberList.isDrawerOpen(Gravity.LEFT)
+            if (isDrawerOpened) {
                 binding.dlChatMemberList.closeDrawer(Gravity.LEFT)
             } else {
                 binding.dlChatMemberList.openDrawer(Gravity.LEFT)
             }
         }
 
-        binding.dlContentOptionMenu.setOnClickListener { view ->
-            view.visibility = View.VISIBLE
+        binding.ivMessageContentOption.setOnClickListener { view ->
+            val isDrawerClosed = binding.dlChatMemberList.isDrawerOpen(Gravity.RIGHT)
+            if (isDrawerClosed) {
+                binding.dlChatMemberList.closeDrawer(Gravity.RIGHT)
+            } else {
+                binding.dlChatMemberList.openDrawer(Gravity.RIGHT)
+            }
         }
 
         binding.mcvSend.setOnClickListener {

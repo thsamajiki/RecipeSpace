@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.service.ChatService
+import com.hero.recipespace.domain.chat.request.AddChatRequest
+import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -15,8 +17,8 @@ class ChatRemoteDataSourceImpl @Inject constructor(
         return chatService.getData(chatKey)
     }
 
-    override suspend fun getChatByUserKeys(otherUserKey: String): ChatData {
-        return chatService.getChatByUserKeys(firebaseAuth.uid.orEmpty(), otherUserKey)
+    override suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo): ChatData {
+        return chatService.getChatByRecipeChatInfo(firebaseAuth.uid.orEmpty(), recipeChatInfo)
     }
 
     override suspend fun getDataList(userKey: String): List<ChatData> {
@@ -27,9 +29,8 @@ class ChatRemoteDataSourceImpl @Inject constructor(
         return chatService.observeNewChat(userKey)
     }
 
-    override suspend fun createNewChatRoom(otherUserKey: String,
-                                           message: String) : ChatData {
-        return chatService.add(otherUserKey, message)
+    override suspend fun createNewChatRoom(request: AddChatRequest) : ChatData {
+        return chatService.add(request)
     }
 
     override suspend fun update(chatData: ChatData) {

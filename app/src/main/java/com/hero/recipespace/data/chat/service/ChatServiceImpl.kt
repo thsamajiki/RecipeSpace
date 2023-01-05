@@ -9,7 +9,10 @@ import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.data.user.service.UserService
+import com.hero.recipespace.domain.chat.request.AddChatRequest
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,7 +23,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class ChatServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
+    private val userService: UserService
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         return suspendCoroutine { continuation ->
@@ -48,12 +52,13 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatByUserKeys(myKey: String, otherUserKey: String): ChatData {
+    override suspend fun getChatByRecipeChatInfo(myKey: String, recipeChatInfo: RecipeChatInfo): ChatData {
         return suspendCoroutine { continuation ->
-            val userList = listOf(myKey, otherUserKey)
+            val userList = listOf(myKey, recipeChatInfo.userKey)
 
             db.collection("Chat")
-                .whereArrayContains("userList", userList)
+                .whereArrayContainsAny("userList", userList)
+                .whereEqualTo("recipeKey", recipeChatInfo.recipeKey)
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
                     val chatData = queryDocumentSnapshots.documents.firstNotNullOfOrNull {
@@ -115,18 +120,19 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun add(
-        otherUserKey: String,
-        message: String
-    ): ChatData {
+
+
+    override suspend fun add(request: AddChatRequest): ChatData {
+        val myUserData = userService.getUserData(firebaseAuth.uid.orEmpty())
+
         return suspendCoroutine { continuation ->
             db.runTransaction(Transaction.Function<Any> { transaction ->
-                val myUserKey: String = firebaseAuth.uid.orEmpty()
-                val myProfileUrl: String = firebaseAuth.currentUser?.photoUrl?.toString().orEmpty()
-                val myUserName: String = firebaseAuth.currentUser?.displayName.orEmpty()
+                val myUserKey: String = myUserData.key
+                val myProfileUrl: String = myUserData.profileImageUrl.orEmpty()
+                val myUserName: String = myUserData.name.orEmpty()
 
                 val userRef = db.collection("User")
-                    .document(otherUserKey)
+                    .document(request.otherUserKey)
                 val userData: UserData = transaction[userRef].toObject(UserData::class.java)
                     ?: return@Function null
                 transaction[userRef] = userData
@@ -144,7 +150,7 @@ class ChatServiceImpl @Inject constructor(
                 val lastMessage = MessageData(
                     chatKey = chatKey,
                     userKey = myUserKey,
-                    message = message,
+                    message = request.message,
                     timestamp = Timestamp.now(),
                     confirmed = false
                 )
@@ -154,7 +160,8 @@ class ChatServiceImpl @Inject constructor(
                     lastMessage = lastMessage,
                     userProfileImages = userProfileImages,
                     userNames = userNames,
-                    userList = userList
+                    userList = userList,
+                    recipeKey = request.recipeKey
                 )
                 transaction[chatRef] = chatData
 

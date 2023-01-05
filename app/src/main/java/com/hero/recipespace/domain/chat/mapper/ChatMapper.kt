@@ -11,7 +11,8 @@ fun ChatData.toEntity(): ChatEntity {
         lastMessage = lastMessage?.toEntity(),
         userProfileImages = userProfileImages,
         userNames = userNames,
-        userList = userList
+        userList = userList,
+        recipeKey = recipeKey,
     )
 }
 
@@ -21,6 +22,7 @@ fun ChatEntity.toData(): ChatData {
         lastMessage = lastMessage?.toData(),
         userProfileImages = userProfileImages,
         userNames = userNames,
-        userList = userList
+        userList = userList,
+        recipeKey = recipeKey,
     )
 }

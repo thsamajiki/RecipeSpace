@@ -8,7 +8,9 @@ import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.mapper.toData
 import com.hero.recipespace.domain.chat.mapper.toEntity
 import com.hero.recipespace.domain.chat.repository.ChatRepository
+import com.hero.recipespace.domain.chat.request.AddChatRequest
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -26,8 +28,8 @@ class ChatRepositoryImpl @Inject constructor(
         return chatRemoteDataSource.getData(chatKey).toEntity()
     }
 
-    override suspend fun getChatByUserKeys(otherUserKey: String): ChatEntity {
-        return chatRemoteDataSource.getChatByUserKeys(otherUserKey).toEntity()
+    override suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo): ChatEntity {
+        return chatRemoteDataSource.getChatByRecipeChatInfo(recipeChatInfo).toEntity()
     }
 
     override fun observeChatList(
@@ -47,6 +49,9 @@ class ChatRepositoryImpl @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             val chatList = kotlin.runCatching {
                 chatRemoteDataSource.getDataList(userKey)
+                    .sortedByDescending { chat ->
+                        chat.lastMessage?.timestamp
+                    }
             }
                 .onFailure {
                     WLog.e(it)
@@ -64,15 +69,17 @@ class ChatRepositoryImpl @Inject constructor(
                 it.map {
                     it.toEntity()
                 }
+                    .sortedByDescending { chat ->
+                        chat.lastMessage?.timestamp
+                    }
             }
     }
 
     override suspend fun createNewChatRoom(
-        otherUserKey: String,
-        message: String
+        request: AddChatRequest
     ): ChatEntity {
-        return if (!chatRemoteDataSource.checkExistChatData(otherUserKey)) {
-            val result = chatRemoteDataSource.createNewChatRoom(otherUserKey, message)
+        return if (!chatRemoteDataSource.checkExistChatData(request.otherUserKey)) {
+            val result = chatRemoteDataSource.createNewChatRoom(request)
             chatLocalDataSource.add(result)
             result.toEntity()
         } else throw Exception("exist chat data")

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="chat"
-            type="com.hero.recipespace.domain.chat.entity.ChatEntity" />
+            type="com.hero.recipespace.view.main.chat.ChatItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,10 +20,11 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            app:imageUrl="@{chat.displayOtherUserProfileImage.invoke()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-            app:imageUrl="@{chat.userProfileImages[1]}" />
+            app:shapeAppearance="@style/Circle"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tv_user_name"
@@ -47,7 +48,7 @@
             android:layout_marginBottom="20dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@{chat.lastMessage.message}"
+            android:text="@{chat.lastMessage}"
             android:textColor="@color/dark_gray"
             app:layout_constraintStart_toEndOf="@id/iv_user_profile"
             app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
@@ -61,7 +62,7 @@
             android:textColor="@color/normal_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:timestamp="@{chat.lastMessage.timestamp}" />
+            app:timestamp="@{chat.lastTimestamp}" />
 
         <TextView
             android:layout_width="wrap_content"

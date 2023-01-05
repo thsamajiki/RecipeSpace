@@ -21,5 +21,7 @@ data class ChatData(
     @ColumnInfo(name = "userNames")
     var userNames: Map<String, String>? = null,
     @ColumnInfo(name = "userList")
-    var userList: List<String>? = null
+    var userList: List<String>? = null,
+    @ColumnInfo(name = "recipeKey")
+    var recipeKey: String = ""
 )

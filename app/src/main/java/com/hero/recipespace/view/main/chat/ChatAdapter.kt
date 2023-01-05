@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.ItemMessageLeftBinding
 import com.hero.recipespace.databinding.ItemMessageRightBinding
-import com.hero.recipespace.domain.message.entity.MessageEntity
-import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.BaseAdapter
 
-class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
+class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
 
-    private val messageList = mutableListOf<MessageEntity>()
+    private val messageList = mutableListOf<MessageItem>()
 
     companion object {
         private const val LEFT_TYPE = 0
@@ -35,7 +33,7 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val message: MessageEntity = messageList[position]
+        val message: MessageItem = messageList[position]
         if (holder is LeftMessageViewHolder) {
             holder.bind(message)
         } else if (holder is RightMessageViewHolder) {
@@ -43,18 +41,18 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
         }
     }
 
-    fun setMessageList(message: List<MessageEntity>) {
+    fun setMessageList(message: List<MessageItem>) {
         messageList.clear()
         messageList.addAll(message)
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, message: MessageEntity) {
+    fun add(position: Int, message: MessageItem) {
         messageList.add(position, message)
         notifyItemInserted(position)
     }
 
-    fun replaceItem(message: MessageEntity) {
+    fun replaceItem(message: MessageItem) {
         val index = messageList.indexOf(message)
         messageList[index] = message
         notifyItemChanged(index)
@@ -89,8 +87,7 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        val message: MessageEntity = messageList[position]
-        WLog.d("myUserKey $myUserKey message.userKey ${message.userKey}")
+        val message: MessageItem = messageList[position]
         return if (myUserKey == message.userKey) {
             RIGHT_TYPE
         } else LEFT_TYPE
@@ -100,7 +97,7 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
         private val binding: ItemMessageRightBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: MessageEntity) {
+        fun bind(message: MessageItem) {
             binding.messageRight = message
 
             if (message.confirmed == true) {
@@ -115,7 +112,7 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageEntity>() {
         private val binding: ItemMessageLeftBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: MessageEntity) {
+        fun bind(message: MessageItem) {
             binding.messageLeft = message
             binding.executePendingBindings()
         }
