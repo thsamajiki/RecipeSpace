@@ -38,7 +38,9 @@ class EditProfileViewModel @Inject constructor(
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
     val loadingState: StateFlow<LoadingState> = _loadingState.asStateFlow()
 
-    val profileImage: MutableLiveData<String> = MutableLiveData()
+    private val _profileImage: MutableLiveData<String> = MutableLiveData()
+    val profileImage: LiveData<String>
+        get() = _profileImage
 
     private val _user = MutableLiveData<UserEntity>()
     val user: LiveData<UserEntity>
@@ -55,7 +57,7 @@ class EditProfileViewModel @Inject constructor(
 
     fun setNewProfileImagePath(path: String) {
         newProfileImagePath = path
-        profileImage.value = path
+        _profileImage.value = path
     }
 
     init {
@@ -63,6 +65,7 @@ class EditProfileViewModel @Inject constructor(
             getLoggedUserUseCase()
                 .onSuccess {
                     _user.value = it
+                    _profileImage.value = it.profileImageUrl.orEmpty()
                 }
                 .onFailure(WLog::e)
         }
@@ -71,10 +74,10 @@ class EditProfileViewModel @Inject constructor(
 
     // TODO: 2022-12-14 EditProfileViewModel, UpdateUserUseCase, Repository, RemoteSource, LocalSource, UserService에서 update 메소드를 새로 만듦
     // todo: 새로운 이름과 프로필 이미지를 입력받기 위해서 만듦
-    fun requestUpdateProfile(newProfileImageUrl: String = "") {
-
+    fun requestUpdateProfile() {
         if (!isNewProfile()) return
 
+        val newProfileImageUrl = newProfileImagePath ?: return
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {

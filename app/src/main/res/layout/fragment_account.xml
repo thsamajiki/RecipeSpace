@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -29,7 +28,8 @@
             android:layout_marginTop="60dp"
             app:fallbackImage="@{R.drawable.ic_user}"
             app:imageUrl="@{viewModel.profileImageUrl}"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+            app:shapeAppearance="@style/Circle"
+            android:scaleType="centerCrop"
             tools:src="@drawable/ic_user" />
 
         <TextView

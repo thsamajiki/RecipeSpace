@@ -80,7 +80,8 @@
                 android:layout_height="140dp"
                 app:fallbackImage="@{R.drawable.ic_user}"
                 app:imageUrl="@{viewModel.profileImage}"
-                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+                app:shapeAppearance="@style/Circle"
+                android:scaleType="centerCrop" />
 
             <com.skydoves.elasticviews.ElasticFloatingActionButton
                 android:id="@+id/fab_profile_edit"

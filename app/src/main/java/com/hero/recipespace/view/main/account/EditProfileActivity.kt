@@ -26,7 +26,6 @@ import com.hero.recipespace.databinding.ActivityEditProfileBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
-import com.hero.recipespace.util.RealPathUtil
 import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.main.account.viewmodel.EditProfileUiState
 import com.hero.recipespace.view.main.account.viewmodel.EditProfileViewModel
@@ -44,9 +43,9 @@ class EditProfileActivity : AppCompatActivity(),
     private val openGalleryLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                val path = RealPathUtil.getRealPath(this, it.data?.data!!)
+                val path = it.data?.data
                 if (path != null) {
-                    viewModel.setNewProfileImagePath(path)
+                    viewModel.setNewProfileImagePath(path.toString())
                 }
 
                 if (binding.editUserName.text.toString().isNotEmpty()) {
