@@ -11,6 +11,6 @@ class UpdateRateUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(request: UpdateRateRequest, recipeEntity: RecipeEntity) : Result<RateEntity> =
         kotlin.runCatching {
-            rateRepository.modifyRate(request, recipeEntity)
+            rateRepository.submitRate(request, recipeEntity)
         }
 }

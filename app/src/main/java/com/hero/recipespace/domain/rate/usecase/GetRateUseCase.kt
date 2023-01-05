@@ -7,8 +7,8 @@ import javax.inject.Inject
 class GetRateUseCase @Inject constructor(
     private val rateRepository: RateRepository
 ) {
-    suspend operator fun invoke(rateKey: String): Result<RateEntity> =
+    suspend operator fun invoke(userKey: String, recipeKey: String): Result<RateEntity> =
         kotlin.runCatching {
-            rateRepository.getRate(rateKey)
+            rateRepository.getRate(userKey, recipeKey)
         }
 }
