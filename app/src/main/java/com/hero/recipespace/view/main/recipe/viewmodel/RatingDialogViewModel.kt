@@ -4,14 +4,13 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.google.firebase.Timestamp
 import com.hero.recipespace.domain.rate.entity.RateEntity
-import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
-import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
 import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +32,6 @@ class RatingDialogViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
     private val getRateUseCase: GetRateUseCase,
-    private val addRateUseCase: AddRateUseCase,
     private val updateRateUseCase: UpdateRateUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val getRecipeUseCase: GetRecipeUseCase
@@ -41,7 +39,6 @@ class RatingDialogViewModel @Inject constructor(
 
     companion object {
         const val KEY_RECIPE = "key"
-        const val KEY_RATE = "userKey"
     }
 
     private val _recipeRateUiState = MutableStateFlow<RecipeRateUiState>(RecipeRateUiState.Idle)
@@ -54,7 +51,7 @@ class RatingDialogViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
-    var userKey: MutableLiveData<String> = MutableLiveData()
+
     val currentRate: MutableLiveData<Float> = MutableLiveData()
     val date: MutableLiveData<Timestamp> = MutableLiveData()
 
@@ -67,22 +64,22 @@ class RatingDialogViewModel @Inject constructor(
 
     // TODO: 사용자의 RateData 를 DB 에서 가져오기 (처음 평가하는 것이면, RateData 가 없을 수도 있음)
     init {
-        val rateKey: String = savedStateHandle.get<String>(KEY_RATE).orEmpty()
+        getRecipeData()
 
         viewModelScope.launch {
-            val rateEntity: RateEntity? = getMyRateData(rateKey)
+            val userKey = getLoggedUserUseCase().getOrNull()?.key ?: return@launch
 
-            if (rateEntity == null) {
-                // TODO: requestAddRateData 를 하기
-            } else {
-                // TODO: requestUpdateRateData 를 하기
+            val rateEntity: RateEntity? = getMyRateData(userKey, recipeKey)
+
+            if (rateEntity != null) {
+                _rate.value = rateEntity
             }
         }
     }
 
-    private suspend fun getMyRateData(userKey: String): RateEntity? {
+    private suspend fun getMyRateData(userKey: String, recipeKey: String): RateEntity? {
         return if (userKey.isNotEmpty()) {
-            getRateUseCase.invoke(userKey)
+            getRateUseCase.invoke(userKey, recipeKey)
                 .onFailure {
                     it.printStackTrace()
                 }
@@ -90,45 +87,11 @@ class RatingDialogViewModel @Inject constructor(
         } else null
     }
 
-    // TODO: 사용자가 처음으로 Rate 를 add 함
-    fun requestAddRateData(
-        rateKey: String,
-        rate: Float
-    ) {
+    fun requestUpdateRateData(newRate: Float) {
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
-            if (rate != 0f) {
-                if (rateKey.isNotEmpty()) {
-                    addRateUseCase.invoke(AddRateRequest(rateKey, rate), _recipe.value!!)
-                        .onSuccess {
-                            _loadingState.value = LoadingState.Hidden
-                            _recipeRateUiState.value = RecipeRateUiState.Success(it)
-                            currentRate.value = it.rate!!
-                            _rate.value = it
-                        }
-                        .onFailure {
-                            _loadingState.value = LoadingState.Hidden
-                            _recipeRateUiState.value = RecipeRateUiState.Failed(it.message.orEmpty())
-                            it.printStackTrace()
-                        }
-                }
-            }
-
-        }
-    }
-
-    // TODO: 사용자가 Rate 를 update 함
-    fun requestUpdateRateData(
-        userKey: String,
-        newRate: Float
-    ) {
-        _loadingState.value = LoadingState.Loading
-
-        viewModelScope.launch {
-//            val key = rate.value?.userKey ?: return@launch
-//            val userKey = rate.value?.userKey ?: return@launch
-//            val newRate: MutableLiveData<Float> = MutableLiveData()
+            val userKey = getLoggedUserUseCase().getOrNull()?.key ?: return@launch
 
             updateRateUseCase.invoke(
                 UpdateRateRequest(
@@ -138,10 +101,14 @@ class RatingDialogViewModel @Inject constructor(
                 recipe.value!!
             )
                 .onSuccess {
+                    WLog.d("$it")
                     _loadingState.value = LoadingState.Hidden
                     _recipeRateUiState.value = RecipeRateUiState.Success(it)
+                    currentRate.value = it.rate
+                    _rate.value = it
                 }
                 .onFailure {
+                    WLog.e(it)
                     _loadingState.value = LoadingState.Hidden
                     _recipeRateUiState.value = RecipeRateUiState.Failed(it.message.orEmpty())
                     it.printStackTrace()

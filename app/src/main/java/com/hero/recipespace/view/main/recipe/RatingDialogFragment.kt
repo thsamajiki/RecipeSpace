@@ -6,13 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.FragmentDialogRatingBinding
-import com.hero.recipespace.domain.rate.entity.RateEntity
-import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
@@ -28,10 +25,6 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
-
-//    private val recipe: RecipeEntity by lazy {
-//        requireArguments().getParcelable(KEY_RECIPE)!!
-//    }
 
     private val viewModel by viewModels<RatingDialogViewModel>()
 
@@ -53,7 +46,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         with(viewModel) {
             lifecycleScope.launch {
                 rate.observe(viewLifecycleOwner) {
-
+                    binding.ratingBar.rating = it.rate
                 }
             }
 
@@ -76,14 +69,14 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                             Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
                             // 평가완료했을 때 평가완료된 데이터를 내려주자.
-//                            val result = Bundle().apply {
-//                                putParcelable(
-//                                    Result.RECIPE_KEY,
-////                                    recipe
-//                                )
-//                            }
-//                            setFragmentResult(TAG, result)
-//                            dismiss()
+                            val result = Bundle().apply {
+                                putParcelable(
+                                    Result.KEY_RECIPE,
+                                    recipe.value
+                                )
+                            }
+                            setFragmentResult(TAG, result)
+                            dismiss()
                         }
                         is RecipeRateUiState.Failed -> {
                             Toast.makeText(context, "평가가 반영되지 않았습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
@@ -101,82 +94,31 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
             dismiss()
         }
         binding.tvConfirm.setOnClickListener {
-//            uploadRating()
-            val rateKey: String? = viewModel.userKey.value
-            if (rateKey == null) {
-//                requestUploadRate(rateKey)
-            } else {
-                requestUpdateRate(rateKey, binding.ratingBar.rating)
-            }
+            requestUpdateRate()
         }
     }
 
-    private fun requestUpdateRate(rateKey: String, newRate: Float) {
+    private fun requestUpdateRate() {
         val rating = binding.ratingBar.rating
-        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요?
+        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요? -> ViewModel로 옮겨서 failed 받아서 토스트 보여주세요.
             Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        viewModel.requestUpdateRateData(rateKey, newRate)
-    }
-
-    private fun requestUploadRate(rateKey: String) {
-        val rating = binding.ratingBar.rating
-        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요?
-            Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val rate: RateEntity = makeRateData(rating)
-        viewModel.requestAddRateData(rateKey, rating,) // db 에서 userKey 가 들어가야 함
-//        FirebaseData.getInstance()
-//            .uploadRating(recipe, rate, object : OnCompleteListener<RecipeData> {
-//                override fun onComplete(isSuccess: Boolean, response: Response<RecipeData>?) {
-//                    if (isSuccess) {
-//                        Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
-//
-//                        // 평가완료했을 때 평가완료된 데이터를 내려주자.
-//                        val result = Bundle().apply {
-//                            putParcelable(
-//                                Result.RECIPE_KEY,
-//                                response?.getData()?.toEntity()
-//                            )
-//                        }
-//                        setFragmentResult(TAG, result)
-//                        dismiss()
-//                    } else {
-//                        Toast.makeText(context, "평가가 실패하였습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
-//                            .show()
-//                    }
-//                }
-//            })
-    }
-
-    private fun makeRateData(rate: Float): RateEntity {
-        val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.toString()
-        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl.toString()
-
-        return RateEntity(
-            rateKey = userKey,
-            rate = rate,
-            date = Timestamp.now()
-        )
+        viewModel.requestUpdateRateData(rating)
     }
 
     object Result {
-        const val RECIPE_KEY = "recipe_key"
+        const val KEY_RECIPE = "key_recipe"
     }
 
     companion object {
-        fun newInstance(recipe: RecipeEntity): RatingDialogFragment =
+        fun newInstance(recipeKey: String): RatingDialogFragment =
             RatingDialogFragment().apply {
                 arguments = Bundle().apply {
-//                    putParcelable(KEY_RECIPE, recipe)
+                    putString(RatingDialogViewModel.KEY_RECIPE, recipeKey)
                 }
             }
-
-        private const val KEY_RECIPE = "recipe_key"
 
         const val TAG = "RatingDialog"
     }

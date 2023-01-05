@@ -6,7 +6,6 @@ import com.hero.recipespace.data.rate.remote.RateRemoteDataSource
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.mapper.toEntity
 import com.hero.recipespace.domain.rate.repository.RateRepository
-import com.hero.recipespace.domain.rate.request.AddRateRequest
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.mapper.toData
@@ -27,6 +26,10 @@ class RateRepositoryImpl @Inject constructor(
         return rateLocalDataSource.getData(rateKey).toEntity()
     }
 
+    override suspend fun getRate(userKey: String, recipeKey: String): RateEntity {
+        return rateRemoteDataSource.getData(userKey, recipeKey).toEntity()
+    }
+
     override fun observeRateList(): Flow<List<RateEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
             val rateList = rateRemoteDataSource.getDataList()
@@ -42,25 +45,7 @@ class RateRepositoryImpl @Inject constructor(
             }
     }
 
-//    override suspend fun addRate(recipeKey: String) {
-//        val result = rateRemoteDataSource.add(recipeKey)
-//        rateLocalDataSource.add(result)
-//    }
-//
-//    // 혹시 필요할지 몰라서 만듦
-//    override suspend fun addRate(rate: Float, recipeKey: String) {
-//        val result = rateRemoteDataSource.add(rate, recipeKey)
-//        rateLocalDataSource.add(result)
-//    }
-
-    override suspend fun addRate(request: AddRateRequest, recipeEntity: RecipeEntity): RateEntity {
-        val result = rateRemoteDataSource.add(request, recipeEntity.toData())
-        rateLocalDataSource.add(result)
-
-        return result.toEntity()
-    }
-
-    override suspend fun modifyRate(request: UpdateRateRequest, recipeEntity: RecipeEntity): RateEntity {
+    override suspend fun submitRate(request: UpdateRateRequest, recipeEntity: RecipeEntity): RateEntity {
         val result = rateRemoteDataSource.update(request, recipeEntity.toData())
         rateLocalDataSource.update(result)
 
