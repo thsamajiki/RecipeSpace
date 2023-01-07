@@ -62,6 +62,10 @@ class RecipeListFragment : Fragment() {
 
         setupView()
         setupViewModel()
+        binding.srlRecipeList.setOnRefreshListener {
+            viewModel.refreshRecipeList()
+            binding.srlRecipeList.isRefreshing = false
+        }
         setupFragmentResultListener()
     }
 
@@ -87,7 +91,7 @@ class RecipeListFragment : Fragment() {
             viewLifecycleOwner) {
             _: String, result: Bundle ->
             // 데이터를 수신하자.
-            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.RECIPE_KEY)
+            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
 
             if (recipe != null) {
                 recipeListAdapter.replaceItem(recipe)
@@ -114,7 +118,7 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun showRatingDialog(recipe: RecipeEntity) {
-        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe)
+        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe.key)
 
         ratingDialogFragment.show(childFragmentManager, RatingDialogFragment.TAG)
     }

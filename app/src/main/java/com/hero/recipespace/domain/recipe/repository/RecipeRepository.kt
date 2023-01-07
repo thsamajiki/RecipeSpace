@@ -10,6 +10,8 @@ interface RecipeRepository {
 
     fun observeRecipeList(): Flow<List<RecipeEntity>>
 
+    suspend fun refresh()
+
     suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
 
     suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity

@@ -34,8 +34,7 @@ class RecipeRepositoryImpl @Inject constructor(
         // ViewModel -> get -> Repository -> remote.requestData() -> Remote -> Repository -> Local 에 저장
 
         CoroutineScope(Dispatchers.IO).launch {
-            val recipeList = recipeRemoteDataSource.getDataList()
-            recipeLocalDataSource.addAll(recipeList)
+            refresh()
             cancel()
         }
 
@@ -45,6 +44,11 @@ class RecipeRepositoryImpl @Inject constructor(
                     it.toEntity()
                 }
             }
+    }
+
+    override suspend fun refresh() {
+        val recipeList = recipeRemoteDataSource.getDataList()
+        recipeLocalDataSource.addAll(recipeList)
     }
 
     override suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity {

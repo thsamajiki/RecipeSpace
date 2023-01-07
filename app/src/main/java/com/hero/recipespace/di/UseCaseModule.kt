@@ -5,14 +5,13 @@ import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
 import com.hero.recipespace.domain.message.repository.MessageRepository
-import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
 import com.hero.recipespace.domain.message.usecase.GetMessageUseCase
 import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
+import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
 import com.hero.recipespace.domain.notice.repository.NoticeRepository
 import com.hero.recipespace.domain.notice.usecase.GetNoticeUseCase
 import com.hero.recipespace.domain.notice.usecase.ObserveNoticeListUseCase
 import com.hero.recipespace.domain.rate.repository.RateRepository
-import com.hero.recipespace.domain.rate.usecase.AddRateUseCase
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
 import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
@@ -68,10 +67,6 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideAddRateUseCase(rateRepository: RateRepository) = AddRateUseCase(rateRepository)
-
-    @Provides
-    @Singleton
     fun provideUpdateRateUseCase(rateRepository: RateRepository) = UpdateRateUseCase(rateRepository)
 
     @Provides
@@ -93,6 +88,10 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun provideRemoveRecipeUseCase(recipeRepository: RecipeRepository) = RemoveRecipeUseCase(recipeRepository)
+
+    @Provides
+    @Singleton
+    fun provideRefreshRecipeListUseCase(recipeRepository: RecipeRepository) = RefreshRecipeListUseCase(recipeRepository)
 
     @Provides
     @Singleton

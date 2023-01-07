@@ -37,7 +37,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="top|end"
-                app:shapeAppearance="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                app:shapeAppearance="@style/Circle"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_cancel" />
 
         </FrameLayout>
