@@ -7,25 +7,27 @@ import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.service.RecipeService
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.data.user.remote.UserRemoteDataSource
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import javax.inject.Inject
 
 class RecipeRemoteDataSourceImpl @Inject constructor(
+    private val userRemoteDataSource: UserRemoteDataSource,
     private val recipeService: RecipeService
 ) : RecipeRemoteDataSource {
-    override suspend fun getData(recipeKey: String) : RecipeData {
+    override suspend fun getData(recipeKey: String): RecipeData {
         return recipeService.getRecipe(recipeKey)
     }
 
-    override suspend fun getDataList() : List<RecipeData> {
+    override suspend fun getDataList(): List<RecipeData> {
         return recipeService.getRecipeList()
     }
 
     override suspend fun add(
         request: UploadRecipeRequest,
         onProgress: (Float) -> Unit
-        ) : RecipeData {
+    ): RecipeData {
 
         val downloadUrls = recipeService.uploadImages(
             request.recipePhotoPathList,
@@ -33,8 +35,10 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
         )
 
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-        val userName: String = FirebaseAuth.getInstance().currentUser?.displayName.orEmpty()
-        val profileImageUrl: String = FirebaseAuth.getInstance().currentUser?.photoUrl?.toString().orEmpty()
+        val userData = userRemoteDataSource.getUserData(userKey)
+        val userName: String = userData.name.orEmpty()
+        val profileImageUrl: String = userData.profileImageUrl.orEmpty()
+
 
         Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userName : $userName")
         Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userKey : $userKey")
@@ -79,7 +83,7 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun remove(
         recipeData: RecipeData
-    ) : RecipeData {
+    ): RecipeData {
         return recipeService.remove(recipeData)
     }
 }

@@ -2,19 +2,19 @@ package com.hero.recipespace.ext
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.domain.chat.entity.ChatEntity
-import com.hero.recipespace.domain.message.entity.MessageEntity
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListAdapter
 import com.hero.recipespace.view.main.chat.ChatAdapter
+import com.hero.recipespace.view.main.chat.ChatItem
 import com.hero.recipespace.view.main.chat.ChatListAdapter
+import com.hero.recipespace.view.main.chat.MessageItem
 import com.hero.recipespace.view.main.recipe.EditRecipeImageListAdapter
 import com.hero.recipespace.view.main.recipe.RecipeListAdapter
 import com.hero.recipespace.view.post.PostRecipeImageListAdapter
 
 @BindingAdapter("chatListItems")
-fun RecyclerView.setChatListItems(items: List<ChatEntity>?) {
+fun RecyclerView.setChatListItems(items: List<ChatItem>?) {
     items ?: return
 
     val adapter = this.adapter as? ChatListAdapter
@@ -22,7 +22,7 @@ fun RecyclerView.setChatListItems(items: List<ChatEntity>?) {
 }
 
 @BindingAdapter("chatItems")
-fun RecyclerView.setMessageItems(items: List<MessageEntity>?) {
+fun RecyclerView.setMessageItems(items: List<MessageItem>?) {
     items ?: return
 
     val adapter = this.adapter as? ChatAdapter

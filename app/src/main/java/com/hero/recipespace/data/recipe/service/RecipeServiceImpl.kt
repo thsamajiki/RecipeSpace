@@ -3,10 +3,10 @@ package com.hero.recipespace.data.recipe.service
 import android.net.Uri
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
+import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.util.WLog
 import kotlinx.coroutines.*
@@ -17,12 +17,13 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class RecipeServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : RecipeService {
 
     override suspend fun getRecipe(recipeKey: String): RecipeData {
+        val rateAverage = getRecipeRateAverage(recipeKey)
+
         return suspendCoroutine { continuation ->
             db.collection("Recipe")
                 .document(recipeKey)
@@ -33,8 +34,38 @@ class RecipeServiceImpl @Inject constructor(
                     }
 
                     val recipeData = documentSnapshot.toObject(RecipeData::class.java)
+                        ?.copy(rate = rateAverage)
 
                     continuation.resume(recipeData!!)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    private suspend fun getRecipeRateAverage(recipeKey: String): Float {
+        return suspendCoroutine { continuation ->
+            val recipeRef = db.collection("Recipe").document(recipeKey)
+            val rateRef = recipeRef.collection("RateList")
+
+            rateRef.get()
+                .addOnSuccessListener { querySnapShot ->
+
+                    val rateDataList = querySnapShot.documents.mapNotNull { documentSnapshot ->
+                        documentSnapshot.toObject(RateData::class.java)
+                    }
+
+                    WLog.d("rateDataList $rateDataList")
+
+                    val rateAverage =
+                        if (rateDataList.isNotEmpty()) {
+                            rateDataList.sumOf { it.rate?.toInt() ?: 0 } / rateDataList.size.toFloat()
+                        } else {
+                            0f
+                        }
+
+                    continuation.resume(rateAverage)
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
@@ -56,7 +87,53 @@ class RecipeServiceImpl @Inject constructor(
                             documentSnapshot.toObject(RecipeData::class.java)
                         }
 
-                    continuation.resume(recipeDataList)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = recipeDataList.map { recipe ->
+                            async {
+                                val rateAverage = getRecipeRateAverage(recipe.key)
+                                recipe.copy(rate = rateAverage)
+                            }
+                        }
+                            .awaitAll()
+
+                        continuation.resume(result)
+                        WLog.d("result $result")
+                        cancel()
+                    }
+                })
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    override suspend fun getMyRecipeList(userKey: String): List<RecipeData> {
+        return suspendCoroutine { continuation ->
+            db.collection("Recipe")
+                .whereEqualTo("userKey", userKey)
+                .get()
+                .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
+                    if (queryDocumentSnapshots.isEmpty) {
+                        return@OnSuccessListener
+                    }
+                    val recipeDataList = queryDocumentSnapshots.documents
+                        .mapNotNull { documentSnapshot ->
+                            documentSnapshot.toObject(RecipeData::class.java)
+                        }
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val result = recipeDataList.map { recipe ->
+                            async {
+                                val rateAverage = getRecipeRateAverage(recipe.key)
+                                recipe.copy(rate = rateAverage)
+                            }
+                        }
+                            .awaitAll()
+
+                        continuation.resume(result)
+
+                        cancel()
+                    }
                 })
                 .addOnFailureListener {
                     continuation.resumeWithException(it)

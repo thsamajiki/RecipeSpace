@@ -60,8 +60,7 @@
                     android:paddingBottom="7dp"
                     android:src="@drawable/ic_option_menu"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="visible" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -160,8 +159,11 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:fitsSystemWindows="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="parent" >
+
+        </androidx.drawerlayout.widget.DrawerLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

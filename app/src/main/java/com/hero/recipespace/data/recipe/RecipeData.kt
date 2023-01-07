@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 @Keep
 @Parcelize
 @Entity(tableName = "recipe_db")
-data class RecipeData(
+data class RecipeData constructor(
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "key")

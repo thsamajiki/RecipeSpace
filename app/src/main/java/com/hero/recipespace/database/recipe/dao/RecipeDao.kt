@@ -6,7 +6,7 @@ import com.hero.recipespace.data.recipe.RecipeData
 
 @Dao
 interface RecipeDao {
-    @Query("SELECT * FROM recipe_db ORDER BY `key` ASC")
+    @Query("SELECT * FROM recipe_db ORDER BY postDate DESC")
     fun observeAllRecipes() : LiveData<List<RecipeData>> //
 
     @Query("SELECT * FROM recipe_db WHERE `key` = :key limit 1")

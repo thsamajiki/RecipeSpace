@@ -8,6 +8,8 @@ interface RecipeService {
     
     suspend fun getRecipeList(): List<RecipeData>
 
+    suspend fun getMyRecipeList(userKey: String): List<RecipeData>
+
     suspend fun add(desc: String,
                     photoUrlList: List<String>,
                     postDate: Timestamp,

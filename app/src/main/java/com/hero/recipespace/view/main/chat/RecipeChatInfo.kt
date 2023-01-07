@@ -4,7 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class OtherUserInfo(
-    val key: String,
-    val name: String
-): Parcelable
+data class RecipeChatInfo(
+    val userKey: String,
+    val userName: String,
+    val recipeKey: String,
+) : Parcelable

@@ -11,13 +11,20 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.chat.ChatData
+import com.hero.recipespace.data.chat.service.ChatServiceImpl
 import com.hero.recipespace.data.recipe.RecipeData
+import com.hero.recipespace.data.recipe.service.RecipeServiceImpl
 import com.hero.recipespace.data.user.UserData
+import com.hero.recipespace.di.FirebaseModule
 import com.hero.recipespace.domain.user.entity.Email
 import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.LoginUserRequest
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.util.WLog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -26,7 +33,7 @@ import kotlin.coroutines.suspendCoroutine
 class UserServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore,
-    private val firebaseStorage: FirebaseStorage,
+    private val firebaseStorage: FirebaseStorage
 ) : UserService {
 
     override suspend fun login(request: LoginUserRequest): UserData {
@@ -35,7 +42,7 @@ class UserServiceImpl @Inject constructor(
         return getUserData(userKey)
     }
 
-    override suspend fun getUserData(userKey: String) : UserData {
+    override suspend fun getUserData(userKey: String): UserData {
         return suspendCoroutine { continuation ->
             db.collection("User")
                 .document(userKey)
@@ -55,7 +62,7 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-    private suspend fun loginToFirebase(email: String, pwd: String) : String {
+    private suspend fun loginToFirebase(email: String, pwd: String): String {
         return suspendCoroutine { continuation ->
             firebaseAuth.signInWithEmailAndPassword(email, pwd)
                 .addOnSuccessListener { authResult ->
@@ -139,7 +146,11 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-    private fun updateUserProfile(name: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    private fun updateUserProfile(
+        name: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val user = firebaseAuth.currentUser
 
         val request = userProfileChangeRequest {
@@ -157,26 +168,38 @@ class UserServiceImpl @Inject constructor(
     }
 
     // TODO: 2022-12-15 하단에 있는 update 메소드들과 합치기
-    override suspend fun update(userData: UserData) : UserData {
+    override suspend fun update(userData: UserData): UserData {
         val editData = HashMap<String, Any>()
 
-        if (!TextUtils.isEmpty(userData.profileImageUrl)) {
-            editData["profileImageUrl"] = userData.profileImageUrl as String
+        val profileImageUrl = userData.profileImageUrl
+        if (!profileImageUrl.isNullOrEmpty()) {
+            editData["profileImageUrl"] = profileImageUrl
         }
-        editData["name"] = userData.name as String
+        editData["name"] = userData.name.orEmpty()
+
+        val recipeDataList = getMyRecipeDataList(userData.key) // 레시피 리스트 조회해서 넣기,
+        val chatDataList = getChatDataList(userData.key) // 채팅 리스트 조회해서 넣기
 
         return suspendCoroutine<UserData> { continuation ->
             db.collection("User")
-                .document(userData.key.orEmpty())
+                .document(userData.key)
                 .update(editData)
                 .addOnSuccessListener {
-                    updateUserProfile(userData.name!!,
-                    onSuccess = {
-                        continuation.resume(userData)
-                    },
-                    onFailure = {
-                        continuation.resumeWithException(it)
-                    })
+                    updateUserProfile(
+                        name = userData.name!!,
+                        onSuccess = {
+                            updateUserWithRecipeAndChat(
+                                userData,
+                                recipeDataList = recipeDataList,
+                                chatDataList = chatDataList
+                            )
+
+                            continuation.resume(userData)
+                        },
+                        onFailure = {
+                            continuation.resumeWithException(it)
+                        }
+                    )
                 }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
@@ -186,45 +209,34 @@ class UserServiceImpl @Inject constructor(
         profileImageUrl: String,
         progress: (Float) -> Unit,
     ): String {
+        val imageFolderRef = firebaseStorage.reference.child(PROFILE_IMAGE_PATH)
 
-        return suspendCoroutine { continuation ->
-            val storageRef =
-                firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
+        return withContext(Dispatchers.IO) {
+            val photoPath = profileImageUrl
+            val imageRef = imageFolderRef.child("${Uri.parse(photoPath).lastPathSegment}")
 
-            val photoPath: String = profileImageUrl
-            val imageFile = Uri.parse(photoPath)
+            async {
+                kotlin.runCatching {
+                    val imageFile = Uri.parse(photoPath)
+                    val uploadTask = imageRef.putFile(imageFile)
 
-            val photoRef = storageRef.child("${imageFile.lastPathSegment}")
-
-            val uploadTask = photoRef.putFile(imageFile)
-
-            uploadTask
-                .addOnProgressListener { taskSnapshot ->
-                    val btf = taskSnapshot.bytesTransferred
-                    val tbc = taskSnapshot.totalByteCount
-                    val percent = btf.toFloat() / tbc.toFloat() * 100
-                    progress(percent)
-                }.continueWithTask { task ->
-                    if (!task.isSuccessful) {
-//                        throw task.exception!!
-                        task.exception?.let {
-                            throw it
-                        }
+                    uploadTask
+                        .await()
+                        .storage
+                        .downloadUrl
+                        .await()
+                        .toString()
+                }
+                    .onFailure {
+                        WLog.e(it)
                     }
-                    storageRef.downloadUrl
+            }
+                .await()
+                .onFailure {
+                    WLog.e("$it")
                 }
-                .addOnSuccessListener { uri ->
-//                    val photoMap: HashMap<String, Any> = HashMap()
-//                    photoMap["photoUrl"] = uri
-
-//                    photoRef.downloadUrl.addOnSuccessListener {
-//
-//                    }
-                    continuation.resume(uri.toString())
-
-                }.addOnFailureListener {
-                    continuation.resumeWithException(it)
-                }
+                .getOrNull()
+                .orEmpty()
         }
     }
 
@@ -242,13 +254,33 @@ class UserServiceImpl @Inject constructor(
             .addOnFailureListener { }
     }
 
+    private suspend fun getMyRecipeDataList(userKey: String): List<RecipeData> {
+        val recipeService = RecipeServiceImpl(
+            FirebaseModule.provideFirestore(),
+            FirebaseModule.provideFirebaseStorage()
+        )
+        return recipeService.getMyRecipeList(userKey)
+    }
+
+    private suspend fun getChatDataList(userKey: String): List<ChatData> {
+        val chatService = ChatServiceImpl(
+            FirebaseModule.provideFirebaseAuth(),
+            FirebaseModule.provideFirestore(),
+            this
+        )
+        return chatService.getDataList(userKey.orEmpty())
+    }
 
     // TODO EditProfileActivity 를 통해 나의 사용자 정보(나의 프로필 사진, 나의 사용자 이름)가 변경되었을 때
     //  update() 메소드에서 트랜잭션 처리할 때 필요한 데이터
     //  1. UserData 의 profileImageUrl, name
     //  2. RecipeData 의 profileImageUrl, userName
-    //  3. ChatActivity의 profileImageUrl, name
-    private fun updateUserWithRecipeAndChat(userData: UserData, recipeData: RecipeData, chatData: ChatData) {
+    //  3. ChatActivity 의 profileImageUrl, name
+    private fun updateUserWithRecipeAndChat(
+        userData: UserData,
+        recipeDataList: List<RecipeData>,
+        chatDataList: List<ChatData>
+    ) {
         db.runTransaction { transaction ->
             val editUserData = HashMap<String, Any>()
 
@@ -258,29 +290,38 @@ class UserServiceImpl @Inject constructor(
             }
             editUserData["name"] = userData.name as String
             val userRef: DocumentReference = db.collection("User")
-                .document(userData.key.orEmpty())
+                .document(userData.key)
             transaction.update(userRef, editUserData)
 
 
             // 2. RecipeData 의 profileImageUrl, name
+            // for 문 돌리기
             val editRecipeData = HashMap<String, Any>()
-            if (!TextUtils.isEmpty(recipeData.profileImageUrl)) {
-                editRecipeData["profileImageUrl"] = recipeData.profileImageUrl as String
+            if (!TextUtils.isEmpty(userData.profileImageUrl)) {
+                editRecipeData["profileImageUrl"] = userData.profileImageUrl as String
             }
-            editRecipeData["name"] = recipeData.userName as String
-            val recipeRef: DocumentReference = db.collection("Recipe")
-                .document(recipeData.key.orEmpty())
-            transaction.update(recipeRef, editRecipeData)
+            editRecipeData["userName"] = userData.name as String
+
+            for (i: Int in recipeDataList.indices) {
+                val recipeRef: DocumentReference = db.collection("Recipe")
+                    .document(recipeDataList[i].key)
+                transaction.update(recipeRef, editRecipeData)
+            }
+
 
             // 3. ChatData 의 profileImageUrl, name
-//            val editChatData = HashMap<String, Any>()
-//            if (!TextUtils.isEmpty(chatData.profileImageUrl)) {
-//                editChatData["profileImageUrl"] = chatData.profileImageUrl as String
-//            }
-//            editChatData["name"] = chatData.userName as String
-//            val chatRef: DocumentReference = firebaseFirestore.collection("Chat")
-//                .document(chatData.key.orEmpty())
-//            transaction.update(chatRef, editChatData)
+            // for 문 돌리기
+            val editChatData = HashMap<String, Any>()
+            if (!TextUtils.isEmpty(userData.profileImageUrl)) {
+                editChatData["userProfileImages.${userData.key}"] = userData.profileImageUrl as String
+            }
+            editChatData["userNames.${userData.key}"] = userData.name as String
+
+            for (i: Int in chatDataList.indices) {
+                val chatRef: DocumentReference = db.collection("Chat")
+                    .document(chatDataList[i].key)
+                transaction.update(chatRef, editChatData)
+            }
 
             null
         }
@@ -292,7 +333,7 @@ class UserServiceImpl @Inject constructor(
             }
     }
 
-    override suspend fun remove(userData: UserData) : UserData {
+    override suspend fun remove(userData: UserData): UserData {
         return suspendCoroutine<UserData> { continuation ->
             db.collection("User")
                 .document(userData.key.orEmpty())
@@ -307,7 +348,6 @@ class UserServiceImpl @Inject constructor(
     }
 
     companion object {
-        const val DEFAULT_IMAGE_PATH = "images/"
         const val PROFILE_IMAGE_PATH = "profile/"
     }
 }

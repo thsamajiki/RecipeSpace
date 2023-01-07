@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -21,8 +20,9 @@ import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.util.TimeUtils
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.main.chat.ChatActivity
-import com.hero.recipespace.view.main.chat.OtherUserInfo
+import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.PostRecipeActivity.Companion.EXTRA_RECIPE_ENTITY
@@ -144,7 +144,11 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 val intent = ChatActivity.getIntent(
                     this,
-                    otherUserInfo = OtherUserInfo(recipe.userKey, recipe.userName)
+                    recipeChatInfo = RecipeChatInfo(
+                        userKey = recipe.userKey,
+                        userName = recipe.userName,
+                        recipeKey = recipe.key
+                    )
                 )
                 startActivity(intent)
             }
@@ -152,8 +156,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.ratingContainer.setOnClickListener {
             val recipe = viewModel.recipe.value ?: return@setOnClickListener
-            Log.d("qwer", "setupListeners: recipe : " + recipe.key)
-            Toast.makeText(this, "ratingBar.setOnClickListener", Toast.LENGTH_SHORT).show()
+            WLog.d("setupListeners: recipe : " + recipe.key)
 
             showRatingDialog(recipe)
         }
@@ -176,10 +179,12 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             this
         ) { _: String, result: Bundle ->
             // 데이터를 수신하자.
-            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.RECIPE_KEY)
+            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
 
             if (recipe != null) {
-                recipeDetailAdapter.replaceItem(recipe.key)
+                // TODO: 2023-01-03 여기에서 기존 RatingBar 를 업데이트 하세요.
+                val rate = recipe.rate!! // 이 rate 데이터가 제대로 계산된 데이터가 아닐 수 있음
+                binding.ratingBar.rating = rate
             }
         }
     }
@@ -210,7 +215,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showRatingDialog(recipe: RecipeEntity) {
-        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe)
+        val ratingDialogFragment = RatingDialogFragment.newInstance(recipe.key)
 
         ratingDialogFragment.show(supportFragmentManager, RatingDialogFragment.TAG)
     }

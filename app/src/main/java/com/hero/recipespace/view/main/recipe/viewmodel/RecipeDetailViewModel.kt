@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
 import com.google.firebase.Timestamp
-import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
@@ -34,7 +33,6 @@ sealed class OpenRateUIState {
 class RecipeDetailViewModel @Inject constructor(
     application: Application,
     savedStateHandle: SavedStateHandle,
-    private val createNewChatRoomUseCase: CreateNewChatRoomUseCase,
     private val getChatUseCase: GetChatUseCase,
     private val getRecipeUseCase: GetRecipeUseCase
 ) : AndroidViewModel(application) {
