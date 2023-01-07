@@ -58,13 +58,15 @@ class UserRemoteDataSourceImpl @Inject constructor(
     ): UserData {
         val newUserName: String = request.newUserName
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
-        val newProfileImageUrl: String = request.newProfileImageUrl
+        val newProfileImagePath: String = request.newProfileImageUrl
+
+        val profileImageUrl = userService.uploadImage(newProfileImagePath, progress = {})
 
         val newUserData = UserData(
             key = userKey,
             name = newUserName,
             email = FirebaseAuth.getInstance().currentUser?.email.orEmpty(),
-            profileImageUrl = newProfileImageUrl
+            profileImageUrl = profileImageUrl
         )
 
         return userService.update(newUserData)
