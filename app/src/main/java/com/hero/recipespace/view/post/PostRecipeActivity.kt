@@ -137,7 +137,7 @@ class PostRecipeActivity : AppCompatActivity(),
         }
     }
 
-    // RecyclerView Item 간 간격 조정하기 위한 클래스ㅇ
+    // RecyclerView Item 간 간격 조정하기 위한 클래스
     inner class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) : RecyclerView.ItemDecoration() {
 
         override fun getItemOffsets(
