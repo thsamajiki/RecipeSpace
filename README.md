@@ -20,7 +20,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 앱의 버전
-- minSdkVersion : 27
+- minSdkVersion : 23
 - targetSdkVersion : 32
 
 
