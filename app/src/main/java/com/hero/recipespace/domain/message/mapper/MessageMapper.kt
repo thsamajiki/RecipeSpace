@@ -8,22 +8,22 @@ fun MessageData.toEntity(): MessageEntity {
     WLog.d("messageId $messageId")
 
     return MessageEntity(
+        messageId = messageId,
         chatKey = chatKey,
         userKey = userKey,
         message = message,
         timestamp = timestamp,
-        confirmed = confirmed,
-        messageId = messageId
+        isRead = isRead
     )
 }
 
 fun MessageEntity.toData(): MessageData {
     return MessageData(
+        messageId = messageId,
         chatKey = chatKey,
         userKey = userKey,
         message = message,
         timestamp = timestamp,
-        confirmed = confirmed,
-        messageId = messageId
+        isRead = isRead
     )
 }

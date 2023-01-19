@@ -6,12 +6,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class MessageEntity(
-    val chatKey: String = "",
+    var messageId: String = "",
+    var chatKey: String = "",
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,
-    var confirmed: Boolean? = null,
-    var messageId: String = "",
+    var isRead: Boolean? = null,
     var userName: String = ""
 ) : Parcelable {
 
