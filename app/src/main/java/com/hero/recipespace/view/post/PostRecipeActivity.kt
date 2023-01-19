@@ -48,7 +48,6 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private val viewModel by viewModels<PostRecipeViewModel>()
 
-    // TODO: 2022-12-13 rv_recipe_images 리사이클러뷰에 갤러리에서 선택한 이미지들을 넣어주기
     private val openGalleryResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {

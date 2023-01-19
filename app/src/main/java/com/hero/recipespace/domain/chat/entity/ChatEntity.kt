@@ -7,11 +7,11 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ChatEntity(
     val key: String = "",
-    // @Embedded
     val lastMessage: MessageEntity? = null,
     val userProfileImages: Map<String, String>? = null,
     val userNames: Map<String, String>? = null,
     val userList: List<String>? = null,
-    val recipeKey: String = ""
+    val recipeKey: String = "",
+    val unreadMessageCount: Int = 0
 ) : Parcelable {
 }

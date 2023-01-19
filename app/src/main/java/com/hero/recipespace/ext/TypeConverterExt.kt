@@ -23,7 +23,6 @@ object TypeConverterExt {
         return if(value == null) "" else Gson().toJson(value)
     }
 
-    // TODO: 2022-12-20 앱 실행하면 오류나는 원인을 해결하기 위해 이 부분을 수정해야 함
     @TypeConverter
     fun booleanToMap(value: String): Map<String, Boolean> {
         return Gson().fromJson(value,  object : TypeToken<Map<String, Boolean>>() {}.type)
@@ -48,12 +47,6 @@ object TypeConverterExt {
     fun toMessageData(value: String): MessageData {
         return Gson().fromJson(value, object : TypeToken<MessageData>() {}.type)
     }
-
-    // TODO: 2022-12-20 위에 있는게 틀렸으면 주석처리된 메소드로 대체해보기
-//    @TypeConverter
-//    fun toMessageData(value: String): MessageData {
-//        return Gson().fromJson(value, MessageData::class.java)
-//    }
 
     @TypeConverter
     fun fromTimestamp(value: Long?): Timestamp? = if (value == null) {
