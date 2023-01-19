@@ -7,6 +7,7 @@ import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
 import com.hero.recipespace.domain.message.repository.MessageRepository
 import com.hero.recipespace.domain.message.usecase.GetMessageUseCase
 import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
+import com.hero.recipespace.domain.message.usecase.ReadMessageUseCase
 import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
 import com.hero.recipespace.domain.notice.repository.NoticeRepository
 import com.hero.recipespace.domain.notice.usecase.GetNoticeUseCase
@@ -52,6 +53,10 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun provideAddMessageUseCase(messageRepository: MessageRepository) = SendMessageUseCase(messageRepository)
+
+    @Provides
+    @Singleton
+    fun provideReadMessageUseCase(messageRepository: MessageRepository) = ReadMessageUseCase(messageRepository)
 
     @Provides
     @Singleton
