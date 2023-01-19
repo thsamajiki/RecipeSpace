@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.message.remote
 
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.data.message.request.ReadMessageDataRequest
 import com.hero.recipespace.data.message.service.MessageService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -11,6 +12,10 @@ class MessageRemoteDataSourceImpl @Inject constructor(
 
     override fun getData(messageKey: String): MessageData {
         return messageService.getData(messageKey)
+    }
+
+    override suspend fun readMessage(request: ReadMessageDataRequest): Boolean {
+        return messageService.readMessage(request)
     }
 
     override suspend fun getDataList(

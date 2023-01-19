@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="messageRight"
@@ -53,13 +54,14 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tv_message_not_read_remaining"
+            android:id="@+id/tv_message_not_read_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/chat_room_people_count"
+            android:text="1"
             android:textColor="#F38108"
+            android:visibility="@{messageRight.isRead() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_chat_date" />
 

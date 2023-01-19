@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.data.message.request.ReadMessageDataRequest
 import com.hero.recipespace.util.WLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,33 @@ class MessageServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override suspend fun readMessage(request: ReadMessageDataRequest): Boolean {
+        WLog.d("request.unreadMessageList ${request.unreadMessageList}")
+        return suspendCoroutine { continuation ->
+            db.runTransaction { transaction ->
+                request.unreadMessageList.forEach { message ->
+
+                    val messageRef = db.collection("Chat")
+                        .document(request.chatKey)
+                        .collection("Messages")
+                        .document(message.messageId)
+
+                    val editData = mapOf("isRead" to true)
+                    transaction.update(messageRef, editData)
+                }
+
+                null
+            }
+                .addOnSuccessListener {
+                    continuation.resume(true)
+                }
+                .addOnFailureListener {
+                    continuation.resume(false)
+                    it.printStackTrace()
+                }
+        }
+    }
+
     override suspend fun getDataList(chatKey: String): Flow<List<MessageData>> {
         return callbackFlow {
             db.collection("Chat")
@@ -37,8 +65,10 @@ class MessageServiceImpl @Inject constructor(
                     }
 
                     val messageList = queryDocumentSnapshots.documentChanges.mapNotNull {
+                        val isRead = (it.document.data["isRead"] as? Boolean) == true
                         it.document.toObject(MessageData::class.java).apply {
                             messageId = it.document.id
+                            this.isRead = isRead
                         }
                     }
 

@@ -3,10 +3,13 @@ package com.hero.recipespace.database.message
 import com.hero.recipespace.data.message.MessageData
 import com.hero.recipespace.data.message.local.MessageLocalDataSource
 import com.hero.recipespace.data.message.remote.MessageRemoteDataSource
+import com.hero.recipespace.data.message.request.ReadMessageDataRequest
 import com.hero.recipespace.domain.chat.repository.ChatRepository
 import com.hero.recipespace.domain.message.entity.MessageEntity
+import com.hero.recipespace.domain.message.mapper.toData
 import com.hero.recipespace.domain.message.mapper.toEntity
 import com.hero.recipespace.domain.message.repository.MessageRepository
+import com.hero.recipespace.domain.message.request.ReadMessageRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +25,16 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun getMessage(messageKey: String) : MessageEntity {
         return messageLocalDataSource.getData(messageKey).toEntity()
+    }
+
+    override suspend fun readMessage(request: ReadMessageRequest): Boolean {
+        return messageRemoteDataSource.readMessage(
+            ReadMessageDataRequest(
+                request.chatKey,
+                request.unreadMessageList.map(MessageEntity::toData),
+                request.userKey
+            )
+        )
     }
 
     override fun getMessageList(chatKey: String) : Flow<List<MessageEntity>> {
