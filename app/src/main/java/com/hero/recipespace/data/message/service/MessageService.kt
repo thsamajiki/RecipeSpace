@@ -9,6 +9,8 @@ interface MessageService {
 
     suspend fun readMessage(request: ReadMessageDataRequest): Boolean
 
+    suspend fun getMessageCount(chatKey: String, myKey: String): Int
+
     suspend fun getDataList(chatKey: String): Flow<List<MessageData>>
 
     suspend fun add(chatKey: String, message: String): MessageData

@@ -100,8 +100,8 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
         fun bind(message: MessageItem) {
             binding.messageRight = message
 
-            if (message.confirmed == true) {
-                binding.tvMessageNotReadRemaining.visibility = View.GONE
+            if (message.isRead == true) {
+                binding.tvMessageNotReadCheck.visibility = View.GONE
             }
 
             binding.executePendingBindings()

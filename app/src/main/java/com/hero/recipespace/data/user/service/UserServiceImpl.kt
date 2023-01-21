@@ -12,6 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.chat.service.ChatServiceImpl
+import com.hero.recipespace.data.message.service.MessageServiceImpl
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.service.RecipeServiceImpl
 import com.hero.recipespace.data.user.UserData
@@ -263,10 +264,13 @@ class UserServiceImpl @Inject constructor(
     }
 
     private suspend fun getChatDataList(userKey: String): List<ChatData> {
+        val auth = FirebaseModule.provideFirebaseAuth()
+        val db = FirebaseModule.provideFirestore()
         val chatService = ChatServiceImpl(
             FirebaseModule.provideFirebaseAuth(),
             FirebaseModule.provideFirestore(),
-            this
+            this,
+            MessageServiceImpl(auth, db)
         )
         return chatService.getDataList(userKey.orEmpty())
     }

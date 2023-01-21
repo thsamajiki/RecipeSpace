@@ -8,14 +8,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Transaction
 import com.hero.recipespace.data.chat.ChatData
 import com.hero.recipespace.data.message.MessageData
+import com.hero.recipespace.data.message.service.MessageService
 import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.service.UserService
 import com.hero.recipespace.domain.chat.request.AddChatRequest
 import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.main.chat.RecipeChatInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -24,7 +28,8 @@ import kotlin.coroutines.suspendCoroutine
 class ChatServiceImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore,
-    private val userService: UserService
+    private val userService: UserService,
+    private val messageService: MessageService
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         return suspendCoroutine { continuation ->
@@ -110,7 +115,11 @@ class ChatServiceImpl @Inject constructor(
                             val chatData: ChatData =
                                 documentChange.document.toObject(ChatData::class.java)
 
-                            this.trySend(documentChange.type to chatData)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val messageCount = messageService.getMessageCount(chatData.key, userKey)
+                                chatData.unreadMessageCount = messageCount
+                                this@callbackFlow.trySend(documentChange.type to chatData)
+                            }
                         }
                     }
                 })
@@ -152,7 +161,7 @@ class ChatServiceImpl @Inject constructor(
                     userKey = myUserKey,
                     message = request.message,
                     timestamp = Timestamp.now(),
-                    confirmed = false
+                    isRead = false
                 )
 
                 val chatData = ChatData(

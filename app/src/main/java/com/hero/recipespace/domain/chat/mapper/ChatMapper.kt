@@ -13,6 +13,7 @@ fun ChatData.toEntity(): ChatEntity {
         userNames = userNames,
         userList = userList,
         recipeKey = recipeKey,
+        unreadMessageCount = unreadMessageCount
     )
 }
 
@@ -24,5 +25,6 @@ fun ChatEntity.toData(): ChatData {
         userNames = userNames,
         userList = userList,
         recipeKey = recipeKey,
+        unreadMessageCount = unreadMessageCount
     )
 }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor(
@@ -29,6 +30,7 @@ class MessageServiceImpl @Inject constructor(
             db.runTransaction { transaction ->
                 request.unreadMessageList.forEach { message ->
 
+                    // 1. 메시지 읽음 여부 갱신
                     val messageRef = db.collection("Chat")
                         .document(request.chatKey)
                         .collection("Messages")
@@ -36,6 +38,14 @@ class MessageServiceImpl @Inject constructor(
 
                     val editData = mapOf("isRead" to true)
                     transaction.update(messageRef, editData)
+
+
+                    // 2. 채팅 읽지 않은 메시지 개수 갱신
+                    val chatRef = db.collection("Chat")
+                        .document(request.chatKey)
+
+                    val editChatData = HashMap<String, Any>()
+                    transaction.update(chatRef, editChatData)
                 }
 
                 null
@@ -48,6 +58,34 @@ class MessageServiceImpl @Inject constructor(
                     it.printStackTrace()
                 }
         }
+    }
+
+    override suspend fun getMessageCount(chatKey: String, myKey: String): Int {
+        return suspendCoroutine { continuation ->
+            db.collection("Chat")
+                .document(chatKey)
+                .collection("Messages")
+                .get()
+                .addOnSuccessListener { queryDocumentSnapshots ->
+                    val unreadMessageList = queryDocumentSnapshots.documents
+                        .mapNotNull {
+                            val isRead = (it.data?.get("isRead") as? Boolean) == true
+                            it.toObject(MessageData::class.java)?.apply {
+                                messageId = it.id
+                                this.isRead = isRead
+                            }
+                        }
+                        .filter {
+                            it.isRead == false && it.userKey != myKey
+                        }
+
+                    continuation.resume(unreadMessageList.size)
+                }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+
     }
 
     override suspend fun getDataList(chatKey: String): Flow<List<MessageData>> {

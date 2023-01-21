@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <import type="android.view.View" />
         <variable
             name="chat"
             type="com.hero.recipespace.view.main.chat.ChatItem" />
@@ -64,16 +64,49 @@
             app:layout_constraintTop_toTopOf="parent"
             app:timestamp="@{chat.lastTimestamp}" />
 
-        <TextView
+<!--        <TextView-->
+<!--            android:id="@+id/tv_unread_message_count"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="20dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:text='@{chat.unreadMessageCount}'-->
+<!--            android:textColor="#B5143A"-->
+<!--            android:textSize="@dimen/title_text_size"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
-            android:text="+99"
-            android:textColor="#B5143A"
-            android:textSize="@dimen/title_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/tv_plus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}"
+                android:text="+"
+                android:textColor="#B5143A"
+                android:textSize="@dimen/title_text_size" />
+
+            <TextView
+                android:id="@+id/tv_unread_message_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}"
+                android:text="@{String.valueOf(chat.unreadMessageCount)}"
+                android:textColor="#B5143A"
+                android:textSize="@dimen/title_text_size" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

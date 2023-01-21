@@ -8,7 +8,9 @@ import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatByRecipeChatInfoUseCase
 import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.message.entity.MessageEntity
+import com.hero.recipespace.domain.message.request.ReadMessageRequest
 import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
+import com.hero.recipespace.domain.message.usecase.ReadMessageUseCase
 import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
@@ -46,6 +48,7 @@ class ChatViewModel @Inject constructor(
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val observeMessageListUseCase: ObserveMessageListUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
+    private val readMessageUseCase: ReadMessageUseCase
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -94,9 +97,11 @@ class ChatViewModel @Inject constructor(
     val messageList: LiveData<List<MessageItem>>
         get() = _messageList
 
+    private val _isRead = MutableLiveData<Boolean>()
+    val isRead: LiveData<Boolean>
+        get() = _isRead
 
-    // TODO: 2022-12-26 이전에 채팅한 적이 있으면 채팅방을 불러오기
-    // TODO: 2022-12-26 이전에 채팅한 적이 없으면 우측 하단의 메시지 전송 버튼을 눌렀을 때 채팅방을 생성하기
+
     init {
         val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
 
@@ -113,6 +118,17 @@ class ChatViewModel @Inject constructor(
             .flowOn(Dispatchers.Main)
             .collect { messageList ->
                 WLog.d("observeMessage $messageList")
+
+                val unreadMessageList = messageList
+                    .filter {
+                        it.isRead == false
+                    }
+                    .filter {
+                        it.userKey != myKey
+                    }
+
+                readMessage(unreadMessageList)
+
                 _messageList.value = messageList
                     .map { message ->
                         val userName = chat.value?.userNames?.get(message.userKey)
@@ -129,6 +145,17 @@ class ChatViewModel @Inject constructor(
                         )
                     }
             }
+    }
+
+    private suspend fun readMessage(
+        unreadMessageList: List<MessageEntity>
+    ) {
+        val chatKey = chat.value?.key ?: return
+        val userKey = getLoggedUserUseCase().getOrNull()?.key ?: return
+
+        readMessageUseCase(
+            ReadMessageRequest(chatKey, unreadMessageList, userKey)
+        )
     }
 
     private suspend fun getChatRoom(chatKey: String, chatInfo: RecipeChatInfo?): ChatEntity? {
@@ -158,8 +185,6 @@ class ChatViewModel @Inject constructor(
         } else null
     }
 
-    // TODO: 2022-12-26 이전에 채팅한 적이 없는 경우에 DB에 저장된 채팅방을 생성하기
-    // TODO: 2022-12-26 메시지 내용을 입력하지 않고 그냥 '보내기' 버튼을 누르면 Toast 메시지 띄우고 메시지를 보내지 않도록 하기
     fun sendMessage(message: String) {
         viewModelScope.launch {
             if (message != "") {
