@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.hero.recipespace.MainActivity
 import com.hero.recipespace.R
-import com.hero.recipespace.database.FirebaseData
 import com.hero.recipespace.databinding.ActivitySignUpBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
@@ -26,8 +25,6 @@ import kotlinx.coroutines.launch
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivitySignUpBinding
-
-    private val firebaseData: FirebaseData = FirebaseData.getInstance()
 
     private val viewModel by viewModels<SignUpViewModel>()
 
