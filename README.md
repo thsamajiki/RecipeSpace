@@ -59,28 +59,20 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 ## 개발 후 느낀 점
 
 
-
 ## 스크린샷
-<img src="/images/Splash.png" width="180px" height="320px" title="Splash" alt="Splash"></img>
-<img src="/images/Login.png" width="180px" height="320px" title="Login" alt="Login"></img>
-<img src="/images/SignUp.png" width="180px" height="320px" title="SignUp" alt="SignUp"></img>
-<img src="/images/RecipeFeed.png" width="180px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
-<img src="/images/FeedDetail.png" width="180px" height="320px" title="FeedDetail" alt="FeedDetail"></img>
-<img src="/images/Upload.png" width="180px" height="320px" title="Upload" alt="Upload"></img>
-<img src="/images/ChatList.png" width="180px" height="320px" title="ChatList" alt="ChatList"></img>
-<img src="/images/ChattingRoom.png" width="180px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
-<img src="/images/Profile.png" width="180px" height="320px" title="Profile" alt="Profile"></img>
-<img src="/images/ProfileEdit.png" width="180px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
-
-
-## 시연 영상
-<img src="/images/레시피앱 시연.gif" width="360px" height="640px" title="test_video" alt="Test_video"></img>
-
-
+<img src="/images/splash.png" width="180px" height="320px" title="Splash" alt="Splash"></img>
+<img src="/images/login.png" width="180px" height="320px" title="Login" alt="Login"></img>
+<img src="/images/sign_up.png" width="180px" height="320px" title="SignUp" alt="SignUp"></img>
+<img src="/images/recipe_feed.png" width="180px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
+<img src="/images/recipe_detail.png" width="180px" height="320px" title="FeedDetail" alt="FeedDetail"></img>
+<img src="/images/post_recipe.png" width="180px" height="320px" title="Upload" alt="Upload"></img>
+<img src="/images/chat_list.png" width="180px" height="320px" title="ChatList" alt="ChatList"></img>
+<img src="/images/chat_room.png" width="180px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
+<img src="/images/account_profile.png" width="180px" height="320px" title="Profile" alt="Profile"></img>
+<img src="/images/edit_profile.png" width="180px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
 
 
 # 목표
-- Jetpack의 Navigation 적용 계획
 - Compose 라이브러리 적용 
 - 추가 기능 기획
 - Google PlayStore 런칭
