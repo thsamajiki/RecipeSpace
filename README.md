@@ -60,18 +60,18 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 스크린샷
-<img src="/images/splash.png" width="180px" height="320px" title="Splash" alt="Splash"></img>
-<img src="/images/login.png" width="180px" height="320px" title="Login" alt="Login"></img>
-<img src="/images/sign_up.png" width="180px" height="320px" title="SignUp" alt="SignUp"></img>
-<img src="/images/recipe_feed.png" width="180px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
-<img src="/images/recipe_detail.png" width="180px" height="320px" title="RecipeDetail" alt="RecipeDetail"></img>
-<img src="/images/recipe_rating.png" width="180px" height="320px" title="Rating" alt="Rating"></img>
-<img src="/images/post_recipe.png" width="180px" height="320px" title="Upload" alt="Upload"></img>
-<img src="/images/chat_list.png" width="180px" height="320px" title="ChatList" alt="ChatList"></img>
-<img src="/images/chat_room.png" width="180px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
-<img src="/images/account_profile.png" width="180px" height="320px" title="Profile" alt="Profile"></img>
-<img src="/images/edit_profile.png" width="180px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
-<img src="/images/setting.png" width="180px" height="320px" title="Setting" alt="Setting"></img>
+<img src="/images/splash.png" width="150px" height="320px" title="Splash" alt="Splash"></img>
+<img src="/images/login.png" width="150px" height="320px" title="Login" alt="Login"></img>
+<img src="/images/sign_up.png" width="150px" height="320px" title="SignUp" alt="SignUp"></img>
+<img src="/images/recipe_feed.png" width="150px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
+<img src="/images/recipe_detail.png" width="150px" height="320px" title="RecipeDetail" alt="RecipeDetail"></img>
+<img src="/images/recipe_rating.png" width="150px" height="320px" title="Rating" alt="Rating"></img>
+<img src="/images/post_recipe.png" width="150px" height="320px" title="Upload" alt="Upload"></img>
+<img src="/images/chat_list.png" width="150px" height="320px" title="ChatList" alt="ChatList"></img>
+<img src="/images/chat_room.png" width="150px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
+<img src="/images/account_profile.png" width="150px" height="320px" title="Profile" alt="Profile"></img>
+<img src="/images/edit_profile.png" width="150px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
+<img src="/images/setting.png" width="150px" height="320px" title="Setting" alt="Setting"></img>
 
 
 # 목표
