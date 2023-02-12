@@ -3,7 +3,6 @@ package com.hero.recipespace
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
-import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.databinding.ActivityMainBinding
 import com.hero.recipespace.view.main.account.AboutUsDialog
 import com.hero.recipespace.view.main.account.setting.SettingActivity
@@ -26,11 +24,6 @@ class MainActivity : AppCompatActivity(),
     private lateinit var binding: ActivityMainBinding
 
     private val viewModel by viewModels<MainViewModel>()
-
-    companion object {
-        fun getIntent(context: Context) =
-            Intent(context, MainActivity::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +43,6 @@ class MainActivity : AppCompatActivity(),
 //        binding.bottomNav.setupWithNavController(navController)
 
         binding.bottomNav.setOnItemSelectedListener(this)
-
-        Log.d("zxcv", "MainActivity: auth uid : " + FirebaseAuth.getInstance().uid)
-        Log.d("zxcv", "MainActivity: currentUser uid : " + FirebaseAuth.getInstance().currentUser?.uid)
-        Log.d("zxcv", "MainActivity: userName : " + FirebaseAuth.getInstance().currentUser?.displayName)
-        Log.d("zxcv", "MainActivity: profileImageUrl : " + FirebaseAuth.getInstance().currentUser?.photoUrl)
     }
 
     private fun setupViewModel() {
@@ -150,5 +138,10 @@ class MainActivity : AppCompatActivity(),
     private fun showAboutUsDialog() {
         val aboutUsDialog = AboutUsDialog(this@MainActivity)
         aboutUsDialog.getAboutUsDialog()
+    }
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, MainActivity::class.java)
     }
 }
