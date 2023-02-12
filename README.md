@@ -57,7 +57,8 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 개발 후 느낀 점
-
+Kotlin으로 마이그레이션함으로써 Java에는 없는 Kotlin만의 장점이 무엇인지를 알 수 있었습니다. <br>
+기존에 적용해본 적 없는 SSOT 방식으로 DB를 구축해보면서 DB 구축 방식에 대해 고민해볼 수 있는 좋은 개발 기회였습니다. <br>
 
 ## 스크린샷
 <img src="/images/splash.png" width="150px" height="320px" title="Splash" alt="Splash"></img>
