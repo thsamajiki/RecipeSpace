@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
@@ -20,7 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityEditProfileBinding
 import com.hero.recipespace.ext.hideLoading
@@ -62,7 +60,6 @@ class EditProfileActivity : AppCompatActivity(),
 
     companion object {
         const val PERMISSION_REQ_CODE = 1010
-        const val PHOTO_REQ_CODE = 2020
 
         private const val USER_KEY = "userKey"
 
@@ -177,43 +174,6 @@ class EditProfileActivity : AppCompatActivity(),
             openGallery()
         }
     }
-
-    private fun updateUserData(newProfileImageUrl: String) {
-        val editData = HashMap<String, Any>()
-        if (!TextUtils.isEmpty(newProfileImageUrl)) {
-            editData["profileImageUrl"] = newProfileImageUrl
-        }
-        val newUserName = binding.editUserName.text.toString().trim()
-        editData["name"] = newUserName
-        val userKey: String? = FirebaseAuth.getInstance().uid
-        // TODO: 2022-12-20 UserServiceImpl 의 add 메소드로 옮김
-//        FirebaseData.getInstance()
-//            .updateUserData(userKey.orEmpty(), editData, object : OnCompleteListener<Void> {
-//                override fun onComplete(isSuccess: Boolean, response: Response<Void>?) {
-//                    if (isSuccess) {
-//                        MyInfoUtil.getInstance()
-//                            .putUserName(this@EditProfileActivity, newUserName)
-//                        if (!TextUtils.isEmpty(newProfileImageUrl)) {
-//                            MyInfoUtil.getInstance()
-//                                .putProfileImageUrl(this@EditProfileActivity, newProfileImageUrl)
-//                        }
-//                        setResult(RESULT_OK)
-//                        finish()
-//                    } else {
-//                        Toast.makeText(applicationContext, "사용자 정보 변경에 실패했습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-    }
-
-//    fun onFileUploadComplete(isSuccess: Boolean, downloadUrl: String?) {
-//        hideLoading()
-//        if (isSuccess) {
-//            updateUserData(downloadUrl.orEmpty())
-//        } else {
-//            Toast.makeText(this, "사진 업로드에 실패했습니다", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
