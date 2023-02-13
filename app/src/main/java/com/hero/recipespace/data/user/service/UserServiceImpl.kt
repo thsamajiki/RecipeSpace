@@ -168,7 +168,6 @@ class UserServiceImpl @Inject constructor(
             }
     }
 
-    // TODO: 2022-12-15 하단에 있는 update 메소드들과 합치기
     override suspend fun update(userData: UserData): UserData {
         val editData = HashMap<String, Any>()
 
@@ -275,11 +274,6 @@ class UserServiceImpl @Inject constructor(
         return chatService.getDataList(userKey.orEmpty())
     }
 
-    // TODO EditProfileActivity 를 통해 나의 사용자 정보(나의 프로필 사진, 나의 사용자 이름)가 변경되었을 때
-    //  update() 메소드에서 트랜잭션 처리할 때 필요한 데이터
-    //  1. UserData 의 profileImageUrl, name
-    //  2. RecipeData 의 profileImageUrl, userName
-    //  3. ChatActivity 의 profileImageUrl, name
     private fun updateUserWithRecipeAndChat(
         userData: UserData,
         recipeDataList: List<RecipeData>,

@@ -41,7 +41,6 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
         return binding.root
     }
 
-    // TODO: 나의 rate 를 불러오고 표시하기 (다른 사람들도 평가를 하므로 옵저버를 통해 rate 값이 계속 변경되어야 한다.
     private fun setupViewModel() {
         with(viewModel) {
             lifecycleScope.launch {
@@ -61,7 +60,6 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                 }
             }
 
-            // TODO: 평가 완료 기능 부족한 부분 구현하기
             lifecycleScope.launch {
                 recipeRateUiState.collect { state ->
                     when (state) {

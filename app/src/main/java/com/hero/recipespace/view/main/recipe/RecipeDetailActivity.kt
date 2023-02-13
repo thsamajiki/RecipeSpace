@@ -182,8 +182,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
 
             if (recipe != null) {
-                // TODO: 2023-01-03 여기에서 기존 RatingBar 를 업데이트 하세요.
-                val rate = recipe.rate!! // 이 rate 데이터가 제대로 계산된 데이터가 아닐 수 있음
+                val rate = recipe.rate!!
                 binding.ratingBar.rating = rate
             }
         }

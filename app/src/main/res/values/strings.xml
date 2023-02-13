@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">RecipeSpace</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="loading">잠시만 기다려주세요.</string>
 
     <string name="dummy_text">

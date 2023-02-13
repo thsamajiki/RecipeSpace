@@ -62,7 +62,6 @@ class RatingDialogViewModel @Inject constructor(
     val recipeKey: String = savedStateHandle.get<String>(KEY_RECIPE)!!
 
 
-    // TODO: 사용자의 RateData 를 DB 에서 가져오기 (처음 평가하는 것이면, RateData 가 없을 수도 있음)
     init {
         getRecipeData()
 
