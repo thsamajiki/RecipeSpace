@@ -60,10 +60,7 @@ class ChatListFragment: Fragment() {
         with(viewModel) {
             lifecycleScope.launch {
                 chatListUiState.observe(viewLifecycleOwner) { state ->
-//                    when (state) {
-//                        is ChatListUIState.Failed -> TODO()
-//                        is ChatListUIState.Success -> TODO()
-//                    }
+
                 }
             }
         }

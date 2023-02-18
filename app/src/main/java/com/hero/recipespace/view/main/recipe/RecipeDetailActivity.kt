@@ -113,15 +113,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
                 bindRecipe(recipe)
             }
-
-//            lifecycleScope.launch {
-//                recipeDetailUiState.observe(this@RecipeDetailActivity) { state ->
-//                    when (state) {
-//                        is RecipeDetailUIState.Failed -> TODO()
-//                        is RecipeDetailUIState.Success -> TODO()
-//                    }
-//                }
-//            }
         }
     }
 
