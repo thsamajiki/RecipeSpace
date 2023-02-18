@@ -81,4 +81,5 @@
     <string name="btn_edit_profile">프로필 변경</string>
     <string name="btn_logout">로그아웃</string>
     <string name="chat_room_people_count">1</string>
+    <string name="item_drop_out">탈퇴하기</string>
 </resources>
