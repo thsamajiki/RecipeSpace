@@ -66,7 +66,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                         is RecipeRateUiState.Success -> {
                             Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
-                            // 평가완료했을 때 평가완료된 데이터를 내려주자.
+                            // 평가 완료했을 때 평가 완료된 데이터를 내려주자.
                             val result = Bundle().apply {
                                 putParcelable(
                                     Result.KEY_RECIPE,
@@ -98,7 +98,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
 
     private fun requestUpdateRate() {
         val rating = binding.ratingBar.rating
-        if (rating == 0f) { // TODO: 이건 어디에다가 붙히는게 좋을까요? -> ViewModel로 옮겨서 failed 받아서 토스트 보여주세요.
+        if (rating == 0f) {
             Toast.makeText(context, "평점을 매겨주세요.", Toast.LENGTH_SHORT).show()
             return
         }
