@@ -57,30 +57,25 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 개발 후 느낀 점
-
-
+Kotlin으로 마이그레이션함으로써 Java에는 없는 Kotlin만의 장점이 무엇인지를 알 수 있었습니다. <br>
+기존에 적용해본 적 없는 SSOT 방식으로 DB를 구축해보면서 DB 구축 방식에 대해 고민해볼 수 있는 좋은 개발 기회였습니다. <br>
 
 ## 스크린샷
-<img src="/images/Splash.png" width="180px" height="320px" title="Splash" alt="Splash"></img>
-<img src="/images/Login.png" width="180px" height="320px" title="Login" alt="Login"></img>
-<img src="/images/SignUp.png" width="180px" height="320px" title="SignUp" alt="SignUp"></img>
-<img src="/images/RecipeFeed.png" width="180px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
-<img src="/images/FeedDetail.png" width="180px" height="320px" title="FeedDetail" alt="FeedDetail"></img>
-<img src="/images/Upload.png" width="180px" height="320px" title="Upload" alt="Upload"></img>
-<img src="/images/ChatList.png" width="180px" height="320px" title="ChatList" alt="ChatList"></img>
-<img src="/images/ChattingRoom.png" width="180px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
-<img src="/images/Profile.png" width="180px" height="320px" title="Profile" alt="Profile"></img>
-<img src="/images/ProfileEdit.png" width="180px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
-
-
-## 시연 영상
-<img src="/images/레시피앱 시연.gif" width="360px" height="640px" title="test_video" alt="Test_video"></img>
-
-
+<img src="/images/splash.png" width="150px" height="320px" title="Splash" alt="Splash"></img>
+<img src="/images/login.png" width="150px" height="320px" title="Login" alt="Login"></img>
+<img src="/images/sign_up.png" width="150px" height="320px" title="SignUp" alt="SignUp"></img>
+<img src="/images/recipe_feed.png" width="150px" height="320px" title="RecipeFeed" alt="RecipeFeed"></img>
+<img src="/images/recipe_detail.png" width="150px" height="320px" title="RecipeDetail" alt="RecipeDetail"></img>
+<img src="/images/recipe_rating.png" width="150px" height="320px" title="Rating" alt="Rating"></img>
+<img src="/images/post_recipe.png" width="150px" height="320px" title="Upload" alt="Upload"></img>
+<img src="/images/chat_list.png" width="150px" height="320px" title="ChatList" alt="ChatList"></img>
+<img src="/images/chat_room.png" width="150px" height="320px" title="ChattingRoom" alt="ChattingRoom"></img>
+<img src="/images/account_profile.png" width="150px" height="320px" title="Profile" alt="Profile"></img>
+<img src="/images/edit_profile.png" width="150px" height="320px" title="ProfileEdit" alt="ProfileEdit"></img>
+<img src="/images/setting.png" width="150px" height="320px" title="Setting" alt="Setting"></img>
 
 
 # 목표
-- Jetpack의 Navigation 적용 계획
 - Compose 라이브러리 적용 
 - 추가 기능 기획
 - Google PlayStore 런칭
