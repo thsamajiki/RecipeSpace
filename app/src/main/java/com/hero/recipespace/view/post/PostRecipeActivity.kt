@@ -70,7 +70,7 @@ class PostRecipeActivity : AppCompatActivity(),
                                         .show()
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
 
-                                    // 선택 한 사진수만큼 반복
+                                    // 선택한 사진 수만큼 반복
                                     val photoList = (0 until clipDataSize).map { index ->
                                         val photoPath = clip.getItemAt(index).uri
                                         photoPath.toString()
