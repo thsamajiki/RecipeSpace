@@ -334,7 +334,7 @@ class UserServiceImpl @Inject constructor(
     override suspend fun remove(userData: UserData): UserData {
         return suspendCoroutine<UserData> { continuation ->
             db.collection("User")
-                .document(userData.key.orEmpty())
+                .document(userData.key)
                 .delete()
                 .addOnSuccessListener { continuation.resume(userData) }
                 .addOnFailureListener { continuation.resumeWithException(it) }
