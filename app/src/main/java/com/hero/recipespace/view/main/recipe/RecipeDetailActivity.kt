@@ -3,6 +3,7 @@ package com.hero.recipespace.view.main.recipe
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -39,7 +40,13 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val updateResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val recipe: RecipeEntity? = it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
+                val recipe: RecipeEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY, RecipeEntity::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
+                }
+
                 if (recipe != null) {
                     recipeDetailAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
                     binding.rvRecipeImages.smoothScrollToPosition(0)

@@ -2,6 +2,7 @@ package com.hero.recipespace.view.main.recipe
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +34,13 @@ class RecipeListFragment : Fragment() {
     private val postResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            val recipe: RecipeEntity? = it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
+            val recipe: RecipeEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY, RecipeEntity::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
+            }
+
             if (recipe != null) {
                 recipeListAdapter.add(0, recipe)
                 binding.rvRecipe.smoothScrollToPosition(0)
@@ -91,7 +98,13 @@ class RecipeListFragment : Fragment() {
             viewLifecycleOwner) {
             _: String, result: Bundle ->
             // 데이터를 수신하자.
-            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
+
+            val recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE, RecipeEntity::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE)
+            }
 
             if (recipe != null) {
                 recipeListAdapter.replaceItem(recipe)
