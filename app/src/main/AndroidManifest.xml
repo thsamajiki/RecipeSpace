@@ -3,10 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hero.recipespace">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".RecipeSpaceApp"
@@ -75,21 +86,15 @@
             </intent-filter>
         </activity>
 
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_icon"-->
-<!--            android:resource="@drawable/ic_launcher_foreground" />-->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_icon"-->
-<!--            android:resource="#50B6A7" />-->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_channel_id"-->
-<!--            android:value="fcm_default_channel" />-->
-<!--        <service android:name=".data.message.service.MessageFCMService"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
+        <provider
+            android:authorities="com.hero.recipespace.fileprovider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
