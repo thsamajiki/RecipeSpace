@@ -4,15 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import com.hero.recipespace.databinding.ActivitySettingBinding
+import com.hero.recipespace.ext.hideLoading
+import com.hero.recipespace.ext.setProgressPercent
+import com.hero.recipespace.ext.showLoading
+import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.login.LoginActivity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListActivity
+import com.hero.recipespace.view.main.account.setting.viewmodel.DropOutUiState
 import com.hero.recipespace.view.main.account.setting.viewmodel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
@@ -44,8 +53,32 @@ class SettingActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         with(viewModel) {
+            lifecycleScope.launch {
+                dropOutUiState.collect { state ->
+                    when(state) {
+                        is DropOutUiState.Failed -> Toast.makeText(this@SettingActivity, state.message, Toast.LENGTH_SHORT).show()
+                        is DropOutUiState.Success -> onSuccessDropOut()
+                        DropOutUiState.Idle -> {}
+                    }
+                }
+            }
 
+            lifecycleScope.launch {
+                loadingState.collect { state ->
+                    when(state) {
+                        is LoadingState.Hidden -> hideLoading()
+                        is LoadingState.Loading -> showLoading()
+                        is LoadingState.Progress -> setProgressPercent(state.value)
+                        LoadingState.Idle -> {}
+                    }
+                }
+            }
         }
+    }
+
+    private fun onSuccessDropOut() {
+        val intent = LoginActivity.getIntent(this@SettingActivity)
+        startActivity(intent)
     }
 
     private fun setupListeners() {
@@ -68,7 +101,10 @@ class SettingActivity : AppCompatActivity() {
 
         }
         binding.rlItemOpenSource.setOnClickListener {
-            openOpenSource()
+            openOpenSourcePopUp()
+        }
+        binding.rlItemDropOut.setOnClickListener {
+            openDropOutPopUp()
         }
     }
 
@@ -144,8 +180,26 @@ class SettingActivity : AppCompatActivity() {
     //        });
     //    }
 
-    private fun openOpenSource() {
+    private fun openOpenSourcePopUp() {
         val openSourceLicenseDialog = OpenSourceLicenseDialog(this)
         openSourceLicenseDialog.getOpenSourceLicenseDialog()
+    }
+
+    private fun openDropOutPopUp() {
+        val openDropOutTitle = "탈퇴하기"
+        val openDropOutMessage = "탈퇴하시겠습니까?"
+        val positiveText = "예"
+        val negativeText = "아니오"
+        MaterialAlertDialogBuilder(this).setTitle(openDropOutTitle)
+            .setMessage(openDropOutMessage)
+            .setPositiveButton(positiveText) { dialog, _ ->
+                val user = viewModel.user.value
+                viewModel.dropOut(user!!)
+            }
+            .setNegativeButton(negativeText) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 }

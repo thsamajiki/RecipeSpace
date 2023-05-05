@@ -58,7 +58,6 @@ class UserRepositoryImpl @Inject constructor(
         userLocalDataSource.add(result)
     }
 
-    // 레시피를 업로드하는 것과 유사하게 함수를 짜야할 수도 있어서 만들어놓음
     override suspend fun updateUser(request: UpdateUserRequest) : UserEntity {
         val result = userRemoteDataSource.updateUser(request)
         userLocalDataSource.update(result)

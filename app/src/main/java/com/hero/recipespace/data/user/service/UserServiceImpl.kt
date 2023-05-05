@@ -333,12 +333,23 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun remove(userData: UserData): UserData {
         return suspendCoroutine<UserData> { continuation ->
-            db.collection("User")
-                .document(userData.key)
-                .delete()
-                .addOnSuccessListener { continuation.resume(userData) }
-                .addOnFailureListener { continuation.resumeWithException(it) }
+            firebaseAuth.currentUser?.delete()
+                ?.addOnSuccessListener {
+                    removeUser(userData)
+                    continuation.resume(userData)
+                }
+                ?.addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
         }
+    }
+
+    private fun removeUser(userData: UserData) {
+        db.collection("User")
+            .document(userData.key)
+            .delete()
+            .addOnSuccessListener { }
+            .addOnFailureListener { }
     }
 
     override suspend fun signOut() {
