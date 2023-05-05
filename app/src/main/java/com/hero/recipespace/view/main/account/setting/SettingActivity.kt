@@ -85,25 +85,25 @@ class SettingActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             finish()
         }
-        binding.rlItemNotice.setOnClickListener {
+        binding.layoutItemNotice.setOnClickListener {
             intentNoticeList()
         }
-        binding.rlItemFont.setOnClickListener {
+        binding.layoutItemFont.setOnClickListener {
             openFontPopUp()
         }
-        binding.rlItemDeleteCache.setOnClickListener {
+        binding.layoutItemDeleteCache.setOnClickListener {
             openDeleteCachePopUp()
         }
-        binding.rlItemInquiry.setOnClickListener {
+        binding.layoutItemInquiry.setOnClickListener {
             openInquiryPopUp()
         }
-        binding.rlItemReview.setOnClickListener {
+        binding.layoutItemReview.setOnClickListener {
 
         }
-        binding.rlItemOpenSource.setOnClickListener {
+        binding.layoutItemOpenSource.setOnClickListener {
             openOpenSourcePopUp()
         }
-        binding.rlItemDropOut.setOnClickListener {
+        binding.layoutItemDropOut.setOnClickListener {
             openDropOutPopUp()
         }
     }
