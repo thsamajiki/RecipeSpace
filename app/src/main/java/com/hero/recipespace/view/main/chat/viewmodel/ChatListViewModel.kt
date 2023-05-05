@@ -1,7 +1,11 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
@@ -49,10 +53,10 @@ class ChatListViewModel @Inject constructor(
                         if (chat.userList?.contains(userKey) == true) {
                             chat.toItem(
                                 displayOtherUserName = {
-                                    getOtherUserName(chat, userKey)
+                                    getOtherUserName(chat, userKey) // chat 객체의 상대방 사용자 이름
                                 },
                                 displayOtherUserProfileImage = {
-                                    getOtherUserProfileImage(chat, userKey)
+                                    getOtherUserProfileImage(chat, userKey) // chat 객체의 상대방 사용자 프로필 이미지
                                 }
                             )
                         } else {
@@ -102,12 +106,12 @@ class ChatListViewModel @Inject constructor(
     }
 
     private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
-        chatEntity.userNames?.toList()
+        chatEntity.userNames?.toList() // ChatEntity 의 userNames 맵을 List<Pair<String, String>> 형태로 변환
             ?.filterNot {
-                it.first == myKey
+                it.first == myKey // 자신의 ID를 필터링. 즉, 자신의 이름을 제외하고, 다른 사용자의 이름만 고려
             }
-            ?.firstOrNull()
-            ?.second
+            ?.firstOrNull() // 첫 번째 나머지 사용자의 Pair 를 선택
+            ?.second // 채팅방에서 자신을 제외한 다른 사용자의 이름을 가져옴
             .orEmpty()
 
     private fun getOtherUserProfileImage(chatEntity: ChatEntity, myKey: String) =
