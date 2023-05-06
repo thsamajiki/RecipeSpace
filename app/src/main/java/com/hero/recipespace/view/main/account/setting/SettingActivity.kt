@@ -3,14 +3,19 @@ package com.hero.recipespace.view.main.account.setting
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.model.ReviewErrorCode
 import com.hero.recipespace.databinding.ActivitySettingBinding
+import com.hero.recipespace.databinding.DialogInAppReviewBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
@@ -97,7 +102,7 @@ class SettingActivity : AppCompatActivity() {
             openInquiryPopUp()
         }
         binding.layoutItemReview.setOnClickListener {
-
+            showInAppReviewDialog()
         }
         binding.layoutItemOpenSource.setOnClickListener {
             openOpenSourcePopUp()
@@ -127,7 +132,6 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun openInquiryPopUp() {
-        val openInquiryAlertDialogBuilder = MaterialAlertDialogBuilder(this)
         val openInquiryTitle = "문의하기"
         val openInquiryMessage = "chs8275@gmail.com으로\n문의 부탁드립니다 :)"
         val positiveText = "확인"
@@ -139,42 +143,39 @@ class SettingActivity : AppCompatActivity() {
             .show()
     }
 
-    //    private void readyPlayStoreReview() {
-    //        // 플레이스토어에 있는 리뷰 작성 페이지로 바로 이동하도록 링크를 만들기
-    //
-    //        //reviewManager = ReviewManagerFactory.create(this);
-    //        reviewManager = new FakeReviewManager(this);
-    //        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
-    //        request.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
-    //            @Override
-    //            public void onComplete(boolean isSuccess, Response<ReviewInfo> response) {
-    //                if (isSuccess) {
-    //                    // We can get the ReviewInfo object
-    //                    reviewInfo = response.getData();
-    //                    reviewManager.launchReviewFlow(SettingActivity.this, reviewInfo)
-    //                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-    //                                @Override
-    //                                public void onSuccess(Void unused) {
-    //
-    //                                }
-    //                            });
-    //                }
-    //    }
-    //
-    //    private void launchReviewDialog(ReviewManager reviewManager, ReviewInfo reviewInfo) {
-    //        if (reviewInfo == null) {
-    //            Intent intent = new Intent(Intent.ACTION_VIEW);
-    //            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=my packagename "));
-    //            startActivity(intent);
-    //        }
-    //        Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
-    //        flow.addOnCompleteListener(new com.google.android.play.core.tasks.OnCompleteListener<Void>() {
-    //            @Override
-    //            public void onComplete(@NonNull Task<Void> task) {
-    //
-    //            }
-    //        });
-    //    }
+    private fun showInAppReviewDialog() {
+        val builder = AlertDialog.Builder(this)
+        val dialog = builder.create()
+        val inAppReviewBinding = DialogInAppReviewBinding.inflate(layoutInflater)
+        inAppReviewBinding.btnNo.setOnClickListener { view ->
+            dialog.dismiss()
+        }
+        inAppReviewBinding.btnLater.setOnClickListener { view -> dialog.dismiss() }
+        inAppReviewBinding.btnOk.setOnClickListener { view ->
+            openInAppReviewDialog()
+            dialog.dismiss()
+        }
+        dialog.setCancelable(false)
+        dialog.setView(inAppReviewBinding.root)
+        dialog.show()
+    }
+
+    private fun openInAppReviewDialog() {
+        val manager = ReviewManagerFactory.create(this)
+        val request = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val reviewInfo = task.result
+                manager.launchReviewFlow(this, reviewInfo)
+            } else {
+//                showInAppReviewDialog()
+
+                @ReviewErrorCode
+                val reviewErrorCode = task.exception.hashCode()
+                Log.e("openInAppReviewDialog", "openInAppReviewDialog: $reviewErrorCode")
+            }
+        }
+    }
 
     private fun openOpenSourcePopUp() {
         val openSourceLicenseDialog = OpenSourceLicenseDialog(this)
