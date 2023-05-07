@@ -2,6 +2,7 @@ package com.hero.recipespace.data.notice.remote
 
 import com.hero.recipespace.data.notice.NoticeData
 import com.hero.recipespace.data.notice.service.NoticeService
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class NoticeRemoteDataSourceImpl @Inject constructor(
@@ -12,7 +13,7 @@ class NoticeRemoteDataSourceImpl @Inject constructor(
         return noticeService.getData(noticeKey)
     }
 
-    override suspend fun getDataList(): List<NoticeData> {
+    override fun getDataList(): Flow<List<NoticeData>> {
         return noticeService.getDataList()
     }
 
