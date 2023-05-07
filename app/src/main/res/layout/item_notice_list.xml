@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="notice"
             type="com.hero.recipespace.domain.notice.entity.NoticeEntity" />
@@ -30,11 +29,11 @@
                 android:id="@+id/tv_date_notice_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:timestamp="@{notice.postDate}"
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/small_text_size"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:timestamp="@{notice.postDate}" />
 
             <TextView
                 android:id="@+id/tv_title_notice_item"
@@ -82,4 +81,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 </layout>
