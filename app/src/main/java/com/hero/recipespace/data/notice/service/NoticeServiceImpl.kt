@@ -1,10 +1,12 @@
 package com.hero.recipespace.data.notice.service
 
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.notice.NoticeData
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -34,23 +36,30 @@ class NoticeServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDataList(): List<NoticeData> {
-        return suspendCoroutine { continuation ->
+    override fun getDataList(): Flow<List<NoticeData>> {
+        return callbackFlow {
             db.collection("Notice")
                 .orderBy("postDate", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots ->
-                    if (queryDocumentSnapshots.isEmpty) {
-                        return@OnSuccessListener
+                .addSnapshotListener { queryDocumentSnapshots, e ->
+                    if (e != null) {
+                        throw e
                     }
-                    val noticeDataList = queryDocumentSnapshots.documents
-                        .mapNotNull { documentSnapshot ->
-                            documentSnapshot.toObject(NoticeData::class.java)
-                        }
+                    if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty) {
+                        throw Exception("queryDocumentSnapshot is Null or Empty")
+                    }
 
-                    continuation.resume(noticeDataList)
-                })
-                .addOnFailureListener { continuation.resumeWithException(it) }
+                    val noticeDataList = queryDocumentSnapshots.documentChanges.mapNotNull {
+                        it.document.toObject(NoticeData::class.java).apply {
+                            key = it.document.id
+                        }
+                    }
+
+                    trySend(noticeDataList)
+                }
+
+            awaitClose {
+
+            }
         }
     }
 
