@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.Timestamp
 
 @Keep
 @Entity(tableName = "notice_db")
@@ -18,5 +19,5 @@ data class NoticeData(
     @ColumnInfo(name = "desc")
     var desc: String? = null,
     @ColumnInfo(name = "postDate")
-    var postDate: String? = null
+    var postDate: Timestamp? = null
 )
