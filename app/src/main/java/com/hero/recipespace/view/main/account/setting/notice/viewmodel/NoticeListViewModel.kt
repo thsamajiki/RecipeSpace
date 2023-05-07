@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.domain.notice.usecase.GetNoticeUseCase
@@ -28,13 +29,14 @@ class NoticeListViewModel @Inject constructor(
         get() = _notice
 
 //    val notice: LiveData<NoticeEntity> = getNoticeUseCase().asLiveData()
-//    val noticeList: LiveData<List<NoticeEntity>> = observeNoticeListUseCase().asLiveData()
+    val noticeList: LiveData<List<NoticeEntity>> = observeNoticeListUseCase().asLiveData()
 
-//    init {
-//        viewModelScope.launch {
+    init {
+        viewModelScope.launch {
 //            getNoticeUseCase.invoke(_notice.value!!.key)
-//        }
-//    }
+            requestNoticeList()
+        }
+    }
 
     fun requestNoticeList() {
 
