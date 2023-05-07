@@ -10,22 +10,22 @@ import java.util.*
 object TypeConverterExt {
     @TypeConverter
     fun mapToString(value: Map<String, String>?): String {
-        return if(value == null) "" else Gson().toJson(value)
+        return if (value == null) "" else Gson().toJson(value)
     }
 
     @TypeConverter
     fun stringToMap(value: String): Map<String, String> {
-        return Gson().fromJson(value,  object : TypeToken<Map<String, String>>() {}.type)
+        return Gson().fromJson(value, object : TypeToken<Map<String, String>>() {}.type)
     }
 
     @TypeConverter
     fun mapToBoolean(value: Map<String, Boolean>?): String {
-        return if(value == null) "" else Gson().toJson(value)
+        return if (value == null) "" else Gson().toJson(value)
     }
 
     @TypeConverter
     fun booleanToMap(value: String): Map<String, Boolean> {
-        return Gson().fromJson(value,  object : TypeToken<Map<String, Boolean>>() {}.type)
+        return Gson().fromJson(value, object : TypeToken<Map<String, Boolean>>() {}.type)
     }
 
     @TypeConverter
