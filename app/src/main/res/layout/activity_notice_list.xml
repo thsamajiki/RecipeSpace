@@ -61,10 +61,8 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/notice_list_toolbar"
-
-            tools:listitem="@layout/item_notice_list" />
-
-<!--        app:noticeItems="@{viewModel.noticeList}"-->
+            app:noticeItems="@{viewModel.noticeList}" />
 
     </LinearLayout>
+
 </layout>
