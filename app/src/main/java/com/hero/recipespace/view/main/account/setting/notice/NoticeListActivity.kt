@@ -7,11 +7,9 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityNoticeListBinding
-import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.view.main.account.setting.notice.viewmodel.NoticeListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +18,6 @@ class NoticeListActivity : AppCompatActivity(),
     View.OnClickListener {
 
     private lateinit var binding: ActivityNoticeListBinding
-    private val noticeList = mutableListOf<NoticeEntity>()
 
     private val viewModel by viewModels<NoticeListViewModel>()
 
@@ -38,17 +35,8 @@ class NoticeListActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         initRecyclerView(binding.rvNoticeList)
-//        getNoticeData(viewModel.noticeItem.value!!)
-        //        getNoticeListFromDatabase();
         setupView()
-        setupViewModel()
         setupListeners()
-    }
-
-    private fun setupViewModel() {
-        with(viewModel) {
-//            noticeList.observe()
-        }
     }
 
     private fun setupView() {
@@ -56,13 +44,8 @@ class NoticeListActivity : AppCompatActivity(),
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        noticeListAdapter = NoticeListAdapter(
-            onClick = ::getNoticeData
-        )
-
         recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
             adapter = noticeListAdapter
         }
     }
@@ -71,38 +54,6 @@ class NoticeListActivity : AppCompatActivity(),
         binding.ivBack.setOnClickListener {
             finish()
         }
-    }
-
-    //    private void getNoticeListFromDatabase() {
-    //        NoticeRepository noticeRepository = new NoticeRepository(this);
-    //        noticeRepository.getNoticeList(new OnCompleteListener<ArrayList<NoticeData>>() {
-    //            @Override
-    //            public void onComplete(boolean isSuccess, ArrayList<NoticeData> data) {
-    //                if (isSuccess && data != null) {
-    //                    noticeDataList.addAll(data);
-    //                    noticeListAdapter.notifyDataSetChanged();
-    //                } else {
-    //                    Toast.makeText(NoticeListActivity.this, "데이터를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show();
-    //                }
-    //            }
-    //        });
-    //    }
-    private fun getNoticeData(notice: NoticeEntity) {
-//        FirebaseData.getInstance()
-//            .getNoticeList(object : OnCompleteListener<List<NoticeData>> {
-//                override fun onComplete(
-//                    isSuccess: Boolean,
-//                    response: Response<List<NoticeData>>?
-//                ) {
-//                    if (response != null) {
-//                        if (isSuccess && response.isNotEmpty()) {
-//                            noticeList.clear()
-//                            noticeList.addAll(response.getData())
-//                            noticeListAdapter.notifyDataSetChanged()
-//                        }
-//                    }
-//                }
-//            })
     }
 
     override fun onClick(view: View) {
