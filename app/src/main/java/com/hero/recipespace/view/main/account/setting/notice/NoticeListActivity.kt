@@ -3,7 +3,6 @@ package com.hero.recipespace.view.main.account.setting.notice
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,8 +13,7 @@ import com.hero.recipespace.view.main.account.setting.notice.viewmodel.NoticeLis
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NoticeListActivity : AppCompatActivity(),
-    View.OnClickListener {
+class NoticeListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNoticeListBinding
 
@@ -54,8 +52,5 @@ class NoticeListActivity : AppCompatActivity(),
         binding.ivBack.setOnClickListener {
             finish()
         }
-    }
-
-    override fun onClick(view: View) {
     }
 }
