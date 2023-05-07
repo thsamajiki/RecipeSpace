@@ -8,16 +8,14 @@ import com.hero.recipespace.databinding.ItemNoticeListBinding
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.view.BaseAdapter
 
-class NoticeListAdapter(
-    private val onClick: (NoticeEntity) -> Unit
-): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeEntity>(), View.OnClickListener {
+class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeEntity>(), View.OnClickListener {
 
     private val noticeList = mutableListOf<NoticeEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
         val binding = ItemNoticeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return NoticeViewHolder(binding, onClick)
+        return NoticeViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
@@ -39,19 +37,16 @@ class NoticeListAdapter(
     override fun onClick(view: View?) {}
 
     class NoticeViewHolder(
-        private val binding: ItemNoticeListBinding,
-        private val onClick: (NoticeEntity) -> Unit
+        private val binding: ItemNoticeListBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setNotice(notice: NoticeEntity) {
             binding.root.setOnClickListener {
-                onClick(notice)
-
                 if (binding.llContentNoticeItem.visibility == View.GONE) {
-                    rotateView(binding.mcvNoticeItem)
+                    rotateView(binding.ivToggleArrow)
                     binding.llContentNoticeItem.visibility = View.VISIBLE
                 } else {
-                    rotateView(binding.mcvNoticeItem)
+                    rotateView(binding.ivToggleArrow)
                     binding.llContentNoticeItem.visibility = View.GONE
                 }
             }
