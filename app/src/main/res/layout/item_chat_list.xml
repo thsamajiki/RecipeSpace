@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="chat"
             type="com.hero.recipespace.view.main.chat.ChatItem" />
@@ -20,11 +21,11 @@
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:scaleType="centerCrop"
             app:imageUrl="@{chat.displayOtherUserProfileImage.invoke()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/Circle"
-            android:scaleType="centerCrop" />
+            app:shapeAppearance="@style/Circle" />
 
         <TextView
             android:id="@+id/tv_user_name"
@@ -64,24 +65,24 @@
             app:layout_constraintTop_toTopOf="parent"
             app:timestamp="@{chat.lastTimestamp}" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/tv_unread_message_count"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginEnd="20dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:text='@{chat.unreadMessageCount}'-->
-<!--            android:textColor="#B5143A"-->
-<!--            android:textSize="@dimen/title_text_size"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+        <!--        <TextView-->
+        <!--            android:id="@+id/tv_unread_message_count"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginEnd="20dp"-->
+        <!--            android:layout_marginBottom="5dp"-->
+        <!--            android:text='@{chat.unreadMessageCount}'-->
+        <!--            android:textColor="#B5143A"-->
+        <!--            android:textSize="@dimen/title_text_size"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent" />-->
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -90,10 +91,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}"
                 android:text="+"
                 android:textColor="#B5143A"
-                android:textSize="@dimen/title_text_size" />
+                android:textSize="@dimen/body_text_size"
+                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}" />
 
             <TextView
                 android:id="@+id/tv_unread_message_count"
@@ -101,10 +102,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="5dp"
-                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}"
                 android:text="@{String.valueOf(chat.unreadMessageCount)}"
                 android:textColor="#B5143A"
-                android:textSize="@dimen/title_text_size" />
+                android:textSize="@dimen/body_text_size"
+                android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>
 
