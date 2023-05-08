@@ -30,11 +30,11 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
+                android:scaleType="centerCrop"
                 app:imageUrl="@{recipe.profileImageUrl}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/Circle"
-                android:scaleType="centerCrop" />
+                app:shapeAppearance="@style/Circle" />
 
             <TextView
                 android:id="@+id/tv_user_name"
@@ -89,7 +89,6 @@
                 android:scaleType="centerCrop"
                 app:imageUrl="@{recipe.thumbnailPhoto}"
                 app:layout_constraintTop_toBottomOf="@id/tv_post_date" />
-
 
             <TextView
                 android:id="@+id/tv_recipe_desc"
