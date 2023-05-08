@@ -42,6 +42,8 @@ class NoticeListActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
+        noticeListAdapter = NoticeListAdapter()
+
         recyclerView.run {
             setHasFixedSize(true)
             adapter = noticeListAdapter
