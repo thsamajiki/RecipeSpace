@@ -1,6 +1,5 @@
 package com.hero.recipespace.data.notice.service
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.hero.recipespace.data.notice.NoticeData
@@ -13,7 +12,6 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class NoticeServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
     private val db: FirebaseFirestore
 ) : NoticeService {
 
