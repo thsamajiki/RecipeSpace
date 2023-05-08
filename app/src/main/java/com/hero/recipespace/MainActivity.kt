@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity(),
         binding.viewModel = viewModel
 
         setFragmentAdapter()
-        setupViewModel()
         setupClickListener()
 
 //        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
@@ -44,21 +43,6 @@ class MainActivity : AppCompatActivity(),
 
         binding.bottomNav.setOnItemSelectedListener(this)
     }
-
-    private fun setupViewModel() {
-//        with(viewModel) {
-//            lifecycleScope.launch {
-//                mainUiState.observe(this@MainActivity) { state ->
-//                    when (state) {
-//                        is MainUIState.Success -> TODO()
-//                        is MainUIState.Failed -> TODO()
-//                        else -> {}
-//                    }
-//                }
-//            }
-//        }
-    }
-
 
     private fun setFragmentAdapter() {
         val fragmentAdapter = FragmentAdapter(this)
