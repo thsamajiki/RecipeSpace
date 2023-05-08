@@ -42,12 +42,12 @@ class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, Notic
 
         fun setNotice(notice: NoticeEntity) {
             binding.root.setOnClickListener {
-                if (binding.llContentNoticeItem.visibility == View.GONE) {
+                if (binding.layoutContentNoticeItem.visibility == View.GONE) {
                     rotateView(binding.ivToggleArrow)
-                    binding.llContentNoticeItem.visibility = View.VISIBLE
+                    binding.layoutContentNoticeItem.visibility = View.VISIBLE
                 } else {
                     rotateView(binding.ivToggleArrow)
-                    binding.llContentNoticeItem.visibility = View.GONE
+                    binding.layoutContentNoticeItem.visibility = View.GONE
                 }
             }
 
