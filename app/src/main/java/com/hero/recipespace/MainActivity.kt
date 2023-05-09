@@ -18,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
-    View.OnClickListener,
     NavigationBarView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -72,7 +71,9 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setupClickListener() {
-        binding.ivAccountOptionMenu.setOnClickListener(this)
+        binding.ivAccountOptionMenu.setOnClickListener {
+            showAccountOptionMenu()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -93,13 +94,6 @@ class MainActivity : AppCompatActivity(),
             }
         }
         return false
-    }
-
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.iv_account_option_menu -> showAccountOptionMenu()
-        }
     }
 
     private fun showAccountOptionMenu() {
