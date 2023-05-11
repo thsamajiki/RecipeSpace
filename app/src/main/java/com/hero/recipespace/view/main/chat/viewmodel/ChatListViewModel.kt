@@ -36,10 +36,6 @@ class ChatListViewModel @Inject constructor(
     private val observeChatListUseCase: ObserveChatListUseCase
 ) : AndroidViewModel(application) {
 
-//    private val _chatList = MutableLiveData<List<ChatEntity>>()
-//    val chatList2: LiveData<List<ChatEntity>>
-//        get() = _chatList
-
     private val _chatListUiState = MutableLiveData<ChatListUIState>()
     val chatListUiState: LiveData<ChatListUIState>
         get() = _chatListUiState
