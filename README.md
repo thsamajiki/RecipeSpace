@@ -7,7 +7,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
     
 
 ## 프로젝트 기간
-2022\. 10 ~
+2022\. 11 ~ 2023. 01
 
 
 ## 기여도
@@ -21,7 +21,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 ## 앱의 버전
 - minSdkVersion : 23
-- targetSdkVersion : 32
+- targetSdkVersion : 33
 
 
 ## 이용 대상
@@ -76,6 +76,6 @@ Kotlin으로 마이그레이션함으로써 Java에는 없는 Kotlin만의 장�
 
 
 # 목표
-- Compose 라이브러리 적용 
+- 디자인 리뉴얼
 - 추가 기능 기획
 - Google PlayStore 런칭
