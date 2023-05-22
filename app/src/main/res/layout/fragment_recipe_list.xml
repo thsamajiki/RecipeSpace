@@ -15,7 +15,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/srl_recipe_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -35,12 +35,12 @@
                 android:id="@+id/btn_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="20dp"
-                app:fabutton_scale="0.85"
                 android:src="@drawable/ic_pen"
                 app:backgroundTint="@color/white"
+                app:fabutton_scale="0.85"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:useCompatPadding="true" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
