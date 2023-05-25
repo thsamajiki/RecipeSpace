@@ -26,7 +26,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class ChatServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
     private val userService: UserService,
     private val messageService: MessageService
@@ -132,7 +132,7 @@ class ChatServiceImpl @Inject constructor(
 
 
     override suspend fun add(request: AddChatRequest): ChatData {
-        val myUserData = userService.getUserData(firebaseAuth.uid.orEmpty())
+        val myUserData = userService.getUserData(auth.uid.orEmpty())
 
         return suspendCoroutine { continuation ->
             db.runTransaction(Transaction.Function<Any> { transaction ->
@@ -196,7 +196,7 @@ class ChatServiceImpl @Inject constructor(
 
     override suspend fun checkExistChatData(otherUserKey: String): Boolean {
         return suspendCoroutine { continuation ->
-            val myUserKey: String = firebaseAuth.uid.orEmpty()
+            val myUserKey: String = auth.uid.orEmpty()
             db.collection("Chat")
                 .whereArrayContains("userList", listOf(otherUserKey, myUserKey))
                 .get()
