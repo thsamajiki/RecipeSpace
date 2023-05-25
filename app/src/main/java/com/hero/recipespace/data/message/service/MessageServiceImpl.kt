@@ -16,7 +16,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class MessageServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val db: FirebaseFirestore
 ) : MessageService {
 
@@ -123,7 +123,7 @@ class MessageServiceImpl @Inject constructor(
 
     override suspend fun add(chatKey: String, message: String): MessageData {
         return suspendCoroutine<MessageData> { continuation ->
-            val myUserKey: String = firebaseAuth.uid.orEmpty()
+            val myUserKey: String = auth.uid.orEmpty()
             val messageData = MessageData(
                 chatKey = chatKey,
                 userKey = myUserKey,
