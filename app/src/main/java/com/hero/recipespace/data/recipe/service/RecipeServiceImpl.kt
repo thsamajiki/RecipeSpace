@@ -9,8 +9,14 @@ import com.google.firebase.storage.FirebaseStorage
 import com.hero.recipespace.data.rate.RateData
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.util.WLog
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -18,7 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class RecipeServiceImpl @Inject constructor(
     private val db: FirebaseFirestore,
-    private val firebaseStorage: FirebaseStorage
+    private val storage: FirebaseStorage
 ) : RecipeService {
 
     override suspend fun getRecipe(recipeKey: String): RecipeData {
@@ -180,7 +186,7 @@ class RecipeServiceImpl @Inject constructor(
             it.startsWith("https://") || it.startsWith("http://")
         }
 
-        val imageFolderRef = firebaseStorage.reference.child(DEFAULT_IMAGE_PATH)
+        val imageFolderRef = storage.reference.child(DEFAULT_IMAGE_PATH)
 
         return withContext(Dispatchers.IO) {
             val newImageList = pathList.map { photoPath ->
