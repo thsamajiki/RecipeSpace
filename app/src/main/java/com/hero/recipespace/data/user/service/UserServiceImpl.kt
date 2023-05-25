@@ -32,7 +32,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class UserServiceImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
+    private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
     private val firebaseStorage: FirebaseStorage
 ) : UserService {
@@ -65,7 +65,7 @@ class UserServiceImpl @Inject constructor(
 
     private suspend fun loginToFirebase(email: String, pwd: String): String {
         return suspendCoroutine { continuation ->
-            firebaseAuth.signInWithEmailAndPassword(email, pwd)
+            auth.signInWithEmailAndPassword(email, pwd)
                 .addOnSuccessListener { authResult ->
                     val userKey = authResult.user?.uid
                     if (userKey != null) {
@@ -99,7 +99,7 @@ class UserServiceImpl @Inject constructor(
     override suspend fun add(request: SignUpUserRequest): UserData {
         if (createAccount(request.email, request.pwd)) {
             val userData = UserData(
-                key = firebaseAuth.uid.orEmpty(),
+                key = auth.uid.orEmpty(),
                 name = request.name,
                 email = request.email.value,
                 profileImageUrl = null
@@ -137,7 +137,7 @@ class UserServiceImpl @Inject constructor(
 //        }
 
         return suspendCoroutine { continuation ->
-            firebaseAuth.createUserWithEmailAndPassword(email.value, pwd.value)
+            auth.createUserWithEmailAndPassword(email.value, pwd.value)
                 .addOnSuccessListener {
                     continuation.resume(true)
                 }
@@ -152,7 +152,7 @@ class UserServiceImpl @Inject constructor(
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        val user = firebaseAuth.currentUser
+        val user = auth.currentUser
 
         val request = userProfileChangeRequest {
             displayName = name
@@ -333,7 +333,7 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun remove(userData: UserData): UserData {
         return suspendCoroutine<UserData> { continuation ->
-            firebaseAuth.currentUser?.delete()
+            auth.currentUser?.delete()
                 ?.addOnSuccessListener {
                     removeUser(userData)
                     continuation.resume(userData)
@@ -353,7 +353,7 @@ class UserServiceImpl @Inject constructor(
     }
 
     override suspend fun signOut() {
-        firebaseAuth.signOut()
+        auth.signOut()
     }
 
     companion object {
