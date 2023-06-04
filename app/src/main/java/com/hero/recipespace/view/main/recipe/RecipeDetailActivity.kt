@@ -145,6 +145,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                     recipeChatInfo = RecipeChatInfo(
                         userKey = recipe.userKey,
                         userName = recipe.userName,
+                        userProfileImageUrl = recipe.profileImageUrl,
                         recipeKey = recipe.key
                     )
                 )
