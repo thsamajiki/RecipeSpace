@@ -7,5 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class RecipeChatInfo(
     val userKey: String,
     val userName: String,
+    val userProfileImageUrl: String?,
     val recipeKey: String,
 ) : Parcelable
