@@ -5,15 +5,15 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.ListenerRegistration
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityChatBinding
 import com.hero.recipespace.ext.isScrollable
@@ -46,8 +46,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
                 .putExtra(ChatViewModel.EXTRA_RECIPE_CHAT, recipeChatInfo)
     }
 
-    private var messageRegistration: ListenerRegistration? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
@@ -79,26 +77,51 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivOptionMenu.setOnClickListener {
-            Toast.makeText(this, "ivOptionMenu-ChatActivity", Toast.LENGTH_SHORT).show()
-            val isDrawerOpened = binding.dlChatMemberList.isDrawerOpen(Gravity.LEFT)
+            val isDrawerOpened = binding.layoutChatMemberList.isDrawerOpen(GravityCompat.END)
             if (isDrawerOpened) {
-                binding.dlChatMemberList.closeDrawer(Gravity.LEFT)
+                binding.layoutChatMemberList.closeDrawer(GravityCompat.END)
             } else {
-                binding.dlChatMemberList.openDrawer(Gravity.LEFT)
+                binding.layoutChatMemberList.openDrawer(GravityCompat.END)
             }
         }
 
-        binding.ivMessageContentOption.setOnClickListener { view ->
-            val isDrawerClosed = binding.dlChatMemberList.isDrawerOpen(Gravity.RIGHT)
+        binding.ivMessageContentOption.setOnClickListener {
+            val isDrawerClosed = binding.layoutContentOptionMenu.isDrawerOpen(GravityCompat.START)
             if (isDrawerClosed) {
-                binding.dlChatMemberList.closeDrawer(Gravity.RIGHT)
+                binding.layoutContentOptionMenu.closeDrawer(GravityCompat.START)
             } else {
-                binding.dlChatMemberList.openDrawer(Gravity.RIGHT)
+                binding.layoutContentOptionMenu.openDrawer(GravityCompat.START)
             }
         }
 
         binding.mcvSend.setOnClickListener {
             sendMessage()
+        }
+
+        val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 500 }
+        val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 500 }
+        var isBottom = true
+
+        binding.rvChat.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!binding.rvChat.canScrollVertically(1) // 최하단일 경우 false 값 return
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    binding.fabScrollBottom.startAnimation(fadeOut)
+                    binding.fabScrollBottom.visibility = View.GONE
+                    isBottom = true
+                } else {
+                    if(isBottom) {
+                        binding.fabScrollBottom.visibility = View.VISIBLE
+                        binding.fabScrollBottom.startAnimation(fadeIn)
+                        isBottom = false
+                    }
+                }
+            }
+        })
+
+        binding.fabScrollBottom.setOnClickListener {
+            binding.rvChat.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
         }
     }
 
