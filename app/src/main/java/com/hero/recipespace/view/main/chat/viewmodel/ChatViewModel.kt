@@ -1,7 +1,12 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.request.AddChatRequest
 import com.hero.recipespace.domain.chat.usecase.CreateNewChatRoomUseCase
@@ -12,7 +17,6 @@ import com.hero.recipespace.domain.message.request.ReadMessageRequest
 import com.hero.recipespace.domain.message.usecase.ObserveMessageListUseCase
 import com.hero.recipespace.domain.message.usecase.ReadMessageUseCase
 import com.hero.recipespace.domain.message.usecase.SendMessageUseCase
-import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.main.chat.MessageItem
@@ -88,9 +92,30 @@ class ChatViewModel @Inject constructor(
     val otherUserName: LiveData<String>
         get() = _otherUserName
 
-    private val _user: MutableLiveData<UserEntity> = MutableLiveData()
-    val user: LiveData<UserEntity>
-        get() = _user
+    private val _otherUserProfileImage = MediatorLiveData<String>().apply {
+        value = recipeChatInfo?.userProfileImageUrl.orEmpty()
+
+        addSource(chat) { chatEntity ->
+            viewModelScope.launch {
+                val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
+                val otherUserProfileImage = getOtherUserProfileImage(chatEntity, myKey)
+
+                if (otherUserProfileImage.isNotEmpty()) {
+                    value = otherUserProfileImage
+                }
+            }
+        }
+    }
+    val otherUserProfileImage: LiveData<String>
+        get() = _otherUserProfileImage
+
+    private val _myUserName = MutableLiveData<String>()
+    val myUserName: LiveData<String>
+        get() = _myUserName
+
+    private val _myProfileImageUrl = MutableLiveData<String>()
+    val myProfileImageUrl: LiveData<String>
+        get() = _myProfileImageUrl
 
     val message: MutableLiveData<String> = MutableLiveData()
     private val _messageList = MutableLiveData<List<MessageItem>>()
@@ -110,6 +135,9 @@ class ChatViewModel @Inject constructor(
             if (chatEntity != null) {
                 activateChatRoom(chatEntity)
             }
+
+            _myUserName.value = getMyUserName()
+            _myProfileImageUrl.value = getMyProfileImage()
         }
     }
 
@@ -228,6 +256,12 @@ class ChatViewModel @Inject constructor(
             ?.firstOrNull()
             ?.second
             .orEmpty()
+
+    private suspend fun getMyUserName() =
+        getLoggedUserUseCase().getOrNull()?.name.orEmpty()
+
+    private suspend fun getMyProfileImage() =
+        getLoggedUserUseCase().getOrNull()?.profileImageUrl.orEmpty()
 
     override fun onCleared() {
         super.onCleared()
