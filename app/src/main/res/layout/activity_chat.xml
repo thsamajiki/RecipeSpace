@@ -43,10 +43,10 @@
                     android:layout_height="wrap_content"
                     android:text='@{viewModel.otherUserName + "님과의 채팅"}'
                     android:textSize="@dimen/title_text_size"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_option_menu"
@@ -54,10 +54,7 @@
                     android:layout_height="35dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="7dp"
-                    android:paddingStart="7dp"
-                    android:paddingTop="7dp"
-                    android:paddingEnd="7dp"
-                    android:paddingBottom="7dp"
+                    android:padding="7dp"
                     android:src="@drawable/ic_option_menu"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -66,17 +63,185 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/layout_chat_member_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/cv_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar">
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="@color/light_gray"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="채팅방 서랍"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/title_text_size" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="10dp"
+                    android:background="@color/dark_purple_900" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="채팅 상대"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/body_text_size" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_my_profile_image"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="centerCrop"
+                        app:imageUrl="@{viewModel.myProfileImageUrl}"
+                        app:shapeAppearance="@style/Circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_me"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="나"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_text_size"
+                        app:layout_constraintStart_toEndOf="@id/iv_my_profile_image"
+                        app:layout_constraintTop_toTopOf="@id/iv_my_profile_image"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_my_profile_image" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="7dp"
+                        android:text="@{viewModel.myUserName}"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_text_size"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/tv_me"
+                        app:layout_constraintTop_toTopOf="@id/tv_me"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_me" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/iv_other_user_profile_image"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:scaleType="centerCrop"
+                        app:imageUrl="@{viewModel.otherUserProfileImage}"
+                        app:shapeAppearance="@style/Circle"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_other_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@{viewModel.otherUserName}"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/small_text_size"
+                        android:ellipsize="end"
+                        app:layout_constraintStart_toEndOf="@id/iv_other_user_profile_image"
+                        app:layout_constraintTop_toTopOf="@id/iv_other_user_profile_image"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_other_user_profile_image" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/layout_content_option_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/amber_100"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/cv_input"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="start">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/chef_2" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="15dp"
+                    android:src="@drawable/chef_2" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="15dp"
+                    android:src="@drawable/chef_2" />
+
+            </LinearLayout>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
+            android:stackFromBottom="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/cv_input"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-            android:stackFromBottom="true"
             app:reverseLayout="true"
             tools:listitem="@layout/item_message_right" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_scroll_bottom"
+            android:layout_width="140dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            app:icon="@drawable/ic_arrow_down"
+            android:text="맨 아래로"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/cv_input" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_input"
@@ -87,7 +252,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/rl_input"
+                android:id="@+id/layout_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent">
@@ -99,17 +264,9 @@
                     android:padding="10dp"
                     android:src="@drawable/ic_plus"
                     app:backgroundTint="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.drawerlayout.widget.DrawerLayout
-                    android:id="@+id/dl_content_option_menu"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edit_message"
@@ -126,8 +283,8 @@
                     android:paddingEnd="20dp"
                     android:text="@={viewModel.message}"
                     android:textSize="@dimen/body_text_size"
-                    app:layout_constraintStart_toEndOf="@+id/iv_message_content_option"
                     app:layout_constraintEnd_toStartOf="@id/mcv_send"
+                    app:layout_constraintStart_toEndOf="@+id/iv_message_content_option"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -153,17 +310,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <androidx.drawerlayout.widget.DrawerLayout
-            android:id="@+id/dl_chat_member_list"
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:fitsSystemWindows="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="parent" >
-
-        </androidx.drawerlayout.widget.DrawerLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
