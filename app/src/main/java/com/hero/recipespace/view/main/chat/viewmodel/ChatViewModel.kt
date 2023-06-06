@@ -45,7 +45,7 @@ sealed class MessageUIState {
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     application: Application,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val getChatUseCase: GetChatUseCase,
     private val getChatByUserKeyUseCase: GetChatByRecipeChatInfoUseCase,
     private val createNewChatRoomUseCase: CreateNewChatRoomUseCase,
