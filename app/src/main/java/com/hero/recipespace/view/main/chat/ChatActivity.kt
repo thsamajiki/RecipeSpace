@@ -31,22 +31,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     private val viewModel by viewModels<ChatViewModel>()
 
-    companion object {
-        fun getIntent(
-            context: Context,
-            chatKey: String = ""
-        ) =
-            Intent(context, ChatActivity::class.java)
-                .putExtra(ChatViewModel.CHAT_KEY, chatKey)
-
-        fun getIntent(
-            context: Context,
-            recipeChatInfo: RecipeChatInfo? = null,
-        ) =
-            Intent(context, ChatActivity::class.java)
-                .putExtra(ChatViewModel.EXTRA_RECIPE_CHAT, recipeChatInfo)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
@@ -201,5 +185,15 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
+    }
+
+    companion object {
+        fun getIntent(context: Context, chatKey: String = "") =
+            Intent(context, ChatActivity::class.java)
+                .putExtra(ChatViewModel.CHAT_KEY, chatKey)
+
+        fun getIntent(context: Context, recipeChatInfo: RecipeChatInfo? = null) =
+            Intent(context, ChatActivity::class.java)
+                .putExtra(ChatViewModel.EXTRA_RECIPE_CHAT, recipeChatInfo)
     }
 }
