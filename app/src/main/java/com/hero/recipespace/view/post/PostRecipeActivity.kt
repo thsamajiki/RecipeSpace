@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -18,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -34,6 +38,9 @@ import com.hero.recipespace.view.post.viewmodel.PostRecipeUiState
 import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.IOException
+
 
 @AndroidEntryPoint
 class PostRecipeActivity : AppCompatActivity(),
@@ -45,6 +52,11 @@ class PostRecipeActivity : AppCompatActivity(),
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
 //    private val recipePhotoPathList = mutableListOf<String>()
+
+    private var imgUri: Uri? = null
+    private var photoURI: Uri? = null
+    private var albumURI: Uri? = null
+    private lateinit var mCurrentPhotoPath: String
 
     private val viewModel by viewModels<PostRecipeViewModel>()
 
@@ -94,13 +106,18 @@ class PostRecipeActivity : AppCompatActivity(),
             }
         }
 
-    companion object {
-        const val EXTRA_RECIPE_ENTITY = "recipe"
-        const val PERMISSION_REQ_CODE = 1010
+    private val takePictureResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                val imageBitmap = it.data?.extras?.getString("data")
+//                binding.image.setImageBitmap(imageBitmap)
+                val photoPath = it?.data?.data!!
 
-        fun getIntent(context: Context) =
-            Intent(context, PostRecipeActivity::class.java)
-    }
+                viewModel.addRecipePhotoList(listOf(photoPath.toString()))
+            }
+        }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,7 +160,7 @@ class PostRecipeActivity : AppCompatActivity(),
             outRect: Rect,
             view: View,
             parent: RecyclerView,
-            state: RecyclerView.State
+            state: RecyclerView.State,
         ) {
             val position = parent.getChildAdapterPosition(view)
             val count = state.itemCount
@@ -234,9 +251,69 @@ class PostRecipeActivity : AppCompatActivity(),
         openGalleryResultLauncher.launch(pickIntent)
     }
 
+    private fun selectCamera() {
+        val state = Environment.getExternalStorageState()
+
+        if (Environment.MEDIA_MOUNTED == state) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            if (intent.resolveActivity(packageManager) != null) {
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                if (photoFile != null) {
+                    val providerURI = FileProvider.getUriForFile(
+                        this,
+                        packageName, photoFile
+                    )
+                    imgUri = providerURI
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI)
+                    startActivityForResult(intent, FROM_CAMERA)
+                }
+            }
+        } else {
+            Log.e("알림", "저장공간에 접근 불가능")
+            return
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val imgFileName = System.currentTimeMillis().toString() + ".jpg"
+
+        val storageDir = File(Environment.getExternalStorageDirectory().toString() + "/Pictures", "ireh")
+
+        if (!storageDir.exists()) {
+            Log.e("createImageFile", "storageDir 존재 x $storageDir")
+            storageDir.mkdirs()
+        }
+
+        Log.e("createImageFile", "storageDir 존재함 $storageDir")
+
+        val imageFile = File(storageDir, imgFileName)
+        mCurrentPhotoPath = imageFile.absolutePath
+
+        return imageFile
+    }
+
+    private fun addCreatedImageToGallery() {
+        val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        val file = File(mCurrentPhotoPath)
+        val contentUri = Uri.fromFile(file)
+        mediaScanIntent.data = contentUri
+
+        sendBroadcast(mediaScanIntent)
+
+        Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show()
+    }
+
     private fun checkStoragePermission(): Boolean {
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
         val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        val cameraPermission = Manifest.permission.CAMERA
+
         return if (ActivityCompat.checkSelfPermission(
                 this,
                 readPermission
@@ -260,7 +337,7 @@ class PostRecipeActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -286,5 +363,15 @@ class PostRecipeActivity : AppCompatActivity(),
     }
 
     override fun onClick(view: View) {
+    }
+
+    companion object {
+        const val EXTRA_RECIPE_ENTITY = "recipe"
+        const val PERMISSION_REQ_CODE = 1010
+        const val FROM_ALBUM = 0
+        const val FROM_CAMERA = 0
+
+        fun getIntent(context: Context) =
+            Intent(context, PostRecipeActivity::class.java)
     }
 }
