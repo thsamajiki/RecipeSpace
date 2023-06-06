@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityChatBinding
+import com.hero.recipespace.databinding.NavHeaderChatBinding
 import com.hero.recipespace.ext.isScrollable
 import com.hero.recipespace.ext.setStackFromEnd
 import com.hero.recipespace.view.main.chat.viewmodel.ChatViewModel
@@ -51,7 +52,15 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
 
         binding.lifecycleOwner = this
+        binding.appBarChat.lifecycleOwner = this
+        binding.appBarChat.layoutRootContainer.lifecycleOwner = this
+
         binding.viewModel = viewModel
+
+        val headerView = binding.navViewChat.getHeaderView(0)
+        val headerViewBinding = NavHeaderChatBinding.bind(headerView)
+        headerViewBinding.viewModel = viewModel
+        headerViewBinding.lifecycleOwner = this
 
         setupView()
         setupViewModel()
@@ -60,7 +69,8 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setupView() {
         checkKeyboardOpenClose()
-        initRecyclerView(binding.rvChat)
+        setSupportActionBar(binding.appBarChat.toolBar)
+        initRecyclerView(binding.appBarChat.layoutRootContainer.rvChat)
     }
 
     private fun setupViewModel() {
@@ -72,11 +82,11 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
+        binding.appBarChat.ivBack.setOnClickListener {
             finish()
         }
 
-        binding.ivOptionMenu.setOnClickListener {
+        binding.appBarChat.ivOptionMenu.setOnClickListener {
             val isDrawerOpened = binding.layoutChatMemberList.isDrawerOpen(GravityCompat.END)
             if (isDrawerOpened) {
                 binding.layoutChatMemberList.closeDrawer(GravityCompat.END)
@@ -85,16 +95,16 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
-        binding.ivMessageContentOption.setOnClickListener {
-            val isDrawerClosed = binding.layoutContentOptionMenu.isDrawerOpen(GravityCompat.START)
-            if (isDrawerClosed) {
-                binding.layoutContentOptionMenu.closeDrawer(GravityCompat.START)
-            } else {
-                binding.layoutContentOptionMenu.openDrawer(GravityCompat.START)
-            }
-        }
+//        binding.ivMessageContentOption.setOnClickListener {
+//            val isDrawerClosed = binding.layoutContentOptionMenu.isDrawerOpen(GravityCompat.START)
+//            if (isDrawerClosed) {
+//                binding.layoutContentOptionMenu.closeDrawer(GravityCompat.START)
+//            } else {
+//                binding.layoutContentOptionMenu.openDrawer(GravityCompat.START)
+//            }
+//        }
 
-        binding.mcvSend.setOnClickListener {
+        binding.appBarChat.layoutRootContainer.mcvSend.setOnClickListener {
             sendMessage()
         }
 
@@ -102,26 +112,26 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 500 }
         var isBottom = true
 
-        binding.rvChat.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.appBarChat.layoutRootContainer.rvChat.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.rvChat.canScrollVertically(1) // 최하단일 경우 false 값 return
+                if (!binding.appBarChat.layoutRootContainer.rvChat.canScrollVertically(1) // 최하단일 경우 false 값 return
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    binding.fabScrollBottom.startAnimation(fadeOut)
-                    binding.fabScrollBottom.visibility = View.GONE
+                    binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(fadeOut)
+                    binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility = View.GONE
                     isBottom = true
                 } else {
                     if(isBottom) {
-                        binding.fabScrollBottom.visibility = View.VISIBLE
-                        binding.fabScrollBottom.startAnimation(fadeIn)
+                        binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility = View.VISIBLE
+                        binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(fadeIn)
                         isBottom = false
                     }
                 }
             }
         })
 
-        binding.fabScrollBottom.setOnClickListener {
-            binding.rvChat.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
+        binding.appBarChat.layoutRootContainer.fabScrollBottom.setOnClickListener {
+            binding.appBarChat.layoutRootContainer.rvChat.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
         }
     }
 
@@ -129,10 +139,9 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         chatAdapter = ChatAdapter()
 
         recyclerView.run {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
-            smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
             adapter = chatAdapter
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
 
             /**
              * 1. 키보드가 올라온 경우에만 스크롤이 가능한 경우 처리
@@ -142,7 +151,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
             /**
              * 2. 키보드가 올라온 상태에서 데이터를 추가해 키보드가 내려갔을 때에도 스크롤이 가능한 경우
-             * 3. 화면 진입 시 데이터를 불러와 청므부터 스크롤이 가능한 경우
+             * 3. 화면 진입 시 데이터를 불러와 처음부터 스크롤이 가능한 경우
              * 키보드가 열리지 않은 상태에서 스크롤 가능 상태이면 StackFromEnd 설정
              * 키보드가 열린 상태에서 체크하면 키보드가 사라질 때 목록이 하단에 붙을 수 있음
              * */
@@ -159,17 +168,17 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         View.OnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
             // 키보드가 올라와 높이가 변함
             if (bottom < oldBottom) {
-                binding.rvChat.scrollBy(0, oldBottom - bottom) // 스크롤 유지를 위해 추가
+                binding.appBarChat.layoutRootContainer.rvChat.scrollBy(0, oldBottom - bottom) // 스크롤 유지를 위해 추가
             }
         }
 
     // 키보드 Open/Close 체크
     private fun checkKeyboardOpenClose() {
-        binding.clRootContainer.viewTreeObserver.addOnGlobalLayoutListener {
+        binding.layoutChatMemberList.viewTreeObserver.addOnGlobalLayoutListener {
             val rect = Rect()
-            binding.clRootContainer.getWindowVisibleDisplayFrame(rect)
+            binding.layoutChatMemberList.getWindowVisibleDisplayFrame(rect)
 
-            val rootViewHeight = binding.clRootContainer.rootView.height
+            val rootViewHeight = binding.layoutChatMemberList.rootView.height
             val heightDiff = rootViewHeight - rect.height()
             isKeyboardOpen = heightDiff > rootViewHeight * 0.25 // true == 키보드 올라감
         }
@@ -177,12 +186,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     // 채팅방에 이미 메시지가 있을 때 첫 메시지를 보낼 때 사용되는 메소드
     private fun sendMessage() {
-        val message = binding.editMessage.text.toString()
+        val message = binding.appBarChat.layoutRootContainer.editMessage.text.toString()
         if (TextUtils.isEmpty(message)) {
             Toast.makeText(this, "메시지를 입력해주세요", Toast.LENGTH_SHORT).show()
             return
         }
-        binding.editMessage.setText("")
+        binding.appBarChat.layoutRootContainer.editMessage.setText("")
 
         viewModel.sendMessage(message)
     }
