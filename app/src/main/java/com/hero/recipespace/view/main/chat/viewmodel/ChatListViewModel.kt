@@ -1,9 +1,8 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -30,11 +29,10 @@ sealed class ChatListUIState {
 
 @HiltViewModel
 class ChatListViewModel @Inject constructor(
-    application: Application,
     private val getUserUseCase: GetUserUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
-    private val observeChatListUseCase: ObserveChatListUseCase
-) : AndroidViewModel(application) {
+    observeChatListUseCase: ObserveChatListUseCase
+) : ViewModel() {
 
     private val _chatListUiState = MutableLiveData<ChatListUIState>()
     val chatListUiState: LiveData<ChatListUIState>
