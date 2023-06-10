@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    private val observeRecipeListUseCase: ObserveRecipeListUseCase,
+    observeRecipeListUseCase: ObserveRecipeListUseCase,
     private val refreshRecipeListUseCase: RefreshRecipeListUseCase
 ) : ViewModel() {
 
