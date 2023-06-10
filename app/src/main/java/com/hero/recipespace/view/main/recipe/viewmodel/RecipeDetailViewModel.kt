@@ -39,8 +39,6 @@ class RecipeDetailViewModel @Inject constructor(
 
     companion object {
         const val RECIPE_KEY = "key"
-        const val RECIPE_USER_KEY = "userKey"
-        const val RECIPE_ENTITY = "recipeEntity"
     }
 
     private val _recipeDetailUiState = MutableLiveData<RecipeDetailUIState>()
