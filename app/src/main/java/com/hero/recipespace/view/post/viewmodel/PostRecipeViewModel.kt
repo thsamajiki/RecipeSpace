@@ -1,7 +1,9 @@
 package com.hero.recipespace.view.post.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
@@ -25,11 +27,9 @@ sealed class PostRecipeUiState {
 
 @HiltViewModel
 class PostRecipeViewModel @Inject constructor(
-    application: Application,
-    savedStateHandle: SavedStateHandle,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val postRecipeUseCase: PostRecipeUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _postRecipeUiState = MutableStateFlow<PostRecipeUiState>(PostRecipeUiState.Idle)
     val postRecipeUiState: StateFlow<PostRecipeUiState> = _postRecipeUiState.asStateFlow()
