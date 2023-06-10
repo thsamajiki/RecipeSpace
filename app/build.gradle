@@ -86,7 +86,7 @@ dependencies {
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
     implementation "com.google.dagger:hilt-android:2.45"
-    kapt "com.google.dagger:hilt-compiler:2.44.2"
+    kapt "com.google.dagger:hilt-compiler:2.45"
 
 
     def lifecycle_version = "2.6.1"
