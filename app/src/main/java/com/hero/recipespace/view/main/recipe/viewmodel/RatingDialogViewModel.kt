@@ -1,7 +1,10 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
 import com.hero.recipespace.domain.rate.entity.RateEntity
 import com.hero.recipespace.domain.rate.request.UpdateRateRequest
@@ -29,13 +32,12 @@ sealed class RecipeRateUiState {
 
 @HiltViewModel
 class RatingDialogViewModel @Inject constructor(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     private val getRateUseCase: GetRateUseCase,
     private val updateRateUseCase: UpdateRateUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val getRecipeUseCase: GetRecipeUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     companion object {
         const val KEY_RECIPE = "key"
