@@ -1,11 +1,10 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.request.AddChatRequest
@@ -44,7 +43,6 @@ sealed class MessageUIState {
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     private val getChatUseCase: GetChatUseCase,
     private val getChatByUserKeyUseCase: GetChatByRecipeChatInfoUseCase,
@@ -53,7 +51,7 @@ class ChatViewModel @Inject constructor(
     private val observeMessageListUseCase: ObserveMessageListUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val readMessageUseCase: ReadMessageUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     companion object {
         const val EXTRA_RECIPE_CHAT = "recipe_chat"
