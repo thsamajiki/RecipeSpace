@@ -1,9 +1,11 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
-import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.domain.recipe.usecase.ObserveRecipeListUseCase
 import com.hero.recipespace.domain.recipe.usecase.RefreshRecipeListUseCase
 import com.hero.recipespace.util.WLog
@@ -13,11 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    application: Application,
-    private val getRecipeUseCase: GetRecipeUseCase,
     private val observeRecipeListUseCase: ObserveRecipeListUseCase,
     private val refreshRecipeListUseCase: RefreshRecipeListUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     val recipeList: LiveData<List<RecipeEntity>> = observeRecipeListUseCase().asLiveData()
 
