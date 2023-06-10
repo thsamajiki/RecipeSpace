@@ -1,9 +1,8 @@
 package com.hero.recipespace.view.main.account.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
@@ -27,10 +26,9 @@ sealed class SignOutUiState {
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    application: Application,
     private val getUserUseCase: GetUserUseCase,
     private val signOutUseCase: SignOutUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _signOutUiState = MutableStateFlow<SignOutUiState>(SignOutUiState.Idle)
     val signOutUiState: StateFlow<SignOutUiState> = _signOutUiState.asStateFlow()
