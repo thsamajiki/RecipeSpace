@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity(),
         val titleArr = resources.getStringArray(R.array.title_array)
         binding.tvTitle.text = titleArr[0]
 
-//        setSupportActionBar(binding.toolBar)
         setFragmentAdapter()
         setupClickListener()
         setupNavigation()
@@ -65,15 +64,7 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
         navController = navHostFragment.navController
 
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.fragment_recipe_list, R.id.fragment_chat_list, R.id.fragment_account
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-
         binding.bottomNav.setupWithNavController(navController)
-
         binding.bottomNav.setOnItemSelectedListener(this)
     }
 
@@ -90,7 +81,8 @@ class MainActivity : AppCompatActivity(),
 
         when (item.itemId) {
             R.id.menu_recipe -> {
-                val recipeListFragment = supportFragmentManager.fragments.find { it is RecipeListFragment }
+                val recipeListFragment =
+                    supportFragmentManager.fragments.find { it is RecipeListFragment }
                 if (recipeListFragment != null) {
                     supportFragmentManager.beginTransaction().show(recipeListFragment).commit()
                 } else {
@@ -103,8 +95,10 @@ class MainActivity : AppCompatActivity(),
                 binding.ivAccountOptionMenu.visibility = View.GONE
                 binding.ivAccountOptionMenu.isClickable = false
             }
+
             R.id.menu_chat -> {
-                val chatListFragment = supportFragmentManager.fragments.find { it is ChatListFragment }
+                val chatListFragment =
+                    supportFragmentManager.fragments.find { it is ChatListFragment }
                 if (chatListFragment != null) {
                     supportFragmentManager.beginTransaction().show(chatListFragment).commit()
                 } else {
@@ -116,8 +110,10 @@ class MainActivity : AppCompatActivity(),
                 item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.GONE
             }
+
             R.id.menu_user -> {
-                val accountFragment = supportFragmentManager.fragments.find { it is AccountFragment }
+                val accountFragment =
+                    supportFragmentManager.fragments.find { it is AccountFragment }
                 if (accountFragment != null) {
                     supportFragmentManager.beginTransaction().show(accountFragment).commit()
                 } else {
@@ -136,8 +132,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun showAccountOptionMenu() {
-        val popupMenu = PopupMenu(this,
-            binding.ivAccountOptionMenu)
+        val popupMenu = PopupMenu(
+            this,
+            binding.ivAccountOptionMenu
+        )
         popupMenu.menuInflater.inflate(R.menu.menu_account_actionbar_option, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
