@@ -1,6 +1,5 @@
 package com.hero.recipespace.data.user.remote
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hero.recipespace.data.user.UserData
@@ -30,8 +29,6 @@ class UserRemoteDataSourceImpl @Inject constructor(
         } else {
             null
         }
-
-        Log.d("abcd", "UserRemoteDataSourceImpl - getFirebaseAuthProfile: " + firebaseUser.displayName)
 
         return UserData(
             key = firebaseUser.uid,
