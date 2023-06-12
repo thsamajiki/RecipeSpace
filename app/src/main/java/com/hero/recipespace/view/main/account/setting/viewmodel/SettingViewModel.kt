@@ -1,9 +1,8 @@
 package com.hero.recipespace.view.main.account.setting.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.internal.api.FirebaseNoSignedInUserException
@@ -29,10 +28,9 @@ sealed class DropOutUiState {
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    application: Application,
     private val removeUserUseCase: RemoveUserUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase
-): AndroidViewModel(application) {
+): ViewModel() {
 
     private val _dropOutUiState = MutableStateFlow<DropOutUiState>(DropOutUiState.Idle)
     val dropOutUiState: StateFlow<DropOutUiState> = _dropOutUiState.asStateFlow()

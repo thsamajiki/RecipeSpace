@@ -1,10 +1,12 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.Timestamp
-import com.hero.recipespace.domain.chat.usecase.GetChatUseCase
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,16 +33,12 @@ sealed class OpenRateUIState {
 
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
-    application: Application,
     savedStateHandle: SavedStateHandle,
-    private val getChatUseCase: GetChatUseCase,
     private val getRecipeUseCase: GetRecipeUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     companion object {
         const val RECIPE_KEY = "key"
-        const val RECIPE_USER_KEY = "userKey"
-        const val RECIPE_ENTITY = "recipeEntity"
     }
 
     private val _recipeDetailUiState = MutableLiveData<RecipeDetailUIState>()

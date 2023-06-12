@@ -1,9 +1,8 @@
 package com.hero.recipespace.view.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.user.entity.UserEntity
@@ -22,10 +21,9 @@ sealed class MainUIState {
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    application: Application,
     private val getUserUseCase: GetUserUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _mainUiState = MutableLiveData<MainUIState>()
     val mainUiState: LiveData<MainUIState>

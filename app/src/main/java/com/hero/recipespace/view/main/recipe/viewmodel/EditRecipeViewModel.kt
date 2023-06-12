@@ -1,7 +1,10 @@
 package com.hero.recipespace.view.main.recipe.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
@@ -25,11 +28,10 @@ sealed class EditRecipeUiState {
 
 @HiltViewModel
 class EditRecipeViewModel @Inject constructor(
-    application: Application,
     savedStateHandle: SavedStateHandle,
     private val getRecipeUseCase: GetRecipeUseCase,
     private val updateRecipeUseCase: UpdateRecipeUseCase
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _editRecipeUiState = MutableStateFlow<EditRecipeUiState>(EditRecipeUiState.Idle)
     val editRecipeUiState: StateFlow<EditRecipeUiState> = _editRecipeUiState.asStateFlow()

@@ -38,6 +38,7 @@
             app:icon="@drawable/ic_arrow_down"
             android:text="맨 아래로"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:backgroundTint="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
