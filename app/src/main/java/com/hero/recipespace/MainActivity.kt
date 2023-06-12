@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(),
         val titleArr = resources.getStringArray(R.array.title_array)
         binding.tvTitle.text = titleArr[0]
 
-        setSupportActionBar(binding.toolBar)
+//        setSupportActionBar(binding.toolBar)
         setFragmentAdapter()
         setupClickListener()
         setupNavigation()
