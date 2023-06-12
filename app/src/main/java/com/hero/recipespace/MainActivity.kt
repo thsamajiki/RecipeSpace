@@ -8,11 +8,17 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.viewpager2.widget.ViewPager2
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.hero.recipespace.databinding.ActivityMainBinding
 import com.hero.recipespace.view.main.account.AboutUsDialog
+import com.hero.recipespace.view.main.account.AccountFragment
 import com.hero.recipespace.view.main.account.setting.SettingActivity
+import com.hero.recipespace.view.main.chat.ChatListFragment
+import com.hero.recipespace.view.main.recipe.RecipeListFragment
 import com.hero.recipespace.view.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +27,8 @@ class MainActivity : AppCompatActivity(),
     NavigationBarView.OnItemSelectedListener {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private val viewModel by viewModels<MainViewModel>()
 
@@ -32,42 +40,18 @@ class MainActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        val titleArr = resources.getStringArray(R.array.title_array)
+        binding.tvTitle.text = titleArr[0]
+
+        setSupportActionBar(binding.toolBar)
         setFragmentAdapter()
         setupClickListener()
-
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.view_pager) as NavHostFragment
-//        val navController: NavController = navHostFragment.findNavController()
-//
-//        binding.bottomNav.setupWithNavController(navController)
-
-        binding.bottomNav.setOnItemSelectedListener(this)
+        setupNavigation()
     }
 
     private fun setFragmentAdapter() {
-        val fragmentAdapter = FragmentAdapter(this)
-        binding.viewPager.adapter = fragmentAdapter
-
-        val titleArr = resources.getStringArray(R.array.title_array)
-
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int,
-            ) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-            }
-
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.bottomNav.menu.getItem(position).isChecked = true
-                binding.tvTitle.text = titleArr[position]
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
-            }
-        })
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.commit()
     }
 
     private fun setupClickListener() {
@@ -76,23 +60,78 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun setupNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
+        navController = navHostFragment.navController
+
+//        appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.fragment_recipe_list, R.id.fragment_chat_list, R.id.fragment_account
+//            )
+//        )
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        binding.bottomNav.setupWithNavController(navController)
+
+        binding.bottomNav.setOnItemSelectedListener(this)
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val prevFragment = supportFragmentManager.fragments.find {
+            it.isVisible
+        }
+
+        if (prevFragment != null) {
+            supportFragmentManager.beginTransaction().hide(prevFragment).commitNow()
+        }
+
+        val titleArr = resources.getStringArray(R.array.title_array)
+
         when (item.itemId) {
             R.id.menu_recipe -> {
-                binding.viewPager.currentItem = 0
+                val recipeListFragment = supportFragmentManager.fragments.find { it is RecipeListFragment }
+                if (recipeListFragment != null) {
+                    supportFragmentManager.beginTransaction().show(recipeListFragment).commit()
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fcvMain.id, RecipeListFragment.newInstance())
+                        .commit()
+                }
+                binding.tvTitle.text = titleArr[0]
+                item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.GONE
                 binding.ivAccountOptionMenu.isClickable = false
             }
             R.id.menu_chat -> {
-                binding.viewPager.currentItem = 1
+                val chatListFragment = supportFragmentManager.fragments.find { it is ChatListFragment }
+                if (chatListFragment != null) {
+                    supportFragmentManager.beginTransaction().show(chatListFragment).commit()
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fcvMain.id, ChatListFragment.newInstance())
+                        .commit()
+                }
+                binding.tvTitle.text = titleArr[1]
+                item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.GONE
             }
             R.id.menu_user -> {
-                binding.viewPager.currentItem = 2
+                val accountFragment = supportFragmentManager.fragments.find { it is AccountFragment }
+                if (accountFragment != null) {
+                    supportFragmentManager.beginTransaction().show(accountFragment).commit()
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fcvMain.id, AccountFragment.newInstance())
+                        .commit()
+                }
+                binding.tvTitle.text = titleArr[2]
+                item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.VISIBLE
                 binding.ivAccountOptionMenu.isClickable = true
             }
         }
+
         return false
     }
 
