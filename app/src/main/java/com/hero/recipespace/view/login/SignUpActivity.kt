@@ -50,7 +50,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 signUpUiState.collect { state ->
                     when(state) {
                         is SignUpUiState.Failed -> Toast.makeText(this@SignUpActivity, state.message, Toast.LENGTH_SHORT).show()
-                        is SignUpUiState.Success -> intentMain()
+                        is SignUpUiState.Success -> goToMainPage()
                         SignUpUiState.Idle -> {}
                     }
                 }
@@ -88,7 +88,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.signUpUserAccount(userName, email, pwd)
     }
 
-    private fun intentMain() {
+    private fun goToMainPage() {
         val intent = MainActivity.getIntent(this@SignUpActivity)
         startActivity(intent)
         finishAffinity()
