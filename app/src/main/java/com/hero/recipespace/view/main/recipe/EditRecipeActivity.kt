@@ -123,7 +123,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         editRecipeImageListAdapter = EditRecipeImageListAdapter(
-            onClick = ::intentPhoto,
+            onClick = ::onRecipePhotoClick,
             onCancelClick = ::deletePhoto
         )
 
@@ -238,7 +238,7 @@ class EditRecipeActivity : AppCompatActivity(),
         binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
-    private fun intentPhoto(photoUrl: String?) {
+    private fun onRecipePhotoClick(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
     }
