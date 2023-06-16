@@ -137,7 +137,7 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         postRecipeImageListAdapter = PostRecipeImageListAdapter(
-            onClick = ::intentPhoto,
+            onClick = ::onRecipePhotoClick,
             onCancelClick = ::deletePhoto
         )
 
@@ -353,7 +353,7 @@ class PostRecipeActivity : AppCompatActivity(),
         binding.tvComplete.isEnabled = s.isNotEmpty() && postRecipeImageListAdapter.getRecipeImageList().isNotEmpty()
     }
 
-    private fun intentPhoto(photoUrl: String?) {
+    private fun onRecipePhotoClick(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
     }
