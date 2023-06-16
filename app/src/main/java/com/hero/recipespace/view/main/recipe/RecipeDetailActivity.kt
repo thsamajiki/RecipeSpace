@@ -103,7 +103,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
         recipeDetailAdapter = RecipeDetailAdapter(
-            onClick = ::intentPhoto
+            onClick = ::onRecipePhotoClick
         )
 
         recyclerView.run {
@@ -129,7 +129,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivUserProfile.setOnClickListener {
-            intentPhoto(viewModel.recipe.value?.profileImageUrl.orEmpty())
+            onRecipePhotoClick(viewModel.recipe.value?.profileImageUrl.orEmpty())
         }
 
         binding.btnQuestion.setOnClickListener {
@@ -192,7 +192,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         popupMenu.menuInflater.inflate(R.menu.menu_recipe_detail_actionbar_option, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_recipe_detail_modify -> intentModifyRecipe()
+                R.id.menu_recipe_detail_modify -> onModifyRecipeMenuClick()
                 R.id.menu_recipe_detail_delete -> deleteRecipeData()
             }
             true
@@ -200,7 +200,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         popupMenu.show()
     }
 
-    private fun intentModifyRecipe() {
+    private fun onModifyRecipeMenuClick() {
         val intent = EditRecipeActivity.getIntent(this, viewModel.recipeKey)
         updateResultLauncher.launch(intent)
     }
@@ -218,7 +218,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         ratingDialogFragment.show(supportFragmentManager, RatingDialogFragment.TAG)
     }
 
-    private fun intentPhoto(photoUrl: String?) {
+    private fun onRecipePhotoClick(photoUrl: String?) {
         val intent = PhotoActivity.getIntent(this, photoUrl)
         startActivity(intent)
     }
