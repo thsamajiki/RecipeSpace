@@ -90,7 +90,7 @@ class SettingActivity : AppCompatActivity() {
             finish()
         }
         binding.layoutItemNotice.setOnClickListener {
-            intentNoticeList()
+            onNoticeLayoutClick()
         }
         binding.layoutItemFont.setOnClickListener {
             openFontPopUp()
@@ -112,7 +112,7 @@ class SettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun intentNoticeList() {
+    private fun onNoticeLayoutClick() {
         val intent = NoticeListActivity.getIntent(this)
         startActivity(intent)
     }
