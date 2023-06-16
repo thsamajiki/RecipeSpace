@@ -102,14 +102,14 @@ class AccountFragment: Fragment(),
         binding.btnEditProfile.setOnClickListener {
             val user: UserEntity? = viewModel.user.value
             if (user != null) {
-                intentEditProfile(user)
+                onEditProfileButtonClick(user)
             }
         }
 
         binding.ivUserProfile.setOnClickListener {
             val profileImageUrl = viewModel.profileImageUrl.value
             if (profileImageUrl != null) {
-                intentPhoto(profileImageUrl)
+                onUserProfileImageClick(profileImageUrl)
             }
         }
 
@@ -118,12 +118,12 @@ class AccountFragment: Fragment(),
         }
     }
 
-    private fun intentEditProfile(user: UserEntity) {
+    private fun onEditProfileButtonClick(user: UserEntity) {
         val intent = EditProfileActivity.getIntent(requireActivity(), user.key)
         editProfileResultLauncher.launch(intent)
     }
 
-    private fun intentPhoto(profileImageUrl: String) {
+    private fun onUserProfileImageClick(profileImageUrl: String) {
         val intent = PhotoActivity.getIntent(requireActivity(), profileImageUrl)
         startActivity(intent)
     }
