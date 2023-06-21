@@ -101,6 +101,11 @@ class EditProfileActivity : AppCompatActivity(),
                 editProfileUiState.collect { state ->
                     when (state) {
                         is EditProfileUiState.Success -> {
+                            Toast.makeText(
+                                this@EditProfileActivity,
+                                "프로필 사진 변경에 성공했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             val intent = Intent()
                             setResult(RESULT_OK, intent)
                             finish()
