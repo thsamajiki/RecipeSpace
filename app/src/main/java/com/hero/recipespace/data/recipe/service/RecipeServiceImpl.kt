@@ -226,7 +226,6 @@ class RecipeServiceImpl @Inject constructor(
     ): RecipeData {
         val editData = HashMap<String, Any>()
 
-        // FIXME: 2022-12-15 PhotoList 에 갱신된 데이터 넣는 것 수정하기
         editData["desc"] = content
         editData["photoUrlList"] = photoUrlList
 
