@@ -14,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import com.hero.recipespace.databinding.ActivityMainBinding
+import com.hero.recipespace.util.KeepStateNavigator
 import com.hero.recipespace.view.main.account.AboutUsDialog
 import com.hero.recipespace.view.main.account.AccountFragment
 import com.hero.recipespace.view.main.account.setting.SettingActivity
@@ -63,6 +64,9 @@ class MainActivity : AppCompatActivity(),
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
         navController = navHostFragment.navController
+        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.fcv_main)
+        navController.navigatorProvider.addNavigator(navigator)
+        navController.setGraph(R.navigation.nav_main_graph)
 
         binding.bottomNav.setupWithNavController(navController)
         binding.bottomNav.setOnItemSelectedListener(this)
