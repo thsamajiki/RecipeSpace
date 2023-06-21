@@ -151,6 +151,12 @@ class EditRecipeActivity : AppCompatActivity(),
                 editRecipeUiState.collect { state ->
                     when (state) {
                         is EditRecipeUiState.Success -> {
+                            Toast.makeText(
+                                this@EditRecipeActivity,
+                                "레시피 수정에 성공했습니다!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
                             val intent = Intent()
                             intent.putExtra(EXTRA_RECIPE_ENTITY, state.recipe)
                             setResult(RESULT_OK, intent)
@@ -159,7 +165,7 @@ class EditRecipeActivity : AppCompatActivity(),
                         is EditRecipeUiState.Failed -> {
                             Toast.makeText(
                                 this@EditRecipeActivity,
-                                "업로드에 실패했습니다. 다시 시도해주세요 ${state.message}",
+                                "레시피 수정에 실패했습니다. 다시 시도해주세요 ${state.message}",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
