@@ -4,9 +4,9 @@ import com.hero.recipespace.data.recipe.RecipeData
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeLocalDataSource {
-    suspend fun getData(recipeKey: String) : RecipeData
+    suspend fun getData(recipeKey: String): RecipeData
 
-    fun observeDataList() : Flow<List<RecipeData>>
+    fun observeDataList(): Flow<List<RecipeData>>
 
     fun clear()
 
