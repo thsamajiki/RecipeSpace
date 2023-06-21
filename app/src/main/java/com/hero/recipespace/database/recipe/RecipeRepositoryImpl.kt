@@ -70,9 +70,11 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun deleteRecipe(
         recipeEntity: RecipeEntity
-    ) {
+    ): RecipeEntity {
         val result = recipeRemoteDataSource.remove(recipeEntity.toData())
         recipeLocalDataSource.remove(result)
+
+        return result.toEntity()
     }
 
     private fun getEntities(data: List<RecipeData>): List<RecipeEntity> {
