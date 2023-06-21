@@ -79,7 +79,7 @@ class RecipeListFragment : Fragment() {
     private fun setupView() {
         initRecyclerView(binding.rvRecipe)
         binding.btnPost.setOnClickListener {
-            intentPostActivity()
+            onPostRecipeButtonClick()
         }
     }
 
@@ -136,7 +136,7 @@ class RecipeListFragment : Fragment() {
         ratingDialogFragment.show(childFragmentManager, RatingDialogFragment.TAG)
     }
 
-    private fun intentPostActivity() {
+    private fun onPostRecipeButtonClick() {
         val intent = PostRecipeActivity.getIntent(requireActivity())
         postResultLauncher.launch(intent)
     }

@@ -75,7 +75,7 @@
             app:layout_constraintTop_toBottomOf="@id/tool_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-            app:navGraph="@navigation/nav_graph" />
+            app:navGraph="@navigation/nav_main_graph" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
