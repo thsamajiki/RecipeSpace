@@ -120,7 +120,6 @@ class RateServiceImpl @Inject constructor(
                     continuation.resume(rateData as RateData)
                 }
                 .addOnFailureListener { exception ->
-                    // 업데이트를 했는데 에러 발생.
                     if (exception is FirebaseFirestoreException) {
                         CoroutineScope(Dispatchers.Main).launch {
                             kotlin.runCatching { add(request, recipeData) }
