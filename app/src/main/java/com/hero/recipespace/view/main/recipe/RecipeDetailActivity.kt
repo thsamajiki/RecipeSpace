@@ -13,21 +13,29 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityRecipeDetailBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.ext.hideLoading
+import com.hero.recipespace.ext.setProgressPercent
+import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.util.TimeUtils
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.main.chat.ChatActivity
 import com.hero.recipespace.view.main.chat.RecipeChatInfo
+import com.hero.recipespace.view.main.recipe.viewmodel.DeleteRecipeUiState
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeDetailViewModel
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.PostRecipeActivity.Companion.EXTRA_RECIPE_ENTITY
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
@@ -120,6 +128,41 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
 
                 bindRecipe(recipe)
             }
+
+            lifecycleScope.launch {
+                loadingState.collect { state ->
+                    when (state) {
+                        LoadingState.Hidden -> hideLoading()
+                        LoadingState.Idle -> {}
+                        LoadingState.Loading -> showLoading()
+                        is LoadingState.Progress -> setProgressPercent(state.value)
+                    }
+                }
+            }
+
+            lifecycleScope.launch {
+                deleteRecipeUiState.collect { state ->
+                    when (state) {
+                        is DeleteRecipeUiState.Success -> {
+                            Toast.makeText(
+                                this@RecipeDetailActivity,
+                                "레시피를 삭제했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            finish()
+                        }
+                        is DeleteRecipeUiState.Failed -> {
+                            Toast.makeText(
+                                this@RecipeDetailActivity,
+                                "레시피 삭제에 실패했습니다. 다시 시도해주세요 ${state.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is DeleteRecipeUiState.Idle -> {
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -187,7 +230,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_recipe_detail_modify -> onModifyRecipeMenuClick()
-                R.id.menu_recipe_detail_delete -> deleteRecipeData()
+                R.id.menu_recipe_detail_delete -> onDeleteRecipeMenuClick()
             }
             true
         }
@@ -199,11 +242,25 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         updateResultLauncher.launch(intent)
     }
 
+    private fun onDeleteRecipeMenuClick() {
+        val title = "레시피 삭제"
+        val message = "레시피를 삭제하시겠습니까?"
+        val positiveText = "예"
+        val negativeText = "아니오"
+
+        MaterialAlertDialogBuilder(this).setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveText) { _, _ -> deleteRecipeData() }
+            .setNegativeButton(negativeText) { _, _ -> }
+            .create()
+            .show()
+    }
+
     private fun deleteRecipeData() {
-//        HashMap<String, Object> editData = new HashMap<>();
-//        if (!TextUtils.isEmpty(newProfileUrl)) {
-//            editData.put(MyInfoUtil.EXTRA_PROFILE_URL, newProfileUrl);
-//        }
+        val recipe = viewModel.recipe.value
+        if (recipe != null) {
+            viewModel.deleteRecipe(recipe)
+        }
     }
 
     private fun showRatingDialog(recipe: RecipeEntity) {
