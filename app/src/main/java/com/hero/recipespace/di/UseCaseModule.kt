@@ -92,7 +92,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideRemoveRecipeUseCase(recipeRepository: RecipeRepository) = RemoveRecipeUseCase(recipeRepository)
+    fun provideRemoveRecipeUseCase(recipeRepository: RecipeRepository) = DeleteRecipeUseCase(recipeRepository)
 
     @Provides
     @Singleton
