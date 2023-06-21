@@ -60,8 +60,6 @@ class RecipeDetailViewModel @Inject constructor(
 
     val recipeKey: String = savedStateHandle.get<String>(RECIPE_KEY)!!
 
-//    val recipeEntity: RecipeEntity = savedStateHandle.get<RecipeEntity>(RECIPE_ENTITY)!!
-
     init {
         viewModelScope.launch {
             getRecipeUseCase(recipeKey)
@@ -81,26 +79,7 @@ class RecipeDetailViewModel @Inject constructor(
                     Log.e("RecipeDetailViewModel", "$it ")
                 }
         }
-//
-//        viewModelScope.launch {
-//            getRecipeUseCase(recipeKey)
-//                .onSuccess {
-//                    _recipeDetailUiState.value = RecipeDetailUIState.Success(it)
-//                }
-//                .onFailure {
-//                    _recipeDetailUiState.value = RecipeDetailUIState.Failed(it.message.orEmpty())
-//                    it.printStackTrace()
-//                }
-//        }
     }
-
-    fun openRate() {
-        viewModelScope.launch {
-
-        }
-    }
-
-//    val chatKey: String = savedStateHandle.get<String>(RECIPE_USER_KEY)!!
 
     override fun onCleared() {
         super.onCleared()
