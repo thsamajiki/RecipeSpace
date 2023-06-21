@@ -161,12 +161,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         binding.ivOptionMenu.setOnClickListener {
-            Toast.makeText(this, "option_menu intent", Toast.LENGTH_SHORT).show()
-//            val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
-//            if (getRecipe()?.userKey.equals(myUserKey)) {
-//                binding.ivOptionMenu.visibility = View.VISIBLE
-//                binding.ivOptionMenu.isClickable = true
-//            }
             showRecipeDetailOptionMenu()
         }
     }
@@ -177,7 +171,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             RatingDialogFragment.TAG,
             this
         ) { _: String, result: Bundle ->
-            // 데이터를 수신하자.
+            // 데이터를 수신
             val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
 
             if (recipe != null) {
