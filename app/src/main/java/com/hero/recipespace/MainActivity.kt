@@ -9,17 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hero.recipespace.databinding.ActivityMainBinding
-import com.hero.recipespace.util.KeepStateNavigator
 import com.hero.recipespace.view.main.account.AboutUsDialog
-import com.hero.recipespace.view.main.account.AccountFragment
 import com.hero.recipespace.view.main.account.setting.SettingActivity
-import com.hero.recipespace.view.main.chat.ChatListFragment
-import com.hero.recipespace.view.main.recipe.RecipeListFragment
 import com.hero.recipespace.view.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,35 +36,41 @@ class MainActivity : AppCompatActivity(),
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        val titleArr = resources.getStringArray(R.array.title_array)
-        binding.tvTitle.text = titleArr[0]
-
         setFragmentAdapter()
         setupClickListener()
-        setupNavigation()
     }
 
     private fun setFragmentAdapter() {
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.commit()
+        val fragmentAdapter = FragmentAdapter(this)
+        binding.viewPager.adapter = fragmentAdapter
+
+        val titleArr = resources.getStringArray(R.array.title_array)
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int,
+            ) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+            }
+
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.bottomNav.menu.getItem(position).isChecked = true
+                binding.tvTitle.text = titleArr[position]
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+            }
+        })
     }
 
     private fun setupClickListener() {
         binding.ivAccountOptionMenu.setOnClickListener {
             showAccountOptionMenu()
         }
-    }
-
-    private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
-        navController = navHostFragment.navController
-        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.fcv_main)
-        navController.navigatorProvider.addNavigator(navigator)
-        navController.setGraph(R.navigation.nav_main_graph)
-
-        binding.bottomNav.setupWithNavController(navController)
-        binding.bottomNav.setOnItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -85,47 +86,19 @@ class MainActivity : AppCompatActivity(),
 
         when (item.itemId) {
             R.id.menu_recipe -> {
-                val recipeListFragment =
-                    supportFragmentManager.fragments.find { it is RecipeListFragment }
-                if (recipeListFragment != null) {
-                    supportFragmentManager.beginTransaction().show(recipeListFragment).commit()
-                } else {
-                    supportFragmentManager.beginTransaction()
-                        .add(binding.fcvMain.id, RecipeListFragment.newInstance())
-                        .commit()
-                }
-                binding.tvTitle.text = titleArr[0]
-                item.isChecked = true
+                binding.viewPager.currentItem = 0
                 binding.ivAccountOptionMenu.visibility = View.GONE
                 binding.ivAccountOptionMenu.isClickable = false
             }
 
             R.id.menu_chat -> {
-                val chatListFragment =
-                    supportFragmentManager.fragments.find { it is ChatListFragment }
-                if (chatListFragment != null) {
-                    supportFragmentManager.beginTransaction().show(chatListFragment).commit()
-                } else {
-                    supportFragmentManager.beginTransaction()
-                        .add(binding.fcvMain.id, ChatListFragment.newInstance())
-                        .commit()
-                }
-                binding.tvTitle.text = titleArr[1]
+                binding.viewPager.currentItem = 1
                 item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.GONE
             }
 
             R.id.menu_user -> {
-                val accountFragment =
-                    supportFragmentManager.fragments.find { it is AccountFragment }
-                if (accountFragment != null) {
-                    supportFragmentManager.beginTransaction().show(accountFragment).commit()
-                } else {
-                    supportFragmentManager.beginTransaction()
-                        .add(binding.fcvMain.id, AccountFragment.newInstance())
-                        .commit()
-                }
-                binding.tvTitle.text = titleArr[2]
+                binding.viewPager.currentItem = 2
                 item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.VISIBLE
                 binding.ivAccountOptionMenu.isClickable = true
