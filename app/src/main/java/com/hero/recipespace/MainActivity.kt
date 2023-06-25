@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity(),
 
         setFragmentAdapter()
         setupClickListener()
+
+        binding.bottomNav.setOnItemSelectedListener(this)
     }
 
     private fun setFragmentAdapter() {
@@ -82,30 +84,27 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.beginTransaction().hide(prevFragment).commitNow()
         }
 
-        val titleArr = resources.getStringArray(R.array.title_array)
-
         when (item.itemId) {
             R.id.menu_recipe -> {
                 binding.viewPager.currentItem = 0
-                binding.ivAccountOptionMenu.visibility = View.GONE
+                binding.ivAccountOptionMenu.visibility = View.INVISIBLE
                 binding.ivAccountOptionMenu.isClickable = false
             }
 
             R.id.menu_chat -> {
                 binding.viewPager.currentItem = 1
-                item.isChecked = true
-                binding.ivAccountOptionMenu.visibility = View.GONE
+                binding.ivAccountOptionMenu.visibility = View.INVISIBLE
+                binding.ivAccountOptionMenu.isClickable = false
             }
 
             R.id.menu_user -> {
                 binding.viewPager.currentItem = 2
-                item.isChecked = true
                 binding.ivAccountOptionMenu.visibility = View.VISIBLE
                 binding.ivAccountOptionMenu.isClickable = true
             }
         }
 
-        return false
+        return true
     }
 
     private fun showAccountOptionMenu() {
