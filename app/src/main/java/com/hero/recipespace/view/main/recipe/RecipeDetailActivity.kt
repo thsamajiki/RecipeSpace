@@ -215,7 +215,12 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             this
         ) { _: String, result: Bundle ->
             // 데이터를 수신
-            val recipe = result.getParcelable<RecipeEntity>(RatingDialogFragment.Result.KEY_RECIPE)
+            val recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE, RecipeEntity::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                result.getParcelable(EXTRA_RECIPE_ENTITY)
+            }
 
             if (recipe != null) {
                 val rate = recipe.rate!!
