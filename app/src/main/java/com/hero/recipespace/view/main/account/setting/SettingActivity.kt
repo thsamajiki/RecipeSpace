@@ -95,6 +95,9 @@ class SettingActivity : AppCompatActivity() {
         binding.layoutItemFont.setOnClickListener {
             openFontPopUp()
         }
+        binding.layoutItemTheme.setOnClickListener {
+            onClickItemTheme()
+        }
         binding.layoutItemDeleteCache.setOnClickListener {
             openDeleteCachePopUp()
         }
@@ -110,6 +113,11 @@ class SettingActivity : AppCompatActivity() {
         binding.layoutItemDropOut.setOnClickListener {
             openDropOutPopUp()
         }
+    }
+
+    private fun onClickItemTheme() {
+        val intent = ThemeSettingActivity.getIntent(this)
+        startActivity(intent)
     }
 
     private fun onNoticeLayoutClick() {
