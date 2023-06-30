@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application Theme -->
+    <string-array name="themeListArray">
+        <item>시스템 테마 모드</item>
+        <item>라이트 모드</item>
+        <item>다크 모드</item>
+    </string-array>
+
+    <string-array name="themeEntryArray">
+        <item>default</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+</resources>
