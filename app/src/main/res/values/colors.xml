@@ -11,6 +11,11 @@
     <color name="light_gray">#ededed</color>
     <color name="transparent">#00000000</color>
 
+    <color name="colorPrimaryDarkMode">#232329</color>
+    <color name="colorPrimaryDarkDarkMode">#1C1C21</color>
+    <color name="colorAccentDarkMode">#1EB980</color>
+    <color name="Dark">#102027</color>
+
     <!-- Grey -->
 
     <color name="grey_50">#FAFAFA</color>
