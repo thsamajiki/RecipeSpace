@@ -13,4 +13,15 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!--Dark Theme -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryDarkMode</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkDarkMode</item>
+        <item name="colorAccent">@color/colorAccentDarkMode</item>
+        <item name="backgroundColor">@color/colorPrimaryDarkMode</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_back_arrow_black_24dp</item>
+    </style>
 </resources>
