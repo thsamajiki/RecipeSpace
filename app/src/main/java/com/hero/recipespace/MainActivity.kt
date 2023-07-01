@@ -61,6 +61,14 @@ class MainActivity : AppCompatActivity(),
                 super.onPageSelected(position)
                 binding.bottomNav.menu.getItem(position).isChecked = true
                 binding.tvTitle.text = titleArr[position]
+
+                if (position == 2) {
+                    binding.ivAccountOptionMenu.visibility = View.VISIBLE
+                    binding.ivAccountOptionMenu.isClickable = true
+                } else {
+                    binding.ivAccountOptionMenu.visibility = View.INVISIBLE
+                    binding.ivAccountOptionMenu.isClickable = false
+                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
