@@ -99,7 +99,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         binding.tvUserName.text = recipe.userName
         binding.tvRecipeDesc.text = recipe.desc
         binding.tvPostDate.text =
-            TimeUtils.getInstance().convertTimeFormat(recipe.postDate?.toDate(), "yy.MM.dd")
+            TimeUtils.convertTimeFormat(recipe.postDate?.toDate(), "yy.MM.dd")
         binding.ratingBar.rating = recipe.rate ?: 0f
 
         val myUserKey = FirebaseAuth.getInstance().currentUser?.uid
