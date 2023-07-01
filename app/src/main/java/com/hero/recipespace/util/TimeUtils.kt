@@ -4,20 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class TimeUtils {
+object TimeUtils {
     // 시간 관련 함수들을 클래스로 모아둠
 
-    companion object {
-        private var instance: TimeUtils? = null
-
-        fun getInstance(): TimeUtils {
-            return instance ?: synchronized(this) {
-                instance ?: TimeUtils().also {
-                    instance = it
-                }
-            }
-        }
-    }
 
     fun convertTimeFormat(date: Date?, format: String?): String? {
         date ?: return null
