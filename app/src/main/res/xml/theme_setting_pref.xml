@@ -2,13 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:key="theme_category"
-        android:title="Theme">
+        android:title="테마">
 
         <ListPreference
             android:key="themePref"
-            android:title="Choose theme"
+            android:title="테마를 선택하세요"
             android:defaultValue="default"
-            android:dialogTitle="Choose theme"
+            android:dialogTitle="테마를 선택하세요"
             android:entries="@array/themeListArray"
             android:entryValues="@array/themeEntryArray" />
 
