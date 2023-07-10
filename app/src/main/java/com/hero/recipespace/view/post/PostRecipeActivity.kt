@@ -51,8 +51,6 @@ class PostRecipeActivity : AppCompatActivity(),
 
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
-//    private val recipePhotoPathList = mutableListOf<String>()
-
     private var imgUri: Uri? = null
     private var photoURI: Uri? = null
     private var albumURI: Uri? = null
