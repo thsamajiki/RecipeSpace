@@ -70,7 +70,7 @@ class PostRecipeActivity : AppCompatActivity(),
                 if (it.data == null) { // 어떤 이미지도 선택하지 않은 경우
                     Toast.makeText(this, "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show()
                 } else { // 이미지를 하나라도 선택한 경우
-                    if (clipData == null) { //이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
+                    if (clipData == null) { // 이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
                         val photoPath = it?.data?.data!!
 
                         viewModel.addRecipePhotoList(listOf(photoPath.toString()))
