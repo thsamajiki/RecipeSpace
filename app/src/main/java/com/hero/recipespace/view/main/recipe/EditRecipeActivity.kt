@@ -253,10 +253,6 @@ class EditRecipeActivity : AppCompatActivity(),
         viewModel.deletePhoto(position)
     }
 
-    object Result {
-        const val RECIPE_KEY = "recipe_key"
-    }
-
     override fun onClick(view: View) {
     }
 }
