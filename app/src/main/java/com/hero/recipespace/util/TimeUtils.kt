@@ -7,7 +7,6 @@ import java.util.Locale
 object TimeUtils {
     // 시간 관련 함수들을 클래스로 모아둠
 
-
     fun convertTimeFormat(date: Date?, format: String?): String? {
         date ?: return null
         val currentDate = Date(System.currentTimeMillis()).time
