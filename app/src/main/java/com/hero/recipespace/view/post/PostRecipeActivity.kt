@@ -94,7 +94,7 @@ class PostRecipeActivity : AppCompatActivity(),
                 }
 
                 binding.rvRecipeImages.visibility = View.VISIBLE
-                binding.tvTouchHereAndAddPictures.visibility = View.GONE
+                binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
                 if (binding.editContent.text.toString().isNotEmpty() &&
                     viewModel.recipeImageList.value?.isNotEmpty() == true
                 ) {
