@@ -55,10 +55,6 @@ class RecipeDetailViewModel @Inject constructor(
         const val RECIPE_KEY = "key"
     }
 
-    private val _recipeDetailUiState = MutableLiveData<RecipeDetailUIState>()
-    val recipeDetailUiState: LiveData<RecipeDetailUIState>
-        get() = _recipeDetailUiState
-
     private val _deleteRecipeUiState = MutableStateFlow<DeleteRecipeUiState>(DeleteRecipeUiState.Idle)
     val deleteRecipeUiState: StateFlow<DeleteRecipeUiState> = _deleteRecipeUiState.asStateFlow()
 
