@@ -60,7 +60,6 @@ class RecipeRepositoryImpl @Inject constructor(
         return result.toEntity()
     }
 
-    // 레시피를 업로드하는 것과 유사하게 함수를 짜야 할수도 있어서 만들어놓음
     override suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit): RecipeEntity {
         val result = recipeRemoteDataSource.update(request, onProgress)
         recipeLocalDataSource.update(result)
