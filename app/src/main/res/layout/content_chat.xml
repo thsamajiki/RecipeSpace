@@ -26,8 +26,8 @@
             android:layout_height="0dp"
             android:orientation="vertical"
             android:stackFromBottom="true"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/cv_input"
+            app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/item_message_right" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -35,14 +35,14 @@
             android:layout_width="140dp"
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
-            app:icon="@drawable/ic_arrow_down"
-            android:text="맨 아래로"
+            android:text="@string/to_bottom"
             android:textColor="@color/white"
             android:visibility="gone"
             app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
+            app:icon="@drawable/ic_arrow_down"
+            app:layout_constraintBottom_toTopOf="@+id/cv_input"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/cv_input" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_input"
