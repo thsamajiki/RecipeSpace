@@ -41,8 +41,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
+                    android:paddingHorizontal="10dp"
                     android:text="@string/title_notice_list"
                     android:textColor="@color/black"
                     android:textSize="@dimen/title_text_size"
