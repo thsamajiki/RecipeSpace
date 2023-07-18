@@ -12,6 +12,8 @@ interface ChatRepository {
 
     fun observeChatList(userKey: String) : Flow<List<ChatEntity>>
 
+    suspend fun refresh(userKey: String)
+
     suspend fun createNewChatRoom(request: AddChatRequest): ChatEntity
 
     suspend fun modifyChat(chatEntity: ChatEntity)
