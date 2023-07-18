@@ -50,6 +50,11 @@ class ChatListFragment: Fragment() {
 
         setupView()
         setupViewModel()
+
+        binding.srlChatList.setOnRefreshListener {
+            viewModel.refreshChatList(userKey.orEmpty())
+            binding.srlChatList.isRefreshing = false
+        }
     }
 
     private fun setupView() {
