@@ -37,8 +37,4 @@ class RecipeListViewModel @Inject constructor(
                 }
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-    }
 }
