@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.domain.chat.entity.ChatEntity
 import com.hero.recipespace.domain.chat.usecase.ObserveChatListUseCase
+import com.hero.recipespace.domain.chat.usecase.RefreshChatListUseCase
 import com.hero.recipespace.domain.user.entity.UserEntity
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
@@ -31,6 +32,7 @@ sealed class ChatListUIState {
 class ChatListViewModel @Inject constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
+    private val refreshChatListUseCase: RefreshChatListUseCase,
     observeChatListUseCase: ObserveChatListUseCase
 ) : ViewModel() {
 
@@ -119,5 +121,17 @@ class ChatListViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
+    }
+
+    fun refreshChatList(userKey: String) {
+        viewModelScope.launch {
+            refreshChatListUseCase.invoke(userKey)
+                .onSuccess {
+
+                }
+                .onFailure {
+                    it.printStackTrace()
+                }
+        }
     }
 }
