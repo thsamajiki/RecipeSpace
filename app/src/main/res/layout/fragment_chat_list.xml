@@ -12,19 +12,26 @@
             type="com.hero.recipespace.view.main.chat.viewmodel.ChatListViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_chat_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.main.chat.ChatListFragment">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chat_list"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:chatListItems="@{viewModel.chatList}"
-            tools:listitem="@layout/item_chat_list" />
+            tools:context=".view.main.chat.ChatListFragment">
 
-    </FrameLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_chat_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:chatListItems="@{viewModel.chatList}"
+                tools:listitem="@layout/item_chat_list" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </layout>
