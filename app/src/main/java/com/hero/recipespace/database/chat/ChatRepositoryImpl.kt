@@ -75,6 +75,11 @@ class ChatRepositoryImpl @Inject constructor(
             }
     }
 
+    override suspend fun refresh(userKey: String) {
+        val chatList = chatRemoteDataSource.getDataList(userKey)
+        chatLocalDataSource.addAll(chatList)
+    }
+
     override suspend fun createNewChatRoom(
         request: AddChatRequest
     ): ChatEntity {
