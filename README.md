@@ -21,7 +21,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 ## 앱의 버전
 - minSdkVersion : 23
-- targetSdkVersion : 33
+- targetSdkVersion : 34
 
 
 ## 이용 대상
@@ -39,12 +39,13 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 ## 사용된 기술
 - MVVM 패턴
-- 클린 아키텍처
+- 안드로이드 클린 아키텍처
 - Firebase Firestore
 - Room
 - ViewPager2
 - RecyclerView
 - Coroutine
+- LiveData
 - Hilt
 - SSOT (Single Source Of Truth)
 
