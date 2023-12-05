@@ -9,8 +9,6 @@ import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +21,7 @@ import androidx.camera.core.CameraState
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
+import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -96,6 +95,20 @@ class CameraActivity : AppCompatActivity() {
     private fun setupListeners() {
         cameraUiContainerBinding.ivBack.setOnClickListener {
             finish()
+        }
+
+        cameraUiContainerBinding.cameraFlashButton.setOnClickListener {
+            when (camera?.cameraInfo?.torchState?.value) {
+                TorchState.ON -> {
+                    camera?.cameraControl?.enableTorch(false)
+                    cameraUiContainerBinding.cameraFlashButton.setImageResource(R.drawable.ic_flash_off)
+                }
+
+                TorchState.OFF -> {
+                    camera?.cameraControl?.enableTorch(true)
+                    cameraUiContainerBinding.cameraFlashButton.setImageResource(R.drawable.ic_flash_on)
+                }
+            }
         }
 
         cameraUiContainerBinding.cameraCaptureButton.setOnClickListener {
@@ -172,17 +185,17 @@ class CameraActivity : AppCompatActivity() {
                     Toast.makeText(this@CameraActivity, msg, Toast.LENGTH_SHORT).show()
                     Log.d("succeeded", msg)
 
-                    if (camera?.cameraInfo?.hasFlashUnit() == true) {
-                        camera?.cameraControl?.enableTorch(true)
-                    }
+//                    if (camera?.cameraInfo?.hasFlashUnit() == true) {
+//                        camera?.cameraControl?.enableTorch(true)
+//                    }
 
                     sound.play(MediaActionSound.SHUTTER_CLICK)
 
-                    runOnUiThread {
-                        Handler(Looper.myLooper()!!).postDelayed({
-                            camera?.cameraControl?.enableTorch(false)
-                        }, 100)
-                    }
+//                    runOnUiThread {
+//                        Handler(Looper.myLooper()!!).postDelayed({
+//                            camera?.cameraControl?.enableTorch(false)
+//                        }, 100)
+//                    }
 
                     onTakePhotoSuccess(output)
                 }
