@@ -17,6 +17,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        android:id="@+id/camera_flash_button"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="@dimen/margin_xlarge"
+        android:layout_marginEnd="24dp"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:background="@color/transparent"
+        app:srcCompat="@drawable/ic_flash_on"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/gallery_button_alt" />
+
+    <ImageButton
         android:id="@+id/camera_switch_button"
         android:layout_width="@dimen/round_button_medium"
         android:layout_height="@dimen/round_button_medium"
