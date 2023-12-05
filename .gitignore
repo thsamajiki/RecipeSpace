@@ -2,10 +2,9 @@
 .gradle
 /local.properties
 /.idea/caches
-/.idea/code-comments
-/.idea/libraries
-/.idea/kotlinc
-/.idea/misc
+/.idea/code-comments.xml
+/.idea/libraries.xml
+/.idea/misc.xml
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml

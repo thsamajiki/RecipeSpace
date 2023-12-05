@@ -350,7 +350,13 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-
+        if (s.isNotEmpty() && viewModel.recipeImageList.value?.isNotEmpty() == true) {
+            binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.colorPrimaryDark))
+            binding.tvComplete.isEnabled = true
+        } else {
+            binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.normal_gray))
+            binding.tvComplete.isEnabled = false
+        }
     }
 
     private fun onRecipePhotoClick(photoUrl: String?) {
