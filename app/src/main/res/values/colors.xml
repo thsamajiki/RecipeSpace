@@ -16,6 +16,10 @@
     <color name="colorAccentDarkMode">#1EB980</color>
     <color name="Dark">#102027</color>
 
+    <color name="icActive">@color/white</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
+
     <!-- Grey -->
 
     <color name="grey_50">#FAFAFA</color>
