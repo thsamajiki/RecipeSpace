@@ -94,7 +94,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
+        cameraUiContainerBinding.ivBack.setOnClickListener {
             finish()
         }
 
