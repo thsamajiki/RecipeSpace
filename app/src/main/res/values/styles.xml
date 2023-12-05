@@ -51,4 +51,12 @@
         <item name="cornerSize">10%</item>
     </style>
 
+    <style name="RounderBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/RoundBottomSheet</item>
+    </style>
+
+    <style name="RoundBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_border</item>
+    </style>
+
 </resources>
