@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,7 +19,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,29 +29,21 @@ import com.hero.recipespace.databinding.ActivityPostRecipeBinding
 import com.hero.recipespace.ext.hideLoading
 import com.hero.recipespace.ext.setProgressPercent
 import com.hero.recipespace.ext.showLoading
+import com.hero.recipespace.util.PermissionUtil
 import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.photoview.PhotoActivity
 import com.hero.recipespace.view.post.viewmodel.PostRecipeUiState
 import com.hero.recipespace.view.post.viewmodel.PostRecipeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.IOException
-
 
 @AndroidEntryPoint
-class PostRecipeActivity : AppCompatActivity(),
-    View.OnClickListener,
-    TextWatcher {
+class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher {
 
     private lateinit var binding: ActivityPostRecipeBinding
-
     private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
 
-    private var imgUri: Uri? = null
-    private var photoURI: Uri? = null
-    private var albumURI: Uri? = null
-    private lateinit var mCurrentPhotoPath: String
+    private var bottomSheet = BottomSheetPostRecipeImage()
 
     private val viewModel by viewModels<PostRecipeViewModel>()
 
@@ -92,33 +81,12 @@ class PostRecipeActivity : AppCompatActivity(),
                         }
                     }
                 }
-
-                binding.rvRecipeImages.visibility = View.VISIBLE
-                binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
-                if (binding.editContent.text.toString().isNotEmpty() &&
-                    viewModel.recipeImageList.value?.isNotEmpty() == true
-                ) {
-                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-                    binding.tvComplete.isEnabled = true
-                }
             }
         }
-
-    private val takePictureResultLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == RESULT_OK) {
-                val imageBitmap = it.data?.extras?.getString("data")
-//                binding.image.setImageBitmap(imageBitmap)
-                val photoPath = it?.data?.data!!
-
-                viewModel.addRecipePhotoList(listOf(photoPath.toString()))
-            }
-        }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_recipe)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
@@ -144,7 +112,8 @@ class PostRecipeActivity : AppCompatActivity(),
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = postRecipeImageListAdapter
             val spaceDecoration = HorizontalSpaceItemDecoration(1)
-            removeItemDecoration(object : DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
+            removeItemDecoration(object :
+                DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
 
             })
             addItemDecoration(spaceDecoration)
@@ -152,7 +121,8 @@ class PostRecipeActivity : AppCompatActivity(),
     }
 
     // RecyclerView Item 간 간격 조정하기 위한 클래스
-    inner class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) : RecyclerView.ItemDecoration() {
+    inner class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) :
+        RecyclerView.ItemDecoration() {
 
         override fun getItemOffsets(
             outRect: Rect,
@@ -167,9 +137,11 @@ class PostRecipeActivity : AppCompatActivity(),
                 0 -> {
                     outRect.left = horizontalSpaceWidth
                 }
+
                 count - 1 -> {
                     outRect.right = horizontalSpaceWidth
                 }
+
                 else -> {
                     outRect.left = horizontalSpaceWidth
                     outRect.right = horizontalSpaceWidth
@@ -200,6 +172,7 @@ class PostRecipeActivity : AppCompatActivity(),
                             setResult(RESULT_OK, intent)
                             finish()
                         }
+
                         is PostRecipeUiState.Failed -> {
                             Toast.makeText(
                                 this@PostRecipeActivity,
@@ -207,6 +180,7 @@ class PostRecipeActivity : AppCompatActivity(),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
                         PostRecipeUiState.Idle -> {}
                     }
                 }
@@ -214,6 +188,29 @@ class PostRecipeActivity : AppCompatActivity(),
 
             recipeImageList.observe(this@PostRecipeActivity) {
                 postRecipeImageListAdapter.setRecipeImageList(it)
+                Log.d(
+                    "setupViewModel",
+                    "setupViewModel: ${postRecipeImageListAdapter.getRecipeImageList()}"
+                )
+
+                // '카메라를 눌러 ~' 문구가 없으려면
+                // => 이미지 개수가 최소 1개 이상
+
+                if (postRecipeImageListAdapter.getRecipeImageList().isNotEmpty()) {
+                    binding.rvRecipeImages.visibility = View.VISIBLE
+                    binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
+                } else {
+                    binding.rvRecipeImages.visibility = View.GONE
+                    binding.tvTouchHereAndAddPictures.visibility = View.VISIBLE
+                }
+
+                if (binding.editContent.text?.isNotEmpty() == true && recipeImageList.value?.isNotEmpty() == true) {
+                    binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.colorPrimaryDark))
+                    binding.tvComplete.isEnabled = true
+                } else {
+                    binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.normal_gray))
+                    binding.tvComplete.isEnabled = false
+                }
             }
         }
     }
@@ -224,9 +221,7 @@ class PostRecipeActivity : AppCompatActivity(),
         }
 
         binding.btnPhoto.setOnClickListener {
-            if (checkStoragePermission()) {
-                openGallery()
-            }
+            openOptionMenuBottomSheet()
         }
 
         binding.tvComplete.setOnClickListener {
@@ -235,10 +230,65 @@ class PostRecipeActivity : AppCompatActivity(),
                 postRecipeImageListAdapter.getRecipeImageList()
             )
         }
+
+        supportFragmentManager.setFragmentResultListener(
+            BottomSheetPostRecipeImage.TAG,
+            this@PostRecipeActivity
+        ) { _: String, result: Bundle ->
+            val action = result.getString(BottomSheetPostRecipeImage.RESULT_ACTION)
+            if (action == BottomSheetPostRecipeImage.ACTION_POST_IMAGE) {
+                val photoList =
+                    result.getStringArrayList(BottomSheetPostRecipeImage.PHOTO_LIST).orEmpty()
+                        .toList()
+                viewModel.addRecipePhotoList(photoList)
+
+                Log.d("setFragmentResultListener", "setupListeners: $photoList")
+                postRecipeImageListAdapter.setRecipeImageList(photoList)
+
+                binding.rvRecipeImages.visibility = View.VISIBLE
+                binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
+                if (binding.editContent.text.toString().isNotEmpty() &&
+                    viewModel.recipeImageList.value?.isNotEmpty() == true
+                ) {
+                    binding.rvRecipeImages.visibility = View.VISIBLE
+                    binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.colorPrimaryDark
+                        )
+                    )
+                    binding.tvComplete.isEnabled = true
+                } else {
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.normal_gray
+                        )
+                    )
+                    binding.tvComplete.isEnabled = false
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        val photoList = intent?.getStringArrayListExtra(PhotoResultActivity.PHOTO_LIST)
+        Log.d("onNewIntent", "photoList: $photoList")
+        viewModel.addRecipePhotoList(photoList!!.toList())
+
+        bottomSheet.dismiss()
     }
 
     private fun addTextWatcher() {
         binding.editContent.addTextChangedListener(this)
+    }
+
+    private fun openOptionMenuBottomSheet() {
+        bottomSheet = BottomSheetPostRecipeImage.newInstance()
+        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
     }
 
     private fun openGallery() {
@@ -249,63 +299,6 @@ class PostRecipeActivity : AppCompatActivity(),
         openGalleryResultLauncher.launch(pickIntent)
     }
 
-    private fun selectCamera() {
-        val state = Environment.getExternalStorageState()
-
-        if (Environment.MEDIA_MOUNTED == state) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (intent.resolveActivity(packageManager) != null) {
-                var photoFile: File? = null
-                try {
-                    photoFile = createImageFile()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                if (photoFile != null) {
-                    val providerURI = FileProvider.getUriForFile(
-                        this,
-                        packageName, photoFile
-                    )
-                    imgUri = providerURI
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI)
-                    startActivityForResult(intent, FROM_CAMERA)
-                }
-            }
-        } else {
-            Log.e("알림", "저장공간에 접근 불가능")
-            return
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val imgFileName = System.currentTimeMillis().toString() + ".jpg"
-
-        val storageDir = File(Environment.getExternalStorageDirectory().toString() + "/Pictures", "ireh")
-
-        if (!storageDir.exists()) {
-            Log.e("createImageFile", "storageDir 존재 x $storageDir")
-            storageDir.mkdirs()
-        }
-
-        Log.e("createImageFile", "storageDir 존재함 $storageDir")
-
-        val imageFile = File(storageDir, imgFileName)
-        mCurrentPhotoPath = imageFile.absolutePath
-
-        return imageFile
-    }
-
-    private fun addCreatedImageToGallery() {
-        val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-        val file = File(mCurrentPhotoPath)
-        val contentUri = Uri.fromFile(file)
-        mediaScanIntent.data = contentUri
-
-        sendBroadcast(mediaScanIntent)
-
-        Toast.makeText(this, "사진이 저장되었습니다", Toast.LENGTH_SHORT).show()
-    }
 
     private fun checkStoragePermission(): Boolean {
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -332,14 +325,23 @@ class PostRecipeActivity : AppCompatActivity(),
         }
     }
 
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openGallery()
+        if (requestCode == PermissionUtil.REQUEST_CODE_PERMISSIONS) {
+            if (PermissionUtil.allPermissionsGranted(this@PostRecipeActivity)) {
+                openGallery()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Permissions not granted by the user.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -348,7 +350,7 @@ class PostRecipeActivity : AppCompatActivity(),
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     override fun afterTextChanged(s: Editable) {
-        binding.tvComplete.isEnabled = s.isNotEmpty() && postRecipeImageListAdapter.getRecipeImageList().isNotEmpty()
+
     }
 
     private fun onRecipePhotoClick(photoUrl: String?) {
@@ -366,10 +368,13 @@ class PostRecipeActivity : AppCompatActivity(),
     companion object {
         const val EXTRA_RECIPE_ENTITY = "recipe"
         const val PERMISSION_REQ_CODE = 1010
-        const val FROM_ALBUM = 0
-        const val FROM_CAMERA = 0
+        private const val PHOTO_LIST = "photoList"
 
         fun getIntent(context: Context) =
             Intent(context, PostRecipeActivity::class.java)
+
+        fun getIntent(context: Context, photoList: ArrayList<String>) =
+            Intent(context, PostRecipeActivity::class.java)
+                .putStringArrayListExtra(PHOTO_LIST, photoList)
     }
 }
