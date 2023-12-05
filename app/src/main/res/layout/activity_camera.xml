@@ -37,20 +37,8 @@
         app:layout_constraintTop_toBottomOf="@id/tool_bar"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-<!--    <com.skydoves.elasticviews.ElasticFloatingActionButton-->
-<!--        android:id="@+id/image_capture_button"-->
-<!--        android:layout_width="70dp"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:layout_marginBottom="50dp"-->
-<!--        android:elevation="2dp"-->
-<!--        app:backgroundTint="@color/white"-->
-<!--        app:fabutton_duration="100"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent" />-->
-
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/vertical_centerline"
+        android:id="@+id/vertical_center_line"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
