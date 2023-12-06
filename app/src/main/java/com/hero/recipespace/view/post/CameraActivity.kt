@@ -55,6 +55,7 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private var camera: Camera? = null
     private var cameraProviderListenableFuture: ListenableFuture<ProcessCameraProvider>? = null
+    private var lensFacing = CameraSelector.LENS_FACING_BACK
     private val sound = MediaActionSound()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +112,10 @@ class CameraActivity : AppCompatActivity() {
             }
         }
 
+        cameraUiContainerBinding.cameraSwitchButton.setOnClickListener {
+            toggleFrontBackCamera()
+        }
+
         cameraUiContainerBinding.cameraCaptureButton.setOnClickListener {
             takePhoto()
         }
@@ -124,11 +129,22 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    private fun toggleFrontBackCamera() {
+        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing)
+            CameraSelector.LENS_FACING_BACK
+        else
+            CameraSelector.LENS_FACING_FRONT
+
+        Log.d("toggleFrontBackCamera", "lensFacing: $lensFacing")
+        val cameraProvider = cameraProviderListenableFuture?.get()
+        startCamera(cameraProvider)
+    }
+
     private fun startCamera(cameraProvider: ProcessCameraProvider?) {
         cameraProvider?.unbindAll() // 열려 있는 모든 카메라 닫기
 
         val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            .requireLensFacing(lensFacing)
             .build()
 
         val preview = Preview.Builder().build()
