@@ -1,13 +1,9 @@
 package com.hero.recipespace.view.post
 
-import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.media.MediaActionSound
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -24,7 +20,6 @@ import androidx.camera.core.Preview
 import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.core.view.setPadding
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -33,11 +28,9 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.ActivityCameraBinding
 import com.hero.recipespace.databinding.CameraUiContainerBinding
+import com.hero.recipespace.util.MediaStoreUtils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -120,7 +113,7 @@ class CameraActivity : AppCompatActivity() {
             takePhoto()
         }
 
-        // In the background, load latest photo taken (if any) for gallery thumbnail
+        // background에서 최근 촬영된 사진을 갤러리 썸네일에 로드, 표시한다.
         lifecycleScope.launch {
             val thumbnailUri = mediaStoreUtils.getLatestImageFilename()
             if (thumbnailUri != null) {
@@ -156,7 +149,7 @@ class CameraActivity : AppCompatActivity() {
             .build()
 
         if (camera != null) {
-            // Must remove observers from the previous camera instance
+            // 이전 카메라 인스턴스에서 observer를 제거해야 한다.
             removeCameraStateObservers(camera!!.cameraInfo)
         }
 
@@ -187,6 +180,7 @@ class CameraActivity : AppCompatActivity() {
             .build()
 
         // Set up image capture listener, which is triggered after photo has been taken
+        // 사진이 촬영된 후에 실행되는 이미지 캡쳐 리스너를 설정한다.
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
@@ -226,10 +220,10 @@ class CameraActivity : AppCompatActivity() {
 
     private fun setGalleryThumbnail(filename: String) {
         cameraUiContainerBinding.photoViewButton.post {
-            // Remove thumbnail padding
+            // 썸네일 padding을 제거한다.
                 cameraUiContainerBinding.photoViewButton.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
 
-            // Load thumbnail into circular button using Glide
+            // Glide를 활용해서 썸네일을 원형 버튼에 로드한다.
             Glide.with(cameraUiContainerBinding.photoViewButton)
                 .load(filename)
                 .apply(RequestOptions.circleCropTransform())
@@ -322,79 +316,3 @@ class CameraActivity : AppCompatActivity() {
             Intent(context, CameraActivity::class.java)
     }
 }
-
-
-/**
- * A utility class for accessing this app's photo storage.
- *
- * Since this app doesn't request any external storage permissions, it will only be able to access
- * photos taken with this app. If the app is uninstalled, the photos taken with this app will stay
- * on the device, but reinstalling the app will not give it access to photos taken with the app's
- * previous instance. You can request further permissions to change this app's access. See this
- * guide for more: https://developer.android.com/training/data-storage.
- */
-class MediaStoreUtils(private val context: Context) {
-
-    private val mediaStoreCollection: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-    } else {
-        context.getExternalFilesDir(null)?.toUri()
-    }
-
-    private suspend fun getMediaStoreImageCursor(mediaStoreCollection: Uri): Cursor? {
-        var cursor: Cursor?
-        withContext(Dispatchers.IO) {
-            val projection = arrayOf(imageDataColumnIndex, imageIdColumnIndex)
-            val sortOrder = "DATE_ADDED DESC"
-            cursor = context.contentResolver.query(
-                mediaStoreCollection, projection, null, null, sortOrder
-            )
-        }
-        return cursor
-    }
-
-    suspend fun getLatestImageFilename(): String? {
-        var filename: String?
-        if (mediaStoreCollection == null) return null
-
-        getMediaStoreImageCursor(mediaStoreCollection).use { cursor ->
-            if (cursor?.moveToFirst() != true) return null
-            filename = cursor.getString(cursor.getColumnIndexOrThrow(imageDataColumnIndex))
-        }
-
-        return filename
-    }
-
-    suspend fun getImages(): MutableList<MediaStoreFile> {
-        val files = mutableListOf<MediaStoreFile>()
-        if (mediaStoreCollection == null) return files
-
-        getMediaStoreImageCursor(mediaStoreCollection).use { cursor ->
-            val imageDataColumn = cursor?.getColumnIndexOrThrow(imageDataColumnIndex)
-            val imageIdColumn = cursor?.getColumnIndexOrThrow(imageIdColumnIndex)
-
-            if (cursor != null && imageDataColumn != null && imageIdColumn != null) {
-                while (cursor.moveToNext()) {
-                    val id = cursor.getLong(imageIdColumn)
-                    val contentUri: Uri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
-                    val contentFile = File(cursor.getString(imageDataColumn))
-                    files.add(MediaStoreFile(contentUri, contentFile, id))
-                }
-            }
-        }
-
-        return files
-    }
-
-    companion object {
-        // Suppress DATA index deprecation warning since we need the file location for the Glide library
-        @Suppress("DEPRECATION")
-        private const val imageDataColumnIndex = MediaStore.Images.Media.DATA
-        private const val imageIdColumnIndex = MediaStore.Images.Media._ID
-    }
-}
-
-data class MediaStoreFile(val uri: Uri, val file: File, val id: Long)
