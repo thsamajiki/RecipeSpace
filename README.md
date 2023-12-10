@@ -77,6 +77,4 @@ Kotlin으로 마이그레이션함으로써 Java에는 없는 Kotlin만의 장�
 
 
 # 목표
-- 디자인 리뉴얼
-- 추가 기능 기획
 - Google PlayStore 런칭
