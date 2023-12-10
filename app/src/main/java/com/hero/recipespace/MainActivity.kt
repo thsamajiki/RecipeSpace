@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.viewpager2.widget.ViewPager2
@@ -81,6 +82,27 @@ class MainActivity : AppCompatActivity(),
         binding.ivAccountOptionMenu.setOnClickListener {
             showAccountOptionMenu()
         }
+        val menuItemClickListener = Toolbar.OnMenuItemClickListener { item ->
+            when(item?.itemId) {
+                R.id.menu_about_us -> {
+                    showAboutUsDialog()
+                    true
+                }
+                R.id.menu_setting -> {
+                    val intent = SettingActivity.getIntent(this)
+                    startActivity(intent)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+
+        if (binding.viewPager.currentItem == 2) {
+            binding.toolBar.inflateMenu(R.menu.menu_account_actionbar_option)
+            binding.toolBar.setOnMenuItemClickListener(menuItemClickListener)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -114,6 +136,27 @@ class MainActivity : AppCompatActivity(),
 
         return true
     }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        if (binding.viewPager.currentItem == 2) {
+//            menuInflater.inflate(R.menu.menu_account_actionbar_option, menu)
+//        }
+//        return super.onCreateOptionsMenu(menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when(item.itemId) {
+//            R.id.menu_about_us -> {
+//                showAboutUsDialog()
+//            }
+//            R.id.menu_setting -> {
+//                val intent = SettingActivity.getIntent(this)
+//                startActivity(intent)
+//            }
+//        }
+//
+//        return super.onOptionsItemSelected(item)
+//    }
 
     private fun showAccountOptionMenu() {
         val popupMenu = PopupMenu(
