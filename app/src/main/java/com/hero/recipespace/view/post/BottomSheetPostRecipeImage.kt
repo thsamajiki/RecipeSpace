@@ -2,11 +2,8 @@ package com.hero.recipespace.view.post
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -141,7 +138,6 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
                         val photoPath = it?.data?.data!!
                         Log.d("photoPath", "photoPath: $photoPath")
 
-//                        viewModel.addRecipePhotoList(listOf(photoPath.toString()))
                         setFragmentResult(TAG, Bundle().apply {
                             putString(RESULT_ACTION, ACTION_POST_IMAGE)
                             putString(PHOTO_LIST, photoPath.toString())
@@ -177,18 +173,6 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
                 }
             }
         }
-
-    // 절대 경로 변환
-    private fun absolutelyPath(path: Uri?, context: Context): String {
-        val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? = context.contentResolver.query(path!!, proj, null, null, null)
-        val index = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        cursor?.moveToFirst()
-
-        val result = cursor?.getString(index!!)
-
-        return result!!
-    }
 
     override fun onDestroyView() {
         _binding = null

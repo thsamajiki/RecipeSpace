@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.hero.recipespace.view.login.viewmodel.SignUpViewModel" />
@@ -17,10 +19,11 @@
         tools:context=".view.login.SignUpActivity">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/sign_up01_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:id="@+id/sign_up01_toolbar"
-            app:contentInsetStart="0dp" >
+            android:background="@drawable/top_background"
+            app:contentInsetStart="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_back"
@@ -111,6 +114,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/btn_sign_up"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"

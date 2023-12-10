@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@color/colorPrimary"
             app:cardCornerRadius="5dp"
             app:cardElevation="3dp"
             app:cardUseCompatPadding="true"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:maxWidth="200dp"
                 android:text="@{messageLeft.message}"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/body_text_size" />
 
         </com.google.android.material.card.MaterialCardView>
