@@ -110,7 +110,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
 
 
-    def room_version = "2.6.0"
+    def room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
     //noinspection KaptUsageInsteadOfKsp
