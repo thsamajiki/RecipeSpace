@@ -48,6 +48,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 - Coroutine
 - LiveData
 - Hilt
+- CameraX
 - SSOT (Single Source Of Truth)
 
 
