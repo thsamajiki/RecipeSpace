@@ -13,6 +13,7 @@ import com.hero.recipespace.data.user.UserData
 import com.hero.recipespace.data.user.service.UserService
 import com.hero.recipespace.domain.chat.request.AddChatRequest
 import com.hero.recipespace.util.WLog
+import com.hero.recipespace.view.main.chat.MessageType
 import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +162,8 @@ class ChatServiceImpl @Inject constructor(
                     userKey = myUserKey,
                     message = request.message,
                     timestamp = Timestamp.now(),
-                    isRead = false
+                    isRead = false,
+                    messageType = MessageType.MESSAGE
                 )
 
                 val chatData = ChatData(
