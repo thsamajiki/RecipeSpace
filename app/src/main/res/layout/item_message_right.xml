@@ -24,7 +24,7 @@
             android:textSize="@dimen/small_text_size"
             app:layout_constraintBottom_toBottomOf="@id/cv_chat_container"
             app:layout_constraintEnd_toStartOf="@id/cv_chat_container"
-            app:timestamp="@{messageRight.lastTimestamp}" />
+            app:messageTimestamp="@{messageRight.lastTimestamp}" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_chat_container"
