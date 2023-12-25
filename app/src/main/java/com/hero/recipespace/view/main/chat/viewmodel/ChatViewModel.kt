@@ -1,5 +1,6 @@
 package com.hero.recipespace.view.main.chat.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,6 +24,7 @@ import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import com.hero.recipespace.view.main.chat.toItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -139,9 +141,11 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    var count2 = 0
     private suspend fun observeMessage(chatKey: String, myKey: String) {
+        Log.d("count2", "count2: $count2")
         observeMessageListUseCase(chatKey)
-            .flowOn(Dispatchers.Main)
+            .flowOn(Dispatchers.Main).distinctUntilChanged()
             .collect { messageList ->
                 WLog.d("observeMessage $messageList")
 
@@ -163,6 +167,7 @@ class ChatViewModel @Inject constructor(
                     .sortedBy {
                         it.timestamp
                     }
+
                     .map {
                         it.toItem(
                             displayOtherUserProfileImage = {
@@ -170,7 +175,9 @@ class ChatViewModel @Inject constructor(
                             }
                         )
                     }
+                Log.d("_messageList.value", "_messageList.value: ${_messageList.value}")
             }
+        count2++
     }
 
     private suspend fun readMessage(
@@ -183,6 +190,29 @@ class ChatViewModel @Inject constructor(
             ReadMessageRequest(chatKey, unreadMessageList, userKey)
         )
     }
+
+//    private suspend fun observeMessage(chatKey: String, myKey: String) {
+//        observeMessageListUseCase(chatKey)
+//            .flowOn(Dispatchers.Main)
+//            .map { messageList ->
+//                messageList
+//                    .map { message ->
+//                        val userName = chat.value?.userNames?.get(message.userKey)
+//                        message.copy(userName = userName.orEmpty())
+//                    }
+//                    .sortedBy { it.timestamp }
+//            }
+//            .distinctUntilChanged() // 데이터 변화가 있을 때만 다음 스텝으로 진행
+//            .collect { transformedList ->
+//                _messageList.value = transformedList.map {
+//                    it.toItem(
+//                        displayOtherUserProfileImage = {
+//                            getOtherUserProfileImage(chat.value!!, myKey)
+//                        }
+//                    )
+//                }
+//            }
+//    }
 
     private suspend fun getChatRoom(chatKey: String, chatInfo: RecipeChatInfo?): ChatEntity? {
         // chatKey 만 들어올 수도 있고,
@@ -198,9 +228,9 @@ class ChatViewModel @Inject constructor(
         } else if (chatInfo != null) {
             // identifier
             // 특정 상대방과의 채팅방은, 1개이다.
-            // ant1102-userkey - 짜장면(Recipe key) 채팅방
-            // ant1102-userkey - 떡볶이(Recipe key) 채팅방
-            // ant1102-userkey - 스테이크(Recipe key) 채팅방
+            // ant1102-userKey - 짜장면(Recipe key) 채팅방
+            // ant1102-userKey - 떡볶이(Recipe key) 채팅방
+            // ant1102-userKey - 스테이크(Recipe key) 채팅방
 
             getChatByUserKeyUseCase(chatInfo)
                 .onFailure {
