@@ -13,7 +13,8 @@ data class MessageItem(
     val userName: String = "",
     val displayOtherUserProfileImage: () -> String = {
         ""
-    }
+    },
+    val messageType: MessageType = MessageType.MESSAGE
 )
 
 fun MessageEntity.toItem(
@@ -27,5 +28,6 @@ fun MessageEntity.toItem(
         lastTimestamp = timestamp,
         isRead = isRead,
         userName = userName,
-        displayOtherUserProfileImage = displayOtherUserProfileImage
+        displayOtherUserProfileImage = displayOtherUserProfileImage,
+        messageType = messageType
     )
