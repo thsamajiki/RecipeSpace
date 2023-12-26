@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -60,98 +59,110 @@
             android:id="@+id/rv_recipe_images"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="@drawable/recipe_images_background"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar"
             app:recipeImageItems="@{viewModel.recipe.photoUrlList}"
             tools:listitem="@layout/item_recipe_detail_image_list" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_user_profile"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            app:imageUrl="@{viewModel.recipe.profileImageUrl}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images"
-            app:shapeAppearance="@style/Circle"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:id="@+id/tv_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:text="@{viewModel.recipe.userName}"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-            app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
-
-        <TextView
-            android:id="@+id/tv_post_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/dark_gray"
-            android:textSize="@dimen/small_text_size"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-            app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
-            app:timestamp="@{viewModel.recipe.postDate}" />
-
-        <FrameLayout
-            android:id="@+id/rating_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images">
-
-            <RatingBar
-                android:id="@+id/rating_bar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:progressTint="@color/colorPrimary"
-                android:rating="@{viewModel.recipe.rate}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
-        </FrameLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_question"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="@string/contact_recipe"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintTop_toBottomOf="@id/tv_post_date"
-            app:rippleColor="@color/colorPrimary30"
-            app:strokeColor="@color/colorPrimary" />
-
-        <ScrollView
-            android:layout_width="match_parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="20dp"
+            android:background="@drawable/main_background60"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_question">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_recipe_images">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_user_profile"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{viewModel.recipe.profileImageUrl}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/Circle" />
 
             <TextView
-                android:id="@+id/tv_recipe_desc"
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:text="@{viewModel.recipe.userName}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/body_text_size"
+                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_post_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/small_text_size"
+                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
+                app:timestamp="@{viewModel.recipe.postDate}" />
+
+            <FrameLayout
+                android:id="@+id/rating_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RatingBar
+                    android:id="@+id/rating_bar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:progressTint="@color/colorPrimary"
+                    android:rating="@{viewModel.recipe.rate}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
+            </FrameLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_question"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.recipe.desc}"
-                android:textColor="@color/dark_gray"
-                android:textSize="@dimen/body_text_size" />
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/contact_recipe"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/tv_post_date"
+                app:rippleColor="@color/colorPrimary30"
+                app:strokeColor="@color/colorPrimary" />
 
-        </ScrollView>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_question">
+
+                <TextView
+                    android:id="@+id/tv_recipe_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.recipe.desc}"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="@dimen/body_text_size" />
+
+            </ScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
