@@ -70,7 +70,6 @@
             android:id="@+id/tv_chat_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginBottom="10dp"
             android:textColor="@color/normal_gray"
             android:textSize="@dimen/small_text_size"

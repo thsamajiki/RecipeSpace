@@ -15,6 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/main_background30"
         android:orientation="vertical"
         tools:context=".view.login.SignUpActivity">
 
@@ -22,7 +23,7 @@
             android:id="@+id/sign_up01_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/top_background"
+
             app:contentInsetStart="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView

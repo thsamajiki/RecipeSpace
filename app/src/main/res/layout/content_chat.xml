@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:background="@drawable/main_background"
+            android:background="@drawable/chat_background"
             android:stackFromBottom="true"
             app:layout_constraintBottom_toTopOf="@id/cv_input"
             app:layout_constraintTop_toTopOf="parent"
