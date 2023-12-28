@@ -22,6 +22,8 @@ import com.hero.recipespace.ext.showLoading
 import com.hero.recipespace.view.LoadingState
 import com.hero.recipespace.view.login.LoginActivity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListActivity
+import com.hero.recipespace.view.main.account.setting.policy.PrivacyPolicyActivity
+import com.hero.recipespace.view.main.account.setting.policy.ServicePolicyActivity
 import com.hero.recipespace.view.main.account.setting.viewmodel.DropOutUiState
 import com.hero.recipespace.view.main.account.setting.viewmodel.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,6 +109,12 @@ class SettingActivity : AppCompatActivity() {
         binding.layoutItemReview.setOnClickListener {
             showInAppReviewDialog()
         }
+        binding.layoutItemServicePolicy.setOnClickListener {
+            onServicePolicyItemClick()
+        }
+        binding.layoutItemPrivacyPolicy.setOnClickListener {
+            onPrivacyPolicyItemClick()
+        }
         binding.layoutItemOpenSource.setOnClickListener {
             openOpenSourcePopUp()
         }
@@ -183,6 +191,16 @@ class SettingActivity : AppCompatActivity() {
                 Log.e("openInAppReviewDialog", "openInAppReviewDialog: $reviewErrorCode")
             }
         }
+    }
+
+    private fun onServicePolicyItemClick() {
+        val intent = ServicePolicyActivity.getIntent(this)
+        startActivity(intent)
+    }
+
+    private fun onPrivacyPolicyItemClick() {
+        val intent = PrivacyPolicyActivity.getIntent(this)
+        startActivity(intent)
     }
 
     private fun openOpenSourcePopUp() {
