@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.Toast
@@ -58,9 +59,19 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupViewModel() {
+        var count1 = 0
         with(viewModel) {
-            messageList.observe(this@ChatActivity) { messageList ->
-                chatAdapter.setMessageList(messageList)
+            messageList.observe(this@ChatActivity) { messageDataList ->
+                count1++
+                Log.d("count1", "count1: $count1")
+                Log.d("messageList1", "messageList: $messageList")
+                Log.d("messageList2", "messageDataList: $messageDataList")
+                chatAdapter.setMessageList(messageDataList)
+//                if (messageList.isNotEmpty()) {
+//                    chatAdapter.update(messageList)
+//
+//                }
+                binding.appBarChat.layoutRootContainer.rvChat.scrollToPosition(chatAdapter.itemCount - 1)
             }
         }
     }

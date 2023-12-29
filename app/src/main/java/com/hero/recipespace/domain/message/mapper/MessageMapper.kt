@@ -13,7 +13,8 @@ fun MessageData.toEntity(): MessageEntity {
         userKey = userKey,
         message = message,
         timestamp = timestamp,
-        isRead = isRead
+        isRead = isRead,
+        messageType = messageType
     )
 }
 
@@ -24,6 +25,7 @@ fun MessageEntity.toData(): MessageData {
         userKey = userKey,
         message = message,
         timestamp = timestamp,
-        isRead = isRead
+        isRead = isRead,
+        messageType = messageType
     )
 }

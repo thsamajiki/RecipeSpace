@@ -29,7 +29,7 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            delay(1000)
+            delay(1800)
             getLoggedUserUseCase()
                 .onSuccess {
                     _splashUiState.value = SplashUIState.Success(it)

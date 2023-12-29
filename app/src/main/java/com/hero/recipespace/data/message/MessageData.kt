@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.Timestamp
+import com.hero.recipespace.view.main.chat.MessageType
 import kotlinx.parcelize.Parcelize
 
 @Keep
@@ -17,6 +18,7 @@ data class MessageData(
     var userKey: String = "",
     var message: String? = null,
     var timestamp: Timestamp? = null,
-    var isRead: Boolean? = false
+    var isRead: Boolean? = false,
+    var messageType: MessageType = MessageType.MESSAGE
 ) : Parcelable {
 }

@@ -68,7 +68,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="120dp"
+            android:background="@drawable/recipe_images_background">
 
             <LinearLayout
                 android:id="@+id/btn_photo"
@@ -133,8 +134,7 @@
             android:id="@+id/edit_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:background="@null"
+            android:background="@drawable/main_background60"
             android:gravity="top|start"
             android:hint="@string/please_input_recipe_desc"
             android:padding="20dp"

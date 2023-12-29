@@ -27,6 +27,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 ## 이용 대상
 - 기숙사 생활/자취를 하는 학생들
 - 1인 가구
+- 요리에 관심이 많은 누구나
 
 
 ## 주요 기능
@@ -47,6 +48,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 - Coroutine
 - LiveData
 - Hilt
+- CameraX
 - SSOT (Single Source Of Truth)
 
 
@@ -77,6 +79,4 @@ Kotlin으로 마이그레이션함으로써 Java에는 없는 Kotlin만의 장�
 
 
 # 목표
-- 디자인 리뉴얼
-- 추가 기능 기획
 - Google PlayStore 런칭
