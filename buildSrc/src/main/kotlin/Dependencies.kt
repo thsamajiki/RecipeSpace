@@ -117,6 +117,7 @@ object Dependencies {
     object Firebase {
         const val firebase_bom = "com.google.firebase:firebase-bom:${Versions.firebase_bom}"
         const val firebase_ui_storage = "com.firebaseui:firebase-ui-storage:${Versions.firebase_ui_storage}"
+
         const val firebase_crashlytics = "com.google.firebase:firebase-crashlytics"
         const val firebase_fireStore = "com.google.firebase:firebase-firestore-ktx"
         const val firebase_analytics = "com.google.firebase:firebase-analytics-ktx"
