@@ -188,6 +188,8 @@ obj/
 .idea/jarRepositories.xml
 .idea/navEditor.xml
 
+buildSrc/build
+
 # Legacy Eclipse project files
 .classpath
 .project
