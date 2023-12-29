@@ -1,7 +1,7 @@
 object Dependencies {
 
     object Versions {
-        const val kotlin = "1.9.10"
+        const val kotlin = "1.9.20"
         const val agp = "8.0.2"
         const val ksp = "1.9.20-1.0.14"
         const val hilt = "2.48.1"
@@ -36,13 +36,13 @@ object Dependencies {
 
         const val preference = "1.2.1"
 
-        const val gms = "4.3.10"
+        const val gms = "4.4.0"
 
         const val junit = "4.13.2"
         const val test_junit = "1.1.5"
         const val espresso_core = "3.5.1"
 
-        const val kotlinStdlib = "1.8.10"
+        const val kotlinStdlib = "1.9.20"
     }
 
     object Libraries {
@@ -51,7 +51,7 @@ object Dependencies {
         const val glide_compiler = "com.github.bumptech.glide:compiler:${Versions.glide}"
         const val gson = "com.google.code.gson:gson:${Versions.gson}"
 
-        const val google_services = "com.google.gms.google-services:${Versions.gms}"
+        const val google_services = "com.google.gms:google-services:${Versions.gms}"
 
         const val play_asset_delivery = "com.google.android.play:asset-delivery-ktx:${Versions.play_delivery}"
         const val play_feature_delivery = "com.google.android.play:feature-delivery-ktx:${Versions.play_delivery}"
@@ -116,13 +116,15 @@ object Dependencies {
 
     object Firebase {
         const val firebase_bom = "com.google.firebase:firebase-bom:${Versions.firebase_bom}"
-        const val firebase_ui_storage = "com.google.firebase:firebase-bom:${Versions.firebase_ui_storage}"
+        const val firebase_ui_storage = "com.firebaseui:firebase-ui-storage:${Versions.firebase_ui_storage}"
+
         const val firebase_crashlytics = "com.google.firebase:firebase-crashlytics"
         const val firebase_fireStore = "com.google.firebase:firebase-firestore-ktx"
         const val firebase_analytics = "com.google.firebase:firebase-analytics-ktx"
         const val firebase_auth = "com.google.firebase:firebase-auth-ktx"
         const val firebase_storage = "com.google.firebase:firebase-storage-ktx"
         const val firebase_messaging = "com.google.firebase:firebase-messaging-ktx"
+        const val firebase_crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:${Versions.firebase_crashlytics}"
     }
 
     object Test {
