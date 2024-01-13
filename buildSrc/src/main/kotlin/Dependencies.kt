@@ -36,7 +36,7 @@ object Dependencies {
 
         const val preference = "1.2.1"
 
-        const val gms = "4.4.0"
+        const val gms = "4.3.15"
 
         const val junit = "4.13.2"
         const val test_junit = "1.1.5"
