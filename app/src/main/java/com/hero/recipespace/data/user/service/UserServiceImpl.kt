@@ -6,7 +6,6 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -154,10 +153,9 @@ class UserServiceImpl @Inject constructor(
     ) {
         val user = auth.currentUser
 
-        val request = userProfileChangeRequest {
-            displayName = name
-//            photoUri = null
-        }
+        val userProfileChangeRequest = UserProfileChangeRequest.Builder()
+        userProfileChangeRequest.displayName = name
+        val request = userProfileChangeRequest.build()
 
         user!!.updateProfile(request)
             .addOnSuccessListener {
