@@ -53,10 +53,9 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 사용된 라이브러리
-- 머티리얼 디자인 (com.google.android.material:material:1.6.1)
-- 엘라스틱 뷰 (com.github.skydoves:elasticviews:2.1.0)
-- 사진 첨부 (com.github.bumptech.glide:glide:4.11.0) (com.github.bumptech.glide:compiler:4.11.0)
-
+- Material 디자인
+- 사진 첨부 (Glide)
+- ElasticView (com.github.skydoves:elasticviews)
 
 
 ## 개발 후 느낀 점
