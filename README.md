@@ -15,7 +15,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 
 
 ## 사용 프로그램 및 언어
-- 사용 프로그램 : Android Studio, Google Firebase, GitHub
+- 사용 프로그램 : Android Studio, Google Firebase, Git
 - 사용 언어 : Kotlin
 
 
