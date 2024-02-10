@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
@@ -80,6 +81,13 @@ class RecipeListFragment : Fragment() {
         initRecyclerView(binding.rvRecipe)
         binding.btnPost.setOnClickListener {
             onPostRecipeButtonClick()
+        }
+
+        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)
+        nav?.setOnItemReselectedListener { item ->
+            if (item.itemId == R.id.menu_recipe) {
+                binding.rvRecipe.smoothScrollToPosition(0)
+            }
         }
     }
 
