@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentChatListBinding
@@ -59,6 +60,13 @@ class ChatListFragment: Fragment() {
 
     private fun setupView() {
         initRecyclerView(binding.rvChatList)
+
+        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)
+        nav?.setOnItemReselectedListener { item ->
+            if (item.itemId == R.id.menu_recipe) {
+                binding.rvChatList.smoothScrollToPosition(0)
+            }
+        }
     }
 
     private fun setupViewModel() {
