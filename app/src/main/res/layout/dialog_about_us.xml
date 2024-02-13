@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_title_version"
+        android:id="@+id/tvTitleVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -16,7 +16,7 @@
         android:textSize="@dimen/title_text_size" />
 
     <TextView
-        android:id="@+id/tv_version"
+        android:id="@+id/tvVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -26,7 +26,7 @@
         android:textSize="@dimen/body_text_size" />
 
     <TextView
-        android:id="@+id/tv_title_copyright"
+        android:id="@+id/tvTitleCopyright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -36,7 +36,7 @@
         android:textSize="@dimen/title_text_size" />
 
     <TextView
-        android:id="@+id/tv_copyright"
+        android:id="@+id/tvCopyright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
