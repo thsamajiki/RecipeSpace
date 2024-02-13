@@ -23,7 +23,7 @@ class ThemeSettingActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPre
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fcv_theme_setting, ThemeSettingFragment())
+            .replace(R.id.fcvThemeSetting, ThemeSettingFragment())
             .commit()
 
         setOnClickListeners()
