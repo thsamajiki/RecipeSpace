@@ -8,7 +8,7 @@
     tools:context=".view.main.account.setting.policy.ServicePolicyActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/top_background"
@@ -20,7 +20,7 @@
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_back"
+                android:id="@+id/ivBack"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:padding="14dp"
@@ -51,10 +51,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolBar">
 
         <TextView
-            android:id="@+id/tv_service_policy"
+            android:id="@+id/tvServicePolicy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/service_policy_detail"
