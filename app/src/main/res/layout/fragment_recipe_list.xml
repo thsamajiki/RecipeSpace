@@ -29,7 +29,7 @@
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:recipeItems="@{viewModel.recipeList}"
-                tools:listitem="@layout/item_recipe_list" />
+                tools:listitem="@layout/item_recipe" />
 
             <com.skydoves.elasticviews.ElasticFloatingActionButton
                 android:id="@+id/btnPostRecipe"
