@@ -7,7 +7,7 @@
     tools:context=".view.photoview.PhotoActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/photo_toolbar"
+        android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/top_background"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_back"
+            android:id="@+id/ivBack"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:padding="14dp"
@@ -24,10 +24,10 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/photo_view"
+        android:id="@+id/photoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/photo_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
