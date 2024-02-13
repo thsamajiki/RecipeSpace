@@ -18,7 +18,7 @@
         tools:context=".MainActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tool_bar"
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/top_background"
@@ -30,7 +30,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/tv_title"
+                    android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -42,7 +42,7 @@
                     tools:text="레시피 피드" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_account_option_menu"
+                    android:id="@+id/ivAccountOptionMenu"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="17dp"
@@ -57,12 +57,12 @@
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@drawable/main_background"
-            app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-            app:layout_constraintTop_toBottomOf="@id/tool_bar" />
+            app:layout_constraintBottom_toTopOf="@id/bottomNav"
+            app:layout_constraintTop_toBottomOf="@id/toolBar" />
 
         <!--        <androidx.fragment.app.FragmentContainerView-->
         <!--            android:id="@+id/fcv_main"-->
@@ -76,7 +76,7 @@
         <!--            app:navGraph="@navigation/nav_main_graph" />-->
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_nav"
+            android:id="@+id/bottomNav"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/bottom_background"
