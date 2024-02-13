@@ -52,7 +52,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_my_profile_image"
+                android:id="@+id/ivMyProfileImage"
                 app:imageUrl="@{viewModel.myProfileImageUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -63,10 +63,10 @@
                 android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/tv_me"
-                app:layout_constraintBottom_toBottomOf="@id/iv_my_profile_image"
-                app:layout_constraintStart_toEndOf="@id/iv_my_profile_image"
-                app:layout_constraintTop_toTopOf="@id/iv_my_profile_image"
+                android:id="@+id/tvMe"
+                app:layout_constraintBottom_toBottomOf="@id/ivMyProfileImage"
+                app:layout_constraintStart_toEndOf="@id/ivMyProfileImage"
+                app:layout_constraintTop_toTopOf="@id/ivMyProfileImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -75,9 +75,9 @@
                 android:textSize="@dimen/small_text_size" />
 
             <TextView
-                app:layout_constraintBottom_toBottomOf="@id/tv_me"
-                app:layout_constraintStart_toEndOf="@id/tv_me"
-                app:layout_constraintTop_toTopOf="@id/tv_me"
+                app:layout_constraintBottom_toBottomOf="@id/tvMe"
+                app:layout_constraintStart_toEndOf="@id/tvMe"
+                app:layout_constraintTop_toTopOf="@id/tvMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
@@ -95,7 +95,7 @@
             android:orientation="horizontal">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_other_user_profile_image"
+                android:id="@+id/ivOtherUserProfileImage"
                 app:imageUrl="@{viewModel.otherUserProfileImage}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,10 +106,10 @@
                 android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/tv_other_user_name"
-                app:layout_constraintBottom_toBottomOf="@id/iv_other_user_profile_image"
-                app:layout_constraintStart_toEndOf="@id/iv_other_user_profile_image"
-                app:layout_constraintTop_toTopOf="@id/iv_other_user_profile_image"
+                android:id="@+id/tvOtherUserName"
+                app:layout_constraintBottom_toBottomOf="@id/ivOtherUserProfileImage"
+                app:layout_constraintStart_toEndOf="@id/ivOtherUserProfileImage"
+                app:layout_constraintTop_toTopOf="@id/ivOtherUserProfileImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
