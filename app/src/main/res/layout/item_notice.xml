@@ -10,7 +10,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_notice_item"
+        android:id="@+id/mcvNoticeItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp"
@@ -26,7 +26,7 @@
             android:padding="7dp">
 
             <TextView
-                android:id="@+id/tv_date_notice_item"
+                android:id="@+id/tvDateNoticeItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/dark_gray"
@@ -36,7 +36,7 @@
                 app:timestamp="@{notice.postDate}" />
 
             <TextView
-                android:id="@+id/tv_title_notice_item"
+                android:id="@+id/tvTitleNoticeItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -44,10 +44,10 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/body_text_size"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_date_notice_item" />
+                app:layout_constraintTop_toBottomOf="@id/tvDateNoticeItem" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_toggle_arrow"
+                android:id="@+id/ivToggleArrow"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginStart="10dp"
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:id="@+id/layout_content_notice_item"
+                android:id="@+id/layoutContentNoticeItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -66,10 +66,10 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_notice_item">
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleNoticeItem">
 
                 <TextView
-                    android:id="@+id/tv_content_notice_item"
+                    android:id="@+id/tvContentNoticeItem"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="@{notice.desc}"
