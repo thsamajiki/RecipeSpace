@@ -28,7 +28,7 @@ class ChatListFragment: Fragment() {
 
     private val viewModel by viewModels<ChatListViewModel>()
 
-    private lateinit var chatListAdapter: ChatListAdapter
+    private lateinit var chatAdapter: ChatAdapter
 
     companion object {
         fun newInstance() = ChatListFragment()
@@ -52,16 +52,16 @@ class ChatListFragment: Fragment() {
         setupView()
         setupViewModel()
 
-        binding.srlChatList.setOnRefreshListener {
+        binding.layoutSwipeRefresh.setOnRefreshListener {
             viewModel.refreshChatList(userKey.orEmpty())
-            binding.srlChatList.isRefreshing = false
+            binding.layoutSwipeRefresh.isRefreshing = false
         }
     }
 
     private fun setupView() {
         initRecyclerView(binding.rvChatList)
 
-        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)
+        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottomNav)
         nav?.setOnItemReselectedListener { item ->
             if (item.itemId == R.id.menu_recipe) {
                 binding.rvChatList.smoothScrollToPosition(0)
@@ -72,7 +72,7 @@ class ChatListFragment: Fragment() {
     private fun setupViewModel() {
         with(viewModel) {
             lifecycleScope.launch {
-                chatListUiState.observe(viewLifecycleOwner) { state ->
+                chatListUiState.observe(viewLifecycleOwner) { _ ->
 
                 }
             }
@@ -80,7 +80,7 @@ class ChatListFragment: Fragment() {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        chatListAdapter = ChatListAdapter(
+        chatAdapter = ChatAdapter(
             onClick = {
                 showChatRoom(it.id)
             }
@@ -89,7 +89,7 @@ class ChatListFragment: Fragment() {
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = chatListAdapter
+            adapter = chatAdapter
         }
     }
 
