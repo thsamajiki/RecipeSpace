@@ -20,14 +20,14 @@
         tools:context=".view.login.SignUpActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/sign_up01_toolbar"
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
 
             app:contentInsetStart="0dp">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_back"
+                android:id="@+id/ivBack"
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="wrap_content"
                 android:padding="14dp"
@@ -54,7 +54,7 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_email"
+                android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/input_email"
@@ -75,7 +75,7 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_username"
+                android:id="@+id/editUserName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/input_user_name"
@@ -97,7 +97,7 @@
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_pwd"
+                android:id="@+id/editPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/input_pwd"
@@ -109,7 +109,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sign_up"
+            android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginStart="30dp"
