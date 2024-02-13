@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_recipe_image"
+                android:id="@+id/ivRecipeImage"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
                 android:scaleType="centerCrop"

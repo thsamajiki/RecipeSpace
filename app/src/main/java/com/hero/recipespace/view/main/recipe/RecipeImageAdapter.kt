@@ -3,18 +3,18 @@ package com.hero.recipespace.view.main.recipe
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.databinding.ItemRecipeDetailImageListBinding
+import com.hero.recipespace.databinding.ItemRecipeDetailImageBinding
 import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
-class RecipeDetailAdapter(
+class RecipeImageAdapter(
     private val onClick: (String) -> Unit
-) : BaseAdapter<RecipeDetailAdapter.RecipeImageListViewHolder, String>() {
+) : BaseAdapter<RecipeImageAdapter.RecipeImageListViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeImageListViewHolder {
-        val binding = ItemRecipeDetailImageListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRecipeDetailImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return RecipeImageListViewHolder(binding, onClick)
     }
@@ -47,7 +47,7 @@ class RecipeDetailAdapter(
     }
 
     class RecipeImageListViewHolder(
-        val binding: ItemRecipeDetailImageListBinding,
+        val binding: ItemRecipeDetailImageBinding,
         private val onClick: (String) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
