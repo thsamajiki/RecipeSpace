@@ -20,7 +20,7 @@
         tools:context=".view.main.account.setting.notice.NoticeListActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/notice_list_toolbar"
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/top_background"
@@ -31,7 +31,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_back"
+                    android:id="@+id/ivBack"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="17dp"
@@ -47,7 +47,7 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/title_text_size"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/iv_back"
+                    app:layout_constraintStart_toEndOf="@id/ivBack"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -55,13 +55,13 @@
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_notice_list"
+            android:id="@+id/rvNoticeList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="@drawable/main_background"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/notice_list_toolbar"
+            app:layout_constraintTop_toBottomOf="@+id/toolBar"
             app:noticeItems="@{viewModel.noticeList}" />
 
     </LinearLayout>
