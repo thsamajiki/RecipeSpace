@@ -43,7 +43,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityRecipeDetailBinding
     private val viewModel by viewModels<RecipeDetailViewModel>()
 
-    private lateinit var recipeDetailAdapter: RecipeDetailAdapter
+    private lateinit var recipeImageAdapter: RecipeImageAdapter
 
     private val updateResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -56,8 +56,8 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 if (recipe != null) {
-                    recipeDetailAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
-                    binding.rvRecipeImages.smoothScrollToPosition(0)
+                    recipeImageAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
+                    binding.rvRecipeImageList.smoothScrollToPosition(0)
                     binding.tvRecipeDesc.text = recipe.desc
                 }
             }
@@ -83,7 +83,7 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupView() {
-        initRecyclerView(binding.rvRecipeImages)
+        initRecyclerView(binding.rvRecipeImageList)
     }
 
     private fun bindRecipe(recipe: RecipeEntity) {
@@ -110,21 +110,21 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        recipeDetailAdapter = RecipeDetailAdapter(
+        recipeImageAdapter = RecipeImageAdapter(
             onClick = ::onRecipePhotoClick
         )
 
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = recipeDetailAdapter
+            adapter = recipeImageAdapter
         }
     }
 
     private fun setupViewModel() {
         with(viewModel) {
             recipe.observe(this@RecipeDetailActivity) { recipe ->
-                recipeDetailAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
+                recipeImageAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
 
                 bindRecipe(recipe)
             }

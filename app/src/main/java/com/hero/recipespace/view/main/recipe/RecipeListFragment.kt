@@ -30,7 +30,7 @@ class RecipeListFragment : Fragment() {
 
     private val viewModel by viewModels<RecipeListViewModel>()
 
-    private lateinit var recipeListAdapter: RecipeListAdapter
+    private lateinit var recipeAdapter: RecipeAdapter
 
     private val postResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -43,8 +43,8 @@ class RecipeListFragment : Fragment() {
             }
 
             if (recipe != null) {
-                recipeListAdapter.add(0, recipe)
-                binding.rvRecipe.smoothScrollToPosition(0)
+                recipeAdapter.add(0, recipe)
+                binding.rvRecipeList.smoothScrollToPosition(0)
             }
         }
     }
@@ -70,23 +70,23 @@ class RecipeListFragment : Fragment() {
 
         setupView()
         setupViewModel()
-        binding.srlRecipeList.setOnRefreshListener {
+        binding.layoutSwipeRefresh.setOnRefreshListener {
             viewModel.refreshRecipeList()
-            binding.srlRecipeList.isRefreshing = false
+            binding.layoutSwipeRefresh.isRefreshing = false
         }
         setupFragmentResultListener()
     }
 
     private fun setupView() {
-        initRecyclerView(binding.rvRecipe)
-        binding.btnPost.setOnClickListener {
+        initRecyclerView(binding.rvRecipeList)
+        binding.btnPostRecipe.setOnClickListener {
             onPostRecipeButtonClick()
         }
 
-        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottom_nav)
+        val nav = activity?.findViewById<BottomNavigationView>(R.id.bottomNav)
         nav?.setOnItemReselectedListener { item ->
             if (item.itemId == R.id.menu_recipe) {
-                binding.rvRecipe.smoothScrollToPosition(0)
+                binding.rvRecipeList.smoothScrollToPosition(0)
             }
         }
     }
@@ -94,7 +94,7 @@ class RecipeListFragment : Fragment() {
     private fun setupViewModel() {
         with(viewModel) {
             recipeList.observe(viewLifecycleOwner) { recipeList ->
-                recipeListAdapter.setRecipeList(recipeList)
+                recipeAdapter.setRecipeList(recipeList)
             }
         }
     }
@@ -115,13 +115,13 @@ class RecipeListFragment : Fragment() {
             }
 
             if (recipe != null) {
-                recipeListAdapter.replaceItem(recipe)
+                recipeAdapter.replaceItem(recipe)
             }
         }
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        recipeListAdapter = RecipeListAdapter(
+        recipeAdapter = RecipeAdapter(
             onClick = ::showRecipeDetail,
             onClickRating = ::showRatingDialog
         )
@@ -129,7 +129,7 @@ class RecipeListFragment : Fragment() {
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
-            adapter = recipeListAdapter
+            adapter = recipeAdapter
         }
     }
 

@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher {
 
     private lateinit var binding: ActivityPostRecipeBinding
-    private lateinit var postRecipeImageListAdapter: PostRecipeImageListAdapter
+    private lateinit var postRecipeImageAdapter: PostRecipeImageAdapter
 
     private var bottomSheet = BottomSheetPostRecipeImage()
 
@@ -98,11 +98,11 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     }
 
     private fun setupView() {
-        initRecyclerView(binding.rvRecipeImages)
+        initRecyclerView(binding.rvRecipeImageList)
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        postRecipeImageListAdapter = PostRecipeImageListAdapter(
+        postRecipeImageAdapter = PostRecipeImageAdapter(
             onClick = ::onRecipePhotoClick,
             onCancelClick = ::deletePhoto
         )
@@ -110,7 +110,7 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = postRecipeImageListAdapter
+            adapter = postRecipeImageAdapter
             val spaceDecoration = HorizontalSpaceItemDecoration(1)
             removeItemDecoration(object :
                 DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
@@ -187,20 +187,20 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
             }
 
             recipeImageList.observe(this@PostRecipeActivity) {
-                postRecipeImageListAdapter.setRecipeImageList(it)
+                postRecipeImageAdapter.setRecipeImageList(it)
                 Log.d(
                     "setupViewModel",
-                    "setupViewModel: ${postRecipeImageListAdapter.getRecipeImageList()}"
+                    "setupViewModel: ${postRecipeImageAdapter.getRecipeImageList()}"
                 )
 
                 // '카메라를 눌러 ~' 문구가 없으려면
                 // => 이미지 개수가 최소 1개 이상
 
-                if (postRecipeImageListAdapter.getRecipeImageList().isNotEmpty()) {
-                    binding.rvRecipeImages.visibility = View.VISIBLE
+                if (postRecipeImageAdapter.getRecipeImageList().isNotEmpty()) {
+                    binding.rvRecipeImageList.visibility = View.VISIBLE
                     binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
                 } else {
-                    binding.rvRecipeImages.visibility = View.GONE
+                    binding.rvRecipeImageList.visibility = View.GONE
                     binding.tvTouchHereAndAddPictures.visibility = View.VISIBLE
                 }
 
@@ -227,7 +227,7 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding.tvComplete.setOnClickListener {
             viewModel.uploadRecipe(
                 binding.editContent.text.toString(),
-                postRecipeImageListAdapter.getRecipeImageList()
+                postRecipeImageAdapter.getRecipeImageList()
             )
         }
 
@@ -243,14 +243,14 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                 viewModel.addRecipePhotoList(photoList)
 
                 Log.d("setFragmentResultListener", "setupListeners: $photoList")
-                postRecipeImageListAdapter.setRecipeImageList(photoList)
+                postRecipeImageAdapter.setRecipeImageList(photoList)
 
-                binding.rvRecipeImages.visibility = View.VISIBLE
+                binding.rvRecipeImageList.visibility = View.VISIBLE
                 binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
                 if (binding.editContent.text.toString().isNotEmpty() &&
                     viewModel.recipeImageList.value?.isNotEmpty() == true
                 ) {
-                    binding.rvRecipeImages.visibility = View.VISIBLE
+                    binding.rvRecipeImageList.visibility = View.VISIBLE
                     binding.tvTouchHereAndAddPictures.visibility = View.INVISIBLE
                     binding.tvComplete.setTextColor(
                         ContextCompat.getColor(

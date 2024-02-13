@@ -42,7 +42,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityEditRecipeBinding
 
-    private lateinit var editRecipeImageListAdapter: EditRecipeImageListAdapter
+    private lateinit var editRecipeImageAdapter: EditRecipeImageAdapter
 
     private val viewModel by viewModels<EditRecipeViewModel>()
 
@@ -83,7 +83,7 @@ class EditRecipeActivity : AppCompatActivity(),
                     }
                 }
 
-                binding.rvRecipeImages.visibility = View.VISIBLE
+                binding.rvRecipeImageList.visibility = View.VISIBLE
                 binding.tvTouchHereAndAddPictures.isVisible = viewModel.recipeImageList.value?.size == 0
 
                 if (binding.editContent.text.toString().isNotEmpty() &&
@@ -118,11 +118,11 @@ class EditRecipeActivity : AppCompatActivity(),
     }
 
     private fun setupView() {
-        initRecyclerView(binding.rvRecipeImages)
+        initRecyclerView(binding.rvRecipeImageList)
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        editRecipeImageListAdapter = EditRecipeImageListAdapter(
+        editRecipeImageAdapter = EditRecipeImageAdapter(
             onClick = ::onRecipePhotoClick,
             onCancelClick = ::deletePhoto
         )
@@ -130,7 +130,7 @@ class EditRecipeActivity : AppCompatActivity(),
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = editRecipeImageListAdapter
+            adapter = editRecipeImageAdapter
         }
     }
 
@@ -175,7 +175,7 @@ class EditRecipeActivity : AppCompatActivity(),
             }
 
             recipeImageList.observe(this@EditRecipeActivity) {
-                editRecipeImageListAdapter.setRecipeImageList(it)
+                editRecipeImageAdapter.setRecipeImageList(it)
             }
         }
     }
