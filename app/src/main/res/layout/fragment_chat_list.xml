@@ -29,7 +29,7 @@
                 android:orientation="vertical"
                 app:chatItems="@{viewModel.chatList}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_chat_list" />
+                tools:listitem="@layout/item_chat" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
