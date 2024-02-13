@@ -16,18 +16,18 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tv_chat_date"
+            android:id="@+id/tvChatDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:textColor="@color/normal_gray"
             android:textSize="@dimen/small_text_size"
-            app:layout_constraintBottom_toBottomOf="@id/cv_chat_container"
-            app:layout_constraintEnd_toStartOf="@id/cv_chat_container"
+            app:layout_constraintBottom_toBottomOf="@id/cvChatContainer"
+            app:layout_constraintEnd_toStartOf="@id/cvChatContainer"
             app:messageTimestamp="@{messageRight.lastTimestamp}" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_chat_container"
+            android:id="@+id/cvChatContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/tv_chat_content"
+                android:id="@+id/tvChatContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="200dp"
@@ -53,7 +53,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tv_message_not_read_check"
+            android:id="@+id/tvMessageNotReadCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -62,7 +62,7 @@
             android:textColor="@color/cyan_A700"
             android:visibility="@{messageRight.isRead() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_chat_date" />
+            app:layout_constraintEnd_toStartOf="@id/tvChatDate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

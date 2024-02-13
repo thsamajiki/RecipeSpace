@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_user_profile"
+            android:id="@+id/ivUserProfile"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="20dp"
@@ -29,7 +29,7 @@
             tools:src="@drawable/sample_feed_image" />
 
         <TextView
-            android:id="@+id/tv_user_name"
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -38,11 +38,11 @@
             android:text="@{messageLeft.userName}"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+            app:layout_constraintStart_toEndOf="@id/ivUserProfile"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_chat_container"
+            android:id="@+id/cvChatContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -52,11 +52,11 @@
             app:cardElevation="3dp"
             app:cardUseCompatPadding="true"
             app:contentPadding="10dp"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_user_name">
+            app:layout_constraintStart_toEndOf="@id/ivUserProfile"
+            app:layout_constraintTop_toBottomOf="@id/tvUserName">
 
             <TextView
-                android:id="@+id/tv_chat_content"
+                android:id="@+id/tvChatContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxWidth="200dp"
@@ -67,14 +67,14 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
-            android:id="@+id/tv_chat_date"
+            android:id="@+id/tvChatDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:textColor="@color/normal_gray"
             android:textSize="@dimen/small_text_size"
-            app:layout_constraintBottom_toBottomOf="@id/cv_chat_container"
-            app:layout_constraintStart_toEndOf="@id/cv_chat_container"
+            app:layout_constraintBottom_toBottomOf="@id/cvChatContainer"
+            app:layout_constraintStart_toEndOf="@id/cvChatContainer"
             app:messageTimestamp="@{messageLeft.lastTimestamp}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
