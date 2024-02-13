@@ -4,7 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.databinding.ItemNoticeListBinding
+import com.hero.recipespace.databinding.ItemNoticeBinding
+
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.view.BaseAdapter
 
@@ -13,7 +14,7 @@ class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, Notic
     private val noticeList = mutableListOf<NoticeEntity>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
-        val binding = ItemNoticeListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return NoticeViewHolder(binding)
     }
@@ -37,7 +38,7 @@ class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, Notic
     override fun onClick(view: View?) {}
 
     class NoticeViewHolder(
-        private val binding: ItemNoticeListBinding
+        private val binding: ItemNoticeBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setNotice(notice: NoticeEntity) {
