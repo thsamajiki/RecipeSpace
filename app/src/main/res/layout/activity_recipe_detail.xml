@@ -18,7 +18,7 @@
         tools:context=".view.main.recipe.RecipeDetailActivity">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tool_bar"
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/top_background"
@@ -30,7 +30,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_back"
+                    android:id="@+id/ivBack"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
@@ -56,13 +56,13 @@
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_recipe_images"
+            android:id="@+id/rvRecipeImageList"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="@drawable/recipe_images_background"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+            app:layout_constraintTop_toBottomOf="@+id/toolBar"
             app:recipeImageItems="@{viewModel.recipe.photoUrlList}"
             tools:listitem="@layout/item_recipe_detail_image_list" />
 
@@ -73,10 +73,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_recipe_images">
+            app:layout_constraintTop_toBottomOf="@id/rvRecipeImageList">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_user_profile"
+                android:id="@+id/ivUserProfile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="20dp"
@@ -88,7 +88,7 @@
                 app:shapeAppearance="@style/Circle" />
 
             <TextView
-                android:id="@+id/tv_user_name"
+                android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -96,19 +96,19 @@
                 android:text="@{viewModel.recipe.userName}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/body_text_size"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintStart_toEndOf="@id/ivUserProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_post_date"
+                android:id="@+id/tvPostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/small_text_size"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
+                app:layout_constraintStart_toEndOf="@id/ivUserProfile"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName"
                 app:timestamp="@{viewModel.recipe.postDate}" />
 
             <FrameLayout
@@ -121,14 +121,14 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <RatingBar
-                    android:id="@+id/rating_bar"
+                    android:id="@+id/ratingBar"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:progressTint="@color/colorPrimary"
                     android:rating="@{viewModel.recipe.rate}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
+                    app:layout_constraintTop_toBottomOf="@+id/rvRecipeImageList" />
             </FrameLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -141,7 +141,7 @@
                 android:layout_marginEnd="20dp"
                 android:text="@string/contact_recipe"
                 android:textColor="@color/colorPrimary"
-                app:layout_constraintTop_toBottomOf="@id/tv_post_date"
+                app:layout_constraintTop_toBottomOf="@id/tvPostDate"
                 app:rippleColor="@color/colorPrimary30"
                 app:strokeColor="@color/colorPrimary" />
 
@@ -153,7 +153,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_question">
 
                 <TextView
-                    android:id="@+id/tv_recipe_desc"
+                    android:id="@+id/tvRecipeDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{viewModel.recipe.desc}"
