@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/tool_bar"
+            android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent">
@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content">
 
                 <com.skydoves.elasticviews.ElasticImageView
-                    android:id="@+id/iv_close"
+                    android:id="@+id/ivClose"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="7dp"
@@ -35,7 +35,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tv_title_post_image"
+                    android:id="@+id/tvTitlePostImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_post_image"
@@ -52,7 +52,7 @@
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
-            android:id="@+id/layout_option_camera"
+            android:id="@+id/layoutOptionCamera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -75,7 +75,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_option_gallery"
+            android:id="@+id/layoutOptionGallery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
