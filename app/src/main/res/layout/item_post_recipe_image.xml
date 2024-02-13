@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" >
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_recipe_image"
+                android:id="@+id/ivRecipeImage"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
@@ -33,7 +33,7 @@
                 tools:src="@drawable/sample_feed_image" />
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_recipe_image_cancel"
+                android:id="@+id/ivRecipeImageCancel"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="top|end"
