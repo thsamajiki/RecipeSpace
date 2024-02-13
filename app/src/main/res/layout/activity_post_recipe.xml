@@ -109,7 +109,7 @@
                 app:layout_constraintStart_toEndOf="@id/btnPhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:recipeImageItems="@{viewModel.recipeImageList}"
-                tools:listitem="@layout/item_recipe_image_list" />
+                tools:listitem="@layout/item_recipe_image" />
 
             <TextView
                 android:id="@+id/tvTouchHereAndAddPictures"
