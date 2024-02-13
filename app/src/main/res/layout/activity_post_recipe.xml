@@ -29,7 +29,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_back"
+                    android:id="@+id/ivBack"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
@@ -49,7 +49,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tv_complete"
+                    android:id="@+id/tvComplete"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:enabled="false"
@@ -72,7 +72,7 @@
             android:background="@drawable/recipe_images_background">
 
             <LinearLayout
-                android:id="@+id/btn_photo"
+                android:id="@+id/btnPhoto"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="10dp"
@@ -99,20 +99,20 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_recipe_images"
+                android:id="@+id/rvRecipeImageList"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintStart_toEndOf="@id/btnPhoto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:recipeImageItems="@{viewModel.recipeImageList}"
                 tools:listitem="@layout/item_recipe_image_list" />
 
             <TextView
-                android:id="@+id/tv_touch_here_and_add_pictures"
+                android:id="@+id/tvTouchHereAndAddPictures"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -120,7 +120,7 @@
                 android:textColor="@color/dark_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btn_photo"
+                app:layout_constraintStart_toEndOf="@id/btnPhoto"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -131,7 +131,7 @@
             android:background="@color/light_gray" />
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/edit_content"
+            android:id="@+id/editContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/main_background60"
