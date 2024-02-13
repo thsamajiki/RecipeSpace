@@ -30,7 +30,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_back"
+                    android:id="@+id/ivBack"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="match_parent"
                     android:padding="14dp"
@@ -50,7 +50,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tv_complete"
+                    android:id="@+id/tvComplete"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:enabled="false"
@@ -81,7 +81,7 @@
                 android:layout_marginTop="60dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/iv_user_profile"
+                    android:id="@+id/ivUserProfile"
                     android:layout_width="140dp"
                     android:layout_height="140dp"
                     app:fallbackImage="@{R.drawable.ic_user}"
@@ -90,7 +90,7 @@
                     android:scaleType="centerCrop" />
 
                 <com.skydoves.elasticviews.ElasticFloatingActionButton
-                    android:id="@+id/fab_profile_edit"
+                    android:id="@+id/fabProfileEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
@@ -111,7 +111,7 @@
                 android:hint="@string/please_input_new_user_name">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_user_name"
+                    android:id="@+id/editUserName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="text"
