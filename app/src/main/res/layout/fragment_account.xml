@@ -21,7 +21,7 @@
         tools:context=".view.main.account.AccountFragment">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_user_profile"
+            android:id="@+id/ivUserProfile"
             android:layout_width="140dp"
             android:layout_height="140dp"
             android:layout_gravity="center_horizontal"
@@ -33,7 +33,7 @@
             tools:src="@drawable/ic_user" />
 
         <TextView
-            android:id="@+id/tv_user_name"
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -43,7 +43,7 @@
             android:textSize="@dimen/title_text_size" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_edit_profile"
+            android:id="@+id/btnEditProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
@@ -55,7 +55,7 @@
             app:rippleColor="@color/colorPrimary30" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_logout"
+            android:id="@+id/btnLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
