@@ -13,7 +13,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_root_container"
+        android:id="@+id/layoutRootContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
@@ -21,18 +21,18 @@
         tools:showIn="@layout/app_bar_chat">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chat"
+            android:id="@+id/rvMessageList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
             android:background="@drawable/chat_background"
             android:stackFromBottom="true"
-            app:layout_constraintBottom_toTopOf="@id/cv_input"
+            app:layout_constraintBottom_toTopOf="@id/cvInput"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/item_message_right" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_scroll_bottom"
+            android:id="@+id/fabScrollBottom"
             android:layout_width="140dp"
             android:layout_height="50dp"
             android:layout_marginBottom="10dp"
@@ -41,12 +41,12 @@
             android:visibility="gone"
             app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/ic_arrow_down"
-            app:layout_constraintBottom_toTopOf="@+id/cv_input"
+            app:layout_constraintBottom_toTopOf="@+id/cvInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_input"
+            android:id="@+id/cvInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/amber_200"
@@ -54,13 +54,13 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_input"
+                android:id="@+id/layoutInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_message_content_option"
+                    android:id="@+id/ivMessageContentOption"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:padding="10dp"
@@ -71,10 +71,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/edit_message"
+                    android:id="@+id/editMessage"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/mcv_send"
+                    android:layout_toStartOf="@+id/mcvSend"
                     android:background="@null"
                     android:hint="@string/please_input_message"
                     android:imeOptions="normal"
@@ -84,12 +84,12 @@
                     android:paddingHorizontal="20dp"
                     android:text="@={viewModel.message}"
                     android:textSize="@dimen/body_text_size"
-                    app:layout_constraintEnd_toStartOf="@id/mcv_send"
-                    app:layout_constraintStart_toEndOf="@+id/iv_message_content_option"
+                    app:layout_constraintEnd_toStartOf="@id/mcvSend"
+                    app:layout_constraintStart_toEndOf="@+id/ivMessageContentOption"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/mcv_send"
+                    android:id="@+id/mcvSend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/colorPrimary"
