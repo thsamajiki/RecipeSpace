@@ -1,61 +1,28 @@
 package com.hero.recipespace.view.main.chat
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.hero.recipespace.databinding.ItemMessageLeftBinding
-import com.hero.recipespace.databinding.ItemMessageRightBinding
+import com.hero.recipespace.databinding.ItemChatBinding
+import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.BaseAdapter
 
-class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
+class ChatAdapter(
+    private val onClick: (ChatItem) -> Unit
+) : BaseAdapter<ChatAdapter.ChatListViewHolder, ChatItem>() {
 
-    private val messageList = mutableListOf<MessageItem>()
+    private val chatDataList = mutableListOf<ChatItem>()
+    private var myUserKey: String? = null
 
-    companion object {
-        private const val LEFT_TYPE = 0
-        private const val RIGHT_TYPE = 1
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
+        val binding = ItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        return ChatListViewHolder(binding, onClick)
     }
 
-    private var myUserKey: String? = FirebaseAuth.getInstance().uid
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == RIGHT_TYPE) {
-            val binding =
-                ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            RightMessageViewHolder(binding)
-        } else {
-            val binding =
-                ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            LeftMessageViewHolder(binding)
-        }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val message: MessageItem = messageList[position]
-        if (holder is LeftMessageViewHolder) {
-            holder.bind(message)
-        } else if (holder is RightMessageViewHolder) {
-            holder.bind(message)
-        }
-    }
-
-    fun setMessageList(message: List<MessageItem>) {
-        messageList.clear()
-        messageList.addAll(message)
-        notifyDataSetChanged()
-    }
-
-    fun add(position: Int, message: MessageItem) {
-        messageList.add(position, message)
-        notifyItemInserted(position)
-    }
-
-    fun replaceItem(message: MessageItem) {
-        val index = messageList.indexOf(message)
-        messageList[index] = message
-        notifyItemChanged(index)
+    override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
+        val chatData = chatDataList[position]
+        holder.bind(chatData)
     }
 
     private fun getOtherUserName(
@@ -82,38 +49,45 @@ class ChatAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
         return null
     }
 
+    fun setChatList(chat: List<ChatItem>) {
+        chatDataList.clear()
+        chatDataList.addAll(chat)
+        notifyDataSetChanged()
+    }
+
+    fun add(position: Int, chat: ChatItem) {
+        chatDataList.add(position, chat)
+        notifyItemInserted(position)
+    }
+
+    fun replaceItem(chat: ChatItem) {
+        val index = chatDataList.indexOf(chat)
+        chatDataList[index] = chat
+        notifyItemChanged(index)
+    }
+
     override fun getItemCount(): Int {
-        return messageList.size
+        return chatDataList.size
     }
 
-    override fun getItemViewType(position: Int): Int {
-        val message: MessageItem = messageList[position]
-        return if (myUserKey == message.userKey) {
-            RIGHT_TYPE
-        } else LEFT_TYPE
-    }
-
-    class RightMessageViewHolder(
-        private val binding: ItemMessageRightBinding
+    class ChatListViewHolder(
+        val binding: ItemChatBinding,
+        private val onClick: (ChatItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: MessageItem) {
-            binding.messageRight = message
+        fun bind(chat: ChatItem) {
+//            binding.ivUserProfile = itemView.findViewById(R.id.iv_user_profile)
+//            binding.ivUserProfile = chatData.
+//            binding.tvUserName = itemView.findViewById(R.id.tv_user_name)
+//            binding.tvChatDate = itemView.findViewById(R.id.tv_chat_date)
+//            binding.tvChatContent = itemView.findViewById(R.id.tv_chat)
 
-            if (message.isRead == true) {
-                binding.tvMessageNotReadCheck.visibility = View.GONE
+            binding.root.setOnClickListener {
+                onClick(chat)
             }
 
-            binding.executePendingBindings()
-        }
-    }
-
-    class LeftMessageViewHolder(
-        private val binding: ItemMessageLeftBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(message: MessageItem) {
-            binding.messageLeft = message
+            WLog.d("chat $chat")
+            binding.chat = chat
             binding.executePendingBindings()
         }
     }
