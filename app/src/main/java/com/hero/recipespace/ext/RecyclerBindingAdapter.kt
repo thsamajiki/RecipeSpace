@@ -7,25 +7,25 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.account.setting.notice.NoticeListAdapter
 import com.hero.recipespace.view.main.chat.ChatAdapter
 import com.hero.recipespace.view.main.chat.ChatItem
-import com.hero.recipespace.view.main.chat.ChatListAdapter
+import com.hero.recipespace.view.main.chat.MessageAdapter
 import com.hero.recipespace.view.main.chat.MessageItem
-import com.hero.recipespace.view.main.recipe.EditRecipeImageListAdapter
-import com.hero.recipespace.view.main.recipe.RecipeListAdapter
-import com.hero.recipespace.view.post.PostRecipeImageListAdapter
+import com.hero.recipespace.view.main.recipe.EditRecipeImageAdapter
+import com.hero.recipespace.view.main.recipe.RecipeAdapter
+import com.hero.recipespace.view.post.PostRecipeImageAdapter
 
-@BindingAdapter("chatListItems")
+@BindingAdapter("chatItems")
 fun RecyclerView.setChatListItems(items: List<ChatItem>?) {
     items ?: return
 
-    val adapter = this.adapter as? ChatListAdapter
+    val adapter = this.adapter as? ChatAdapter
     adapter?.setChatList(items)
 }
 
-@BindingAdapter("chatItems")
+@BindingAdapter("messageItems")
 fun RecyclerView.setMessageItems(items: List<MessageItem>?) {
     items ?: return
 
-    val adapter = this.adapter as? ChatAdapter
+    val adapter = this.adapter as? MessageAdapter
     adapter?.setMessageList(items)
 }
 
@@ -33,7 +33,7 @@ fun RecyclerView.setMessageItems(items: List<MessageItem>?) {
 fun RecyclerView.setRecipeListItems(items: List<RecipeEntity>?) {
     items ?: return
 
-    val adapter = this.adapter as? RecipeListAdapter
+    val adapter = this.adapter as? RecipeAdapter
     adapter?.setRecipeList(items)
 }
 
@@ -41,7 +41,7 @@ fun RecyclerView.setRecipeListItems(items: List<RecipeEntity>?) {
 fun RecyclerView.setRecipeImageListItems(items: List<String>?) {
     items ?: return
 
-    val adapter = this.adapter as? PostRecipeImageListAdapter
+    val adapter = this.adapter as? PostRecipeImageAdapter
     adapter?.setRecipeImageList(items)
 }
 
@@ -49,7 +49,7 @@ fun RecyclerView.setRecipeImageListItems(items: List<String>?) {
 fun RecyclerView.setEditRecipeImageListItems(items: List<String>?) {
     items ?: return
 
-    val adapter = this.adapter as? EditRecipeImageListAdapter
+    val adapter = this.adapter as? EditRecipeImageAdapter
     adapter?.setRecipeImageList(items)
 }
 
