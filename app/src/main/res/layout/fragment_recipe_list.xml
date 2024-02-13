@@ -13,7 +13,7 @@
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/srl_recipe_list"
+        android:id="@+id/layoutSwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,7 +23,7 @@
             tools:context=".view.main.recipe.RecipeListFragment">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_recipe"
+                android:id="@+id/rvRecipeList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -32,7 +32,7 @@
                 tools:listitem="@layout/item_recipe_list" />
 
             <com.skydoves.elasticviews.ElasticFloatingActionButton
-                android:id="@+id/btn_post"
+                android:id="@+id/btnPostRecipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
