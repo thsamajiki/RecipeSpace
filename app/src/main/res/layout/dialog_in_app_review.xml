@@ -6,7 +6,7 @@
     android:layout_marginHorizontal="40dp">
 
     <LinearLayout
-        android:id="@+id/layout_title"
+        android:id="@+id/layoutTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iv_warning"
+            android:id="@+id/ivWarning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_title1"
+        android:id="@+id/tvTitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -43,10 +43,10 @@
         android:textSize="@dimen/title_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_title" />
+        app:layout_constraintTop_toBottomOf="@id/layoutTitle" />
 
     <TextView
-        android:id="@+id/tv_title2"
+        android:id="@+id/tvTitle2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -55,7 +55,7 @@
         android:textSize="@dimen/title_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title1" />
+        app:layout_constraintTop_toBottomOf="@id/tvTitle1" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -67,10 +67,10 @@
         android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title2">
+        app:layout_constraintTop_toBottomOf="@id/tvTitle2">
 
         <Button
-            android:id="@+id/btn_later"
+            android:id="@+id/btnLater"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
             android:textSize="@dimen/small_text_size" />
 
         <Button
-            android:id="@+id/btn_no"
+            android:id="@+id/btnNo"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -90,7 +90,7 @@
             android:textSize="@dimen/small_text_size" />
 
         <Button
-            android:id="@+id/btn_ok"
+            android:id="@+id/btnOk"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_weight="1"
