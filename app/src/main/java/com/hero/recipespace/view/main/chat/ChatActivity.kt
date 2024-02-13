@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityChatBinding
-    private lateinit var chatAdapter: ChatAdapter
+    private lateinit var messageAdapter: MessageAdapter
     private var isKeyboardOpen = false // 키보드 올라왔는지 확인
 
     private val viewModel by viewModels<ChatViewModel>()
@@ -55,7 +55,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     private fun setupView() {
         checkKeyboardOpenClose()
         setSupportActionBar(binding.appBarChat.toolBar)
-        initRecyclerView(binding.appBarChat.layoutRootContainer.rvChat)
+        initRecyclerView(binding.appBarChat.layoutRootContainer.rvMessageList)
     }
 
     private fun setupViewModel() {
@@ -66,12 +66,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
                 Log.d("count1", "count1: $count1")
                 Log.d("messageList1", "messageList: $messageList")
                 Log.d("messageList2", "messageDataList: $messageDataList")
-                chatAdapter.setMessageList(messageDataList)
+                messageAdapter.setMessageList(messageDataList)
 //                if (messageList.isNotEmpty()) {
 //                    chatAdapter.update(messageList)
 //
 //                }
-                binding.appBarChat.layoutRootContainer.rvChat.scrollToPosition(chatAdapter.itemCount - 1)
+                binding.appBarChat.layoutRootContainer.rvMessageList.scrollToPosition(messageAdapter.itemCount - 1)
             }
         }
     }
@@ -107,10 +107,10 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 500 }
         var isBottom = true
 
-        binding.appBarChat.layoutRootContainer.rvChat.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.appBarChat.layoutRootContainer.rvMessageList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.appBarChat.layoutRootContainer.rvChat.canScrollVertically(1) // 최하단일 경우 false 값 return
+                if (!binding.appBarChat.layoutRootContainer.rvMessageList.canScrollVertically(1) // 최하단일 경우 false 값 return
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(fadeOut)
                     binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility = View.GONE
@@ -126,15 +126,15 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         })
 
         binding.appBarChat.layoutRootContainer.fabScrollBottom.setOnClickListener {
-            binding.appBarChat.layoutRootContainer.rvChat.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
+            binding.appBarChat.layoutRootContainer.rvMessageList.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
         }
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        chatAdapter = ChatAdapter()
+        messageAdapter = MessageAdapter()
 
         recyclerView.run {
-            adapter = chatAdapter
+            adapter = messageAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
 
@@ -163,7 +163,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         View.OnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
             // 키보드가 올라와 높이가 변함
             if (bottom < oldBottom) {
-                binding.appBarChat.layoutRootContainer.rvChat.scrollBy(0, oldBottom - bottom) // 스크롤 유지를 위해 추가
+                binding.appBarChat.layoutRootContainer.rvMessageList.scrollBy(0, oldBottom - bottom) // 스크롤 유지를 위해 추가
             }
         }
 
