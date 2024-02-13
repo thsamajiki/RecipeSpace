@@ -82,7 +82,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     private fun requestSignUp() {
         val email = binding.editEmail.text.toString().trim()
         val pwd: String = binding.editPwd.text.toString().trim()
-        val userName: String = binding.editUsername.text.toString().trim()
+        val userName: String = binding.editUserName.text.toString().trim()
 
 
         viewModel.signUpUserAccount(userName, email, pwd)
