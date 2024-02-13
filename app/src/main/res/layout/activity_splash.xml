@@ -7,7 +7,7 @@
     tools:context=".SplashActivity">
 
     <ImageView
-        android:id="@+id/iv_intro"
+        android:id="@+id/ivIntro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_intro_logo"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/iv_cooking_pan"
+        android:id="@+id/ivCookingPan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_cooking_pan"
@@ -28,18 +28,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/iv_balloons"
+        android:id="@+id/ivBalloons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_balloons"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/iv_intro"
+        app:layout_constraintBottom_toTopOf="@id/ivIntro"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/iv_bottom_cook_logo"
+        android:id="@+id/ivBottomCookLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_bottom_cook_logo"
