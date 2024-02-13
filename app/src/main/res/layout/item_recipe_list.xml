@@ -11,7 +11,7 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mcv_container"
+        android:id="@+id/mcvContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/colorPrimary30"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/iv_user_profile"
+                android:id="@+id/ivUserProfile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginStart="10dp"
@@ -37,7 +37,7 @@
                 app:shapeAppearance="@style/Circle" />
 
             <TextView
-                android:id="@+id/tv_user_name"
+                android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -45,23 +45,23 @@
                 android:text="@{recipe.userName}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/body_text_size"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+                app:layout_constraintStart_toEndOf="@id/ivUserProfile"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_post_date"
+                android:id="@+id/tvPostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="2dp"
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/small_text_size"
-                app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-                app:layout_constraintTop_toBottomOf="@+id/tv_user_name"
+                app:layout_constraintStart_toEndOf="@id/ivUserProfile"
+                app:layout_constraintTop_toBottomOf="@+id/tvUserName"
                 app:timestamp="@{recipe.postDate}" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcv_rating_container"
+                android:id="@+id/mcvRatingContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/colorPrimary30"
@@ -72,7 +72,7 @@
                 app:rippleColor="@color/colorPrimary30">
 
                 <RatingBar
-                    android:id="@+id/rating_bar"
+                    android:id="@+id/ratingBar"
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,16 +83,16 @@
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/rv_recipe_images"
+                android:id="@+id/rvRecipeImageList"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginTop="20dp"
                 android:scaleType="centerCrop"
                 app:imageUrl="@{recipe.thumbnailPhoto}"
-                app:layout_constraintTop_toBottomOf="@id/tv_post_date" />
+                app:layout_constraintTop_toBottomOf="@id/tvPostDate" />
 
             <TextView
-                android:id="@+id/tv_recipe_desc"
+                android:id="@+id/tvRecipeDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -102,7 +102,7 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="@dimen/body_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_recipe_images" />
+                app:layout_constraintTop_toBottomOf="@+id/rvRecipeImageList" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

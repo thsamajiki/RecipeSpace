@@ -1,26 +1,26 @@
-package com.hero.recipespace.view.post
+package com.hero.recipespace.view.main.recipe
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hero.recipespace.databinding.ItemRecipeImageListBinding
+import com.hero.recipespace.databinding.ItemRecipeImageBinding
 import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
-class PostRecipeImageListAdapter(
+class EditRecipeImageAdapter(
     private val onClick: (String) -> Unit,
     private val onCancelClick: (Int) -> Unit
-) : BaseAdapter<PostRecipeImageListAdapter.PostRecipeImageViewHolder, String>() {
+) : BaseAdapter<EditRecipeImageAdapter.EditRecipeImageViewHolder, String>() {
 
     private val recipeImageList = mutableListOf<String>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostRecipeImageViewHolder {
-        val binding = ItemRecipeImageListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditRecipeImageViewHolder {
+        val binding = ItemRecipeImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return PostRecipeImageViewHolder(binding, onClick, onCancelClick)
+        return EditRecipeImageViewHolder(binding, onClick, onCancelClick)
     }
 
-    override fun onBindViewHolder(holder: PostRecipeImageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EditRecipeImageViewHolder, position: Int) {
         val image = recipeImageList[position]
         holder.bind(image)
     }
@@ -57,8 +57,8 @@ class PostRecipeImageListAdapter(
         return recipeImageList.size
     }
 
-    class PostRecipeImageViewHolder(
-        private val binding: ItemRecipeImageListBinding,
+    class EditRecipeImageViewHolder(
+        private val binding: ItemRecipeImageBinding,
         private val onClick: (String) -> Unit,
         private val onCancelClick: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
