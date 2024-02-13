@@ -16,7 +16,7 @@
         android:layout_height="70dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_user_profile"
+            android:id="@+id/ivUserProfile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
@@ -28,7 +28,7 @@
             app:shapeAppearance="@style/Circle" />
 
         <TextView
-            android:id="@+id/tv_user_name"
+            android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -36,11 +36,11 @@
             android:text="@{chat.displayOtherUserName.invoke()}"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
+            app:layout_constraintStart_toEndOf="@id/ivUserProfile"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_chat_content"
+            android:id="@+id/tvChatContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -51,11 +51,11 @@
             android:maxLines="2"
             android:text="@{chat.lastMessage}"
             android:textColor="@color/dark_gray"
-            app:layout_constraintStart_toEndOf="@id/iv_user_profile"
-            app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
+            app:layout_constraintStart_toEndOf="@id/ivUserProfile"
+            app:layout_constraintTop_toBottomOf="@id/tvUserName" />
 
         <TextView
-            android:id="@+id/tv_chat_date"
+            android:id="@+id/tvChatDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -75,7 +75,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/tv_plus"
+                android:id="@+id/tvPlus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -85,7 +85,7 @@
                 android:visibility="@{chat.unreadMessageCount > 0 ? View.VISIBLE : View.GONE}" />
 
             <TextView
-                android:id="@+id/tv_unread_message_count"
+                android:id="@+id/tvUnreadMessageCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
