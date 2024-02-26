@@ -43,6 +43,7 @@ object Dependencies {
         const val espresso_core = "3.5.1"
 
         const val kotlinStdlib = "1.9.20"
+        const val ktLint = "12.1.0"
     }
 
     object Libraries {
@@ -71,6 +72,7 @@ object Dependencies {
         const val coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines_core}"
         const val coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines_core}"
         const val coroutines_test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines_core}"
+        const val ktLint = "org.jlleitschuh.gradle.ktlint:${Versions.ktLint}"
     }
 
     object Jetpack {
