@@ -16,6 +16,7 @@ buildscript {
 
 plugins {
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 tasks.register("clean", Delete::class) {
