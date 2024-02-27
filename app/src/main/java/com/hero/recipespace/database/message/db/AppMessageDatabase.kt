@@ -12,20 +12,22 @@ import com.hero.recipespace.ext.TypeConverterExt
 @Database(entities = [MessageData::class], version = 1, exportSchema = false)
 @TypeConverters(TypeConverterExt::class)
 abstract class AppMessageDatabase : RoomDatabase() {
-    abstract fun messageDao() : MessageDao
+    abstract fun messageDao(): MessageDao
 
     companion object {
         @Volatile
         private var instance: AppMessageDatabase? = null
 
-        fun getInstance(context: Context): AppMessageDatabase = instance ?: synchronized(this) {
-            instance ?: buildDatabase(context).also { instance = it }
-        }
+        fun getInstance(context: Context): AppMessageDatabase =
+            instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
+            }
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                AppMessageDatabase::class.java, "message_db"
+                AppMessageDatabase::class.java,
+                "message_db",
             ).build()
     }
 }

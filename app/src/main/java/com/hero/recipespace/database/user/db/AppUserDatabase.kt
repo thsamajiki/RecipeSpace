@@ -9,20 +9,22 @@ import com.hero.recipespace.database.user.dao.UserDao
 
 @Database(entities = [UserData::class], version = 1, exportSchema = false)
 abstract class AppUserDatabase : RoomDatabase() {
-    abstract fun userDao() : UserDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
         private var instance: AppUserDatabase? = null
 
-        fun getInstance(context: Context): AppUserDatabase = instance ?: synchronized(this) {
-            instance ?: buildDatabase(context).also { instance = it }
-        }
+        fun getInstance(context: Context): AppUserDatabase =
+            instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
+            }
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                AppUserDatabase::class.java, "user_db"
+                AppUserDatabase::class.java,
+                "user_db",
             ).build()
     }
 }
