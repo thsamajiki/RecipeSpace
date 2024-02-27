@@ -21,28 +21,27 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ServiceModule {
+    @Singleton
+    @Binds
+    abstract fun provideChatService(chatServiceImpl: ChatServiceImpl): ChatService
 
     @Singleton
     @Binds
-    abstract fun provideChatService(chatServiceImpl: ChatServiceImpl) : ChatService
+    abstract fun provideMessageService(messageServiceImpl: MessageServiceImpl): MessageService
 
     @Singleton
     @Binds
-    abstract fun provideMessageService(messageServiceImpl: MessageServiceImpl) : MessageService
+    abstract fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl): NoticeService
 
     @Singleton
     @Binds
-    abstract fun provideNoticeService(noticeServiceImpl: NoticeServiceImpl) : NoticeService
+    abstract fun provideRateService(rateServiceImpl: RateServiceImpl): RateService
 
     @Singleton
     @Binds
-    abstract fun provideRateService(rateServiceImpl: RateServiceImpl) : RateService
+    abstract fun provideRecipeService(recipeServiceImpl: RecipeServiceImpl): RecipeService
 
     @Singleton
     @Binds
-    abstract fun provideRecipeService(recipeServiceImpl: RecipeServiceImpl) : RecipeService
-
-    @Singleton
-    @Binds
-    abstract fun provideUserService(userServiceImpl: UserServiceImpl) : UserService
+    abstract fun provideUserService(userServiceImpl: UserServiceImpl): UserService
 }

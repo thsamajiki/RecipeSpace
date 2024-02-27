@@ -31,70 +31,47 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class DataSourceModule {
+    @Singleton
+    @Binds
+    abstract fun bindChatRemoteDataSource(chatRemoteDataSourceImpl: ChatRemoteDataSourceImpl): ChatRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindChatRemoteDataSource(
-        chatRemoteDataSourceImpl: ChatRemoteDataSourceImpl
-    ) : ChatRemoteDataSource
+    abstract fun bindChatLocalDataSource(chatLocalDataSourceImpl: ChatLocalDataSourceImpl): ChatLocalDataSource
 
     @Singleton
     @Binds
-    abstract fun bindChatLocalDataSource(
-        chatLocalDataSourceImpl: ChatLocalDataSourceImpl
-    ) : ChatLocalDataSource
+    abstract fun bindMessageRemoteDataSource(messageRemoteDataSourceImpl: MessageRemoteDataSourceImpl): MessageRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindMessageRemoteDataSource(
-        messageRemoteDataSourceImpl: MessageRemoteDataSourceImpl
-    ) : MessageRemoteDataSource
+    abstract fun bindMessageLocalDataSource(messageLocalDataSourceImpl: MessageLocalDataSourceImpl): MessageLocalDataSource
 
     @Singleton
     @Binds
-    abstract fun bindMessageLocalDataSource(
-        messageLocalDataSourceImpl: MessageLocalDataSourceImpl
-    ) : MessageLocalDataSource
+    abstract fun bindNoticeRemoteDataSource(noticeRemoteDataSourceImpl: NoticeRemoteDataSourceImpl): NoticeRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindNoticeRemoteDataSource(
-        noticeRemoteDataSourceImpl: NoticeRemoteDataSourceImpl
-    ) : NoticeRemoteDataSource
+    abstract fun bindRateRemoteDataSource(rateRemoteDataSourceImpl: RateRemoteDataSourceImpl): RateRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindRateRemoteDataSource(
-        rateRemoteDataSourceImpl: RateRemoteDataSourceImpl
-    ) : RateRemoteDataSource
+    abstract fun bindRateLocalDataSource(rateLocalDataSourceImpl: RateLocalDataSourceImpl): RateLocalDataSource
 
     @Singleton
     @Binds
-    abstract fun bindRateLocalDataSource(
-        rateLocalDataSourceImpl: RateLocalDataSourceImpl
-    ) : RateLocalDataSource
+    abstract fun bindRecipeRemoteDataSource(recipeRemoteDataSourceImpl: RecipeRemoteDataSourceImpl): RecipeRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindRecipeRemoteDataSource(
-        recipeRemoteDataSourceImpl: RecipeRemoteDataSourceImpl
-    ) : RecipeRemoteDataSource
+    abstract fun bindRecipeLocalDataSource(recipeLocalDataSourceImpl: RecipeLocalDataSourceImpl): RecipeLocalDataSource
 
     @Singleton
     @Binds
-    abstract fun bindRecipeLocalDataSource(
-        recipeLocalDataSourceImpl: RecipeLocalDataSourceImpl
-    ) : RecipeLocalDataSource
+    abstract fun bindUserRemoteDataSource(userRemoteDataSourceImpl: UserRemoteDataSourceImpl): UserRemoteDataSource
 
     @Singleton
     @Binds
-    abstract fun bindUserRemoteDataSource(
-        userRemoteDataSourceImpl: UserRemoteDataSourceImpl
-    ) : UserRemoteDataSource
-
-    @Singleton
-    @Binds
-    abstract fun bindUserLocalDataSource(
-        userLocalDataSourceImpl: UserLocalDataSourceImpl
-    ) : UserLocalDataSource
+    abstract fun bindUserLocalDataSource(userLocalDataSourceImpl: UserLocalDataSourceImpl): UserLocalDataSource
 }

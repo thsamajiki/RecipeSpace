@@ -16,7 +16,12 @@ import com.hero.recipespace.domain.rate.repository.RateRepository
 import com.hero.recipespace.domain.rate.usecase.GetRateUseCase
 import com.hero.recipespace.domain.rate.usecase.UpdateRateUseCase
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
-import com.hero.recipespace.domain.recipe.usecase.*
+import com.hero.recipespace.domain.recipe.usecase.DeleteRecipeUseCase
+import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
+import com.hero.recipespace.domain.recipe.usecase.ObserveRecipeListUseCase
+import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
+import com.hero.recipespace.domain.recipe.usecase.RefreshRecipeListUseCase
+import com.hero.recipespace.domain.recipe.usecase.UpdateRecipeUseCase
 import com.hero.recipespace.domain.user.repository.UserRepository
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
 import com.hero.recipespace.domain.user.usecase.ObserveUserListUseCase
@@ -29,7 +34,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
-
     @Provides
     @Singleton
     fun provideGetChatUseCase(chatRepository: ChatRepository) = GetChatUseCase(chatRepository)

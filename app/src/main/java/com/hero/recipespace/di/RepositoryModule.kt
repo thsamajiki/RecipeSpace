@@ -21,40 +21,27 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Singleton
+    @Binds
+    abstract fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
 
     @Singleton
     @Binds
-    abstract fun bindChatRepository(
-        chatRepositoryImpl: ChatRepositoryImpl
-    ): ChatRepository
+    abstract fun bindMessageRepository(messageRepositoryImpl: MessageRepositoryImpl): MessageRepository
 
     @Singleton
     @Binds
-    abstract fun bindMessageRepository(
-        messageRepositoryImpl: MessageRepositoryImpl
-    ): MessageRepository
+    abstract fun bindNoticeRepository(noticeRepositoryImpl: NoticeRepositoryImpl): NoticeRepository
 
     @Singleton
     @Binds
-    abstract fun bindNoticeRepository(
-        noticeRepositoryImpl: NoticeRepositoryImpl
-    ): NoticeRepository
+    abstract fun bindRateRepository(rateRepositoryImpl: RateRepositoryImpl): RateRepository
 
     @Singleton
     @Binds
-    abstract fun bindRateRepository(
-        rateRepositoryImpl: RateRepositoryImpl
-    ): RateRepository
+    abstract fun bindRecipeRepository(recipeRepositoryImpl: RecipeRepositoryImpl): RecipeRepository
 
     @Singleton
     @Binds
-    abstract fun bindRecipeRepository(
-        recipeRepositoryImpl: RecipeRepositoryImpl
-    ): RecipeRepository
-
-    @Singleton
-    @Binds
-    abstract fun bindUserRepository(
-        userRepositoryImpl: UserRepositoryImpl
-    ): UserRepository
+    abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 }
