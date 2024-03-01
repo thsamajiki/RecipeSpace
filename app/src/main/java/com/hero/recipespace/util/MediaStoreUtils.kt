@@ -21,21 +21,26 @@ import java.io.File
  * guide for more: https://developer.android.com/training/data-storage.
  */
 class MediaStoreUtils(private val context: Context) {
-
-    private val mediaStoreCollection: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-    } else {
-        context.getExternalFilesDir(null)?.toUri()
-    }
+    private val mediaStoreCollection: Uri? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        } else {
+            context.getExternalFilesDir(null)?.toUri()
+        }
 
     private suspend fun getMediaStoreImageCursor(mediaStoreCollection: Uri): Cursor? {
         var cursor: Cursor?
         withContext(Dispatchers.IO) {
             val projection = arrayOf(imageDataColumnIndex, imageIdColumnIndex)
             val sortOrder = "DATE_ADDED DESC"
-            cursor = context.contentResolver.query(
-                mediaStoreCollection, projection, null, null, sortOrder
-            )
+            cursor =
+                context.contentResolver.query(
+                    mediaStoreCollection,
+                    projection,
+                    null,
+                    null,
+                    sortOrder,
+                )
         }
         return cursor
     }
@@ -63,10 +68,11 @@ class MediaStoreUtils(private val context: Context) {
             if (cursor != null && imageDataColumn != null && imageIdColumn != null) {
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(imageIdColumn)
-                    val contentUri: Uri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        id
-                    )
+                    val contentUri: Uri =
+                        ContentUris.withAppendedId(
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            id,
+                        )
                     val contentFile = File(cursor.getString(imageDataColumn))
                     files.add(MediaStoreFile(contentUri, contentFile, id))
                 }
