@@ -11,15 +11,14 @@ import androidx.navigation.fragment.FragmentNavigator
 @Navigator.Name("keep_state_fragment") // `keep_state_fragment` is used in navigation xml
 class KeepStateNavigator(
     private val context: Context,
-    private val manager: FragmentManager, // Should pass childFragmentManager.
-    private val containerId: Int
+    private val manager: FragmentManager,
+    private val containerId: Int,
 ) : FragmentNavigator(context, manager, containerId) {
-
     override fun navigate(
         destination: Destination,
         args: Bundle?,
         navOptions: NavOptions?,
-        navigatorExtras: Navigator.Extras?
+        navigatorExtras: Navigator.Extras?,
     ): NavDestination? {
         val tag = destination.id.toString()
         val transaction = manager.beginTransaction()
