@@ -4,9 +4,9 @@ import com.hero.recipespace.data.chat.ChatData
 import kotlinx.coroutines.flow.Flow
 
 interface ChatLocalDataSource {
-    suspend fun getData(chatKey: String) : ChatData
+    suspend fun getData(chatKey: String): ChatData
 
-    fun observeDataList(userKey: String) : Flow<List<ChatData>>
+    fun observeDataList(userKey: String): Flow<List<ChatData>>
 
     fun clear()
 
