@@ -9,9 +9,11 @@ import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ChatRemoteDataSourceImpl @Inject constructor(
+class ChatRemoteDataSourceImpl
+@Inject
+constructor(
     private val firebaseAuth: FirebaseAuth,
-    private val chatService: ChatService
+    private val chatService: ChatService,
 ) : ChatRemoteDataSource {
     override suspend fun getData(chatKey: String): ChatData {
         return chatService.getData(chatKey)
@@ -29,7 +31,7 @@ class ChatRemoteDataSourceImpl @Inject constructor(
         return chatService.observeNewChat(userKey)
     }
 
-    override suspend fun createNewChatRoom(request: AddChatRequest) : ChatData {
+    override suspend fun createNewChatRoom(request: AddChatRequest): ChatData {
         return chatService.add(request)
     }
 
