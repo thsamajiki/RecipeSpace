@@ -6,5 +6,5 @@ data class CountUnreadMessageRequest(
     val chatKey: String,
     val unreadMessageList: List<MessageEntity>,
     val userKey: String,
-    val count: Int
+    val count: Int,
 )
