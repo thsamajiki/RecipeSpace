@@ -27,11 +27,12 @@ sealed class EditProfileUiState {
 }
 
 @HiltViewModel
-class EditProfileViewModel @Inject constructor(
+class EditProfileViewModel
+@Inject
+constructor(
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
-    private val updateUserUseCase: UpdateUserUseCase
+    private val updateUserUseCase: UpdateUserUseCase,
 ) : ViewModel() {
-
     private val _editProfileUiState = MutableStateFlow<EditProfileUiState>(EditProfileUiState.Idle)
     val editProfileUiState: StateFlow<EditProfileUiState> = _editProfileUiState.asStateFlow()
 
@@ -79,7 +80,10 @@ class EditProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateUserUseCase(
-                UpdateUserRequest(newUserName.value.orEmpty(), newProfileImageUrl)
+                UpdateUserRequest(
+                    newUserName.value.orEmpty(),
+                    newProfileImageUrl,
+                ),
             )
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
@@ -102,9 +106,5 @@ class EditProfileViewModel @Inject constructor(
             newProfileImagePath.isNullOrEmpty() -> false
             else -> oldProfileImageUrl != newProfileImagePath
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
