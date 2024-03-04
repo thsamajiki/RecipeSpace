@@ -59,7 +59,8 @@ class CameraActivity : AppCompatActivity() {
         setContentView(view)
 
         cameraProviderListenableFuture = ProcessCameraProvider.getInstance(this@CameraActivity)
-        cameraUiContainerBinding = CameraUiContainerBinding.inflate(LayoutInflater.from(this), binding.root, true)
+        cameraUiContainerBinding =
+            CameraUiContainerBinding.inflate(LayoutInflater.from(this), binding.root, true)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         mediaStoreUtils = MediaStoreUtils(this)
@@ -123,10 +124,12 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun toggleFrontBackCamera() {
-        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing)
-            CameraSelector.LENS_FACING_BACK
-        else
-            CameraSelector.LENS_FACING_FRONT
+        lensFacing =
+            if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
+                CameraSelector.LENS_FACING_BACK
+            } else {
+                CameraSelector.LENS_FACING_FRONT
+            }
 
         Log.d("toggleFrontBackCamera", "lensFacing: $lensFacing")
         val cameraProvider = cameraProviderListenableFuture?.get()
@@ -136,17 +139,19 @@ class CameraActivity : AppCompatActivity() {
     private fun startCamera(cameraProvider: ProcessCameraProvider?) {
         cameraProvider?.unbindAll() // 열려 있는 모든 카메라 닫기
 
-        val cameraSelector = CameraSelector.Builder()
-            .requireLensFacing(lensFacing)
-            .build()
+        val cameraSelector =
+            CameraSelector.Builder()
+                .requireLensFacing(lensFacing)
+                .build()
 
         val preview = Preview.Builder().build()
 
         preview.setSurfaceProvider(binding.viewFinder.surfaceProvider)
 
-        imageCapture = ImageCapture.Builder()
-            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-            .build()
+        imageCapture =
+            ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .build()
 
         if (camera != null) {
             // 이전 카메라 인스턴스에서 observer를 제거해야 한다.
@@ -163,21 +168,24 @@ class CameraActivity : AppCompatActivity() {
         val imageCapture = imageCapture ?: return
 
         // Create time stamped name and MediaStore entry.
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-            put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
-        }
+        val name =
+            SimpleDateFormat(FILENAME_FORMAT, Locale.KOREA)
+                .format(System.currentTimeMillis())
+        val contentValues =
+            ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+                put(MediaStore.MediaColumns.MIME_TYPE, PHOTO_TYPE)
+            }
 
         // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(
-                contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues
-            )
-            .build()
+        val outputOptions =
+            ImageCapture.OutputFileOptions
+                .Builder(
+                    contentResolver,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    contentValues,
+                )
+                .build()
 
         // Set up image capture listener, which is triggered after photo has been taken
         // 사진이 촬영된 후에 실행되는 이미지 캡쳐 리스너를 설정한다.
@@ -209,19 +217,25 @@ class CameraActivity : AppCompatActivity() {
 
                     onTakePhotoSuccess(output)
                 }
-            }
+            },
         )
     }
 
     private fun onTakePhotoSuccess(output: ImageCapture.OutputFileResults) {
-        val intent = PhotoResultActivity.getIntent(this, output.savedUri.toString())
+        val intent =
+            PhotoResultActivity.getIntent(
+                this,
+                output.savedUri.toString(),
+            )
         startActivity(intent)
     }
 
     private fun setGalleryThumbnail(filename: String) {
         cameraUiContainerBinding.photoViewButton.post {
             // 썸네일 padding을 제거한다.
-                cameraUiContainerBinding.photoViewButton.setPadding(resources.getDimension(R.dimen.stroke_small).toInt())
+            cameraUiContainerBinding.photoViewButton.setPadding(
+                resources.getDimension(R.dimen.stroke_small).toInt(),
+            )
 
             // Glide를 활용해서 썸네일을 원형 버튼에 로드한다.
             Glide.with(cameraUiContainerBinding.photoViewButton)
@@ -243,18 +257,22 @@ class CameraActivity : AppCompatActivity() {
                         // Ask the user to close other camera apps
                         Log.d("observeCameraState", "observeCameraState: Pending_Open")
                     }
+
                     CameraState.Type.OPENING -> {
                         // Show the Camera UI
                         Log.d("observeCameraState", "observeCameraState: OPENING")
                     }
+
                     CameraState.Type.OPEN -> {
                         // Setup Camera resources and begin processing
                         Log.d("observeCameraState", "observeCameraState: OPEN")
                     }
+
                     CameraState.Type.CLOSING -> {
                         // Close camera UI
                         Log.d("observeCameraState", "observeCameraState: Closing")
                     }
+
                     CameraState.Type.CLOSED -> {
                         // Free camera resources
                         Log.d("observeCameraState", "observeCameraState: Closed")
@@ -274,11 +292,13 @@ class CameraActivity : AppCompatActivity() {
                         // Close the camera or ask user to close another camera app that's using the camera
                         Log.d("observeCameraState", "observeCameraState: Camera in use")
                     }
+
                     CameraState.ERROR_MAX_CAMERAS_IN_USE -> {
                         // Close another open camera in the app, or ask the user to close another
                         // camera app that's using the camera
                         Log.d("observeCameraState", "observeCameraState: Max cameras in use")
                     }
+
                     CameraState.ERROR_OTHER_RECOVERABLE_ERROR -> {
                         Log.d("observeCameraState", "observeCameraState: Other recoverable error")
                     }
@@ -287,6 +307,7 @@ class CameraActivity : AppCompatActivity() {
                         // Ask the user to enable the device's cameras
                         Log.d("observeCameraState", "observeCameraState: Camera disabled")
                     }
+
                     CameraState.ERROR_CAMERA_FATAL_ERROR -> {
                         // Ask the user to reboot the device to restore camera function
                         Log.d("observeCameraState", "observeCameraState: Fatal error")
@@ -294,7 +315,10 @@ class CameraActivity : AppCompatActivity() {
                     // Closed errors
                     CameraState.ERROR_DO_NOT_DISTURB_MODE_ENABLED -> {
                         // Ask the user to disable the "Do Not Disturb" mode, then reopen the camera
-                        Log.d("observeCameraState", "observeCameraState: Do not disturb mode enabled")
+                        Log.d(
+                            "observeCameraState",
+                            "observeCameraState: Do not disturb mode enabled",
+                        )
                     }
                 }
             }
@@ -313,6 +337,9 @@ class CameraActivity : AppCompatActivity() {
         private const val PHOTO_TYPE = "image/jpeg"
 
         fun getIntent(context: Context) =
-            Intent(context, CameraActivity::class.java)
+            Intent(
+                context,
+                CameraActivity::class.java,
+            )
     }
 }
