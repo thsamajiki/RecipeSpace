@@ -4,12 +4,13 @@ import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.domain.recipe.repository.RecipeRepository
 import javax.inject.Inject
 
-class DeleteRecipeUseCase @Inject constructor(
-    private val recipeRepository: RecipeRepository
+class DeleteRecipeUseCase
+@Inject
+constructor(
+    private val recipeRepository: RecipeRepository,
 ) {
     suspend operator fun invoke(recipe: RecipeEntity): Result<RecipeEntity> =
         kotlin.runCatching {
             recipeRepository.deleteRecipe(recipe)
         }
-
 }
