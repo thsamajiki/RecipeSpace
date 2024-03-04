@@ -19,11 +19,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ChatRepositoryImpl @Inject constructor(
+class ChatRepositoryImpl
+@Inject
+constructor(
     private val chatRemoteDataSource: ChatRemoteDataSource,
-    private val chatLocalDataSource: ChatLocalDataSource
+    private val chatLocalDataSource: ChatLocalDataSource,
 ) : ChatRepository {
-
     override suspend fun getChat(chatKey: String): ChatEntity {
         return chatRemoteDataSource.getData(chatKey).toEntity()
     }
@@ -32,9 +33,7 @@ class ChatRepositoryImpl @Inject constructor(
         return chatRemoteDataSource.getChatByRecipeChatInfo(recipeChatInfo).toEntity()
     }
 
-    override fun observeChatList(
-        userKey: String
-    ): Flow<List<ChatEntity>> {
+    override fun observeChatList(userKey: String): Flow<List<ChatEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
             chatRemoteDataSource.observeNewChat(userKey)
                 .collect { (type, chatData) ->
@@ -47,16 +46,17 @@ class ChatRepositoryImpl @Inject constructor(
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            val chatList = kotlin.runCatching {
-                chatRemoteDataSource.getDataList(userKey)
-                    .sortedByDescending { chat ->
-                        chat.lastMessage?.timestamp
-                    }
-            }
-                .onFailure {
-                    WLog.e(it)
+            val chatList =
+                kotlin.runCatching {
+                    chatRemoteDataSource.getDataList(userKey)
+                        .sortedByDescending { chat ->
+                            chat.lastMessage?.timestamp
+                        }
                 }
-                .getOrNull()
+                    .onFailure {
+                        WLog.e(it)
+                    }
+                    .getOrNull()
 
             if (chatList != null) {
                 chatLocalDataSource.addAll(chatList)
@@ -80,26 +80,22 @@ class ChatRepositoryImpl @Inject constructor(
         chatLocalDataSource.addAll(chatList)
     }
 
-    override suspend fun createNewChatRoom(
-        request: AddChatRequest
-    ): ChatEntity {
+    override suspend fun createNewChatRoom(request: AddChatRequest): ChatEntity {
         return if (!chatRemoteDataSource.checkExistChatData(request.otherUserKey)) {
             val result = chatRemoteDataSource.createNewChatRoom(request)
             chatLocalDataSource.add(result)
             result.toEntity()
-        } else throw Exception("exist chat data")
+        } else {
+            throw Exception("exist chat data")
+        }
     }
 
-    override suspend fun modifyChat(
-        chatEntity: ChatEntity
-    ) {
+    override suspend fun modifyChat(chatEntity: ChatEntity) {
         chatRemoteDataSource.update(chatEntity.toData())
         chatLocalDataSource.update(chatEntity.toData())
     }
 
-    override suspend fun deleteChat(
-        chatEntity: ChatEntity
-    ) {
+    override suspend fun deleteChat(chatEntity: ChatEntity) {
         chatRemoteDataSource.remove(chatEntity.toData())
         chatLocalDataSource.remove(chatEntity.toData())
     }
