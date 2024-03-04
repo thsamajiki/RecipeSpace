@@ -25,11 +25,12 @@ sealed class SignOutUiState {
 }
 
 @HiltViewModel
-class AccountViewModel @Inject constructor(
+class AccountViewModel
+@Inject
+constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
 ) : ViewModel() {
-
     private val _signOutUiState = MutableStateFlow<SignOutUiState>(SignOutUiState.Idle)
     val signOutUiState: StateFlow<SignOutUiState> = _signOutUiState.asStateFlow()
 
@@ -80,9 +81,5 @@ class AccountViewModel @Inject constructor(
 
     fun refreshUserProfile() {
         getUser()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
