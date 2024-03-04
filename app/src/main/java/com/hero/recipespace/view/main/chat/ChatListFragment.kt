@@ -19,8 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ChatListFragment: Fragment() {
-
+class ChatListFragment : Fragment() {
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
 
@@ -30,13 +29,10 @@ class ChatListFragment: Fragment() {
 
     private lateinit var chatAdapter: ChatAdapter
 
-    companion object {
-        fun newInstance() = ChatListFragment()
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_list, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -45,7 +41,10 @@ class ChatListFragment: Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         userKey = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -73,18 +72,18 @@ class ChatListFragment: Fragment() {
         with(viewModel) {
             lifecycleScope.launch {
                 chatListUiState.observe(viewLifecycleOwner) { _ ->
-
                 }
             }
         }
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        chatAdapter = ChatAdapter(
-            onClick = {
-                showChatRoom(it.id)
-            }
-        )
+        chatAdapter =
+            ChatAdapter(
+                onClick = {
+                    showChatRoom(it.id)
+                },
+            )
 
         recyclerView.run {
             setHasFixedSize(true)
@@ -101,5 +100,9 @@ class ChatListFragment: Fragment() {
     override fun onDestroy() {
         _binding = null
         super.onDestroy()
+    }
+
+    companion object {
+        fun newInstance() = ChatListFragment()
     }
 }
