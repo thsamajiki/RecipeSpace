@@ -12,6 +12,5 @@ data class ChatEntity(
     val userNames: Map<String, String>? = null,
     val userList: List<String>? = null,
     val recipeKey: String = "",
-    val unreadMessageCount: Int = 0
-) : Parcelable {
-}
+    val unreadMessageCount: Int = 0,
+) : Parcelable
