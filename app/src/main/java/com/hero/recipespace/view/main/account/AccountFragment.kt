@@ -30,28 +30,30 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AccountFragment: Fragment(),
+class AccountFragment :
+    Fragment(),
     View.OnClickListener {
-
     private var _binding: FragmentAccountBinding? = null
     private val binding: FragmentAccountBinding
         get() = _binding!!
 
     private val viewModel by viewModels<AccountViewModel>()
 
-    private val editProfileResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            viewModel.refreshUserProfile()
+    private val editProfileResultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                viewModel.refreshUserProfile()
+            }
         }
-    }
 
     companion object {
         fun newInstance() = AccountFragment()
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_account, container, false)
 
@@ -61,7 +63,10 @@ class AccountFragment: Fragment(),
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
@@ -84,13 +89,19 @@ class AccountFragment: Fragment(),
             viewLifecycleOwner.lifecycleScope.launch {
                 signOutUiState.collect { state ->
                     when (state) {
-                        is SignOutUiState.Failed -> Toast.makeText(requireActivity(), "로그아웃에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        is SignOutUiState.Failed ->
+                            Toast.makeText(
+                                requireActivity(),
+                                "로그아웃에 실패했습니다.",
+                                Toast.LENGTH_SHORT,
+                            ).show()
 
                         is SignOutUiState.Success -> {
                             val intent = LoginActivity.getIntent(requireActivity())
                             startActivity(intent)
                             finishAffinity(requireActivity())
                         }
+
                         SignOutUiState.Idle -> {}
                     }
                 }
@@ -133,13 +144,11 @@ class AccountFragment: Fragment(),
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle("로그아웃")
             .setMessage(logoutMessage)
-            .setPositiveButton("예")
-            { dialog, _ ->
+            .setPositiveButton("예") { dialog, _ ->
                 viewModel.signOut()
                 dialog.dismiss()
             }
-            .setNegativeButton("아니오")
-            { dialog, _ ->
+            .setNegativeButton("아니오") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
