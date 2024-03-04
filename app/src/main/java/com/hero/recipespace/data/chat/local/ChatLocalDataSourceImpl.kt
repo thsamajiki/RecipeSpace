@@ -6,10 +6,11 @@ import com.hero.recipespace.database.chat.dao.ChatDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ChatLocalDataSourceImpl @Inject constructor(
-    private val chatDao: ChatDao
+class ChatLocalDataSourceImpl
+@Inject
+constructor(
+    private val chatDao: ChatDao,
 ) : ChatLocalDataSource {
-
     override suspend fun getData(chatKey: String): ChatData {
         return chatDao.getChatFromKey(chatKey) ?: error("not found ChatData")
     }
@@ -19,7 +20,6 @@ class ChatLocalDataSourceImpl @Inject constructor(
     }
 
     override fun clear() {
-
     }
 
     override suspend fun add(chatData: ChatData) {
