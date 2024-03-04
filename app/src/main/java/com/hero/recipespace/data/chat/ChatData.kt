@@ -23,5 +23,5 @@ data class ChatData(
     @ColumnInfo(name = "recipeKey")
     var recipeKey: String = "",
     @ColumnInfo(name = "unreadMessageCount")
-    var unreadMessageCount: Int = 0
+    var unreadMessageCount: Int = 0,
 )
