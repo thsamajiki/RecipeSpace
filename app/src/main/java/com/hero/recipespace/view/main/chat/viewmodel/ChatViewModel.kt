@@ -30,21 +30,21 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class ChatUIState {
-
     data class Success(val chatEntity: ChatEntity) : ChatUIState()
 
     data class Failed(val message: String) : ChatUIState()
 }
 
 sealed class MessageUIState {
-
     data class Success(val messageEntity: MessageEntity) : MessageUIState()
 
     data class Failed(val message: String) : MessageUIState()
 }
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(
+class ChatViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val getChatUseCase: GetChatUseCase,
     private val getChatByUserKeyUseCase: GetChatByRecipeChatInfoUseCase,
@@ -52,14 +52,8 @@ class ChatViewModel @Inject constructor(
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val observeMessageListUseCase: ObserveMessageListUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
-    private val readMessageUseCase: ReadMessageUseCase
+    private val readMessageUseCase: ReadMessageUseCase,
 ) : ViewModel() {
-
-    companion object {
-        const val EXTRA_RECIPE_CHAT = "recipe_chat"
-        const val CHAT_KEY = "chatKey"
-    }
-
     private val recipeChatInfo: RecipeChatInfo? =
         savedStateHandle.get<RecipeChatInfo>(EXTRA_RECIPE_CHAT)
 
@@ -75,37 +69,39 @@ class ChatViewModel @Inject constructor(
     val chat: LiveData<ChatEntity>
         get() = _chat
 
-    private val _otherUserName = MediatorLiveData<String>().apply {
-        value = recipeChatInfo?.userName.orEmpty()
+    private val _otherUserName =
+        MediatorLiveData<String>().apply {
+            value = recipeChatInfo?.userName.orEmpty()
 
-        addSource(chat) { chatEntity ->
-            viewModelScope.launch {
-                val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
-                val otherUserName = getOtherUserName(chatEntity, myKey)
+            addSource(chat) { chatEntity ->
+                viewModelScope.launch {
+                    val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
+                    val otherUserName = getOtherUserName(chatEntity, myKey)
 
-                if (otherUserName.isNotEmpty()) {
-                    value = otherUserName
+                    if (otherUserName.isNotEmpty()) {
+                        value = otherUserName
+                    }
                 }
             }
         }
-    }
     val otherUserName: LiveData<String>
         get() = _otherUserName
 
-    private val _otherUserProfileImage = MediatorLiveData<String>().apply {
-        value = recipeChatInfo?.userProfileImageUrl.orEmpty()
+    private val _otherUserProfileImage =
+        MediatorLiveData<String>().apply {
+            value = recipeChatInfo?.userProfileImageUrl.orEmpty()
 
-        addSource(chat) { chatEntity ->
-            viewModelScope.launch {
-                val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
-                val otherUserProfileImage = getOtherUserProfileImage(chatEntity, myKey)
+            addSource(chat) { chatEntity ->
+                viewModelScope.launch {
+                    val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
+                    val otherUserProfileImage = getOtherUserProfileImage(chatEntity, myKey)
 
-                if (otherUserProfileImage.isNotEmpty()) {
-                    value = otherUserProfileImage
+                    if (otherUserProfileImage.isNotEmpty()) {
+                        value = otherUserProfileImage
+                    }
                 }
             }
         }
-    }
     val otherUserProfileImage: LiveData<String>
         get() = _otherUserProfileImage
 
@@ -126,7 +122,6 @@ class ChatViewModel @Inject constructor(
     val isRead: LiveData<Boolean>
         get() = _isRead
 
-
     init {
         val chatKey: String = savedStateHandle.get<String>(CHAT_KEY).orEmpty()
 
@@ -142,52 +137,59 @@ class ChatViewModel @Inject constructor(
     }
 
     var count2 = 0
-    private suspend fun observeMessage(chatKey: String, myKey: String) {
+
+    private suspend fun observeMessage(
+        chatKey: String,
+        myKey: String,
+    ) {
         Log.d("count2", "count2: $count2")
         observeMessageListUseCase(chatKey)
             .flowOn(Dispatchers.Main).distinctUntilChanged()
             .collect { messageList ->
                 WLog.d("observeMessage $messageList")
 
-                val unreadMessageList = messageList
-                    .filter {
-                        it.isRead == false
-                    }
-                    .filter {
-                        it.userKey != myKey
-                    }
+                val unreadMessageList =
+                    messageList
+                        .filter {
+                            it.isRead == false
+                        }
+                        .filter {
+                            it.userKey != myKey
+                        }
 
                 readMessage(unreadMessageList)
 
-                _messageList.value = messageList
-                    .map { message ->
-                        val userName = chat.value?.userNames?.get(message.userKey)
-                        message.copy(userName = userName.orEmpty())
-                    }
-                    .sortedBy {
-                        it.timestamp
-                    }
-
-                    .map {
-                        it.toItem(
-                            displayOtherUserProfileImage = {
-                                getOtherUserProfileImage(chat.value!!, myKey)
-                            }
-                        )
-                    }
+                _messageList.value =
+                    messageList
+                        .map { message ->
+                            val userName = chat.value?.userNames?.get(message.userKey)
+                            message.copy(userName = userName.orEmpty())
+                        }
+                        .sortedBy {
+                            it.timestamp
+                        }
+                        .map {
+                            it.toItem(
+                                displayOtherUserProfileImage = {
+                                    getOtherUserProfileImage(chat.value!!, myKey)
+                                },
+                            )
+                        }
                 Log.d("_messageList.value", "_messageList.value: ${_messageList.value}")
             }
         count2++
     }
 
-    private suspend fun readMessage(
-        unreadMessageList: List<MessageEntity>
-    ) {
+    private suspend fun readMessage(unreadMessageList: List<MessageEntity>) {
         val chatKey = chat.value?.key ?: return
         val userKey = getLoggedUserUseCase().getOrNull()?.key ?: return
 
         readMessageUseCase(
-            ReadMessageRequest(chatKey, unreadMessageList, userKey)
+            ReadMessageRequest(
+                chatKey,
+                unreadMessageList,
+                userKey,
+            ),
         )
     }
 
@@ -214,7 +216,10 @@ class ChatViewModel @Inject constructor(
 //            }
 //    }
 
-    private suspend fun getChatRoom(chatKey: String, chatInfo: RecipeChatInfo?): ChatEntity? {
+    private suspend fun getChatRoom(
+        chatKey: String,
+        chatInfo: RecipeChatInfo?,
+    ): ChatEntity? {
         // chatKey 만 들어올 수도 있고,
         // otherUserKey 만 들어올 수도 있음.
 
@@ -238,7 +243,9 @@ class ChatViewModel @Inject constructor(
                     WLog.e(it)
                 }
                 .getOrNull()
-        } else null
+        } else {
+            null
+        }
     }
 
     fun sendMessage(message: String) {
@@ -246,11 +253,19 @@ class ChatViewModel @Inject constructor(
             if (message != "") {
                 val chatKey = chat.value?.key
                 if (!chatKey.isNullOrEmpty()) {
-                    sendMessageUseCase(chatKey, message)
-                } else if (recipeChatInfo != null) {
-                    val chatEntity = createNewChatRoomUseCase(
-                        AddChatRequest(recipeChatInfo.userKey, recipeChatInfo.recipeKey, message)
+                    sendMessageUseCase(
+                        chatKey,
+                        message,
                     )
+                } else if (recipeChatInfo != null) {
+                    val chatEntity =
+                        createNewChatRoomUseCase(
+                            AddChatRequest(
+                                recipeChatInfo.userKey,
+                                recipeChatInfo.recipeKey,
+                                message,
+                            ),
+                        )
                     activateChatRoom(chatEntity)
                 }
             } else {
@@ -263,11 +278,17 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val myKey = getLoggedUserUseCase().getOrNull()?.key.orEmpty()
             _chat.value = chatEntity
-            observeMessage(chatEntity.key, myKey)
+            observeMessage(
+                chatEntity.key,
+                myKey,
+            )
         }
     }
 
-    private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
+    private fun getOtherUserName(
+        chatEntity: ChatEntity,
+        myKey: String,
+    ) =
         chatEntity.userNames?.toList()
             ?.filterNot {
                 it.first == myKey
@@ -276,7 +297,10 @@ class ChatViewModel @Inject constructor(
             ?.second
             .orEmpty()
 
-    private fun getOtherUserProfileImage(chatEntity: ChatEntity, myKey: String) =
+    private fun getOtherUserProfileImage(
+        chatEntity: ChatEntity,
+        myKey: String,
+    ) =
         chatEntity.userProfileImages?.toList()
             ?.filterNot {
                 it.first == myKey
@@ -291,7 +315,8 @@ class ChatViewModel @Inject constructor(
     private suspend fun getMyProfileImage() =
         getLoggedUserUseCase().getOrNull()?.profileImageUrl.orEmpty()
 
-    override fun onCleared() {
-        super.onCleared()
+    companion object {
+        const val EXTRA_RECIPE_CHAT = "recipe_chat"
+        const val CHAT_KEY = "chatKey"
     }
 }
