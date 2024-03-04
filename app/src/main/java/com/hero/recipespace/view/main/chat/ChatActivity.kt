@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ChatActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivityChatBinding
     private lateinit var messageAdapter: MessageAdapter
     private var isKeyboardOpen = false // 키보드 올라왔는지 확인
@@ -107,26 +106,40 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         val fadeOut = AlphaAnimation(1f, 0f).apply { duration = 500 }
         var isBottom = true
 
-        binding.appBarChat.layoutRootContainer.rvMessageList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!binding.appBarChat.layoutRootContainer.rvMessageList.canScrollVertically(1) // 최하단일 경우 false 값 return
-                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(fadeOut)
-                    binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility = View.GONE
-                    isBottom = true
-                } else {
-                    if(isBottom) {
-                        binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility = View.VISIBLE
-                        binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(fadeIn)
-                        isBottom = false
+        binding.appBarChat.layoutRootContainer.rvMessageList.addOnScrollListener(
+            object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(
+                    recyclerView: RecyclerView,
+                    newState: Int,
+                ) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (!binding.appBarChat.layoutRootContainer.rvMessageList.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE // 최하단일 경우 false 값 return
+                    ) {
+                        binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(
+                            fadeOut,
+                        )
+                        binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility =
+                            View.GONE
+                        isBottom = true
+                    } else {
+                        if (isBottom) {
+                            binding.appBarChat.layoutRootContainer.fabScrollBottom.visibility =
+                                View.VISIBLE
+                            binding.appBarChat.layoutRootContainer.fabScrollBottom.startAnimation(
+                                fadeIn,
+                            )
+                            isBottom = false
+                        }
                     }
                 }
-            }
-        })
+            },
+        )
 
         binding.appBarChat.layoutRootContainer.fabScrollBottom.setOnClickListener {
-            binding.appBarChat.layoutRootContainer.rvMessageList.smoothScrollToPosition((viewModel.messageList.value?.size?.minus(1) ?: 0))
+            binding.appBarChat.layoutRootContainer.rvMessageList.smoothScrollToPosition(
+                viewModel.messageList.value?.size?.minus(1) ?: 0,
+            )
         }
     }
 
@@ -163,7 +176,10 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         View.OnLayoutChangeListener { _, _, _, _, bottom, _, _, _, oldBottom ->
             // 키보드가 올라와 높이가 변함
             if (bottom < oldBottom) {
-                binding.appBarChat.layoutRootContainer.rvMessageList.scrollBy(0, oldBottom - bottom) // 스크롤 유지를 위해 추가
+                binding.appBarChat.layoutRootContainer.rvMessageList.scrollBy(
+                    0,
+                    oldBottom - bottom,
+                ) // 스크롤 유지를 위해 추가
             }
         }
 
@@ -199,12 +215,30 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     companion object {
-        fun getIntent(context: Context, chatKey: String = "") =
-            Intent(context, ChatActivity::class.java)
-                .putExtra(ChatViewModel.CHAT_KEY, chatKey)
+        fun getIntent(
+            context: Context,
+            chatKey: String = "",
+        ) =
+            Intent(
+                context,
+                ChatActivity::class.java,
+            )
+                .putExtra(
+                    ChatViewModel.CHAT_KEY,
+                    chatKey,
+                )
 
-        fun getIntent(context: Context, recipeChatInfo: RecipeChatInfo? = null) =
-            Intent(context, ChatActivity::class.java)
-                .putExtra(ChatViewModel.EXTRA_RECIPE_CHAT, recipeChatInfo)
+        fun getIntent(
+            context: Context,
+            recipeChatInfo: RecipeChatInfo? = null,
+        ) =
+            Intent(
+                context,
+                ChatActivity::class.java,
+            )
+                .putExtra(
+                    ChatViewModel.EXTRA_RECIPE_CHAT,
+                    recipeChatInfo,
+                )
     }
 }
