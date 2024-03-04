@@ -31,10 +31,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EditProfileActivity : AppCompatActivity(),
+class EditProfileActivity :
+    AppCompatActivity(),
     View.OnClickListener,
     TextWatcher {
-
     private lateinit var binding: ActivityEditProfileBinding
     private val viewModel by viewModels<EditProfileViewModel>()
 
@@ -50,8 +50,8 @@ class EditProfileActivity : AppCompatActivity(),
                     binding.tvComplete.setTextColor(
                         ContextCompat.getColor(
                             this,
-                            R.color.colorPrimaryDark
-                        )
+                            R.color.colorPrimaryDark,
+                        ),
                     )
                     binding.tvComplete.isEnabled = true
                 }
@@ -63,7 +63,10 @@ class EditProfileActivity : AppCompatActivity(),
 
         private const val USER_KEY = "userKey"
 
-        fun getIntent(context: Context, userKey: String) =
+        fun getIntent(
+            context: Context,
+            userKey: String,
+        ) =
             Intent(context, EditProfileActivity::class.java)
                 .putExtra(USER_KEY, userKey)
     }
@@ -104,19 +107,21 @@ class EditProfileActivity : AppCompatActivity(),
                             Toast.makeText(
                                 this@EditProfileActivity,
                                 "프로필 사진 변경에 성공했습니다.",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                             val intent = Intent()
                             setResult(RESULT_OK, intent)
                             finish()
                         }
+
                         is EditProfileUiState.Failed -> {
                             Toast.makeText(
                                 this@EditProfileActivity,
                                 "프로필 사진 변경에 실패했습니다. 다시 시도해주세요 ${state.message}",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                         }
+
                         EditProfileUiState.Idle -> {}
                     }
                 }
@@ -154,8 +159,7 @@ class EditProfileActivity : AppCompatActivity(),
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
         val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         return if (ActivityCompat.checkSelfPermission(this, readPermission)
-            == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, writePermission)
+            == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, writePermission)
             == PackageManager.PERMISSION_GRANTED
         ) {
             true
@@ -163,7 +167,7 @@ class EditProfileActivity : AppCompatActivity(),
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(readPermission, writePermission),
-                PERMISSION_REQ_CODE
+                PERMISSION_REQ_CODE,
             )
             false
         }
@@ -172,7 +176,7 @@ class EditProfileActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -180,9 +184,21 @@ class EditProfileActivity : AppCompatActivity(),
         }
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun beforeTextChanged(
+        s: CharSequence?,
+        start: Int,
+        count: Int,
+        after: Int,
+    ) {
+    }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun onTextChanged(
+        s: CharSequence?,
+        start: Int,
+        before: Int,
+        count: Int,
+    ) {
+    }
 
     override fun afterTextChanged(s: Editable) {
         if (s.isEmpty()) {
