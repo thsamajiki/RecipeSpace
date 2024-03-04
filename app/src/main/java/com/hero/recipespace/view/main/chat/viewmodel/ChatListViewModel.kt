@@ -22,20 +22,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class ChatListUIState {
-
     data class Success(val userEntity: UserEntity) : ChatListUIState()
 
     data class Failed(val message: String) : ChatListUIState()
 }
 
 @HiltViewModel
-class ChatListViewModel @Inject constructor(
+class ChatListViewModel
+@Inject
+constructor(
     private val getUserUseCase: GetUserUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
     private val refreshChatListUseCase: RefreshChatListUseCase,
-    observeChatListUseCase: ObserveChatListUseCase
+    observeChatListUseCase: ObserveChatListUseCase,
 ) : ViewModel() {
-
     private val _chatListUiState = MutableLiveData<ChatListUIState>()
     val chatListUiState: LiveData<ChatListUIState>
         get() = _chatListUiState
@@ -49,11 +49,17 @@ class ChatListViewModel @Inject constructor(
                         if (chat.userList?.contains(userKey) == true) {
                             chat.toItem(
                                 displayOtherUserName = {
-                                    getOtherUserName(chat, userKey) // chat 객체의 상대방 사용자 이름
+                                    getOtherUserName(
+                                        chat,
+                                        userKey,
+                                    ) // chat 객체의 상대방 사용자 이름
                                 },
                                 displayOtherUserProfileImage = {
-                                    getOtherUserProfileImage(chat, userKey) // chat 객체의 상대방 사용자 프로필 이미지
-                                }
+                                    getOtherUserProfileImage(
+                                        chat,
+                                        userKey,
+                                    ) // chat 객체의 상대방 사용자 프로필 이미지
+                                },
                             )
                         } else {
                             null
@@ -101,7 +107,10 @@ class ChatListViewModel @Inject constructor(
         }
     }
 
-    private fun getOtherUserName(chatEntity: ChatEntity, myKey: String) =
+    private fun getOtherUserName(
+        chatEntity: ChatEntity,
+        myKey: String,
+    ) =
         chatEntity.userNames?.toList() // ChatEntity 의 userNames 맵을 List<Pair<String, String>> 형태로 변환
             ?.filterNot {
                 it.first == myKey // 자신의 ID를 필터링. 즉, 자신의 이름을 제외하고, 다른 사용자의 이름만 고려
@@ -110,7 +119,10 @@ class ChatListViewModel @Inject constructor(
             ?.second // 채팅방에서 자신을 제외한 다른 사용자의 이름을 가져옴
             .orEmpty()
 
-    private fun getOtherUserProfileImage(chatEntity: ChatEntity, myKey: String) =
+    private fun getOtherUserProfileImage(
+        chatEntity: ChatEntity,
+        myKey: String,
+    ) =
         chatEntity.userProfileImages?.toList()
             ?.filterNot {
                 it.first == myKey
@@ -119,15 +131,10 @@ class ChatListViewModel @Inject constructor(
             ?.second
             .orEmpty()
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     fun refreshChatList(userKey: String) {
         viewModelScope.launch {
             refreshChatListUseCase.invoke(userKey)
                 .onSuccess {
-
                 }
                 .onFailure {
                     it.printStackTrace()
