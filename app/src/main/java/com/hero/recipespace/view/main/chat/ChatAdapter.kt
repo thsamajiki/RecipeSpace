@@ -8,26 +8,36 @@ import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.BaseAdapter
 
 class ChatAdapter(
-    private val onClick: (ChatItem) -> Unit
+    private val onClick: (ChatItem) -> Unit,
 ) : BaseAdapter<ChatAdapter.ChatListViewHolder, ChatItem>() {
-
     private val chatDataList = mutableListOf<ChatItem>()
     private var myUserKey: String? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatListViewHolder {
-        val binding = ItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ChatListViewHolder {
+        val binding =
+            ItemChatBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
 
         return ChatListViewHolder(binding, onClick)
     }
 
-    override fun onBindViewHolder(holder: ChatListViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: ChatListViewHolder,
+        position: Int,
+    ) {
         val chatData = chatDataList[position]
         holder.bind(chatData)
     }
 
     private fun getOtherUserName(
         userNames: HashMap<String, String>,
-        myUserKey: String?
+        myUserKey: String?,
     ): String? {
         for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
@@ -39,7 +49,7 @@ class ChatAdapter(
 
     private fun getOtherUserProfile(
         userProfiles: HashMap<String, String>,
-        myUserKey: String?
+        myUserKey: String?,
     ): String? {
         for (userKey in userProfiles.keys) {
             if (myUserKey != userKey) {
@@ -55,7 +65,10 @@ class ChatAdapter(
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, chat: ChatItem) {
+    fun add(
+        position: Int,
+        chat: ChatItem,
+    ) {
         chatDataList.add(position, chat)
         notifyItemInserted(position)
     }
@@ -72,9 +85,8 @@ class ChatAdapter(
 
     class ChatListViewHolder(
         val binding: ItemChatBinding,
-        private val onClick: (ChatItem) -> Unit
+        private val onClick: (ChatItem) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(chat: ChatItem) {
 //            binding.ivUserProfile = itemView.findViewById(R.id.iv_user_profile)
 //            binding.ivUserProfile = chatData.
