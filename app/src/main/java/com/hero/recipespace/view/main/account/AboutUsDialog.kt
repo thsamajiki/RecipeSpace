@@ -9,9 +9,9 @@ class AboutUsDialog(private val context: Context) {
     private lateinit var binding: DialogAboutUsBinding
 
     fun getAboutUsDialog() {
-        //TextView tvVersion = findViewById(R.id.tv_version);
-//        val version: String = BuildConfig.VERSION_NAME
-        //tvVersion.setText(version);
+        // TextView tvVersion = findViewById(R.id.tv_version);
+        // val version: String = BuildConfig.VERSION_NAME
+        // tvVersion.setText(version);
         MaterialAlertDialogBuilder(context)
             .setTitle("앱의 정보")
             .setView(R.layout.dialog_about_us)
