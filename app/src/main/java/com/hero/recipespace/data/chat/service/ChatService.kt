@@ -7,15 +7,18 @@ import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.flow.Flow
 
 interface ChatService {
-    suspend fun getData(chatKey: String) : ChatData
+    suspend fun getData(chatKey: String): ChatData
 
-    suspend fun getChatByRecipeChatInfo(myKey: String, recipeChatInfo: RecipeChatInfo) : ChatData
+    suspend fun getChatByRecipeChatInfo(
+        myKey: String,
+        recipeChatInfo: RecipeChatInfo,
+    ): ChatData
 
-    suspend fun getDataList(userKey: String) : List<ChatData>
+    suspend fun getDataList(userKey: String): List<ChatData>
 
     suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>>
 
-    suspend fun add(request: AddChatRequest) : ChatData
+    suspend fun add(request: AddChatRequest): ChatData
 
     suspend fun update(chatData: ChatData)
 
