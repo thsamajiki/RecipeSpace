@@ -26,11 +26,13 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class ChatServiceImpl @Inject constructor(
+class ChatServiceImpl
+@Inject
+constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
     private val userService: UserService,
-    private val messageService: MessageService
+    private val messageService: MessageService,
 ) : ChatService {
     override suspend fun getData(chatKey: String): ChatData {
         return suspendCoroutine { continuation ->
@@ -58,18 +60,32 @@ class ChatServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getChatByRecipeChatInfo(myKey: String, recipeChatInfo: RecipeChatInfo): ChatData {
+    override suspend fun getChatByRecipeChatInfo(
+        myKey: String,
+        recipeChatInfo: RecipeChatInfo,
+    ): ChatData {
         return suspendCoroutine { continuation ->
-            val userList = listOf(myKey, recipeChatInfo.userKey)
+            val userList =
+                listOf(
+                    myKey,
+                    recipeChatInfo.userKey,
+                )
 
             db.collection("Chat")
-                .whereArrayContainsAny("userList", userList)
-                .whereEqualTo("recipeKey", recipeChatInfo.recipeKey)
+                .whereArrayContainsAny(
+                    "userList",
+                    userList,
+                )
+                .whereEqualTo(
+                    "recipeKey",
+                    recipeChatInfo.recipeKey,
+                )
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatData = queryDocumentSnapshots.documents.firstNotNullOfOrNull {
-                        it.toObject(ChatData::class.java)
-                    }
+                    val chatData =
+                        queryDocumentSnapshots.documents.firstNotNullOfOrNull {
+                            it.toObject(ChatData::class.java)
+                        }
 
                     WLog.d("chatData $chatData")
                     if (chatData != null) {
@@ -87,12 +103,16 @@ class ChatServiceImpl @Inject constructor(
             val userList = listOf(userKey)
 
             db.collection("Chat")
-                .whereArrayContainsAny("userList", userList)
+                .whereArrayContainsAny(
+                    "userList",
+                    userList,
+                )
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatList = queryDocumentSnapshots.documentChanges.map {
-                        it.document.toObject(ChatData::class.java)
-                    }
+                    val chatList =
+                        queryDocumentSnapshots.documentChanges.map {
+                            it.document.toObject(ChatData::class.java)
+                        }
                     WLog.d("chatList $chatList")
 
                     continuation.resume(chatList)
@@ -106,121 +126,134 @@ class ChatServiceImpl @Inject constructor(
     override suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>> {
         return callbackFlow {
             db.collection("Chat")
-                .whereArrayContainsAny("userList", listOf(userKey))
-                .addSnapshotListener(EventListener { queryDocumentSnapshots, e ->
-                    if (e != null) {
-                        return@EventListener
-                    }
-                    if (queryDocumentSnapshots != null) {
-                        for (documentChange in queryDocumentSnapshots.documentChanges) {
-                            val chatData: ChatData =
-                                documentChange.document.toObject(ChatData::class.java)
+                .whereArrayContainsAny(
+                    "userList",
+                    listOf(userKey),
+                )
+                .addSnapshotListener(
+                    EventListener { queryDocumentSnapshots, e ->
+                        if (e != null) {
+                            return@EventListener
+                        }
+                        if (queryDocumentSnapshots != null) {
+                            for (documentChange in queryDocumentSnapshots.documentChanges) {
+                                val chatData: ChatData =
+                                    documentChange.document.toObject(ChatData::class.java)
 
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val messageCount = messageService.getMessageCount(chatData.key, userKey)
-                                chatData.unreadMessageCount = messageCount
-                                this@callbackFlow.trySend(documentChange.type to chatData)
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    val messageCount =
+                                        messageService.getMessageCount(chatData.key, userKey)
+                                    chatData.unreadMessageCount = messageCount
+                                    this@callbackFlow.trySend(documentChange.type to chatData)
+                                }
                             }
                         }
-                    }
-                })
+                    },
+                )
             awaitClose {
-
             }
         }
     }
-
-
 
     override suspend fun add(request: AddChatRequest): ChatData {
         val myUserData = userService.getUserData(auth.uid.orEmpty())
 
         return suspendCoroutine { continuation ->
-            db.runTransaction(Transaction.Function<Any> { transaction ->
-                val myUserKey: String = myUserData.key
-                val myProfileUrl: String = myUserData.profileImageUrl.orEmpty()
-                val myUserName: String = myUserData.name.orEmpty()
+            db.runTransaction(
+                Transaction.Function<Any> { transaction ->
+                    val myUserKey: String = myUserData.key
+                    val myProfileUrl: String = myUserData.profileImageUrl.orEmpty()
+                    val myUserName: String = myUserData.name.orEmpty()
 
-                val userRef = db.collection("User")
-                    .document(request.otherUserKey)
-                val userData: UserData = transaction[userRef].toObject(UserData::class.java)
-                    ?: return@Function null
-                transaction[userRef] = userData
-                val userProfileImages = HashMap<String, String>()
-                userProfileImages[myUserKey] = myProfileUrl
-                userProfileImages[userData.key] = userData.profileImageUrl.orEmpty()
-                val userNames = HashMap<String, String>()
-                userNames[myUserKey] = myUserName
-                userNames[userData.key] = userData.name.orEmpty()
-                val userList = listOf(myUserKey, userData.key)
+                    val userRef =
+                        db.collection("User")
+                            .document(request.otherUserKey)
+                    val userData: UserData =
+                        transaction[userRef].toObject(UserData::class.java)
+                            ?: return@Function null
+                    transaction[userRef] = userData
 
-                val chatRef = db.collection("Chat").document()
-                val chatKey = chatRef.id
+                    val userProfileImages = HashMap<String, String>()
+                    userProfileImages[myUserKey] = myProfileUrl
+                    userProfileImages[userData.key] = userData.profileImageUrl.orEmpty()
 
-                val lastMessage = MessageData(
-                    chatKey = chatKey,
-                    userKey = myUserKey,
-                    message = request.message,
-                    timestamp = Timestamp.now(),
-                    isRead = false,
-                    messageType = MessageType.MESSAGE
-                )
+                    val userNames = HashMap<String, String>()
+                    userNames[myUserKey] = myUserName
+                    userNames[userData.key] = userData.name.orEmpty()
 
-                val chatData = ChatData(
-                    key = chatKey,
-                    lastMessage = lastMessage,
-                    userProfileImages = userProfileImages,
-                    userNames = userNames,
-                    userList = userList,
-                    recipeKey = request.recipeKey
-                )
-                transaction[chatRef] = chatData
+                    val userList =
+                        listOf(
+                            myUserKey,
+                            userData.key,
+                        )
 
-                val messageRef = chatRef.collection("Messages").document()
-                transaction[messageRef] = lastMessage
+                    val chatRef =
+                        db.collection("Chat")
+                            .document()
+                    val chatKey = chatRef.id
 
-                chatData
-            }).addOnSuccessListener { chatData ->
-                continuation.resume(chatData as ChatData)
-            }.addOnFailureListener {
-                continuation.resumeWithException(it)
-            }
+                    val lastMessage =
+                        MessageData(
+                            chatKey = chatKey,
+                            userKey = myUserKey,
+                            message = request.message,
+                            timestamp = Timestamp.now(),
+                            isRead = false,
+                            messageType = MessageType.MESSAGE,
+                        )
+
+                    val chatData =
+                        ChatData(
+                            key = chatKey,
+                            lastMessage = lastMessage,
+                            userProfileImages = userProfileImages,
+                            userNames = userNames,
+                            userList = userList,
+                            recipeKey = request.recipeKey,
+                        )
+                    transaction[chatRef] = chatData
+
+                    val messageRef =
+                        chatRef.collection("Messages")
+                            .document()
+                    transaction[messageRef] = lastMessage
+
+                    chatData
+                },
+            )
+                .addOnSuccessListener { chatData ->
+                    continuation.resume(chatData as ChatData)
+                }.addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
         }
     }
 
     override suspend fun update(chatData: ChatData) {
-
     }
 
     override suspend fun remove(chatData: ChatData) {
-
     }
 
     override suspend fun checkExistChatData(otherUserKey: String): Boolean {
         return suspendCoroutine { continuation ->
             val myUserKey: String = auth.uid.orEmpty()
             db.collection("Chat")
-                .whereArrayContains("userList", listOf(otherUserKey, myUserKey))
+                .whereArrayContains(
+                    "userList",
+                    listOf(
+                        otherUserKey,
+                        myUserKey,
+                    ),
+                )
                 .get()
                 .addOnSuccessListener { queryDocumentSnapshots ->
-                    val chatData = queryDocumentSnapshots.documents.firstOrNull()
-                        ?.toObject(ChatData::class.java)
+                    val chatData =
+                        queryDocumentSnapshots.documents.firstOrNull()
+                            ?.toObject(ChatData::class.java)
                     continuation.resume(chatData != null)
-
                 }
                 .addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
-
-//    companion object {
-//        private var chatService: ChatService? = null
-//
-//        fun getInstance(): ChatService {
-//            return synchronized(this) {
-//                chatService ?: ChatService().also {
-//                    chatService = it
-//                }
-//            }
-//        }
-//    }
 }
