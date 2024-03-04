@@ -6,11 +6,11 @@ import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRepository {
-    suspend fun getChat(chatKey: String) : ChatEntity
+    suspend fun getChat(chatKey: String): ChatEntity
 
-    suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo) : ChatEntity
+    suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo): ChatEntity
 
-    fun observeChatList(userKey: String) : Flow<List<ChatEntity>>
+    fun observeChatList(userKey: String): Flow<List<ChatEntity>>
 
     suspend fun refresh(userKey: String)
 
