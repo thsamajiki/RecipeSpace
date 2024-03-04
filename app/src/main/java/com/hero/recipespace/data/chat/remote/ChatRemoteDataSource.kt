@@ -7,15 +7,15 @@ import com.hero.recipespace.view.main.chat.RecipeChatInfo
 import kotlinx.coroutines.flow.Flow
 
 interface ChatRemoteDataSource {
-    suspend fun getData(chatKey: String) : ChatData
+    suspend fun getData(chatKey: String): ChatData
 
-    suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo) : ChatData
+    suspend fun getChatByRecipeChatInfo(recipeChatInfo: RecipeChatInfo): ChatData
 
-    suspend fun getDataList(userKey: String) : List<ChatData>
+    suspend fun getDataList(userKey: String): List<ChatData>
 
     suspend fun observeNewChat(userKey: String): Flow<Pair<DocumentChange.Type, ChatData>>
 
-    suspend fun createNewChatRoom(request: AddChatRequest) : ChatData
+    suspend fun createNewChatRoom(request: AddChatRequest): ChatData
 
     suspend fun update(chatData: ChatData)
 
