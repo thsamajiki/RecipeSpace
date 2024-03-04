@@ -25,7 +25,8 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
         get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         _binding = BottomSheetPostRecipeImageBinding.inflate(inflater, container, false)
@@ -33,7 +34,10 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
@@ -43,10 +47,11 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
     override fun getTheme(): Int = R.style.RounderBottomSheetDialog
 
     private fun setupView() {
-        binding.cvPostImageOptionMenu.background = GradientDrawable().apply {
-            val radius = resources.getDimension(R.dimen.bottom_sheet_radius)
-            cornerRadii = floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f)
-        }
+        binding.cvPostImageOptionMenu.background =
+            GradientDrawable().apply {
+                val radius = resources.getDimension(R.dimen.bottom_sheet_radius)
+                cornerRadii = floatArrayOf(radius, radius, radius, radius, 0f, 0f, 0f, 0f)
+            }
     }
 
     private fun setupListeners() {
@@ -61,18 +66,22 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
         binding.layoutOptionGallery.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 galleryPermissionLauncher.launch(
-                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+                    arrayOf(
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                    ),
                 )
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 galleryPermissionLauncher.launch(
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                    ),
                 )
             } else {
                 galleryPermissionLauncher.launch(
                     arrayOf(
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                    ),
                 )
             }
         }
@@ -114,10 +123,12 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
             }
         }
 
-
     private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
-        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        pickIntent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*",
+        )
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickIntent.action = Intent.ACTION_PICK
         openGalleryResultLauncher.launch(pickIntent)
@@ -132,38 +143,58 @@ class BottomSheetPostRecipeImage : BottomSheetDialogFragment() {
                 val clipDataSize = clipData?.itemCount
 
                 if (it.data == null) { // 어떤 이미지도 선택하지 않은 경우
-                    Toast.makeText(requireContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "이미지를 선택하지 않았습니다.",
+                        Toast.LENGTH_LONG,
+                    ).show()
                 } else { // 이미지를 하나라도 선택한 경우
                     if (clipData == null) { // 이미지를 하나만 선택한 경우 clipData 가 null 이 올수 있음
                         val photoPath = it?.data?.data!!
                         Log.d("photoPath", "photoPath: $photoPath")
 
-                        setFragmentResult(TAG, Bundle().apply {
-                            putString(RESULT_ACTION, ACTION_POST_IMAGE)
-                            putString(PHOTO_LIST, photoPath.toString())
-                        })
+                        setFragmentResult(
+                            TAG,
+                            Bundle().apply {
+                                putString(RESULT_ACTION, ACTION_POST_IMAGE)
+                                putString(PHOTO_LIST, photoPath.toString())
+                            },
+                        )
 
                         dismiss()
                     } else {
                         clipData.let { clip ->
                             if (clipDataSize != null) {
                                 if (clipDataSize > 10) {
-                                    Toast.makeText(requireContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "사진은 10장까지 선택 가능합니다.",
+                                        Toast.LENGTH_LONG,
+                                    )
                                         .show()
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
-
                                     // 선택한 사진 수만큼 반복
-                                    val photoList = (0 until clipDataSize).map { index ->
-                                        val photoPath = clip.getItemAt(index).uri
-                                        photoPath.toString()
-                                    }
+                                    val photoList =
+                                        (0 until clipDataSize).map { index ->
+                                            val photoPath = clip.getItemAt(index).uri
+                                            photoPath.toString()
+                                        }
 
-                                    Log.d("openGalleryResultLauncher", "openGalleryResultLauncher: $photoList")
+                                    Log.d(
+                                        "openGalleryResultLauncher",
+                                        "openGalleryResultLauncher: $photoList",
+                                    )
 
-                                    setFragmentResult(TAG, Bundle().apply {
-                                        putString(RESULT_ACTION, ACTION_POST_IMAGE)
-                                        putStringArrayList(PHOTO_LIST, ArrayList<String>(photoList))
-                                    })
+                                    setFragmentResult(
+                                        TAG,
+                                        Bundle().apply {
+                                            putString(RESULT_ACTION, ACTION_POST_IMAGE)
+                                            putStringArrayList(
+                                                PHOTO_LIST,
+                                                ArrayList<String>(photoList),
+                                            )
+                                        },
+                                    )
 
                                     dismiss()
                                 }
