@@ -13,12 +13,12 @@ data class ChatItem(
     },
     val displayOtherUserProfileImage: () -> String = {
         ""
-    }
+    },
 )
 
 fun ChatEntity.toItem(
     displayOtherUserName: () -> String,
-    displayOtherUserProfileImage: () -> String
+    displayOtherUserProfileImage: () -> String,
 ): ChatItem =
     ChatItem(
         id = key,
@@ -26,5 +26,5 @@ fun ChatEntity.toItem(
         lastMessage = lastMessage?.message.orEmpty(),
         lastTimestamp = lastMessage?.timestamp,
         displayOtherUserName = displayOtherUserName,
-        displayOtherUserProfileImage = displayOtherUserProfileImage
+        displayOtherUserProfileImage = displayOtherUserProfileImage,
     )
