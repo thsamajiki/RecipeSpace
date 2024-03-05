@@ -13,18 +13,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class MainUIState {
-
     data class Success(val userEntity: UserEntity) : MainUIState()
 
     data class Failed(val message: String) : MainUIState()
 }
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class MainViewModel
+@Inject
+constructor(
     private val getUserUseCase: GetUserUseCase,
-    private val getLoggedUserUseCase: GetLoggedUserUseCase
+    private val getLoggedUserUseCase: GetLoggedUserUseCase,
 ) : ViewModel() {
-
     private val _mainUiState = MutableLiveData<MainUIState>()
     val mainUiState: LiveData<MainUIState>
         get() = _mainUiState
@@ -40,8 +40,7 @@ class MainViewModel @Inject constructor(
         getUser()
 
         viewModelScope.launch {
-            getLoggedUserUseCase(
-            )
+            getLoggedUserUseCase()
                 .onSuccess {
                     _mainUiState.value = MainUIState.Success(it)
                 }
@@ -64,9 +63,5 @@ class MainViewModel @Inject constructor(
                     it.printStackTrace()
                 }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
