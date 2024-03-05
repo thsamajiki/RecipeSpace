@@ -8,9 +8,8 @@ import com.hero.recipespace.view.main.chat.ChatListFragment
 import com.hero.recipespace.view.main.recipe.RecipeListFragment
 
 class FragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
-
     override fun createFragment(position: Int): Fragment {
-        return when(position) {
+        return when (position) {
             0 -> RecipeListFragment.newInstance()
             1 -> ChatListFragment.newInstance()
             else -> AccountFragment.newInstance()
