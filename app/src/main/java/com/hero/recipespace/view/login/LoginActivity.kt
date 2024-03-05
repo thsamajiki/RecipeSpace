@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivityLoginBinding
 
     private val viewModel by viewModels<LoginViewModel>()
@@ -67,12 +66,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                         is LoginUiState.Failed -> {
-                            Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT)
+                                .show()
                         }
 
                         LoginUiState.Idle -> {}
                     }
-
                 }
             }
         }
