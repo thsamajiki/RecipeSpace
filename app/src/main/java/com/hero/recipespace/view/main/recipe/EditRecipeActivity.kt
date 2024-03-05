@@ -36,10 +36,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EditRecipeActivity : AppCompatActivity(),
+class EditRecipeActivity :
+    AppCompatActivity(),
     View.OnClickListener,
     TextWatcher {
-
     private lateinit var binding: ActivityEditRecipeBinding
 
     private lateinit var editRecipeImageAdapter: EditRecipeImageAdapter
@@ -71,10 +71,11 @@ class EditRecipeActivity : AppCompatActivity(),
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
 
                                     // 선택 한 사진 수만큼 반복
-                                    val photoList = (0 until clipDataSize).map { index ->
-                                        val photoPath = clip.getItemAt(index).uri
-                                        photoPath.toString()
-                                    }
+                                    val photoList =
+                                        (0 until clipDataSize).map { index ->
+                                            val photoPath = clip.getItemAt(index).uri
+                                            photoPath.toString()
+                                        }
 
                                     viewModel.addRecipePhotoList(photoList)
                                 }
@@ -84,25 +85,22 @@ class EditRecipeActivity : AppCompatActivity(),
                 }
 
                 binding.rvRecipeImageList.visibility = View.VISIBLE
-                binding.tvTouchHereAndAddPictures.isVisible = viewModel.recipeImageList.value?.size == 0
+                binding.tvTouchHereAndAddPictures.isVisible =
+                    viewModel.recipeImageList.value?.size == 0
 
                 if (binding.editContent.text.toString().isNotEmpty() &&
                     viewModel.recipeImageList.value?.isNotEmpty() == true
                 ) {
-                    binding.tvComplete.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.colorPrimaryDark,
+                        ),
+                    )
                     binding.tvComplete.isEnabled = true
                 }
             }
-    }
-
-    companion object {
-        private const val PERMISSION_REQ_CODE = 1010
-        const val EXTRA_RECIPE_ENTITY = "recipe"
-
-        fun getIntent(context: Context, recipeKey: String) =
-            Intent(context, EditRecipeActivity::class.java)
-                .putExtra(EditRecipeViewModel.KEY_RECIPE_KEY, recipeKey)
-    }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,10 +120,11 @@ class EditRecipeActivity : AppCompatActivity(),
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        editRecipeImageAdapter = EditRecipeImageAdapter(
-            onClick = ::onRecipePhotoClick,
-            onCancelClick = ::deletePhoto
-        )
+        editRecipeImageAdapter =
+            EditRecipeImageAdapter(
+                onClick = ::onRecipePhotoClick,
+                onCancelClick = ::deletePhoto,
+            )
 
         recyclerView.run {
             setHasFixedSize(true)
@@ -154,7 +153,7 @@ class EditRecipeActivity : AppCompatActivity(),
                             Toast.makeText(
                                 this@EditRecipeActivity,
                                 "레시피 수정에 성공했습니다!",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
 
                             val intent = Intent()
@@ -162,13 +161,15 @@ class EditRecipeActivity : AppCompatActivity(),
                             setResult(RESULT_OK, intent)
                             finish()
                         }
+
                         is EditRecipeUiState.Failed -> {
                             Toast.makeText(
                                 this@EditRecipeActivity,
                                 "레시피 수정에 실패했습니다. 다시 시도해주세요 ${state.message}",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                         }
+
                         EditRecipeUiState.Idle -> {}
                     }
                 }
@@ -193,7 +194,7 @@ class EditRecipeActivity : AppCompatActivity(),
 
         binding.tvComplete.setOnClickListener {
             viewModel.updateRecipe(
-                binding.editContent.text.toString()
+                binding.editContent.text.toString(),
             )
         }
     }
@@ -204,7 +205,10 @@ class EditRecipeActivity : AppCompatActivity(),
 
     private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
-        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        pickIntent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*",
+        )
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickIntent.action = Intent.ACTION_PICK
         openGalleryResultLauncher.launch(pickIntent)
@@ -214,13 +218,19 @@ class EditRecipeActivity : AppCompatActivity(),
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
         val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         return if (ActivityCompat.checkSelfPermission(this, readPermission)
-            == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this, writePermission)
+            == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                writePermission,
+            )
             == PackageManager.PERMISSION_GRANTED
         ) {
             true
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), PERMISSION_REQ_CODE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(readPermission, writePermission),
+                PERMISSION_REQ_CODE,
+            )
             false
         }
     }
@@ -228,7 +238,7 @@ class EditRecipeActivity : AppCompatActivity(),
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -236,16 +246,32 @@ class EditRecipeActivity : AppCompatActivity(),
         }
     }
 
-    override fun beforeTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {}
+    override fun beforeTextChanged(
+        charSequence: CharSequence?,
+        i: Int,
+        i1: Int,
+        i2: Int,
+    ) {
+    }
 
-    override fun onTextChanged(charSequence: CharSequence?, i: Int, i1: Int, i2: Int) {}
+    override fun onTextChanged(
+        charSequence: CharSequence?,
+        i: Int,
+        i1: Int,
+        i2: Int,
+    ) {
+    }
 
     override fun afterTextChanged(s: Editable) {
         binding.tvComplete.isEnabled = s.isNotEmpty() && !TextUtils.isEmpty(photoPath)
     }
 
     private fun onRecipePhotoClick(photoUrl: String?) {
-        val intent = PhotoActivity.getIntent(this, photoUrl)
+        val intent =
+            PhotoActivity.getIntent(
+                this,
+                photoUrl,
+            )
         startActivity(intent)
     }
 
@@ -254,5 +280,23 @@ class EditRecipeActivity : AppCompatActivity(),
     }
 
     override fun onClick(view: View) {
+    }
+
+    companion object {
+        private const val PERMISSION_REQ_CODE = 1010
+        const val EXTRA_RECIPE_ENTITY = "recipe"
+
+        fun getIntent(
+            context: Context,
+            recipeKey: String,
+        ) =
+            Intent(
+                context,
+                EditRecipeActivity::class.java,
+            )
+                .putExtra(
+                    EditRecipeViewModel.KEY_RECIPE_KEY,
+                    recipeKey,
+                )
     }
 }
