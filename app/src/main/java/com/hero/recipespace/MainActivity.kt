@@ -20,9 +20,9 @@ import com.hero.recipespace.view.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),
+class MainActivity :
+    AppCompatActivity(),
     NavigationBarView.OnItemSelectedListener {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -49,55 +49,60 @@ class MainActivity : AppCompatActivity(),
 
         val titleArr = resources.getStringArray(R.array.title_array)
 
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int,
-            ) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-            }
-
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.bottomNav.menu.getItem(position).isChecked = true
-                binding.tvTitle.text = titleArr[position]
-
-                if (position == 2) {
-                    binding.ivAccountOptionMenu.visibility = View.VISIBLE
-                    binding.ivAccountOptionMenu.isClickable = true
-                } else {
-                    binding.ivAccountOptionMenu.visibility = View.INVISIBLE
-                    binding.ivAccountOptionMenu.isClickable = false
+        binding.viewPager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int,
+                ) {
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                 }
-            }
 
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
-            }
-        })
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    binding.bottomNav.menu.getItem(position).isChecked = true
+                    binding.tvTitle.text = titleArr[position]
+
+                    if (position == 2) {
+                        binding.ivAccountOptionMenu.visibility = View.VISIBLE
+                        binding.ivAccountOptionMenu.isClickable = true
+                    } else {
+                        binding.ivAccountOptionMenu.visibility = View.INVISIBLE
+                        binding.ivAccountOptionMenu.isClickable = false
+                    }
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    super.onPageScrollStateChanged(state)
+                }
+            },
+        )
     }
 
     private fun setupClickListener() {
         binding.ivAccountOptionMenu.setOnClickListener {
             showAccountOptionMenu()
         }
-        val menuItemClickListener = Toolbar.OnMenuItemClickListener { item ->
-            when(item?.itemId) {
-                R.id.menu_about_us -> {
-                    showAboutUsDialog()
-                    true
-                }
-                R.id.menu_setting -> {
-                    val intent = SettingActivity.getIntent(this)
-                    startActivity(intent)
-                    true
-                }
-                else -> {
-                    false
+        val menuItemClickListener =
+            Toolbar.OnMenuItemClickListener { item ->
+                when (item?.itemId) {
+                    R.id.menu_about_us -> {
+                        showAboutUsDialog()
+                        true
+                    }
+
+                    R.id.menu_setting -> {
+                        val intent = SettingActivity.getIntent(this)
+                        startActivity(intent)
+                        true
+                    }
+
+                    else -> {
+                        false
+                    }
                 }
             }
-        }
 
         if (binding.viewPager.currentItem == 2) {
             binding.toolBar.inflateMenu(R.menu.menu_account_actionbar_option)
@@ -106,9 +111,10 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val prevFragment = supportFragmentManager.fragments.find {
-            it.isVisible
-        }
+        val prevFragment =
+            supportFragmentManager.fragments.find {
+                it.isVisible
+            }
 
         if (prevFragment != null) {
             supportFragmentManager.beginTransaction().hide(prevFragment).commitNow()
@@ -159,10 +165,11 @@ class MainActivity : AppCompatActivity(),
 //    }
 
     private fun showAccountOptionMenu() {
-        val popupMenu = PopupMenu(
-            this,
-            binding.ivAccountOptionMenu
-        )
+        val popupMenu =
+            PopupMenu(
+                this,
+                binding.ivAccountOptionMenu,
+            )
         popupMenu.menuInflater.inflate(R.menu.menu_account_actionbar_option, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
