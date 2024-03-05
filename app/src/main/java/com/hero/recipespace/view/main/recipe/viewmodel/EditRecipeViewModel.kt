@@ -27,12 +27,13 @@ sealed class EditRecipeUiState {
 }
 
 @HiltViewModel
-class EditRecipeViewModel @Inject constructor(
+class EditRecipeViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val getRecipeUseCase: GetRecipeUseCase,
-    private val updateRecipeUseCase: UpdateRecipeUseCase
+    private val updateRecipeUseCase: UpdateRecipeUseCase,
 ) : ViewModel() {
-
     private val _editRecipeUiState = MutableStateFlow<EditRecipeUiState>(EditRecipeUiState.Idle)
     val editRecipeUiState: StateFlow<EditRecipeUiState> = _editRecipeUiState.asStateFlow()
 
@@ -49,10 +50,6 @@ class EditRecipeViewModel @Inject constructor(
     private val _recipe = MutableLiveData<RecipeEntity>()
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
-
-    companion object {
-        const val KEY_RECIPE_KEY = "key"
-    }
 
     init {
         val recipeKey = savedStateHandle.get<String>(KEY_RECIPE_KEY).orEmpty()
@@ -81,11 +78,11 @@ class EditRecipeViewModel @Inject constructor(
                 UpdateRecipeRequest(
                     key,
                     content,
-                    recipePhotoPathList
+                    recipePhotoPathList,
                 ),
                 onProgress = { progress ->
                     _loadingState.value = LoadingState.Progress(progress.toInt())
-                }
+                },
             )
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
@@ -104,14 +101,15 @@ class EditRecipeViewModel @Inject constructor(
     }
 
     fun deletePhoto(position: Int) {
-        _recipeImageList.value = _recipeImageList.value.orEmpty()
-            .toMutableList()
-            .apply {
-                removeAt(position)
-            }
+        _recipeImageList.value =
+            _recipeImageList.value.orEmpty()
+                .toMutableList()
+                .apply {
+                    removeAt(position)
+                }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    companion object {
+        const val KEY_RECIPE_KEY = "key"
     }
 }
