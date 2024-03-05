@@ -12,7 +12,6 @@ import androidx.fragment.app.commitNow
 import com.hero.recipespace.databinding.FragmentLoadingBinding
 
 class LoadingFragment : Fragment() {
-
     private var _binding: FragmentLoadingBinding? = null
     private val binding: FragmentLoadingBinding
         get() = _binding!!
@@ -20,13 +19,16 @@ class LoadingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?,
+    ): View {
         _binding = FragmentLoadingBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         view.setOnTouchListener { _, _ -> true }
@@ -34,7 +36,9 @@ class LoadingFragment : Fragment() {
         binding.progressBar.max = 100
     }
 
-    fun setProgress(@androidx.annotation.IntRange(from = 0, to = 100) percent: Int) {
+    fun setProgress(
+        @androidx.annotation.IntRange(from = 0, to = 100) percent: Int,
+    ) {
         binding.progressBar.progress = percent
     }
 
@@ -53,22 +57,22 @@ fun FragmentActivity.setLoading(isLoading: Boolean) {
 }
 
 fun FragmentActivity.showLoading() {
-    val result = runCatching {
-        val loadingFragment =
-            supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
+    val result =
+        runCatching {
+            val loadingFragment =
+                supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
 
-        if (loadingFragment != null) {
-            supportFragmentManager.commitNow(allowStateLoss = true) {
-                show(loadingFragment)
-            }
-
-        } else {
-            supportFragmentManager.commitNow(allowStateLoss = true) {
-                val fragment = LoadingFragment.newInstance()
-                add(android.R.id.content, fragment, fragment::class.java.simpleName)
+            if (loadingFragment != null) {
+                supportFragmentManager.commitNow(allowStateLoss = true) {
+                    show(loadingFragment)
+                }
+            } else {
+                supportFragmentManager.commitNow(allowStateLoss = true) {
+                    val fragment = LoadingFragment.newInstance()
+                    add(android.R.id.content, fragment, fragment::class.java.simpleName)
+                }
             }
         }
-    }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
@@ -76,16 +80,17 @@ fun FragmentActivity.showLoading() {
 }
 
 fun FragmentActivity.hideLoading() {
-    val result = runCatching {
-        val loadingFragment =
-            supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
+    val result =
+        runCatching {
+            val loadingFragment =
+                supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
 
-        if (loadingFragment != null) {
-            supportFragmentManager.commit(allowStateLoss = true) {
-                remove(loadingFragment)
+            if (loadingFragment != null) {
+                supportFragmentManager.commit(allowStateLoss = true) {
+                    remove(loadingFragment)
+                }
             }
         }
-    }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
@@ -93,19 +98,18 @@ fun FragmentActivity.hideLoading() {
 }
 
 fun FragmentActivity.setProgressPercent(percent: Int) {
-    val result = runCatching {
-        val loadingFragment: LoadingFragment? =
-            supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName) as? LoadingFragment
+    val result =
+        runCatching {
+            val loadingFragment: LoadingFragment? =
+                supportFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName) as? LoadingFragment
 
-        loadingFragment?.setProgress(percent)
-    }
+            loadingFragment?.setProgress(percent)
+        }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
     }
 }
-
-
 
 fun Fragment.setLoading(isLoading: Boolean) {
     if (isLoading) {
@@ -116,23 +120,23 @@ fun Fragment.setLoading(isLoading: Boolean) {
 }
 
 fun Fragment.showLoading() {
-    val result = runCatching {
-        val loadingFragment =
-            parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
+    val result =
+        runCatching {
+            val loadingFragment =
+                parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
 
-        if (loadingFragment != null) {
-            parentFragmentManager.commitNow(allowStateLoss = true) {
-                show(loadingFragment)
-            }
-
-        } else {
-            val containerId = parentFragment?.id ?: android.R.id.content
-            parentFragmentManager.commitNow(allowStateLoss = true) {
-                val fragment = LoadingFragment.newInstance()
-                add(containerId, fragment, fragment::class.java.simpleName)
+            if (loadingFragment != null) {
+                parentFragmentManager.commitNow(allowStateLoss = true) {
+                    show(loadingFragment)
+                }
+            } else {
+                val containerId = parentFragment?.id ?: android.R.id.content
+                parentFragmentManager.commitNow(allowStateLoss = true) {
+                    val fragment = LoadingFragment.newInstance()
+                    add(containerId, fragment, fragment::class.java.simpleName)
+                }
             }
         }
-    }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
@@ -140,16 +144,17 @@ fun Fragment.showLoading() {
 }
 
 fun Fragment.hideLoading() {
-    val result = runCatching {
-        val loadingFragment =
-            parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
+    val result =
+        runCatching {
+            val loadingFragment =
+                parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName)
 
-        if (loadingFragment != null) {
-            parentFragmentManager.commit(allowStateLoss = true) {
-                remove(loadingFragment)
+            if (loadingFragment != null) {
+                parentFragmentManager.commit(allowStateLoss = true) {
+                    remove(loadingFragment)
+                }
             }
         }
-    }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
@@ -157,12 +162,13 @@ fun Fragment.hideLoading() {
 }
 
 fun Fragment.setProgressPercent(percent: Int) {
-    val result = runCatching {
-        val loadingFragment: LoadingFragment? =
-            parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName) as? LoadingFragment
+    val result =
+        runCatching {
+            val loadingFragment: LoadingFragment? =
+                parentFragmentManager.findFragmentByTag(LoadingFragment::class.java.simpleName) as? LoadingFragment
 
-        loadingFragment?.setProgress(percent)
-    }
+            loadingFragment?.setProgress(percent)
+        }
 
     if (result.isFailure) {
         Log.e("LoadingFragment", result.exceptionOrNull()?.cause.toString())
