@@ -26,11 +26,12 @@ sealed class LoginUiState {
 }
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class LoginViewModel
+@Inject
+constructor(
     application: Application,
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
 ) : AndroidViewModel(application) {
-
     private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
     val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
 
@@ -40,8 +41,10 @@ class LoginViewModel @Inject constructor(
     val email: MutableLiveData<String> = MutableLiveData()
     val pwd: MutableLiveData<String> = MutableLiveData()
 
-    fun requestLogin(email: String, pwd: String) {
-
+    fun requestLogin(
+        email: String,
+        pwd: String,
+    ) {
         if (!checkEmailValid(email)) {
             _loginUiState.value = LoginUiState.Failed("이메일 양식을 확인해주세요")
             return
@@ -55,7 +58,10 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             loginUserUseCase.invoke(
-                LoginUserRequest(email, pwd)
+                LoginUserRequest(
+                    email,
+                    pwd,
+                ),
             )
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
@@ -72,10 +78,8 @@ class LoginViewModel @Inject constructor(
     private fun checkEmailValid(email: String): Boolean {
         return if (TextUtils.isEmpty(email)) {
             false
-        } else Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
+        } else {
+            Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        }
     }
 }
