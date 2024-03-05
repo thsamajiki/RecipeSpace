@@ -9,18 +9,28 @@ import com.hero.recipespace.view.BaseAdapter
 
 class EditRecipeImageAdapter(
     private val onClick: (String) -> Unit,
-    private val onCancelClick: (Int) -> Unit
+    private val onCancelClick: (Int) -> Unit,
 ) : BaseAdapter<EditRecipeImageAdapter.EditRecipeImageViewHolder, String>() {
-
     private val recipeImageList = mutableListOf<String>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditRecipeImageViewHolder {
-        val binding = ItemRecipeImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): EditRecipeImageViewHolder {
+        val binding =
+            ItemRecipeImageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
 
         return EditRecipeImageViewHolder(binding, onClick, onCancelClick)
     }
 
-    override fun onBindViewHolder(holder: EditRecipeImageViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: EditRecipeImageViewHolder,
+        position: Int,
+    ) {
         val image = recipeImageList[position]
         holder.bind(image)
     }
@@ -60,9 +70,8 @@ class EditRecipeImageAdapter(
     class EditRecipeImageViewHolder(
         private val binding: ItemRecipeImageBinding,
         private val onClick: (String) -> Unit,
-        private val onCancelClick: (Int) -> Unit
+        private val onCancelClick: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
