@@ -7,7 +7,7 @@ class FirebaseStorageApi {
     private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
 
     companion object {
-        private var instance: FirebaseStorageApi ?= null
+        private var instance: FirebaseStorageApi? = null
 
         fun getInstance(): FirebaseStorageApi {
             return synchronized(this) {
