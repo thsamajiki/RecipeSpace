@@ -19,5 +19,5 @@ data class NoticeData(
     @ColumnInfo(name = "desc")
     var desc: String? = null,
     @ColumnInfo(name = "postDate")
-    var postDate: Timestamp? = null
+    var postDate: Timestamp? = null,
 )
