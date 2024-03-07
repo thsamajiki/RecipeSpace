@@ -5,21 +5,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hero.recipespace.databinding.ItemNoticeBinding
-
 import com.hero.recipespace.domain.notice.entity.NoticeEntity
 import com.hero.recipespace.view.BaseAdapter
 
-class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeEntity>(), View.OnClickListener {
-
+class NoticeListAdapter :
+    BaseAdapter<NoticeListAdapter.NoticeViewHolder, NoticeEntity>(),
+    View.OnClickListener {
     private val noticeList = mutableListOf<NoticeEntity>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
-        val binding = ItemNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): NoticeViewHolder {
+        val binding =
+            ItemNoticeBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
 
         return NoticeViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: NoticeViewHolder,
+        position: Int,
+    ) {
         val notice: NoticeEntity = noticeList[position]
 
         holder.setNotice(notice)
@@ -38,9 +49,8 @@ class NoticeListAdapter(): BaseAdapter<NoticeListAdapter.NoticeViewHolder, Notic
     override fun onClick(view: View?) {}
 
     class NoticeViewHolder(
-        private val binding: ItemNoticeBinding
+        private val binding: ItemNoticeBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun setNotice(notice: NoticeEntity) {
             binding.root.setOnClickListener {
                 if (binding.layoutContentNoticeItem.visibility == View.GONE) {
