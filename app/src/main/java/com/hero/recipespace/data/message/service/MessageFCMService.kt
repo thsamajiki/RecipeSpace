@@ -1,12 +1,9 @@
 package com.hero.recipespace.data.message.service
 
-
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-
-class MessageFCMService: FirebaseMessagingService() {
-
+class MessageFCMService : FirebaseMessagingService() {
     // onNewToken()은 클라우드 서버에 등록되었을 때 호출되고,
     // 파라미터로 전달된 token 이 앱을 구분하기 위한 고유한 키가 됩니다.
     override fun onNewToken(token: String) {
@@ -18,10 +15,16 @@ class MessageFCMService: FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         // 수신된 메세지 처리
-        sendNotification(message.notification?.title.orEmpty(), message.notification?.body.orEmpty())
+        sendNotification(
+            message.notification?.title.orEmpty(),
+            message.notification?.body.orEmpty(),
+        )
     }
 
-    private fun sendNotification(title: String, messageBody: String) {
+    private fun sendNotification(
+        title: String,
+        messageBody: String,
+    ) {
 //        val intent = ChatActivity.getIntent(this)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
