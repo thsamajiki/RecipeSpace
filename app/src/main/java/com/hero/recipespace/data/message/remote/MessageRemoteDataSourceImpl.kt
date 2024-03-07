@@ -6,10 +6,11 @@ import com.hero.recipespace.data.message.service.MessageService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MessageRemoteDataSourceImpl @Inject constructor(
-    private val messageService: MessageService
+class MessageRemoteDataSourceImpl
+@Inject
+constructor(
+    private val messageService: MessageService,
 ) : MessageRemoteDataSource {
-
     override fun getData(messageKey: String): MessageData {
         return messageService.getData(messageKey)
     }
@@ -18,30 +19,28 @@ class MessageRemoteDataSourceImpl @Inject constructor(
         return messageService.readMessage(request)
     }
 
-    override suspend fun getDataList(
-        chatKey: String
-    ): Flow<List<MessageData>> {
+    override suspend fun getDataList(chatKey: String): Flow<List<MessageData>> {
         return messageService.getDataList(chatKey)
     }
 
     override suspend fun add(
         chatKey: String,
-        message: String
-    ) : MessageData {
+        message: String,
+    ): MessageData {
         return messageService.add(chatKey, message)
     }
 
     override suspend fun update(
         chatKey: String,
-        message: String
-    ) : MessageData {
+        message: String,
+    ): MessageData {
         return messageService.update(chatKey, message)
     }
 
     override suspend fun remove(
         chatKey: String,
-        message: String
-    ) : MessageData {
+        message: String,
+    ): MessageData {
         return messageService.remove(chatKey, message)
     }
 }
