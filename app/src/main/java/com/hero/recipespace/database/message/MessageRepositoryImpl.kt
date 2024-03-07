@@ -17,13 +17,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MessageRepositoryImpl @Inject constructor(
+class MessageRepositoryImpl
+@Inject
+constructor(
     private val messageLocalDataSource: MessageLocalDataSource,
     private val messageRemoteDataSource: MessageRemoteDataSource,
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
 ) : MessageRepository {
-
-    override suspend fun getMessage(messageKey: String) : MessageEntity {
+    override suspend fun getMessage(messageKey: String): MessageEntity {
         return messageLocalDataSource.getData(messageKey).toEntity()
     }
 
@@ -32,12 +33,12 @@ class MessageRepositoryImpl @Inject constructor(
             ReadMessageDataRequest(
                 request.chatKey,
                 request.unreadMessageList.map(MessageEntity::toData),
-                request.userKey
-            )
+                request.userKey,
+            ),
         )
     }
 
-    override fun getMessageList(chatKey: String) : Flow<List<MessageEntity>> {
+    override fun getMessageList(chatKey: String): Flow<List<MessageEntity>> {
         CoroutineScope(Dispatchers.IO).launch {
             messageRemoteDataSource.getDataList(chatKey)
                 .collect { messageList ->
@@ -57,7 +58,7 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun addMessage(
         chatKey: String,
-        message: String
+        message: String,
     ) {
         if (chatKey.isNotEmpty()) { // 기존 채팅방이 있음.
             messageRemoteDataSource.add(chatKey, message)
@@ -66,17 +67,25 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun modifyMessage(
         chatKey: String,
-        message: String
+        message: String,
     ) {
-        val result = messageRemoteDataSource.update(chatKey, message)
+        val result =
+            messageRemoteDataSource.update(
+                chatKey,
+                message,
+            )
         messageLocalDataSource.update(result)
     }
 
     override suspend fun deleteMessage(
         chatKey: String,
-        message: String
+        message: String,
     ) {
-        val result = messageRemoteDataSource.remove(chatKey, message)
+        val result =
+            messageRemoteDataSource.remove(
+            chatKey,
+            message,
+        )
         messageLocalDataSource.remove(result)
     }
 
