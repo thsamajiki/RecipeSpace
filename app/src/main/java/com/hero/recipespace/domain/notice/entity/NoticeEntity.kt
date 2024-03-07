@@ -9,7 +9,5 @@ data class NoticeEntity(
     var key: String = "",
     var title: String? = null,
     var desc: String? = null,
-    var postDate: Timestamp? = null
-) : Parcelable {
-
-}
+    var postDate: Timestamp? = null,
+) : Parcelable
