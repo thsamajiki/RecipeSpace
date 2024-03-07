@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class NoticeRepositoryImpl @Inject constructor(
-    private val noticeRemoteDataSource: NoticeRemoteDataSource
+class NoticeRepositoryImpl
+@Inject
+constructor(
+    private val noticeRemoteDataSource: NoticeRemoteDataSource,
 ) : NoticeRepository {
     override suspend fun getNotice(noticeKey: String): NoticeEntity {
         return noticeRemoteDataSource.getData(noticeKey).toEntity()
