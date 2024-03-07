@@ -14,12 +14,10 @@ data class MessageItem(
     val displayOtherUserProfileImage: () -> String = {
         ""
     },
-    val messageType: MessageType = MessageType.MESSAGE
+    val messageType: MessageType = MessageType.MESSAGE,
 )
 
-fun MessageEntity.toItem(
-    displayOtherUserProfileImage: () -> String
-): MessageItem  =
+fun MessageEntity.toItem(displayOtherUserProfileImage: () -> String): MessageItem =
     MessageItem(
         messageId = messageId,
         chatKey = chatKey,
@@ -29,5 +27,5 @@ fun MessageEntity.toItem(
         isRead = isRead,
         userName = userName,
         displayOtherUserProfileImage = displayOtherUserProfileImage,
-        messageType = messageType
+        messageType = messageType,
     )
