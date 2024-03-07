@@ -14,17 +14,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NoticeListActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityNoticeListBinding
 
     private val viewModel by viewModels<NoticeListViewModel>()
 
     private lateinit var noticeListAdapter: NoticeListAdapter
-
-    companion object {
-        fun getIntent(context: Context) =
-            Intent(context, NoticeListActivity::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,5 +48,10 @@ class NoticeListActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             finish()
         }
+    }
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, NoticeListActivity::class.java)
     }
 }
