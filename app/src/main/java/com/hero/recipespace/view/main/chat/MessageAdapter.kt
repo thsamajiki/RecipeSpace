@@ -10,29 +10,37 @@ import com.hero.recipespace.databinding.ItemMessageRightBinding
 import com.hero.recipespace.view.BaseAdapter
 
 class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
-
     private val messageList = mutableListOf<MessageItem>()
-
-    companion object {
-        private const val LEFT_TYPE = 0
-        private const val RIGHT_TYPE = 1
-    }
 
     private var myUserKey: String? = FirebaseAuth.getInstance().uid
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
         return if (viewType == RIGHT_TYPE) {
             val binding =
-                ItemMessageRightBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemMessageRightBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                )
             RightMessageViewHolder(binding)
         } else {
             val binding =
-                ItemMessageLeftBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ItemMessageLeftBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false,
+                )
             LeftMessageViewHolder(binding)
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         val message: MessageItem = messageList[position]
         if (holder is LeftMessageViewHolder) {
             holder.bind(message)
@@ -47,7 +55,10 @@ class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, message: MessageItem) {
+    fun add(
+        position: Int,
+        message: MessageItem,
+    ) {
         messageList.add(position, message)
         notifyItemInserted(position)
     }
@@ -60,7 +71,7 @@ class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
 
     private fun getOtherUserName(
         userNames: HashMap<String, String>,
-        myUserKey: String?
+        myUserKey: String?,
     ): String? {
         for (userKey in userNames.keys) {
             if (myUserKey != userKey) {
@@ -72,7 +83,7 @@ class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
 
     private fun getOtherUserProfile(
         userProfiles: HashMap<String, String>,
-        myUserKey: String?
+        myUserKey: String?,
     ): String? {
         for (userKey in userProfiles.keys) {
             if (myUserKey != userKey) {
@@ -90,13 +101,14 @@ class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
         val message: MessageItem = messageList[position]
         return if (myUserKey == message.userKey) {
             RIGHT_TYPE
-        } else LEFT_TYPE
+        } else {
+            LEFT_TYPE
+        }
     }
 
     class RightMessageViewHolder(
-        private val binding: ItemMessageRightBinding
+        private val binding: ItemMessageRightBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(message: MessageItem) {
             binding.messageRight = message
 
@@ -109,12 +121,16 @@ class MessageAdapter : BaseAdapter<RecyclerView.ViewHolder, MessageItem>() {
     }
 
     class LeftMessageViewHolder(
-        private val binding: ItemMessageLeftBinding
+        private val binding: ItemMessageLeftBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(message: MessageItem) {
             binding.messageLeft = message
             binding.executePendingBindings()
         }
+    }
+
+    companion object {
+        private const val LEFT_TYPE = 0
+        private const val RIGHT_TYPE = 1
     }
 }
