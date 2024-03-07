@@ -11,10 +11,11 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class NoticeServiceImpl @Inject constructor(
-    private val db: FirebaseFirestore
+class NoticeServiceImpl
+@Inject
+constructor(
+    private val db: FirebaseFirestore,
 ) : NoticeService {
-
     override suspend fun getData(noticeKey: String): NoticeData {
         return suspendCoroutine { continuation ->
             db.collection("Notice")
@@ -37,7 +38,10 @@ class NoticeServiceImpl @Inject constructor(
     override fun getDataList(): Flow<List<NoticeData>> {
         return callbackFlow {
             db.collection("Notice")
-                .orderBy("postDate", Query.Direction.DESCENDING)
+                .orderBy(
+                    "postDate",
+                    Query.Direction.DESCENDING,
+                )
                 .addSnapshotListener { queryDocumentSnapshots, e ->
                     if (e != null) {
                         throw e
@@ -46,17 +50,17 @@ class NoticeServiceImpl @Inject constructor(
                         throw Exception("queryDocumentSnapshot is Null or Empty")
                     }
 
-                    val noticeDataList = queryDocumentSnapshots.documentChanges.mapNotNull {
-                        it.document.toObject(NoticeData::class.java).apply {
-                            key = it.document.id
+                    val noticeDataList =
+                        queryDocumentSnapshots.documentChanges.mapNotNull {
+                            it.document.toObject(NoticeData::class.java).apply {
+                                key = it.document.id
+                            }
                         }
-                    }
 
                     trySend(noticeDataList)
                 }
 
             awaitClose {
-
             }
         }
     }
