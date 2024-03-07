@@ -6,11 +6,12 @@ import com.hero.recipespace.database.message.dao.MessageDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class MessageLocalDataSourceImpl @Inject constructor(
-    private val messageDao: MessageDao
+class MessageLocalDataSourceImpl
+@Inject
+constructor(
+    private val messageDao: MessageDao,
 ) : MessageLocalDataSource {
-
-    override suspend fun getData(messageKey: String) : MessageData {
+    override suspend fun getData(messageKey: String): MessageData {
         return messageDao.getMessageFromKey(messageKey) ?: error("not found MessageData")
     }
 
@@ -18,9 +19,7 @@ class MessageLocalDataSourceImpl @Inject constructor(
         return messageDao.getMessages(chatKey).asFlow()
     }
 
-    override suspend fun add(
-        messageData: MessageData
-    ) {
+    override suspend fun add(messageData: MessageData) {
         messageDao.insertMessage(messageData)
     }
 
@@ -28,19 +27,14 @@ class MessageLocalDataSourceImpl @Inject constructor(
         messageDao.insertAll(messageList)
     }
 
-    override suspend fun update(
-        messageData: MessageData
-    ) {
+    override suspend fun update(messageData: MessageData) {
         messageDao.updateMessage(messageData)
     }
 
-    override suspend fun remove(
-        messageData: MessageData
-    ) {
+    override suspend fun remove(messageData: MessageData) {
         messageDao.deleteMessage(messageData)
     }
 
     override fun clear() {
-
     }
 }
