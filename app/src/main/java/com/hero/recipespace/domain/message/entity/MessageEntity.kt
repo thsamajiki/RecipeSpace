@@ -14,7 +14,5 @@ data class MessageEntity(
     var timestamp: Timestamp? = null,
     var isRead: Boolean? = null,
     var userName: String = "",
-    var messageType: MessageType
-) : Parcelable {
-
-}
+    var messageType: MessageType,
+) : Parcelable
