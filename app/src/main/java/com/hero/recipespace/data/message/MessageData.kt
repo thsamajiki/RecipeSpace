@@ -19,6 +19,5 @@ data class MessageData(
     var message: String? = null,
     var timestamp: Timestamp? = null,
     var isRead: Boolean? = false,
-    var messageType: MessageType = MessageType.MESSAGE
-) : Parcelable {
-}
+    var messageType: MessageType = MessageType.MESSAGE,
+) : Parcelable
