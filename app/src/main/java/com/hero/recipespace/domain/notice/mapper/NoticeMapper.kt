@@ -8,7 +8,7 @@ fun NoticeData.toEntity(): NoticeEntity {
         key = key,
         title = title,
         desc = desc,
-        postDate = postDate
+        postDate = postDate,
     )
 }
 
@@ -17,6 +17,6 @@ fun NoticeEntity.toData(): NoticeData {
         key = key,
         title = title,
         desc = desc,
-        postDate = postDate
+        postDate = postDate,
     )
 }
