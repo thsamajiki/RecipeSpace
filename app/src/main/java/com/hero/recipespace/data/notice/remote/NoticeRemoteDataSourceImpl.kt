@@ -5,10 +5,11 @@ import com.hero.recipespace.data.notice.service.NoticeService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class NoticeRemoteDataSourceImpl @Inject constructor(
-    private val noticeService: NoticeService
+class NoticeRemoteDataSourceImpl
+@Inject
+constructor(
+    private val noticeService: NoticeService,
 ) : NoticeRemoteDataSource {
-
     override suspend fun getData(noticeKey: String): NoticeData {
         return noticeService.getData(noticeKey)
     }
@@ -21,15 +22,11 @@ class NoticeRemoteDataSourceImpl @Inject constructor(
         noticeService.add(noticeData)
     }
 
-    override suspend fun update(
-        noticeData: NoticeData
-    ) {
+    override suspend fun update(noticeData: NoticeData) {
         noticeService.update(noticeData)
     }
 
-    override suspend fun remove(
-        noticeData: NoticeData
-    ) {
+    override suspend fun remove(noticeData: NoticeData) {
         noticeService.remove(noticeData)
     }
 }
