@@ -26,11 +26,12 @@ sealed class PostRecipeUiState {
 }
 
 @HiltViewModel
-class PostRecipeViewModel @Inject constructor(
+class PostRecipeViewModel
+@Inject
+constructor(
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
-    private val postRecipeUseCase: PostRecipeUseCase
+    private val postRecipeUseCase: PostRecipeUseCase,
 ) : ViewModel() {
-
     private val _postRecipeUiState = MutableStateFlow<PostRecipeUiState>(PostRecipeUiState.Idle)
     val postRecipeUiState: StateFlow<PostRecipeUiState> = _postRecipeUiState.asStateFlow()
 
@@ -49,16 +50,19 @@ class PostRecipeViewModel @Inject constructor(
 
     fun uploadRecipe(
         content: String,
-        recipePhotoPathList: List<String>
+        recipePhotoPathList: List<String>,
     ) {
         _loadingState.value = LoadingState.Loading
 
         viewModelScope.launch {
             postRecipeUseCase(
-                UploadRecipeRequest(content, recipePhotoPathList),
+                UploadRecipeRequest(
+                    content,
+                    recipePhotoPathList,
+                ),
                 onProgress = { progress ->
                     _loadingState.value = LoadingState.Progress(progress.toInt())
-                }
+                },
             )
                 .onSuccess {
                     _loadingState.value = LoadingState.Hidden
@@ -83,11 +87,13 @@ class PostRecipeViewModel @Inject constructor(
     }
 
     fun addRecipePhotoList(photoPathList: List<String>) {
-        _recipeImageList.value = _recipeImageList.value.orEmpty() + photoPathList
+        _recipeImageList.value =
+            _recipeImageList.value.orEmpty() + photoPathList
     }
 
     fun deletePhoto(position: Int) {
-        _recipeImageList.value = _recipeImageList.value.orEmpty()
+        _recipeImageList.value =
+            _recipeImageList.value.orEmpty()
             .toMutableList()
             .apply {
                 removeAt(position)
