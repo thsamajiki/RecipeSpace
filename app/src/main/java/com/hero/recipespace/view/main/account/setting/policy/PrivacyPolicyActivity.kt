@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PrivacyPolicyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPrivacyPolicyBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
