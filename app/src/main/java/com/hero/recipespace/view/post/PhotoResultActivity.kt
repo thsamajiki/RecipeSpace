@@ -18,9 +18,8 @@ import com.bumptech.glide.Glide
 import com.hero.recipespace.databinding.ActivityPhotoResultBinding
 import java.io.File
 
-
 class PhotoResultActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityPhotoResultBinding
+    private lateinit var binding: ActivityPhotoResultBinding
     private var imagePath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +42,29 @@ class PhotoResultActivity : AppCompatActivity() {
 
     private fun setOnClickListeners() {
         binding.btnDelete.setOnClickListener {
-            deletePhoto(object : PhotoCallback {
-                override fun deleteSuccess() {
-                    Toast.makeText(this@PhotoResultActivity, "사진이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
+            deletePhoto(
+                object : PhotoCallback {
+                    override fun deleteSuccess() {
+                        Toast.makeText(
+                            this@PhotoResultActivity,
+                            "사진이 삭제되었습니다.",
+                            Toast.LENGTH_SHORT,
+                        )
+                            .show()
+                        finish()
+                    }
 
-                override fun deleteFailed() {
-                    Toast.makeText(this@PhotoResultActivity, "사진 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-
-            }, imagePath)
+                    override fun deleteFailed() {
+                        Toast.makeText(
+                            this@PhotoResultActivity,
+                            "사진 삭제에 실패했습니다.",
+                            Toast.LENGTH_SHORT,
+                        )
+                            .show()
+                    }
+                },
+                imagePath,
+            )
         }
 
         binding.btnOk.setOnClickListener {
@@ -63,7 +74,10 @@ class PhotoResultActivity : AppCompatActivity() {
 
     private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
-        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+        pickIntent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*",
+        )
         pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         pickIntent.action = Intent.ACTION_PICK
         openGalleryResultLauncher.launch(pickIntent)
@@ -95,17 +109,25 @@ class PhotoResultActivity : AppCompatActivity() {
                         clipData.let { clip ->
                             if (clipDataSize != null) {
                                 if (clipDataSize > 10) {
-                                    Toast.makeText(this, "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG)
+                                    Toast.makeText(
+                                        this,
+                                        "사진은 10장까지 선택 가능합니다.",
+                                        Toast.LENGTH_LONG,
+                                    )
                                         .show()
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
 
                                     // 선택한 사진 수만큼 반복
-                                    val photoList = (0 until clipDataSize).map { index ->
-                                        val photoPath = clip.getItemAt(index).uri
-                                        photoPath.toString()
-                                    }
+                                    val photoList =
+                                        (0 until clipDataSize).map { index ->
+                                            val photoPath = clip.getItemAt(index).uri
+                                            photoPath.toString()
+                                        }
 
-                                    Log.d("openGalleryResultLauncher", "openGalleryResultLauncher: $photoList")
+                                    Log.d(
+                                        "openGalleryResultLauncher",
+                                        "openGalleryResultLauncher: $photoList",
+                                    )
 
                                     val intent = PostRecipeActivity.getIntent(this)
                                     intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP)
@@ -119,23 +141,34 @@ class PhotoResultActivity : AppCompatActivity() {
             }
         }
 
-    private fun deletePhoto(callback: PhotoCallback, imagePath: String?) {
+    private fun deletePhoto(
+        callback: PhotoCallback,
+        imagePath: String?,
+    ) {
         val projection = arrayOf(MediaStore.Images.Media.DATA)
 
-        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            contentResolver.query(Uri.parse(imagePath), projection, null, null)
-        } else {
-            contentResolver.query(Uri.parse(imagePath), projection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC", null)
-        }
+        val cursor =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                contentResolver.query(Uri.parse(imagePath), projection, null, null)
+            } else {
+                contentResolver.query(
+                    Uri.parse(imagePath),
+                    projection,
+                    null,
+                    null,
+                    MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC",
+                    null,
+                )
+            }
 
-        if(cursor?.moveToFirst() == true) {
+        if (cursor?.moveToFirst() == true) {
             val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
             val filePath = cursor.getString(columnIndex)
             cursor.close()
 
             val file = File(filePath)
 
-            if(file.delete()) {
+            if (file.delete()) {
                 callback.deleteSuccess()
             } else {
                 callback.deleteFailed()
@@ -148,10 +181,19 @@ class PhotoResultActivity : AppCompatActivity() {
         const val PHOTO_LIST = "photoList"
 
         fun getIntent(context: Context) =
-            Intent(context, PhotoResultActivity::class.java)
+            Intent(
+                context,
+                PhotoResultActivity::class.java,
+            )
 
-        fun getIntent(context: Context, photoUrl: String?) =
-            Intent(context, PhotoResultActivity::class.java)
+        fun getIntent(
+            context: Context,
+            photoUrl: String?,
+        ) =
+            Intent(
+                context,
+                PhotoResultActivity::class.java,
+            )
                 .putExtra(PHOTO_URL, photoUrl)
     }
 }
