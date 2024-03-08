@@ -5,9 +5,11 @@ import com.hero.recipespace.domain.notice.repository.NoticeRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveNoticeListUseCase @Inject constructor(
-    private val noticeRepository: NoticeRepository
+class ObserveNoticeListUseCase
+@Inject
+constructor(
+    private val noticeRepository: NoticeRepository,
 ) {
-    operator fun invoke() : Flow<List<NoticeEntity>> =
+    operator fun invoke(): Flow<List<NoticeEntity>> =
         noticeRepository.getNoticeList()
 }
