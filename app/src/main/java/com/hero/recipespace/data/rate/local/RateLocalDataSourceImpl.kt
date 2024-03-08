@@ -6,10 +6,11 @@ import com.hero.recipespace.database.rate.dao.RateDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class RateLocalDataSourceImpl @Inject constructor(
-    private val rateDao: RateDao
+class RateLocalDataSourceImpl
+@Inject
+constructor(
+    private val rateDao: RateDao,
 ) : RateLocalDataSource {
-
     override suspend fun getData(rateKey: String): RateData {
         return rateDao.getRateFromKey(rateKey) ?: error("not found RateData")
     }
@@ -35,6 +36,5 @@ class RateLocalDataSourceImpl @Inject constructor(
     }
 
     override fun clear() {
-
     }
 }
