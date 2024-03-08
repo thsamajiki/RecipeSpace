@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatcher {
-
     private lateinit var binding: ActivityPostRecipeBinding
     private lateinit var postRecipeImageAdapter: PostRecipeImageAdapter
 
@@ -70,10 +69,12 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                                 } else { // 선택한 이미지가 1장 이상 10장 이하인 경우
 
                                     // 선택한 사진 수만큼 반복
-                                    val photoList = (0 until clipDataSize).map { index ->
-                                        val photoPath = clip.getItemAt(index).uri
-                                        photoPath.toString()
-                                    }
+                                    val photoList =
+                                        (0 until clipDataSize).map { index ->
+                                            val photoPath =
+                                                clip.getItemAt(index).uri
+                                            photoPath.toString()
+                                        }
 
                                     viewModel.addRecipePhotoList(photoList)
                                 }
@@ -102,20 +103,22 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        postRecipeImageAdapter = PostRecipeImageAdapter(
-            onClick = ::onRecipePhotoClick,
-            onCancelClick = ::deletePhoto
-        )
+        postRecipeImageAdapter =
+            PostRecipeImageAdapter(
+                onClick = ::onRecipePhotoClick,
+                onCancelClick = ::deletePhoto,
+            )
 
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = postRecipeImageAdapter
             val spaceDecoration = HorizontalSpaceItemDecoration(1)
-            removeItemDecoration(object :
-                DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
-
-            })
+            removeItemDecoration(
+                object :
+                    DividerItemDecoration(this@PostRecipeActivity, HORIZONTAL) {
+                },
+            )
             addItemDecoration(spaceDecoration)
         }
     }
@@ -123,7 +126,6 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
     // RecyclerView Item 간 간격 조정하기 위한 클래스
     inner class HorizontalSpaceItemDecoration(private val horizontalSpaceWidth: Int) :
         RecyclerView.ItemDecoration() {
-
         override fun getItemOffsets(
             outRect: Rect,
             view: View,
@@ -177,7 +179,7 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                             Toast.makeText(
                                 this@PostRecipeActivity,
                                 "업로드에 실패했습니다. 다시 시도해주세요 ${state.message}",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                         }
 
@@ -190,7 +192,7 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                 postRecipeImageAdapter.setRecipeImageList(it)
                 Log.d(
                     "setupViewModel",
-                    "setupViewModel: ${postRecipeImageAdapter.getRecipeImageList()}"
+                    "setupViewModel: ${postRecipeImageAdapter.getRecipeImageList()}",
                 )
 
                 // '카메라를 눌러 ~' 문구가 없으려면
@@ -205,10 +207,20 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                 }
 
                 if (binding.editContent.text?.isNotEmpty() == true && recipeImageList.value?.isNotEmpty() == true) {
-                    binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.colorPrimaryDark))
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this@PostRecipeActivity,
+                            R.color.colorPrimaryDark,
+                        ),
+                    )
                     binding.tvComplete.isEnabled = true
                 } else {
-                    binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.normal_gray))
+                    binding.tvComplete.setTextColor(
+                        ContextCompat.getColor(
+                            this@PostRecipeActivity,
+                            R.color.normal_gray,
+                        ),
+                    )
                     binding.tvComplete.isEnabled = false
                 }
             }
@@ -227,13 +239,13 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         binding.tvComplete.setOnClickListener {
             viewModel.uploadRecipe(
                 binding.editContent.text.toString(),
-                postRecipeImageAdapter.getRecipeImageList()
+                postRecipeImageAdapter.getRecipeImageList(),
             )
         }
 
         supportFragmentManager.setFragmentResultListener(
             BottomSheetPostRecipeImage.TAG,
-            this@PostRecipeActivity
+            this@PostRecipeActivity,
         ) { _: String, result: Bundle ->
             val action = result.getString(BottomSheetPostRecipeImage.RESULT_ACTION)
             if (action == BottomSheetPostRecipeImage.ACTION_POST_IMAGE) {
@@ -255,16 +267,16 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                     binding.tvComplete.setTextColor(
                         ContextCompat.getColor(
                             this,
-                            R.color.colorPrimaryDark
-                        )
+                            R.color.colorPrimaryDark,
+                        ),
                     )
                     binding.tvComplete.isEnabled = true
                 } else {
                     binding.tvComplete.setTextColor(
                         ContextCompat.getColor(
                             this,
-                            R.color.normal_gray
-                        )
+                            R.color.normal_gray,
+                        ),
                     )
                     binding.tvComplete.isEnabled = false
                 }
@@ -293,12 +305,17 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
 
     private fun openGallery() {
         val pickIntent = Intent(Intent.ACTION_PICK)
-        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-        pickIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        pickIntent.setDataAndType(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            "image/*",
+        )
+        pickIntent.putExtra(
+            Intent.EXTRA_ALLOW_MULTIPLE,
+            true,
+        )
         pickIntent.action = Intent.ACTION_PICK
         openGalleryResultLauncher.launch(pickIntent)
     }
-
 
     private fun checkStoragePermission(): Boolean {
         val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -307,24 +324,25 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
 
         return if (ActivityCompat.checkSelfPermission(
                 this,
-                readPermission
-            ) == PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
+                readPermission,
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
-                writePermission
+                writePermission,
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             true
         } else {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(readPermission, writePermission),
-                PERMISSION_REQ_CODE
+                arrayOf(
+                    readPermission,
+                    writePermission,
+                ),
+                PERMISSION_REQ_CODE,
             )
             false
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -339,28 +357,54 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
                 Toast.makeText(
                     this,
                     "Permissions not granted by the user.",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    override fun beforeTextChanged(
+        s: CharSequence?,
+        start: Int,
+        count: Int,
+        after: Int,
+    ) {
+    }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun onTextChanged(
+        s: CharSequence?,
+        start: Int,
+        before: Int,
+        count: Int,
+    ) {
+    }
 
     override fun afterTextChanged(s: Editable) {
         if (s.isNotEmpty() && viewModel.recipeImageList.value?.isNotEmpty() == true) {
-            binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.colorPrimaryDark))
+            binding.tvComplete.setTextColor(
+                ContextCompat.getColor(
+                    this@PostRecipeActivity,
+                    R.color.colorPrimaryDark,
+                ),
+            )
             binding.tvComplete.isEnabled = true
         } else {
-            binding.tvComplete.setTextColor(ContextCompat.getColor(this@PostRecipeActivity, R.color.normal_gray))
+            binding.tvComplete.setTextColor(
+                ContextCompat.getColor(
+                    this@PostRecipeActivity,
+                    R.color.normal_gray,
+                ),
+            )
             binding.tvComplete.isEnabled = false
         }
     }
 
     private fun onRecipePhotoClick(photoUrl: String?) {
-        val intent = PhotoActivity.getIntent(this, photoUrl)
+        val intent =
+            PhotoActivity.getIntent(
+                this,
+                photoUrl,
+            )
         startActivity(intent)
     }
 
@@ -377,10 +421,22 @@ class PostRecipeActivity : AppCompatActivity(), View.OnClickListener, TextWatche
         private const val PHOTO_LIST = "photoList"
 
         fun getIntent(context: Context) =
-            Intent(context, PostRecipeActivity::class.java)
+            Intent(
+                context,
+                PostRecipeActivity::class.java,
+            )
 
-        fun getIntent(context: Context, photoList: ArrayList<String>) =
-            Intent(context, PostRecipeActivity::class.java)
-                .putStringArrayListExtra(PHOTO_LIST, photoList)
+        fun getIntent(
+            context: Context,
+            photoList: ArrayList<String>,
+        ) =
+            Intent(
+                context,
+                PostRecipeActivity::class.java,
+            )
+                .putStringArrayListExtra(
+                    PHOTO_LIST,
+                    photoList,
+                )
     }
 }
