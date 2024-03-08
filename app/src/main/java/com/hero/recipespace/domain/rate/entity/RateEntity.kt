@@ -8,7 +8,5 @@ import kotlinx.parcelize.Parcelize
 data class RateEntity(
     var rateKey: String = "",
     var rate: Float = 0f,
-    var date: Timestamp? = null
-) : Parcelable {
-
-}
+    var date: Timestamp? = null,
+) : Parcelable
