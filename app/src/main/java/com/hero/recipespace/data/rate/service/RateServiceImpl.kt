@@ -17,12 +17,16 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class RateServiceImpl @Inject constructor(
+class RateServiceImpl
+@Inject
+constructor(
     private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore
+    private val db: FirebaseFirestore,
 ) : RateService {
-
-    override suspend fun getData(userKey: String, recipeKey: String): RateData {
+    override suspend fun getData(
+        userKey: String,
+        recipeKey: String,
+    ): RateData {
         return suspendCoroutine { continuation ->
             db.collection("Recipe")
                 .document(recipeKey)
@@ -43,7 +47,6 @@ class RateServiceImpl @Inject constructor(
                     } else {
                         continuation.resumeWithException(Exception("not found rateData"))
                     }
-
                 }
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
@@ -55,49 +58,62 @@ class RateServiceImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    private suspend fun add(request: UpdateRateRequest, recipeData: RecipeData): RateData {
+    private suspend fun add(
+        request: UpdateRateRequest,
+        recipeData: RecipeData,
+    ): RateData {
         return suspendCoroutine<RateData> { continuation ->
-            db.runTransaction(Transaction.Function<Any?> { transaction ->
-                val recipeRef = db.collection("Recipe").document(recipeData.key)
-                val rateRef = recipeRef.collection("RateList").document(request.userKey)
-                val rateSnapshot = transaction[rateRef]
-                val originTotalCount: Int = recipeData.totalRatingCount ?: 0
-                val originRate: Float = recipeData.rate ?: 0f
-                var originSum = originTotalCount * originRate
-                var newTotalCount = originTotalCount + 1
+            db.runTransaction(
+                Transaction.Function<Any?> { transaction ->
+                    val recipeRef =
+                        db.collection("Recipe").document(recipeData.key)
+                    val rateRef = recipeRef.collection("RateList").document(request.userKey)
+                    val rateSnapshot = transaction[rateRef]
+                    val originTotalCount: Int = recipeData.totalRatingCount ?: 0
+                    val originRate: Float = recipeData.rate ?: 0f
+                    var originSum = originTotalCount * originRate
+                    var newTotalCount = originTotalCount + 1
 
-                if (rateSnapshot.exists()) {
-                    val myOriginRateData: RateData? = rateSnapshot.toObject(RateData::class.java)
-                    val myOriginRate: Float = myOriginRateData?.rate!!.toFloat()
-                    originSum -= myOriginRate
-                    newTotalCount--
+                    if (rateSnapshot.exists()) {
+                        val myOriginRateData: RateData? =
+                            rateSnapshot.toObject(RateData::class.java)
+                        val myOriginRate: Float = myOriginRateData?.rate!!.toFloat()
+                        originSum -= myOriginRate
+                        newTotalCount--
+                    }
+
+                    val userRate: Float = request.rate
+                    val newRate = (originSum + userRate) / newTotalCount
+
+                    val rateData =
+                        RateData(
+                            rateKey = request.userKey,
+                            rate = request.rate,
+                            date = Timestamp.now(),
+                        )
+
+                    val newRecipeData =
+                        recipeData.copy(
+                            rate = newRate,
+                            totalRatingCount = newTotalCount,
+                        )
+
+                    transaction[rateRef] = rateData
+                    transaction[recipeRef] = newRecipeData
+
+                    rateData
                 }
-
-                val userRate: Float = request.rate
-                val newRate = (originSum + userRate) / newTotalCount
-
-                val rateData = RateData(
-                    rateKey = request.userKey,
-                    rate = request.rate,
-                    date = Timestamp.now()
-                )
-
-                val newRecipeData = recipeData.copy(
-                    rate = newRate,
-                    totalRatingCount = newTotalCount
-                )
-
-                transaction[rateRef] = rateData
-                transaction[recipeRef] = newRecipeData
-
-                rateData
-            }).addOnSuccessListener { rateData ->
-                continuation.resume(rateData as RateData)
-            }.addOnFailureListener { continuation.resumeWithException(it) }
+            )
+                .addOnSuccessListener { rateData ->
+                    continuation.resume(rateData as RateData)
+                }.addOnFailureListener { continuation.resumeWithException(it) }
         }
     }
 
-    override suspend fun update(request: UpdateRateRequest, recipeData: RecipeData): RateData {
+    override suspend fun update(
+        request: UpdateRateRequest,
+        recipeData: RecipeData,
+    ): RateData {
         WLog.d("request $request recipeData $recipeData")
         return suspendCoroutine { continuation ->
             db.runTransaction { transaction ->
@@ -108,11 +124,12 @@ class RateServiceImpl @Inject constructor(
                 editRateData["rate"] = request.rate
                 transaction.update(rateRef, editRateData)
 
-                val newRateData = RateData(
-                    rateKey = request.userKey,
-                    rate = request.rate,
-                    date = Timestamp.now()
-                )
+                val newRateData =
+                    RateData(
+                        rateKey = request.userKey,
+                        rate = request.rate,
+                        date = Timestamp.now(),
+                    )
 
                 newRateData
             }
