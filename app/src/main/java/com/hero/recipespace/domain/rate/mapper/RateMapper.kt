@@ -7,7 +7,7 @@ fun RateData.toEntity(): RateEntity {
     return RateEntity(
         rateKey = rateKey,
         rate = rate ?: 0f,
-        date = date
+        date = date,
     )
 }
 
@@ -15,6 +15,6 @@ fun RateEntity.toData(): RateData {
     return RateData(
         rateKey = rateKey,
         rate = rate,
-        date = date
+        date = date,
     )
 }
