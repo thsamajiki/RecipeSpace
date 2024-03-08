@@ -6,7 +6,6 @@ import com.hero.recipespace.R
 import com.hero.recipespace.databinding.DialogOpenSourceLicenseBinding
 
 class OpenSourceLicenseDialog(private val context: Context) {
-
     private lateinit var binding: DialogOpenSourceLicenseBinding
 
     fun getOpenSourceLicenseDialog() {
