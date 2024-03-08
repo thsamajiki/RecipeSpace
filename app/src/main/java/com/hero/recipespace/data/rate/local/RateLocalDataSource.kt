@@ -4,9 +4,9 @@ import com.hero.recipespace.data.rate.RateData
 import kotlinx.coroutines.flow.Flow
 
 interface RateLocalDataSource {
-    suspend fun getData(rateKey: String) : RateData
+    suspend fun getData(rateKey: String): RateData
 
-    fun observeDataList() : Flow<List<RateData>>
+    fun observeDataList(): Flow<List<RateData>>
 
     fun clear()
 
