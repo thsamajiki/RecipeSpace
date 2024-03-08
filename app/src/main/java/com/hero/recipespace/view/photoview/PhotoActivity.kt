@@ -11,17 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhotoActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivityPhotoBinding
-
-    companion object {
-        private const val EXTRA_PHOTO_URL = "photoUrl"
-
-        fun getIntent(context: Context, photoUrl: String?) =
-            Intent(context, PhotoActivity::class.java)
-                .putExtra(EXTRA_PHOTO_URL, photoUrl)
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,5 +36,22 @@ class PhotoActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
+    }
+
+    companion object {
+        private const val EXTRA_PHOTO_URL = "photoUrl"
+
+        fun getIntent(
+            context: Context,
+            photoUrl: String?,
+        ) =
+            Intent(
+                context,
+                PhotoActivity::class.java,
+            )
+                .putExtra(
+                    EXTRA_PHOTO_URL,
+                    photoUrl,
+                )
     }
 }
