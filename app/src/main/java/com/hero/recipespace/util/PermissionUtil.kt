@@ -15,60 +15,63 @@ object PermissionUtil {
     private const val GALLERY_PERMISSION = Manifest.permission.READ_EXTERNAL_STORAGE
     private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
     val REQUIRED_PERMISSIONS =
-        mutableListOf (
+        mutableListOf(
             Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
         ).apply {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 arrayOf(
-                    Manifest.permission.READ_MEDIA_IMAGES
-
+                    Manifest.permission.READ_MEDIA_IMAGES,
                 )
             } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
                 )
             } else {
                 arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
                 )
             }
         }.toTypedArray()
 
-    val camera_permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_MEDIA_IMAGES
-        )
-    } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    } else {
-        arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
+    val camera_permission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_MEDIA_IMAGES,
+            )
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+            )
+        }
 
     fun requestGalleryPermission(activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(
-                GALLERY_PERMISSION
+                GALLERY_PERMISSION,
             ),
-            GALLERY_PERMISSION_CODE
+            GALLERY_PERMISSION_CODE,
         )
     }
 
     fun hasGalleryPermission(context: Context): Boolean {
-        return ActivityCompat.checkSelfPermission(context, GALLERY_PERMISSION) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(
+            context,
+            GALLERY_PERMISSION,
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun isGalleryPermissionGranted(activity: Activity): Boolean {
@@ -82,13 +85,18 @@ object PermissionUtil {
     fun requestCameraPermission(activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
-            arrayOf(CAMERA_PERMISSION),
-            CAMERA_PERMISSION_CODE
+            arrayOf(
+                CAMERA_PERMISSION,
+            ),
+            CAMERA_PERMISSION_CODE,
         )
     }
 
     fun hasCameraPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(context, CAMERA_PERMISSION) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            context,
+            CAMERA_PERMISSION,
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     fun isCameraPermissionGranted(activity: Activity): Boolean {
@@ -99,8 +107,11 @@ object PermissionUtil {
         return true
     }
 
-    fun allPermissionsGranted(context: Context) = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            context, it) == PackageManager.PERMISSION_GRANTED
-    }
+    fun allPermissionsGranted(context: Context) =
+        REQUIRED_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(
+                context,
+                it,
+            ) == PackageManager.PERMISSION_GRANTED
+        }
 }
