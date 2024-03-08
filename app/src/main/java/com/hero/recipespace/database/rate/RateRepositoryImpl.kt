@@ -17,16 +17,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RateRepositoryImpl @Inject constructor(
+class RateRepositoryImpl
+@Inject
+constructor(
     private val rateLocalDataSource: RateLocalDataSource,
-    private val rateRemoteDataSource: RateRemoteDataSource
+    private val rateRemoteDataSource: RateRemoteDataSource,
 ) : RateRepository {
-
-    override suspend fun getRate(rateKey: String) : RateEntity {
+    override suspend fun getRate(rateKey: String): RateEntity {
         return rateLocalDataSource.getData(rateKey).toEntity()
     }
 
-    override suspend fun getRate(userKey: String, recipeKey: String): RateEntity {
+    override suspend fun getRate(
+        userKey: String,
+        recipeKey: String,
+    ): RateEntity {
         return rateRemoteDataSource.getData(userKey, recipeKey).toEntity()
     }
 
@@ -45,8 +49,15 @@ class RateRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun submitRate(request: UpdateRateRequest, recipeEntity: RecipeEntity): RateEntity {
-        val result = rateRemoteDataSource.update(request, recipeEntity.toData())
+    override suspend fun submitRate(
+        request: UpdateRateRequest,
+        recipeEntity: RecipeEntity,
+    ): RateEntity {
+        val result =
+            rateRemoteDataSource.update(
+            request,
+            recipeEntity.toData(),
+        )
         rateLocalDataSource.update(result)
 
         return result.toEntity()
