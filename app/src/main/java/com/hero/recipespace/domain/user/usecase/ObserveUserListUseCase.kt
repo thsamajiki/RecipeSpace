@@ -5,9 +5,11 @@ import com.hero.recipespace.domain.user.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveUserListUseCase @Inject constructor(
-    private val userRepository: UserRepository
+class ObserveUserListUseCase
+@Inject
+constructor(
+    private val userRepository: UserRepository,
 ) {
-    operator fun invoke() : Flow<List<UserEntity>> =
+    operator fun invoke(): Flow<List<UserEntity>> =
         userRepository.observeUserList()
 }
