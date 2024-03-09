@@ -15,6 +15,7 @@ import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.domain.user.usecase.GetLoggedUserUseCase
 import com.hero.recipespace.util.WLog
 import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.main.recipe.RatingDialogFragment.Result.KEY_RECIPE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,18 +32,15 @@ sealed class RecipeRateUiState {
 }
 
 @HiltViewModel
-class RatingDialogViewModel @Inject constructor(
+class RatingDialogViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val getRateUseCase: GetRateUseCase,
     private val updateRateUseCase: UpdateRateUseCase,
     private val getLoggedUserUseCase: GetLoggedUserUseCase,
-    private val getRecipeUseCase: GetRecipeUseCase
+    private val getRecipeUseCase: GetRecipeUseCase,
 ) : ViewModel() {
-
-    companion object {
-        const val KEY_RECIPE = "key"
-    }
-
     private val _recipeRateUiState = MutableStateFlow<RecipeRateUiState>(RecipeRateUiState.Idle)
     val recipeRateUiState: StateFlow<RecipeRateUiState> = _recipeRateUiState.asStateFlow()
 
@@ -53,16 +51,14 @@ class RatingDialogViewModel @Inject constructor(
     val recipe: LiveData<RecipeEntity>
         get() = _recipe
 
-
     val currentRate: MutableLiveData<Float> = MutableLiveData()
     val date: MutableLiveData<Timestamp> = MutableLiveData()
 
     private val _rate = MutableLiveData<RateEntity>()
-    val rate : LiveData<RateEntity>
+    val rate: LiveData<RateEntity>
         get() = _rate
 
     val recipeKey: String = savedStateHandle.get<String>(KEY_RECIPE)!!
-
 
     init {
         getRecipeData()
@@ -78,14 +74,22 @@ class RatingDialogViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMyRateData(userKey: String, recipeKey: String): RateEntity? {
+    private suspend fun getMyRateData(
+        userKey: String,
+        recipeKey: String,
+    ): RateEntity? {
         return if (userKey.isNotEmpty()) {
-            getRateUseCase.invoke(userKey, recipeKey)
+            getRateUseCase.invoke(
+                userKey,
+                recipeKey,
+            )
                 .onFailure {
                     it.printStackTrace()
                 }
                 .getOrNull()
-        } else null
+        } else {
+            null
+        }
     }
 
     fun requestUpdateRateData(newRate: Float) {
@@ -97,9 +101,9 @@ class RatingDialogViewModel @Inject constructor(
             updateRateUseCase.invoke(
                 UpdateRateRequest(
                     userKey,
-                    newRate
+                    newRate,
                 ),
-                recipe.value!!
+                recipe.value!!,
             )
                 .onSuccess {
                     WLog.d("$it")
@@ -130,7 +134,7 @@ class RatingDialogViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    companion object {
+        const val KEY_RECIPE = "key"
     }
 }
