@@ -45,17 +45,15 @@ sealed class OpenRateUIState {
 }
 
 @HiltViewModel
-class RecipeDetailViewModel @Inject constructor(
+class RecipeDetailViewModel
+@Inject
+constructor(
     savedStateHandle: SavedStateHandle,
     private val getRecipeUseCase: GetRecipeUseCase,
-    private val deleteRecipeUseCase: DeleteRecipeUseCase
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
 ) : ViewModel() {
-
-    companion object {
-        const val RECIPE_KEY = "key"
-    }
-
-    private val _deleteRecipeUiState = MutableStateFlow<DeleteRecipeUiState>(DeleteRecipeUiState.Idle)
+    private val _deleteRecipeUiState =
+        MutableStateFlow<DeleteRecipeUiState>(DeleteRecipeUiState.Idle)
     val deleteRecipeUiState: StateFlow<DeleteRecipeUiState> = _deleteRecipeUiState.asStateFlow()
 
     private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
@@ -112,7 +110,7 @@ class RecipeDetailViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    companion object {
+        const val RECIPE_KEY = "key"
     }
 }
