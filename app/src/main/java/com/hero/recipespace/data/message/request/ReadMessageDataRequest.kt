@@ -5,5 +5,5 @@ import com.hero.recipespace.data.message.MessageData
 data class ReadMessageDataRequest(
     val chatKey: String,
     val unreadMessageList: List<MessageData>,
-    val userKey: String
+    val userKey: String,
 )
