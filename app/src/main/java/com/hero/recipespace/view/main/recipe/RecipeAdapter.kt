@@ -9,18 +9,28 @@ import com.hero.recipespace.view.BaseAdapter
 
 class RecipeAdapter(
     private val onClick: (RecipeEntity) -> Unit,
-    private val onClickRating: (RecipeEntity) -> Unit
+    private val onClickRating: (RecipeEntity) -> Unit,
 ) : BaseAdapter<RecipeAdapter.RecipeListViewHolder, RecipeEntity>() {
-
     private val recipeList = mutableListOf<RecipeEntity>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeListViewHolder {
-        val binding = ItemRecipeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecipeListViewHolder {
+        val binding =
+            ItemRecipeBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
 
         return RecipeListViewHolder(binding, onClick, onClickRating)
     }
 
-    override fun onBindViewHolder(holder: RecipeListViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecipeListViewHolder,
+        position: Int,
+    ) {
         val recipeItem = recipeList[position]
         holder.bind(recipeItem)
     }
@@ -35,8 +45,14 @@ class RecipeAdapter(
         notifyDataSetChanged()
     }
 
-    fun add(position: Int, recipe: RecipeEntity) {
-        recipeList.add(position, recipe)
+    fun add(
+        position: Int,
+        recipe: RecipeEntity,
+    ) {
+        recipeList.add(
+            position,
+            recipe,
+        )
         notifyItemInserted(position)
     }
 
@@ -49,9 +65,8 @@ class RecipeAdapter(
     class RecipeListViewHolder(
         private val binding: ItemRecipeBinding,
         private val onClick: (RecipeEntity) -> Unit,
-        private val onClickRating: (RecipeEntity) -> Unit
+        private val onClickRating: (RecipeEntity) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(recipe: RecipeEntity) {
 //            binding.tvPostDate.text = recipeData.postDate.toString()
 //            binding.tvRecipeDesc.text = recipeData.desc
