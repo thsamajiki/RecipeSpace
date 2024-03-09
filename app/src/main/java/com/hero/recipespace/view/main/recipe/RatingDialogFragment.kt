@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RatingDialogFragment : DialogFragment(), View.OnClickListener {
-
     private var _binding: FragmentDialogRatingBinding? = null
     private val binding: FragmentDialogRatingBinding
         get() = _binding!!
@@ -31,7 +30,7 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDialogRatingBinding.inflate(inflater, container, false)
 
@@ -67,19 +66,22 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
                             Toast.makeText(context, "평가가 완료되었습니다.", Toast.LENGTH_SHORT).show()
 
                             // 평가 완료했을 때 평가 완료된 데이터를 내려주자.
-                            val result = Bundle().apply {
-                                putParcelable(
-                                    Result.KEY_RECIPE,
-                                    recipe.value
-                                )
-                            }
+                            val result =
+                                Bundle().apply {
+                                    putParcelable(
+                                        Result.KEY_RECIPE,
+                                        recipe.value,
+                                    )
+                                }
                             setFragmentResult(TAG, result)
                             dismiss()
                         }
+
                         is RecipeRateUiState.Failed -> {
                             Toast.makeText(context, "평가가 반영되지 않았습니다. 다시 시도해주세요", Toast.LENGTH_SHORT)
                                 .show()
                         }
+
                         RecipeRateUiState.Idle -> {}
                     }
                 }
@@ -113,9 +115,13 @@ class RatingDialogFragment : DialogFragment(), View.OnClickListener {
     companion object {
         fun newInstance(recipeKey: String): RatingDialogFragment =
             RatingDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(RatingDialogViewModel.KEY_RECIPE, recipeKey)
-                }
+                arguments =
+                    Bundle().apply {
+                        putString(
+                            RatingDialogViewModel.KEY_RECIPE,
+                            recipeKey,
+                        )
+                    }
             }
 
         const val TAG = "RatingDialog"
