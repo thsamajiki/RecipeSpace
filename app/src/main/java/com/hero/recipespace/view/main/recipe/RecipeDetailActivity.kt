@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivityRecipeDetailBinding
     private val viewModel by viewModels<RecipeDetailViewModel>()
 
@@ -48,12 +47,13 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     private val updateResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                val recipe: RecipeEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY, RecipeEntity::class.java)
-                } else {
-                    @Suppress("DEPRECATION")
-                    it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
-                }
+                val recipe: RecipeEntity? =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY, RecipeEntity::class.java)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        it.data?.getParcelableExtra(EXTRA_RECIPE_ENTITY)
+                    }
 
                 if (recipe != null) {
                     recipeImageAdapter.setRecipeImageList(recipe.photoUrlList.orEmpty())
@@ -62,12 +62,6 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
-
-    companion object {
-        fun getIntent(context: Context, recipeKey: String) =
-            Intent(context, RecipeDetailActivity::class.java)
-                .putExtra(RecipeDetailViewModel.RECIPE_KEY, recipeKey)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,9 +104,10 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        recipeImageAdapter = RecipeImageAdapter(
-            onClick = ::onRecipePhotoClick
-        )
+        recipeImageAdapter =
+            RecipeImageAdapter(
+                onClick = ::onRecipePhotoClick,
+            )
 
         recyclerView.run {
             setHasFixedSize(true)
@@ -147,17 +142,19 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
                             Toast.makeText(
                                 this@RecipeDetailActivity,
                                 "레시피를 삭제했습니다.",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                             finish()
                         }
+
                         is DeleteRecipeUiState.Failed -> {
                             Toast.makeText(
                                 this@RecipeDetailActivity,
                                 "레시피 삭제에 실패했습니다. 다시 시도해주세요 ${state.message}",
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_SHORT,
                             ).show()
                         }
+
                         is DeleteRecipeUiState.Idle -> {
                         }
                     }
@@ -183,15 +180,17 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
             if (viewModel.recipe.value?.userKey.equals(myUserKey)) {
                 Toast.makeText(this, "나와의 대화는 불가능합니다", Toast.LENGTH_SHORT).show()
             } else {
-                val intent = ChatActivity.getIntent(
-                    this,
-                    recipeChatInfo = RecipeChatInfo(
-                        userKey = recipe.userKey,
-                        userName = recipe.userName,
-                        userProfileImageUrl = recipe.profileImageUrl,
-                        recipeKey = recipe.key
+                val intent =
+                    ChatActivity.getIntent(
+                        this,
+                        recipeChatInfo =
+                        RecipeChatInfo(
+                            userKey = recipe.userKey,
+                            userName = recipe.userName,
+                            userProfileImageUrl = recipe.profileImageUrl,
+                            recipeKey = recipe.key,
+                        ),
                     )
-                )
                 startActivity(intent)
             }
         }
@@ -212,15 +211,19 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
         // FragmentResult - 데이터를 수신하기 위한 부분
         supportFragmentManager.setFragmentResultListener(
             RatingDialogFragment.TAG,
-            this
+            this,
         ) { _: String, result: Bundle ->
             // 데이터를 수신
-            val recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE, RecipeEntity::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                result.getParcelable(EXTRA_RECIPE_ENTITY)
-            }
+            val recipe =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    result.getParcelable(
+                        RatingDialogFragment.Result.KEY_RECIPE,
+                        RecipeEntity::class.java,
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    result.getParcelable(EXTRA_RECIPE_ENTITY)
+                }
 
             if (recipe != null) {
                 val rate = recipe.rate!!
@@ -280,5 +283,14 @@ class RecipeDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
+    }
+
+    companion object {
+        fun getIntent(
+            context: Context,
+            recipeKey: String,
+        ) =
+            Intent(context, RecipeDetailActivity::class.java)
+                .putExtra(RecipeDetailViewModel.RECIPE_KEY, recipeKey)
     }
 }
