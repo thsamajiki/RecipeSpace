@@ -32,8 +32,8 @@ data class RecipeData constructor(
     @ColumnInfo(name = "rate")
     var rate: Float? = 0f,
     @ColumnInfo(name = "totalRatingCount")
-    var totalRatingCount: Int? = 0
+    var totalRatingCount: Int? = 0,
 ) : Parcelable {
-    val thumbnailPhoto : String?
+    val thumbnailPhoto: String?
         get() = photoUrlList?.firstOrNull()
 }
