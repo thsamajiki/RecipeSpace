@@ -13,7 +13,7 @@ fun RecipeData.toEntity(): RecipeEntity {
         photoUrlList = photoUrlList,
         postDate = postDate,
         rate = rate,
-        totalRatingCount = totalRatingCount
+        totalRatingCount = totalRatingCount,
     )
 }
 
@@ -27,6 +27,6 @@ fun RecipeEntity.toData(): RecipeData {
         photoUrlList = photoUrlList,
         postDate = postDate,
         rate = rate,
-        totalRatingCount = totalRatingCount
+        totalRatingCount = totalRatingCount,
     )
 }
