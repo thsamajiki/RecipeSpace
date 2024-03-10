@@ -6,15 +6,16 @@ import com.hero.recipespace.database.recipe.dao.RecipeDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class RecipeLocalDataSourceImpl @Inject constructor(
-    private val recipeDao: RecipeDao
+class RecipeLocalDataSourceImpl
+@Inject
+constructor(
+    private val recipeDao: RecipeDao,
 ) : RecipeLocalDataSource {
-
-    override suspend fun getData(recipeKey: String) : RecipeData {
+    override suspend fun getData(recipeKey: String): RecipeData {
         return recipeDao.getRecipeFromKey(recipeKey) ?: error("not found RecipeData")
     }
 
-    override fun observeDataList() : Flow<List<RecipeData>> {
+    override fun observeDataList(): Flow<List<RecipeData>> {
         return recipeDao.observeAllRecipes().asFlow()
     }
 
@@ -26,19 +27,14 @@ class RecipeLocalDataSourceImpl @Inject constructor(
         recipeDao.insertAll(recipeList)
     }
 
-    override suspend fun update(
-        recipeData: RecipeData
-    ) {
+    override suspend fun update(recipeData: RecipeData) {
         recipeDao.updateRecipe(recipeData)
     }
 
-    override suspend fun remove(
-        recipeData: RecipeData
-    ) {
+    override suspend fun remove(recipeData: RecipeData) {
         recipeDao.deleteRecipe(recipeData)
     }
 
     override fun clear() {
-
     }
 }
