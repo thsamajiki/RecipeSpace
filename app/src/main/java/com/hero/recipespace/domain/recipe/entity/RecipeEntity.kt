@@ -14,8 +14,8 @@ data class RecipeEntity(
     var photoUrlList: List<String>? = null,
     var postDate: Timestamp? = null,
     var rate: Float? = 0f,
-    var totalRatingCount: Int? = 0
+    var totalRatingCount: Int? = 0,
 ) : Parcelable {
-    val thumbnailPhoto : String?
+    val thumbnailPhoto: String?
         get() = photoUrlList?.firstOrNull()
 }
