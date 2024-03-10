@@ -12,9 +12,15 @@ interface RecipeRepository {
 
     suspend fun refresh()
 
-    suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
+    suspend fun addRecipe(
+        request: UploadRecipeRequest,
+        onProgress: (Float) -> Unit,
+    ): RecipeEntity
 
-    suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity
+    suspend fun modifyRecipe(
+        request: UpdateRecipeRequest,
+        onProgress: (Float) -> Unit,
+    ): RecipeEntity
 
     suspend fun deleteRecipe(recipeEntity: RecipeEntity): RecipeEntity
 }
