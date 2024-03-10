@@ -24,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
-
     private var _binding: FragmentRecipeListBinding? = null
     private val binding get() = _binding!!
 
@@ -34,30 +33,37 @@ class RecipeListFragment : Fragment() {
 
     private val postResultLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val recipe: RecipeEntity? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY, RecipeEntity::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
-            }
+            if (it.resultCode == Activity.RESULT_OK) {
+                val recipe: RecipeEntity? =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        it.data?.getParcelableExtra(
+                            PostRecipeActivity.EXTRA_RECIPE_ENTITY,
+                            RecipeEntity::class.java,
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        it.data?.getParcelableExtra(PostRecipeActivity.EXTRA_RECIPE_ENTITY)
+                    }
 
-            if (recipe != null) {
-                recipeAdapter.add(0, recipe)
-                binding.rvRecipeList.smoothScrollToPosition(0)
+                if (recipe != null) {
+                    recipeAdapter.add(0, recipe)
+                    binding.rvRecipeList.smoothScrollToPosition(0)
+                }
             }
         }
-    }
-
-    companion object {
-        fun newInstance() = RecipeListFragment()
-    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_recipe_list, container, false)
+        _binding =
+            DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_recipe_list,
+                container,
+                false,
+            )
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -65,7 +71,10 @@ class RecipeListFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
@@ -103,16 +112,20 @@ class RecipeListFragment : Fragment() {
         // FragmentResult - 데이터를 수신하기 위한 부분
         childFragmentManager.setFragmentResultListener(
             RatingDialogFragment.TAG,
-            viewLifecycleOwner) {
-            _: String, result: Bundle ->
+            viewLifecycleOwner,
+        ) { _: String, result: Bundle ->
             // 데이터를 수신하자.
 
-            val recipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE, RecipeEntity::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE)
-            }
+            val recipe =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    result.getParcelable(
+                        RatingDialogFragment.Result.KEY_RECIPE,
+                        RecipeEntity::class.java,
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    result.getParcelable(RatingDialogFragment.Result.KEY_RECIPE)
+                }
 
             if (recipe != null) {
                 recipeAdapter.replaceItem(recipe)
@@ -121,10 +134,11 @@ class RecipeListFragment : Fragment() {
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
-        recipeAdapter = RecipeAdapter(
-            onClick = ::showRecipeDetail,
-            onClickRating = ::showRatingDialog
-        )
+        recipeAdapter =
+            RecipeAdapter(
+                onClick = ::showRecipeDetail,
+                onClickRating = ::showRatingDialog,
+            )
 
         recyclerView.run {
             setHasFixedSize(true)
@@ -152,5 +166,9 @@ class RecipeListFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    companion object {
+        fun newInstance() = RecipeListFragment()
     }
 }
