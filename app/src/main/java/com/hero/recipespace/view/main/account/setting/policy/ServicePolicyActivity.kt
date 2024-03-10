@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ServicePolicyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityServicePolicyBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
