@@ -17,12 +17,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RecipeRepositoryImpl @Inject constructor(
+class RecipeRepositoryImpl
+@Inject
+constructor(
     private val recipeRemoteDataSource: RecipeRemoteDataSource,
-    private val recipeLocalDataSource: RecipeLocalDataSource
+    private val recipeLocalDataSource: RecipeLocalDataSource,
 ) : RecipeRepository {
-
-    override suspend fun getRecipe(recipeKey: String) : RecipeEntity {
+    override suspend fun getRecipe(recipeKey: String): RecipeEntity {
         return recipeLocalDataSource.getData(recipeKey).toEntity()
     }
 
@@ -51,8 +52,10 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeLocalDataSource.addAll(recipeList)
     }
 
-    override suspend fun addRecipe(request: UploadRecipeRequest, onProgress: (Float) -> Unit) : RecipeEntity {
-
+    override suspend fun addRecipe(
+        request: UploadRecipeRequest,
+        onProgress: (Float) -> Unit,
+    ): RecipeEntity {
         val result = recipeRemoteDataSource.add(request, onProgress)
 
         recipeLocalDataSource.add(result)
@@ -60,16 +63,17 @@ class RecipeRepositoryImpl @Inject constructor(
         return result.toEntity()
     }
 
-    override suspend fun modifyRecipe(request: UpdateRecipeRequest, onProgress: (Float) -> Unit): RecipeEntity {
+    override suspend fun modifyRecipe(
+        request: UpdateRecipeRequest,
+        onProgress: (Float) -> Unit,
+    ): RecipeEntity {
         val result = recipeRemoteDataSource.update(request, onProgress)
         recipeLocalDataSource.update(result)
 
         return result.toEntity()
     }
 
-    override suspend fun deleteRecipe(
-        recipeEntity: RecipeEntity
-    ): RecipeEntity {
+    override suspend fun deleteRecipe(recipeEntity: RecipeEntity): RecipeEntity {
         val result = recipeRemoteDataSource.remove(recipeEntity.toData())
         recipeLocalDataSource.remove(result)
 
