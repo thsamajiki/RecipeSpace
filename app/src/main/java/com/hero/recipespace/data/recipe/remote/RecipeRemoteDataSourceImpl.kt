@@ -12,9 +12,11 @@ import com.hero.recipespace.domain.recipe.request.UpdateRecipeRequest
 import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 import javax.inject.Inject
 
-class RecipeRemoteDataSourceImpl @Inject constructor(
+class RecipeRemoteDataSourceImpl
+@Inject
+constructor(
     private val userRemoteDataSource: UserRemoteDataSource,
-    private val recipeService: RecipeService
+    private val recipeService: RecipeService,
 ) : RecipeRemoteDataSource {
     override suspend fun getData(recipeKey: String): RecipeData {
         return recipeService.getRecipe(recipeKey)
@@ -26,19 +28,18 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
 
     override suspend fun add(
         request: UploadRecipeRequest,
-        onProgress: (Float) -> Unit
+        onProgress: (Float) -> Unit,
     ): RecipeData {
-
-        val downloadUrls = recipeService.uploadImages(
-            request.recipePhotoPathList,
-            progress = onProgress
-        )
+        val downloadUrls =
+            recipeService.uploadImages(
+                request.recipePhotoPathList,
+                progress = onProgress,
+            )
 
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         val userData = userRemoteDataSource.getUserData(userKey)
         val userName: String = userData.name.orEmpty()
         val profileImageUrl: String = userData.profileImageUrl.orEmpty()
-
 
         Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userName : $userName")
         Log.d("abcd", "RecipeRemoteDataSourceImpl - add: userKey : $userKey")
@@ -50,7 +51,7 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
             Timestamp.now(),
             userKey,
             userName,
-            profileImageUrl
+            profileImageUrl,
         )
     }
 
@@ -63,26 +64,29 @@ class RecipeRemoteDataSourceImpl @Inject constructor(
             firebaseUser?.uid.orEmpty(),
             firebaseUser?.displayName,
             firebaseUser?.email,
-            profileImageUrl
+            profileImageUrl,
         )
     }
 
     override suspend fun update(
         request: UpdateRecipeRequest,
-        onProgress: (Float) -> Unit
+        onProgress: (Float) -> Unit,
     ): RecipeData {
+        val downloadUrls =
+            recipeService.uploadImages(
+                request.recipePhotoPathList,
+                progress = onProgress,
+            )
 
-        val downloadUrls = recipeService.uploadImages(
-            request.recipePhotoPathList,
-            progress = onProgress
+        return recipeService.update(
+            request.key,
+            request.content,
+            downloadUrls,
+            onProgress,
         )
-
-        return recipeService.update(request.key, request.content, downloadUrls, onProgress)
     }
 
-    override suspend fun remove(
-        recipeData: RecipeData
-    ): RecipeData {
+    override suspend fun remove(recipeData: RecipeData): RecipeData {
         return recipeService.remove(recipeData)
     }
 }
