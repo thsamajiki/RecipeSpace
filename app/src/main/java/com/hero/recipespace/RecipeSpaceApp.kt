@@ -8,15 +8,6 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class RecipeSpaceApp : Application() {
-
-    companion object {
-        lateinit var instance : RecipeSpaceApp
-
-        fun getInstance() : Application {
-            return instance
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
 
@@ -30,6 +21,14 @@ class RecipeSpaceApp : Application() {
 
         prefs.getString(THEME_PREF_KEY, ThemeUtil.DEFAULT_MODE)?.apply {
             ThemeUtil.applyTheme(this)
+        }
+    }
+
+    companion object {
+        lateinit var instance: RecipeSpaceApp
+
+        fun getInstance(): Application {
+            return instance
         }
     }
 }
