@@ -14,11 +14,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeListViewModel @Inject constructor(
+class RecipeListViewModel
+@Inject
+constructor(
     observeRecipeListUseCase: ObserveRecipeListUseCase,
-    private val refreshRecipeListUseCase: RefreshRecipeListUseCase
+    private val refreshRecipeListUseCase: RefreshRecipeListUseCase,
 ) : ViewModel() {
-
     val recipeList: LiveData<List<RecipeEntity>> = observeRecipeListUseCase().asLiveData()
 
     private val _recipe = MutableLiveData<RecipeEntity>()
