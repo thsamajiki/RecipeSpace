@@ -8,18 +8,28 @@ import com.hero.recipespace.ext.setImageUrl
 import com.hero.recipespace.view.BaseAdapter
 
 class RecipeImageAdapter(
-    private val onClick: (String) -> Unit
+    private val onClick: (String) -> Unit,
 ) : BaseAdapter<RecipeImageAdapter.RecipeImageListViewHolder, String>() {
-
     private val recipeImageList = mutableListOf<String>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeImageListViewHolder {
-        val binding = ItemRecipeDetailImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecipeImageListViewHolder {
+        val binding =
+            ItemRecipeDetailImageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
 
         return RecipeImageListViewHolder(binding, onClick)
     }
 
-    override fun onBindViewHolder(holder: RecipeImageListViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecipeImageListViewHolder,
+        position: Int,
+    ) {
         val imageItem = recipeImageList[position]
 
         holder.bind(imageItem)
@@ -48,9 +58,8 @@ class RecipeImageAdapter(
 
     class RecipeImageListViewHolder(
         val binding: ItemRecipeDetailImageBinding,
-        private val onClick: (String) -> Unit
+        private val onClick: (String) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(image: String) {
             binding.root.setOnClickListener {
                 onClick(image)
