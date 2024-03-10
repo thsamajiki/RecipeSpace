@@ -5,10 +5,17 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 
 object RSPreferences {
+    fun prefs(context: Context): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun prefs(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-    fun customPreference(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    fun customPreference(
+        context: Context,
+        name: String,
+    ): SharedPreferences =
+        context.getSharedPreferences(
+            name,
+            Context.MODE_PRIVATE,
+        )
 
 //    private var prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -66,5 +73,4 @@ object RSPreferences {
 //    fun setNightModeState(state: Boolean) = prefs.edit().putBoolean("NightMode", state).apply()
 //
 //    fun getNightModeState(): Boolean = prefs.getBoolean("dark_mode", false)
-
 }
