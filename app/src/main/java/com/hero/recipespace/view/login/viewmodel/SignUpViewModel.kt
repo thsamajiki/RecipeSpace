@@ -30,11 +30,12 @@ sealed class SignUpUiState {
 }
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(
+class SignUpViewModel
+@Inject
+constructor(
     application: Application,
-    private val signUpUserUseCase: SignUpUserUseCase
+    private val signUpUserUseCase: SignUpUserUseCase,
 ) : AndroidViewModel(application) {
-
     private val _signUpUiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Idle)
     val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
 
@@ -45,10 +46,11 @@ class SignUpViewModel @Inject constructor(
     val userName: MutableLiveData<String> = MutableLiveData()
     val pwd: MutableLiveData<String> = MutableLiveData()
 
-    fun signUpUserAccount(userName: String,
-                          email: String,
-                          pwd: String) {
-
+    fun signUpUserAccount(
+        userName: String,
+        email: String,
+        pwd: String,
+    ) {
         if (!checkEmailValid(email)) {
             _signUpUiState.value = SignUpUiState.Failed("이메일 양식을 확인해주세요")
             return
@@ -72,11 +74,13 @@ class SignUpViewModel @Inject constructor(
                 .onFailure {
                     _loadingState.value = LoadingState.Hidden
 
-                    when(it) {
+                    when (it) {
                         is FirebaseAuthWeakPasswordException ->
                             SignUpUiState.Failed("패스워드가 7자리 이상이어야 합니다")
+
                         is FirebaseAuthInvalidCredentialsException ->
                             SignUpUiState.Failed("이메일 형식이 잘못되었습니다.")
+
                         is FirebaseAuthUserCollisionException ->
                             SignUpUiState.Failed("이미 존재하는 계정입니다.")
                     }
@@ -84,16 +88,13 @@ class SignUpViewModel @Inject constructor(
                     _signUpUiState.value = SignUpUiState.Failed("회원가입에 실패했습니다.")
                 }
         }
-
     }
 
     private fun checkEmailValid(email: String): Boolean {
         return if (TextUtils.isEmpty(email)) {
             false
-        } else Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
+        } else {
+            Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        }
     }
 }
