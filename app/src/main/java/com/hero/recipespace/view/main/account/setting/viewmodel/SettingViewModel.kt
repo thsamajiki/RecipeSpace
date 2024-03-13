@@ -27,11 +27,12 @@ sealed class DropOutUiState {
 }
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(
+class SettingViewModel
+@Inject
+constructor(
     private val removeUserUseCase: RemoveUserUseCase,
-    private val getLoggedUserUseCase: GetLoggedUserUseCase
-): ViewModel() {
-
+    private val getLoggedUserUseCase: GetLoggedUserUseCase,
+) : ViewModel() {
     private val _dropOutUiState = MutableStateFlow<DropOutUiState>(DropOutUiState.Idle)
     val dropOutUiState: StateFlow<DropOutUiState> = _dropOutUiState.asStateFlow()
 
@@ -67,15 +68,12 @@ class SettingViewModel @Inject constructor(
                         is FirebaseNoSignedInUserException -> {
                             DropOutUiState.Failed("로그인되지 않은 사용자입니다.")
                         }
+
                         is FirebaseAuthInvalidUserException -> {
                             DropOutUiState.Failed("유효하지 않은 사용자입니다.")
                         }
                     }
                 }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
