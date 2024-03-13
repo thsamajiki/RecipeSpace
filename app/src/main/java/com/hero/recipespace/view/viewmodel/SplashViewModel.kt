@@ -13,16 +13,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class SplashUIState {
+    data class Success(val userEntity: UserEntity) : SplashUIState()
 
-    data class Success(val userEntity: UserEntity): SplashUIState()
-
-    data class Failed(val message: String): SplashUIState()
+    data class Failed(val message: String) : SplashUIState()
 }
 
 @HiltViewModel
-class SplashViewModel @Inject constructor(
-    private val getLoggedUserUseCase: GetLoggedUserUseCase
-): ViewModel() {
+class SplashViewModel
+@Inject
+constructor(
+    private val getLoggedUserUseCase: GetLoggedUserUseCase,
+) : ViewModel() {
     private val _splashUiState = MutableLiveData<SplashUIState>()
     val splashUiState: LiveData<SplashUIState>
         get() = _splashUiState
