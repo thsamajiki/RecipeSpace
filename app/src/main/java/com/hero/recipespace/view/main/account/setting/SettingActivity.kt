@@ -31,18 +31,12 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivitySettingBinding
 
     private val reviewManager: ReviewManager? = null
     private val reviewInfo: ReviewInfo? = null
 
     private val viewModel by viewModels<SettingViewModel>()
-
-    companion object {
-        fun getIntent(context: Context) =
-            Intent(context, SettingActivity::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +55,14 @@ class SettingActivity : AppCompatActivity() {
         with(viewModel) {
             lifecycleScope.launch {
                 dropOutUiState.collect { state ->
-                    when(state) {
-                        is DropOutUiState.Failed -> Toast.makeText(this@SettingActivity, state.message, Toast.LENGTH_SHORT).show()
+                    when (state) {
+                        is DropOutUiState.Failed ->
+                            Toast.makeText(
+                                this@SettingActivity,
+                                state.message,
+                                Toast.LENGTH_SHORT,
+                            ).show()
+
                         is DropOutUiState.Success -> onSuccessDropOut()
                         DropOutUiState.Idle -> {}
                     }
@@ -71,7 +71,7 @@ class SettingActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 loadingState.collect { state ->
-                    when(state) {
+                    when (state) {
                         is LoadingState.Hidden -> hideLoading()
                         is LoadingState.Loading -> showLoading()
                         is LoadingState.Progress -> setProgressPercent(state.value)
@@ -141,7 +141,8 @@ class SettingActivity : AppCompatActivity() {
         val deleteCachePopUpMessage = "캐시 데이터 삭제 완료"
         val negativeText = "닫기"
         MaterialAlertDialogBuilder(this).setMessage(deleteCachePopUpMessage)
-            .setNegativeButton(negativeText
+            .setNegativeButton(
+                negativeText,
             ) { dialog, which -> }
             .create()
             .show()
@@ -153,7 +154,8 @@ class SettingActivity : AppCompatActivity() {
         val positiveText = "확인"
         MaterialAlertDialogBuilder(this).setTitle(openInquiryTitle)
             .setMessage(openInquiryMessage)
-            .setPositiveButton(positiveText
+            .setPositiveButton(
+                positiveText,
             ) { dialog, which -> }
             .create()
             .show()
@@ -224,5 +226,10 @@ class SettingActivity : AppCompatActivity() {
             }
             .create()
             .show()
+    }
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, SettingActivity::class.java)
     }
 }
