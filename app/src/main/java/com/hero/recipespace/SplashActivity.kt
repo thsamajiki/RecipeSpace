@@ -47,8 +47,12 @@ class SplashActivity : AppCompatActivity() {
         startAnimationWithShow(this, binding.ivBottomCookLogo, R.anim.show03)
     }
 
-    private fun startAnimationWithShow(context: Context, view: View, id: Int) {
-        view.visibility = View.VISIBLE  // 애니메이션 전에 뷰를 보이게 한다
+    private fun startAnimationWithShow(
+        context: Context,
+        view: View,
+        id: Int,
+    ) {
+        view.visibility = View.VISIBLE // 애니메이션 전에 뷰를 보이게 한다
         view.startAnimation(AnimationUtils.loadAnimation(context, id)) // 애니메이션 설정 & 시작
     }
 }
