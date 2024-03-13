@@ -9,12 +9,15 @@ import androidx.preference.PreferenceManager
 import com.hero.recipespace.R
 import com.hero.recipespace.util.ThemeUtil
 
-class ThemeSettingFragment : PreferenceFragmentCompat() {
-
+class ThemeSettingFragment :
+    PreferenceFragmentCompat() {
     private lateinit var prefs: SharedPreferences
 //    private lateinit var prefListener: SharedPreferences.OnSharedPreferenceChangeListener
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
         // preference xml 을 inflate 하는 메서드
         setPreferencesFromResource(R.xml.theme_setting_pref, rootKey)
 
@@ -25,10 +28,11 @@ class ThemeSettingFragment : PreferenceFragmentCompat() {
 
     private fun setSharedPreferenceChangeListeners() {
         findPreference<ListPreference>(ThemeUtil.THEME_PREF_KEY)?.apply {
-            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
-                ThemeUtil.applyTheme(newValue as String)
-                true
-            }
+            onPreferenceChangeListener =
+                Preference.OnPreferenceChangeListener { _, newValue ->
+                    ThemeUtil.applyTheme(newValue as String)
+                    true
+                }
         }
     }
 }
