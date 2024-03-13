@@ -23,15 +23,9 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
-
     private lateinit var binding: ActivitySignUpBinding
 
     private val viewModel by viewModels<SignUpViewModel>()
-
-    companion object {
-        fun getIntent(context: Context) =
-            Intent(context, SignUpActivity::class.java)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +42,14 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         with(viewModel) {
             lifecycleScope.launch {
                 signUpUiState.collect { state ->
-                    when(state) {
-                        is SignUpUiState.Failed -> Toast.makeText(this@SignUpActivity, state.message, Toast.LENGTH_SHORT).show()
+                    when (state) {
+                        is SignUpUiState.Failed ->
+                            Toast.makeText(
+                                this@SignUpActivity,
+                                state.message,
+                                Toast.LENGTH_SHORT,
+                            ).show()
+
                         is SignUpUiState.Success -> goToMainPage()
                         SignUpUiState.Idle -> {}
                     }
@@ -58,7 +58,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
             lifecycleScope.launch {
                 loadingState.collect { state ->
-                    when(state) {
+                    when (state) {
                         is LoadingState.Hidden -> hideLoading()
                         is LoadingState.Loading -> showLoading()
                         is LoadingState.Progress -> setProgressPercent(state.value)
@@ -84,7 +84,6 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         val pwd: String = binding.editPwd.text.toString().trim()
         val userName: String = binding.editUserName.text.toString().trim()
 
-
         viewModel.signUpUserAccount(userName, email, pwd)
     }
 
@@ -95,5 +94,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View) {
+    }
+
+    companion object {
+        fun getIntent(context: Context) =
+            Intent(context, SignUpActivity::class.java)
     }
 }
