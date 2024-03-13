@@ -5,7 +5,7 @@ import com.google.firebase.Timestamp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.hero.recipespace.data.message.MessageData
-import java.util.*
+import java.util.Date
 
 object TypeConverterExt {
     @TypeConverter
@@ -49,11 +49,12 @@ object TypeConverterExt {
     }
 
     @TypeConverter
-    fun fromTimestamp(value: Long?): Timestamp? = if (value == null) {
-        null
-    } else {
-        Timestamp(Date(value))
-    }
+    fun fromTimestamp(value: Long?): Timestamp? =
+        if (value == null) {
+            null
+        } else {
+            Timestamp(Date(value))
+        }
 
     @TypeConverter
     fun toTimestamp(timestamp: Timestamp?): Long? = timestamp?.toDate()?.time
