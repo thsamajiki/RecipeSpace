@@ -11,8 +11,9 @@ import com.hero.recipespace.databinding.ActivityThemeSettingBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ThemeSettingActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-
+class ThemeSettingActivity :
+    AppCompatActivity(),
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivityThemeSettingBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
