@@ -6,10 +6,15 @@ import com.hero.recipespace.domain.rate.request.UpdateRateRequest
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import javax.inject.Inject
 
-class UpdateRateUseCase @Inject constructor(
-    private val rateRepository: RateRepository
+class UpdateRateUseCase
+@Inject
+constructor(
+    private val rateRepository: RateRepository,
 ) {
-    suspend operator fun invoke(request: UpdateRateRequest, recipeEntity: RecipeEntity) : Result<RateEntity> =
+    suspend operator fun invoke(
+        request: UpdateRateRequest,
+        recipeEntity: RecipeEntity,
+    ): Result<RateEntity> =
         kotlin.runCatching {
             rateRepository.submitRate(request, recipeEntity)
         }
