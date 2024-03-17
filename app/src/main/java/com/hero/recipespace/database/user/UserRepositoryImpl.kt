@@ -19,11 +19,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+class UserRepositoryImpl
+@Inject
+constructor(
     private val userLocalDataSource: UserLocalDataSource,
-    private val userRemoteDataSource: UserRemoteDataSource
+    private val userRemoteDataSource: UserRemoteDataSource,
 ) : UserRepository {
-
     override suspend fun login(request: LoginUserRequest): UserEntity {
         val userData = userRemoteDataSource.login(request)
         userLocalDataSource.add(userData)
@@ -58,16 +59,14 @@ class UserRepositoryImpl @Inject constructor(
         userLocalDataSource.add(result)
     }
 
-    override suspend fun updateUser(request: UpdateUserRequest) : UserEntity {
+    override suspend fun updateUser(request: UpdateUserRequest): UserEntity {
         val result = userRemoteDataSource.updateUser(request)
         userLocalDataSource.update(result)
 
         return result.toEntity()
     }
 
-    override suspend fun deleteUser(
-        userEntity: UserEntity
-    ) {
+    override suspend fun deleteUser(userEntity: UserEntity) {
         val result = userRemoteDataSource.remove(userEntity.toData())
         userLocalDataSource.remove(result)
     }
@@ -78,7 +77,8 @@ class UserRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentLoggedUser(): UserEntity {
-        return userLocalDataSource.getData(FirebaseAuth.getInstance().currentUser?.uid.orEmpty()).toEntity()
+        return userLocalDataSource.getData(FirebaseAuth.getInstance().currentUser?.uid.orEmpty())
+            .toEntity()
     }
 
     private fun getEntities(data: List<UserData>): List<UserEntity> {
