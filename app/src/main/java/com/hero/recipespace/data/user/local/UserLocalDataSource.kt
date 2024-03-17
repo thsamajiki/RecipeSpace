@@ -4,9 +4,9 @@ import com.hero.recipespace.data.user.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface UserLocalDataSource {
-    suspend fun getData(userKey: String) : UserData
+    suspend fun getData(userKey: String): UserData
 
-    fun getDataList() : Flow<List<UserData>>
+    fun getDataList(): Flow<List<UserData>>
 
     fun clear()
 
