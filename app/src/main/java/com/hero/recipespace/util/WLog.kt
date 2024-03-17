@@ -4,13 +4,20 @@ import android.util.Log
 import com.hero.recipespace.BuildConfig
 
 object WLog {
-    private data class LogInfo(val lineNumber: Int, val className: String, val methodName: String)
+    private data class LogInfo(
+        val lineNumber: Int,
+        val className: String,
+        val methodName: String,
+    )
 
     private fun isDebuggable(): Boolean {
         return BuildConfig.DEBUG
     }
 
-    private fun createLog(logInfo: LogInfo, log: String?): String {
+    private fun createLog(
+        logInfo: LogInfo,
+        log: String?,
+    ): String {
         return "[${logInfo.methodName}():${logInfo.lineNumber}]$log"
     }
 
@@ -18,17 +25,21 @@ object WLog {
         return LogInfo(
             sElements[1].lineNumber,
             when {
-                sElements[1].fileName.endsWith(".java") -> sElements[1].fileName.replace(
-                    ".java".toRegex(),
-                    ""
-                )
-                sElements[1].fileName.endsWith(".kt") -> sElements[1].fileName.replace(
-                    ".kt".toRegex(),
-                    ""
-                )
+                sElements[1].fileName.endsWith(".java") ->
+                    sElements[1].fileName.replace(
+                        ".java".toRegex(),
+                        "",
+                    )
+
+                sElements[1].fileName.endsWith(".kt") ->
+                    sElements[1].fileName.replace(
+                        ".kt".toRegex(),
+                        "",
+                    )
+
                 else -> sElements[1].fileName
             },
-            sElements[1].methodName
+            sElements[1].methodName,
         )
     }
 
