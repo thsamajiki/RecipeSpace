@@ -18,7 +18,7 @@ object Dependencies {
         const val swiperefreshlayout = "1.1.0"
         const val room = "2.6.1"
         const val glide = "4.14.2"
-        const val camerax = "1.4.0-alpha03"
+        const val camerax = "1.4.0-alpha04"
         const val gson = "2.9.0"
 
         const val firebase_bom = "32.1.0"
