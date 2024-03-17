@@ -4,7 +4,7 @@ object Dependencies {
         const val kotlin = "1.9.20"
         const val agp = "8.0.2"
         const val ksp = "1.9.20-1.0.14"
-        const val hilt = "2.48.1"
+        const val hilt = "2.51"
         const val jvmTarget = "17"
         const val material = "1.11.0"
         const val appcompat = "1.6.1"
