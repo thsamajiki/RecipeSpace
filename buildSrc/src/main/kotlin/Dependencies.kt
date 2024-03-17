@@ -6,7 +6,7 @@ object Dependencies {
         const val ksp = "1.9.20-1.0.14"
         const val hilt = "2.51"
         const val jvmTarget = "17"
-        const val material = "1.11.0"
+        const val material = "1.12.0"
         const val appcompat = "1.6.1"
         const val androidxCore = "1.12.0"
         const val androidxActivity = "1.8.2"
