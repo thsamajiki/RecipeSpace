@@ -32,7 +32,7 @@ object Dependencies {
         const val coroutines_core = "1.7.1"
         const val elasticView = "2.1.0"
 
-        const val navigation = "2.7.6"
+        const val navigation = "2.7.7"
 
         const val preference = "1.2.1"
 
