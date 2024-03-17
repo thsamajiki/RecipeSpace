@@ -21,7 +21,5 @@ data class UserData(
     @ColumnInfo(name = "email")
     var email: String? = null,
     @ColumnInfo(name = "profileImageUrl")
-    var profileImageUrl: String? = null
-) : Parcelable {
-
-}
+    var profileImageUrl: String? = null,
+) : Parcelable
