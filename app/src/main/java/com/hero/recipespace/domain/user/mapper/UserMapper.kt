@@ -8,7 +8,7 @@ fun UserData.toEntity(): UserEntity {
         key = key,
         name = name,
         email = email,
-        profileImageUrl = profileImageUrl
+        profileImageUrl = profileImageUrl,
     )
 }
 
@@ -17,6 +17,6 @@ fun UserEntity.toData(): UserData {
         key = key,
         name = name,
         email = email,
-        profileImageUrl = profileImageUrl
+        profileImageUrl = profileImageUrl,
     )
 }
