@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     suspend fun login(request: LoginUserRequest): UserEntity
 
-    suspend fun getUser(userKey: String) : UserEntity
+    suspend fun getUser(userKey: String): UserEntity
 
     suspend fun getAccountProfile(): UserEntity
 
@@ -17,7 +17,7 @@ interface UserRepository {
 
     suspend fun signUpUser(request: SignUpUserRequest)
 
-    suspend fun updateUser(request: UpdateUserRequest) : UserEntity
+    suspend fun updateUser(request: UpdateUserRequest): UserEntity
 
     suspend fun deleteUser(userEntity: UserEntity)
 
