@@ -12,7 +12,5 @@ data class UserEntity(
     var key: String = "",
     var name: String? = null,
     var email: String? = null,
-    var profileImageUrl: String? = null
-) : Parcelable {
-
-}
+    var profileImageUrl: String? = null,
+) : Parcelable
