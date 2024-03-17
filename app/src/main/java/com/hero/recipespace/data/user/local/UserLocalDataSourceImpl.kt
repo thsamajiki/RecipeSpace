@@ -7,8 +7,10 @@ import com.hero.recipespace.database.user.dao.UserDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class UserLocalDataSourceImpl @Inject constructor(
-    private val userDao: UserDao
+class UserLocalDataSourceImpl
+@Inject
+constructor(
+    private val userDao: UserDao,
 ) : UserLocalDataSource {
     override suspend fun getData(userKey: String): UserData {
         return userDao.getUserFromKey(userKey) ?: error("not found UserData")
@@ -34,9 +36,7 @@ class UserLocalDataSourceImpl @Inject constructor(
 //        userDao.updateUser(newUserName, newProfileImageUrl)
 //    }
 
-    override suspend fun remove(
-        userData: UserData
-    ) {
+    override suspend fun remove(userData: UserData) {
         userDao.deleteUser(userData)
     }
 
