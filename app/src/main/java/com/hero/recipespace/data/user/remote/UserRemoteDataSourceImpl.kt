@@ -9,10 +9,11 @@ import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.domain.user.request.UpdateUserRequest
 import javax.inject.Inject
 
-class UserRemoteDataSourceImpl @Inject constructor(
-    private val userService: UserService
+class UserRemoteDataSourceImpl
+@Inject
+constructor(
+    private val userService: UserService,
 ) : UserRemoteDataSource {
-
     override suspend fun login(request: LoginUserRequest): UserData {
         return userService.login(request)
     }
@@ -24,17 +25,18 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun getFirebaseAuthProfile(): UserData {
         val firebaseUser: FirebaseUser? = getCurrentUser()
 
-        val profileImageUrl: String? = if (firebaseUser!!.photoUrl != null) {
-            firebaseUser.photoUrl.toString()
-        } else {
-            null
-        }
+        val profileImageUrl: String? =
+            if (firebaseUser!!.photoUrl != null) {
+                firebaseUser.photoUrl.toString()
+            } else {
+                null
+            }
 
         return UserData(
             key = firebaseUser.uid,
             name = firebaseUser.displayName,
             email = firebaseUser.email,
-            profileImageUrl = profileImageUrl
+            profileImageUrl = profileImageUrl,
         )
     }
 
@@ -46,32 +48,33 @@ class UserRemoteDataSourceImpl @Inject constructor(
         return userService.getDataList()
     }
 
-    override suspend fun add(request: SignUpUserRequest) : UserData {
+    override suspend fun add(request: SignUpUserRequest): UserData {
         return userService.add(request)
     }
 
-    override suspend fun updateUser(
-        request: UpdateUserRequest
-    ): UserData {
+    override suspend fun updateUser(request: UpdateUserRequest): UserData {
         val newUserName: String = request.newUserName
         val userKey: String = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
         val newProfileImagePath: String = request.newProfileImageUrl
 
-        val profileImageUrl = userService.uploadImage(newProfileImagePath, progress = {})
+        val profileImageUrl =
+            userService.uploadImage(
+                newProfileImagePath,
+                progress = {},
+            )
 
-        val newUserData = UserData(
-            key = userKey,
-            name = newUserName,
-            email = FirebaseAuth.getInstance().currentUser?.email.orEmpty(),
-            profileImageUrl = profileImageUrl
-        )
+        val newUserData =
+            UserData(
+                key = userKey,
+                name = newUserName,
+                email = FirebaseAuth.getInstance().currentUser?.email.orEmpty(),
+                profileImageUrl = profileImageUrl,
+            )
 
         return userService.update(newUserData)
     }
 
-    override suspend fun remove(
-        userData: UserData
-    ) : UserData {
+    override suspend fun remove(userData: UserData): UserData {
         return userService.remove(userData)
     }
 
