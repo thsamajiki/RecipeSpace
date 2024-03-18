@@ -17,7 +17,7 @@ object Dependencies {
         const val annotation = "1.7.1"
         const val swiperefreshlayout = "1.1.0"
         const val room = "2.6.1"
-        const val glide = "4.14.2"
+        const val glide = "4.16.0"
         const val camerax = "1.4.0-alpha04"
         const val gson = "2.10.1"
 
