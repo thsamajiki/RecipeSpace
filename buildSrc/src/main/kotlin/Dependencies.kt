@@ -29,7 +29,7 @@ object Dependencies {
         const val play_review = "2.0.1"
         const val play_app_update = "2.1.0"
 
-        const val coroutines_core = "1.7.1"
+        const val coroutines_core = "1.8.0"
         const val elasticView = "2.1.0"
 
         const val navigation = "2.7.7"
