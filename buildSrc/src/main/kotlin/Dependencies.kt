@@ -25,6 +25,7 @@ object Dependencies {
         const val firebase_ui_storage = "8.0.2"
         const val firebase_crashlytics = "2.9.9"
 
+        const val asset_delivery = "2.2.1"
         const val play_delivery = "2.1.0"
         const val play_review = "2.0.1"
         const val play_app_update = "2.1.0"
@@ -54,7 +55,7 @@ object Dependencies {
 
         const val google_services = "com.google.gms:google-services:${Versions.gms}"
 
-        const val play_asset_delivery = "com.google.android.play:asset-delivery-ktx:${Versions.play_delivery}"
+        const val play_asset_delivery = "com.google.android.play:asset-delivery-ktx:${Versions.asset_delivery}"
         const val play_feature_delivery = "com.google.android.play:feature-delivery-ktx:${Versions.play_delivery}"
         const val play_review = "com.google.android.play:review-ktx:${Versions.play_review}"
         const val play_app_update = "com.google.android.play:app-update-ktx:${Versions.play_app_update}"
