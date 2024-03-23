@@ -103,6 +103,8 @@ dependencies {
 
     implementation(Dependencies.Libraries.elastic_view)
 
+    implementation(Dependencies.Libraries.floating_action_button_speed_dial)
+
     implementation(Dependencies.Jetpack.navigation_fragment)
     implementation(Dependencies.Jetpack.navigation_ui)
     implementation(Dependencies.Jetpack.navigation_dynamic_features_fragment)
