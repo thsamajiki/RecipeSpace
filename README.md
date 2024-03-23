@@ -56,6 +56,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 - Material 디자인
 - 사진 첨부 (Glide)
 - ElasticView (com.github.skydoves:elasticviews)
+- FloatingActionButton SpeedDial (com.leinardi.android:speed-dial)
 
 
 ## 개발 후 느낀 점
