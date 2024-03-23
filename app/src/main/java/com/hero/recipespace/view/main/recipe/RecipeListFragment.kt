@@ -20,6 +20,7 @@ import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel
 import com.hero.recipespace.view.post.PostRecipeActivity
+import com.leinardi.android.speeddial.SpeedDialActionItem
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -88,8 +89,35 @@ class RecipeListFragment : Fragment() {
 
     private fun setupView() {
         initRecyclerView(binding.rvRecipeList)
-        binding.btnPostRecipe.setOnClickListener {
-            onPostRecipeButtonClick()
+        binding.btnSpeedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.post_recipe, R.drawable.ic_pen)
+                .create()
+        )
+        binding.btnSpeedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.search_recipe, R.drawable.ic_search_24)
+                .create()
+        )
+        binding.btnSpeedDial.addActionItem(
+            SpeedDialActionItem.Builder(R.id.ai_chatbot, R.drawable.ic_ai_chat)
+                .create()
+        )
+        binding.btnSpeedDial.setOnActionSelectedListener {
+            binding.speedDialOverlayRecipeList.setClickableOverlay(true)
+            when (it.id) {
+                R.id.post_recipe -> {
+                    onPostRecipeButtonClick()
+                    true
+                }
+                R.id.search_recipe -> {
+                    true
+                }
+                R.id.ai_chatbot -> {
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
         }
 
         val nav = activity?.findViewById<BottomNavigationView>(R.id.bottomNav)
