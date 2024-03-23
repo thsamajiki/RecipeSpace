@@ -12,6 +12,7 @@
     <color name="normal_gray">#999999</color>
     <color name="light_gray">#ededed</color>
     <color name="transparent">#00000000</color>
+    <color name="half_transparent">#80000000</color>
 
     <color name="colorPrimaryDarkMode">#232329</color>
     <color name="colorPrimaryDarkDarkMode">#1C1C21</color>
