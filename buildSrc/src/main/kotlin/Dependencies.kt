@@ -35,6 +35,8 @@ object Dependencies {
 
         const val navigation = "2.7.7"
 
+        const val FAB_SPEED_DIAL = "3.3.0"
+
         const val preference = "1.2.1"
 
         const val gms = "4.4.1"
@@ -61,6 +63,8 @@ object Dependencies {
         const val play_app_update = "com.google.android.play:app-update-ktx:${Versions.play_app_update}"
 
         const val elastic_view = "com.github.skydoves:elasticviews:${Versions.elasticView}"
+
+        const val floating_action_button_speed_dial = "com.leinardi.android:speed-dial:${Versions.FAB_SPEED_DIAL}"
 
         const val preference = "androidx.preference:preference-ktx:${Versions.preference}"
     }

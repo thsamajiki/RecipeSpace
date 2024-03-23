@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ai_chatbot" type="id" />
+    <item name="search_recipe" type="id"/>
+    <item name="post_recipe" type="id"/>
+</resources>
