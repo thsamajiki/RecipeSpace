@@ -37,6 +37,8 @@ object Dependencies {
 
         const val FAB_SPEED_DIAL = "3.3.0"
 
+        const val GEMINI_AI = "0.2.2"
+
         const val preference = "1.2.1"
 
         const val gms = "4.4.1"
@@ -65,6 +67,8 @@ object Dependencies {
         const val elastic_view = "com.github.skydoves:elasticviews:${Versions.elasticView}"
 
         const val floating_action_button_speed_dial = "com.leinardi.android:speed-dial:${Versions.FAB_SPEED_DIAL}"
+
+        const val GEMINI_AI = "com.google.ai.client.generativeai:generativeai:${Versions.GEMINI_AI}"
 
         const val preference = "androidx.preference:preference-ktx:${Versions.preference}"
     }
