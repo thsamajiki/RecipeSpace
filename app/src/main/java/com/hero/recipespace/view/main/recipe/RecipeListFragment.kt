@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hero.recipespace.R
 import com.hero.recipespace.databinding.FragmentRecipeListBinding
 import com.hero.recipespace.domain.recipe.entity.RecipeEntity
+import com.hero.recipespace.view.main.recipe.ai_chat.AiChatDialogFragment
 import com.hero.recipespace.view.main.recipe.viewmodel.RecipeListViewModel
 import com.hero.recipespace.view.post.PostRecipeActivity
 import com.leinardi.android.speeddial.SpeedDialActionItem
@@ -112,6 +113,7 @@ class RecipeListFragment : Fragment() {
                     true
                 }
                 R.id.ai_chatbot -> {
+                    onAiChatbotButtonClick()
                     true
                 }
                 else -> {
@@ -126,6 +128,12 @@ class RecipeListFragment : Fragment() {
                 binding.rvRecipeList.smoothScrollToPosition(0)
             }
         }
+    }
+
+    private fun onAiChatbotButtonClick() {
+        val aiChatDialogFragment = AiChatDialogFragment.newInstance()
+
+        aiChatDialogFragment.show(childFragmentManager, AiChatDialogFragment.TAG)
     }
 
     private fun setupViewModel() {
