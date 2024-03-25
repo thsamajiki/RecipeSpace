@@ -55,7 +55,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 ## 사용된 라이브러리
 - Material 디자인
 - 사진 첨부 (Glide)
-- ElasticView (com.github.skydoves:elasticviews)
+- ElasticView
 - FloatingActionButton SpeedDial (com.leinardi.android:speed-dial)
 - Google Gemini AI
 
