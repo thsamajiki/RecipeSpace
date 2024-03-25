@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Properties
+
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -11,6 +14,9 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("kapt")
 }
+
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.hero.recipespace"
@@ -25,6 +31,8 @@ android {
 
         testInstrumentationRunner = Dependencies.Test.ANDROID_JUNIT_RUNNER
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField("String", "geminiKey", localProperties.getProperty("geminiKey"))
     }
 
     buildTypes {
@@ -54,6 +62,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 }
 
@@ -104,6 +113,8 @@ dependencies {
     implementation(Dependencies.Libraries.elastic_view)
 
     implementation(Dependencies.Libraries.floating_action_button_speed_dial)
+
+    implementation(Dependencies.Libraries.GEMINI_AI)
 
     implementation(Dependencies.Jetpack.navigation_fragment)
     implementation(Dependencies.Jetpack.navigation_ui)
