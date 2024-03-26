@@ -484,4 +484,8 @@ B. 계정 관련
     </string>
 
     <string name="title_ai_chatbot">AI 챗봇에게 물어봐!</string>
+    <string name="login">로그인</string>
+    <string name="please_login">RecipeSpace 서비스 이용을 위해 로그인을 해주세요.</string>
+    <string name="do_you_not_have_account">가입하신 계정이 없나요?</string>
+    <string name="sign_up">회원가입</string>
 </resources>
