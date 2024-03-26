@@ -1,10 +1,9 @@
 package com.hero.recipespace.view.login.viewmodel
 
-import android.app.Application
 import android.text.TextUtils
 import android.util.Patterns
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -14,6 +13,7 @@ import com.hero.recipespace.domain.user.entity.Password
 import com.hero.recipespace.domain.user.request.SignUpUserRequest
 import com.hero.recipespace.domain.user.usecase.SignUpUserUseCase
 import com.hero.recipespace.view.LoadingState
+import com.hero.recipespace.view.login.InvalidSignUpInfoType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 sealed class SignUpUiState {
     object Success : SignUpUiState()
 
-    data class Failed(val message: String) : SignUpUiState()
+    data class Failed(val invalidSignUpInfoType: InvalidSignUpInfoType) : SignUpUiState()
 
     object Idle : SignUpUiState()
 }
@@ -33,9 +33,8 @@ sealed class SignUpUiState {
 class SignUpViewModel
 @Inject
 constructor(
-    application: Application,
     private val signUpUserUseCase: SignUpUserUseCase,
-) : AndroidViewModel(application) {
+) : ViewModel() {
     private val _signUpUiState = MutableStateFlow<SignUpUiState>(SignUpUiState.Idle)
     val signUpUiState: StateFlow<SignUpUiState> = _signUpUiState.asStateFlow()
 
@@ -45,22 +44,36 @@ constructor(
     val email: MutableLiveData<String> = MutableLiveData()
     val userName: MutableLiveData<String> = MutableLiveData()
     val pwd: MutableLiveData<String> = MutableLiveData()
+    val pwdConfirm: MutableLiveData<String> = MutableLiveData()
 
     fun signUpUserAccount(
         userName: String,
         email: String,
         pwd: String,
+        pwdConfirm: String,
     ) {
         if (!checkEmailValid(email)) {
-            _signUpUiState.value = SignUpUiState.Failed("이메일 양식을 확인해주세요")
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_EMAIL_FORM)
             return
         }
-        if (TextUtils.isEmpty(pwd)) {
-            _signUpUiState.value = SignUpUiState.Failed("패스워드를 입력해주세요")
+        if (TextUtils.isEmpty(email)) {
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_EMAIL)
+            return
+        }
+        if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdConfirm)) {
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_PWD)
             return
         }
         if (TextUtils.isEmpty(userName)) {
-            _signUpUiState.value = SignUpUiState.Failed("사용자명을 입력해주세요")
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_USER_NAME)
+            return
+        }
+        if (pwd != pwdConfirm) {
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INCORRECT_PWD)
+            return
+        }
+        if (pwd.length < 6) {
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH)
             return
         }
 
@@ -76,16 +89,16 @@ constructor(
 
                     when (it) {
                         is FirebaseAuthWeakPasswordException ->
-                            SignUpUiState.Failed("패스워드가 7자리 이상이어야 합니다")
+                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH)
 
                         is FirebaseAuthInvalidCredentialsException ->
-                            SignUpUiState.Failed("이메일 형식이 잘못되었습니다.")
+                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_EMAIL_FORM)
 
                         is FirebaseAuthUserCollisionException ->
-                            SignUpUiState.Failed("이미 존재하는 계정입니다.")
+                            SignUpUiState.Failed(InvalidSignUpInfoType.DUPLICATED_ACCOUNT)
                     }
 
-                    _signUpUiState.value = SignUpUiState.Failed("회원가입에 실패했습니다.")
+                    _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.FAILED_SIGN_UP)
                 }
         }
     }
