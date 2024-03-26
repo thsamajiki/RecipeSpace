@@ -24,7 +24,7 @@ import javax.inject.Inject
 sealed class SignUpUiState {
     object Success : SignUpUiState()
 
-    data class Failed(val invalidSignUpInfoType: InvalidSignUpInfoType) : SignUpUiState()
+    data class Failed(val message: Int) : SignUpUiState()
 
     object Idle : SignUpUiState()
 }
@@ -53,27 +53,29 @@ constructor(
         pwdConfirm: String,
     ) {
         if (!checkEmailValid(email)) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_EMAIL_FORM)
+            _signUpUiState.value = SignUpUiState.Failed(
+                InvalidSignUpInfoType.INVALID_EMAIL_FORM.message
+            )
             return
         }
         if (TextUtils.isEmpty(email)) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_EMAIL)
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_EMAIL.message)
             return
         }
         if (TextUtils.isEmpty(pwd) || TextUtils.isEmpty(pwdConfirm)) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_PWD)
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_PWD.message)
             return
         }
         if (TextUtils.isEmpty(userName)) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_USER_NAME)
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.EMPTY_USER_NAME.message)
             return
         }
         if (pwd != pwdConfirm) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INCORRECT_PWD)
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INCORRECT_PWD.message)
             return
         }
         if (pwd.length < 6) {
-            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH)
+            _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH.message)
             return
         }
 
@@ -89,16 +91,16 @@ constructor(
 
                     when (it) {
                         is FirebaseAuthWeakPasswordException ->
-                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH)
+                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_PWD_LENGTH.message)
 
                         is FirebaseAuthInvalidCredentialsException ->
-                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_EMAIL_FORM)
+                            SignUpUiState.Failed(InvalidSignUpInfoType.INVALID_EMAIL_FORM.message)
 
                         is FirebaseAuthUserCollisionException ->
-                            SignUpUiState.Failed(InvalidSignUpInfoType.DUPLICATED_ACCOUNT)
+                            SignUpUiState.Failed(InvalidSignUpInfoType.DUPLICATED_ACCOUNT.message)
                     }
 
-                    _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.FAILED_SIGN_UP)
+                    _signUpUiState.value = SignUpUiState.Failed(InvalidSignUpInfoType.FAILED_SIGN_UP.message)
                 }
         }
     }

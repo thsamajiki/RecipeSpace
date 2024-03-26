@@ -52,7 +52,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                         is SignUpUiState.Failed ->
                             Toast.makeText(
                                 this@SignUpActivity,
-                                state.invalidSignUpInfoType.name,
+                                resources.getString(state.message),
                                 Toast.LENGTH_SHORT,
                             ).show()
 
