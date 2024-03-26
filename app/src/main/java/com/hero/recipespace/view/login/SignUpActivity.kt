@@ -2,6 +2,7 @@ package com.hero.recipespace.view.login
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -34,8 +35,13 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        setupView()
         setupViewModel()
         setupListeners()
+    }
+
+    private fun setupView() {
+        binding.tvLogin.paintFlags = Paint.UNDERLINE_TEXT_FLAG
     }
 
     private fun setupViewModel() {
@@ -46,7 +52,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                         is SignUpUiState.Failed ->
                             Toast.makeText(
                                 this@SignUpActivity,
-                                state.message,
+                                state.invalidSignUpInfoType.name,
                                 Toast.LENGTH_SHORT,
                             ).show()
 
@@ -70,7 +76,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setupListeners() {
-        binding.ivBack.setOnClickListener {
+        binding.tvLogin.setOnClickListener {
             finish()
         }
 
@@ -81,10 +87,11 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun requestSignUp() {
         val email = binding.editEmail.text.toString().trim()
-        val pwd: String = binding.editPwd.text.toString().trim()
         val userName: String = binding.editUserName.text.toString().trim()
+        val pwd: String = binding.editPwd.text.toString().trim()
+        val pwdConfirm: String = binding.editPwdConfirm.text.toString().trim()
 
-        viewModel.signUpUserAccount(userName, email, pwd)
+        viewModel.signUpUserAccount(userName, email, pwd, pwdConfirm)
     }
 
     private fun goToMainPage() {
