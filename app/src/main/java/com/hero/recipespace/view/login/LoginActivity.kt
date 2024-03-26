@@ -82,7 +82,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             requestLogin()
         }
 
-        binding.btnSignUp.setOnClickListener {
+        binding.tvSignUp.setOnClickListener {
             val intent = SignUpActivity.getIntent(this)
             startActivity(intent)
         }
