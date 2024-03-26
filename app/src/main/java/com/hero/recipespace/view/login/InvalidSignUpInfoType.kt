@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.hero.recipespace.R
 
 enum class InvalidSignUpInfoType(
-    @StringRes private val message: Int,
+    @StringRes val message: Int,
 ) {
     EMPTY_EMAIL(R.string.empty_email),
     EMPTY_PWD(R.string.empty_password),
