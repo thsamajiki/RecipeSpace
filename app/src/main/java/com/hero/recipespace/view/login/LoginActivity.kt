@@ -2,6 +2,7 @@ package com.hero.recipespace.view.login
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -39,8 +40,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        setupView()
         setupViewModel()
         setupListeners()
+    }
+
+    private fun setupView() {
+        binding.tvSignUp.paintFlags = Paint.UNDERLINE_TEXT_FLAG
     }
 
     private fun setupViewModel() {
@@ -66,8 +72,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                         is LoginUiState.Failed -> {
-                            Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(this@LoginActivity,
+                                resources.getString(state.message),
+                                Toast.LENGTH_SHORT,
+                                ).show()
                         }
 
                         LoginUiState.Idle -> {}
@@ -89,10 +97,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun requestLogin() {
-        val email: String = binding.editEmail.text.toString().trim()
-        val pwd: String = binding.editPwd.text.toString().trim()
+        val email = viewModel.email.value?.trim()
+        val pwd = viewModel.pwd.value?.trim()
 
-        viewModel.requestLogin(email, pwd)
+        if (email != null && pwd != null) {
+            viewModel.requestLogin(email, pwd)
+        }
     }
 
     override fun onClick(view: View) {
