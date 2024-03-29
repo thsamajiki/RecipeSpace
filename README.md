@@ -50,6 +50,7 @@ SeoultechRecipe를 Kotlin으로 리팩토링했습니다.
 - Hilt
 - CameraX
 - SSOT (Single Source Of Truth)
+- Google Gemini AI
 
 
 ## 사용된 라이브러리
