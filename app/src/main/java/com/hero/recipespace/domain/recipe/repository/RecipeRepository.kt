@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 interface RecipeRepository {
     suspend fun getRecipe(recipeKey: String): RecipeEntity
 
+    suspend fun searchRecipe(query: String): List<RecipeEntity>
+
     fun observeRecipeList(): Flow<List<RecipeEntity>>
 
     suspend fun refresh()
