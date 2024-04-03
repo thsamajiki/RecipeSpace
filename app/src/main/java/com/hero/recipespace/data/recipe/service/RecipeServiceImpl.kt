@@ -1,6 +1,7 @@
 package com.hero.recipespace.data.recipe.service
 
 import android.net.Uri
+import android.util.Log
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,6 +47,60 @@ constructor(
 
                     continuation.resume(recipeData!!)
                 }
+                .addOnFailureListener {
+                    continuation.resumeWithException(it)
+                }
+        }
+    }
+
+    override suspend fun searchRecipe(query: String): List<RecipeData> {
+        return suspendCoroutine { continuation ->
+            db.collection("Recipe")
+                .whereEqualTo("desc", query)
+                .orderBy(
+                    "postDate",
+                    Query.Direction.DESCENDING,
+                )
+                .get()
+                .addOnSuccessListener(
+                    OnSuccessListener { queryDocumentSnapshots ->
+                        val recipeDataList = mutableListOf<RecipeData>()
+
+                        if (queryDocumentSnapshots.isEmpty) {
+                            recipeDataList.addAll(emptyList())
+                            Log.d("RecipeServiceImpl", "empty - recipeDataList: $recipeDataList")
+//                            return@OnSuccessListener
+                        } else {
+                            Log.d("RecipeServiceImpl", "query: $query")
+                            WLog.d("RecipeServiceImpl - query $query")
+
+                            for (documentSnapshot in queryDocumentSnapshots.documents.mapNotNull { documentSnapshot ->
+                                documentSnapshot.toObject(RecipeData::class.java)
+                            }) {
+                                if (documentSnapshot.desc?.contains(query) == true) {
+                                    recipeDataList.add(documentSnapshot)
+                                }
+                            }
+
+                            Log.d("RecipeServiceImpl", "notEmpty - recipeDataList: $recipeDataList")
+                        }
+
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val result =
+                                recipeDataList.map { recipe ->
+                                    async {
+                                        val rateAverage = getRecipeRateAverage(recipe.key)
+                                        recipe.copy(rate = rateAverage)
+                                    }
+                                }
+                                    .awaitAll()
+
+                            continuation.resume(result)
+                            WLog.d("result $result")
+                            cancel()
+                        }
+                    },
+                )
                 .addOnFailureListener {
                     continuation.resumeWithException(it)
                 }
