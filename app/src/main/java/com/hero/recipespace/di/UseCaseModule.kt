@@ -21,6 +21,7 @@ import com.hero.recipespace.domain.recipe.usecase.GetRecipeUseCase
 import com.hero.recipespace.domain.recipe.usecase.ObserveRecipeListUseCase
 import com.hero.recipespace.domain.recipe.usecase.PostRecipeUseCase
 import com.hero.recipespace.domain.recipe.usecase.RefreshRecipeListUseCase
+import com.hero.recipespace.domain.recipe.usecase.SearchRecipeUseCase
 import com.hero.recipespace.domain.recipe.usecase.UpdateRecipeUseCase
 import com.hero.recipespace.domain.user.repository.UserRepository
 import com.hero.recipespace.domain.user.usecase.GetUserUseCase
@@ -81,6 +82,10 @@ object UseCaseModule {
     @Provides
     @Singleton
     fun provideGetRecipeUseCase(recipeRepository: RecipeRepository) = GetRecipeUseCase(recipeRepository)
+
+    @Provides
+    @Singleton
+    fun provideSearchRecipeUseCase(recipeRepository: RecipeRepository) = SearchRecipeUseCase(recipeRepository)
 
     @Provides
     @Singleton

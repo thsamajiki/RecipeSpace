@@ -6,6 +6,8 @@ import com.hero.recipespace.data.recipe.RecipeData
 interface RecipeService {
     suspend fun getRecipe(recipeKey: String): RecipeData
 
+    suspend fun searchRecipe(query: String): List<RecipeData>
+
     suspend fun getRecipeList(): List<RecipeData>
 
     suspend fun getMyRecipeList(userKey: String): List<RecipeData>

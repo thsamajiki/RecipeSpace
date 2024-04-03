@@ -7,6 +7,8 @@ import com.hero.recipespace.domain.recipe.request.UploadRecipeRequest
 interface RecipeRemoteDataSource {
     suspend fun getData(recipeKey: String): RecipeData
 
+    suspend fun searchRecipe(query: String): List<RecipeData>
+
     suspend fun getDataList(): List<RecipeData>
 
     suspend fun add(

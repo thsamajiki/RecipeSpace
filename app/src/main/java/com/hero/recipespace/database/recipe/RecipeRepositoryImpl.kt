@@ -1,5 +1,6 @@
 package com.hero.recipespace.database.recipe
 
+import android.util.Log
 import com.hero.recipespace.data.recipe.RecipeData
 import com.hero.recipespace.data.recipe.local.RecipeLocalDataSource
 import com.hero.recipespace.data.recipe.remote.RecipeRemoteDataSource
@@ -25,6 +26,17 @@ constructor(
 ) : RecipeRepository {
     override suspend fun getRecipe(recipeKey: String): RecipeEntity {
         return recipeLocalDataSource.getData(recipeKey).toEntity()
+    }
+
+    override suspend fun searchRecipe(query: String): List<RecipeEntity> {
+        Log.d("RecipeRepositoryImpl", "searchRecipe: ${recipeRemoteDataSource.searchRecipe(query)
+            .map {
+                it.toEntity()
+            }}")
+        return recipeRemoteDataSource.searchRecipe(query)
+            .map {
+                it.toEntity()
+            }
     }
 
     override fun observeRecipeList(): Flow<List<RecipeEntity>> {
