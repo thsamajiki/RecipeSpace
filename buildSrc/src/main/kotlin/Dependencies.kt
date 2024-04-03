@@ -39,6 +39,8 @@ object Dependencies {
 
         const val GEMINI_AI = "0.2.2"
 
+        const val TED_KEYBOARD_OBSERVER = "1.0.1"
+
         const val preference = "1.2.1"
 
         const val gms = "4.4.1"
@@ -69,6 +71,8 @@ object Dependencies {
         const val floating_action_button_speed_dial = "com.leinardi.android:speed-dial:${Versions.FAB_SPEED_DIAL}"
 
         const val GEMINI_AI = "com.google.ai.client.generativeai:generativeai:${Versions.GEMINI_AI}"
+
+        const val TED_KEYBOARD_OBSERVER = "io.github.ParkSangGwon:tedkeyboardobserver:${Versions.TED_KEYBOARD_OBSERVER}"
 
         const val preference = "androidx.preference:preference-ktx:${Versions.preference}"
     }
