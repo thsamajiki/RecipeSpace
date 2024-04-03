@@ -22,6 +22,10 @@ constructor(
         return recipeService.getRecipe(recipeKey)
     }
 
+    override suspend fun searchRecipe(query: String): List<RecipeData> {
+        return recipeService.searchRecipe(query)
+    }
+
     override suspend fun getDataList(): List<RecipeData> {
         return recipeService.getRecipeList()
     }
