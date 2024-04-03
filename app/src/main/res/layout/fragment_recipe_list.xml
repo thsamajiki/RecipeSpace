@@ -15,28 +15,74 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".view.main.recipe.RecipeListFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".view.main.recipe.RecipeListFragment">
+            android:layout_height="match_parent">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/layoutSwipeRefresh"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutRecipeList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutSearchRecipe">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvRecipeList"
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/layoutSwipeRefresh"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvRecipeList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:recipeItems="@{viewModel.recipeList}"
+                        tools:listitem="@layout/item_recipe" />
+
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutSearchRecipe"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:boxBackgroundColor="@color/grey_100"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text"
+                app:hintEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_search_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSearchRecipe"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:recipeItems="@{viewModel.recipeList}"
-                    tools:listitem="@layout/item_recipe" />
+                    android:gravity="center_vertical"
+                    android:hint="@string/hint_search_recipe"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="@dimen/body_text_size"
+                    tools:text="" />
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.leinardi.android.speeddial.SpeedDialOverlayLayout
                 android:id="@+id/speedDialOverlayRecipeList"
@@ -55,13 +101,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                app:sdMainFabClosedSrc="@drawable/ic_plus"
-                app:sdOverlayLayout="@id/speedDialOverlayRecipeList"
                 app:backgroundTint="@color/colorPrimary"
                 app:fabutton_scale="0.85"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:sdMainFabClosedSrc="@drawable/ic_plus"
+                app:sdOverlayLayout="@id/speedDialOverlayRecipeList"
                 app:useCompatPadding="true" />
+
+            <TextView
+                android:id="@+id/tvEmptyRecipeListFound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.emptyRecipeListMessage}"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/no_searched_recipe_found" />
+
+            <TextView
+                android:id="@+id/tvNoSearchedListFound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.emptySearchedListMessage}"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/empty_recipe_list_found" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
