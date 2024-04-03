@@ -60,6 +60,8 @@
     <string name="cancel">취소</string>
     <string name="confirm_yes">확인</string>
     <string name="title_post_recipe">레시피 올리기</string>
+    <string name="empty_recipe_list_found">레시피가 없어요…</string>
+    <string name="no_searched_recipe_found">검색한 레시피가 없어요…</string>
     <string name="tv_finish">완료</string>
     <string name="please_input_message">메시지를 입력해 주세요</string>
     <string name="title_edit_profile">프로필 변경</string>
@@ -493,5 +495,6 @@ B. 계정 관련
 
 이 약관은 2024년 02월 01일부터 시행합니다.
     </string>
+    <string name="hint_search_recipe">레시피를 검색해보세요</string>
 
 </resources>
