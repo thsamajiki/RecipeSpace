@@ -13,6 +13,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -106,6 +107,7 @@ class RecipeListFragment : Fragment() {
 
     private fun setupView() {
         initRecyclerView(binding.rvRecipeList)
+        initSortedType()
         setupButtonSpeedDial()
     }
 
@@ -335,6 +337,32 @@ class RecipeListFragment : Fragment() {
                 recipeAdapter.replaceItem(recipe)
             }
         }
+    }
+
+    private fun initSortedType() {
+        val itemSort = listOf("최신순", "가나다순")
+        val sortAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_menu_popup, itemSort)
+
+        binding.sortType.setAdapter(sortAdapter)
+
+        binding.sortType.setOnItemClickListener { adapterView, view, position, id ->
+            val selectedItem = adapterView.getItemAtPosition(position).toString()
+
+            if (selectedItem == "최신순") {
+                recipeAdapter.setRecipeList(viewModel.recipeList.value?.sortedByDescending {
+                    it.postDate
+                }.orEmpty())
+                recipeAdapter.notifyDataSetChanged()
+            }
+            else if (selectedItem == "가나다순") {
+                recipeAdapter.setRecipeList(viewModel.recipeList.value?.sortedBy {
+                    it.desc
+                }.orEmpty())
+                recipeAdapter.notifyDataSetChanged()
+            }
+        }
+
+        binding.sortType.setText(sortAdapter.getItem(0), false)
     }
 
     private fun initRecyclerView(recyclerView: RecyclerView) {
